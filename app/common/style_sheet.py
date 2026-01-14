@@ -7,6 +7,7 @@ from qfluentwidgets import StyleSheetBase, Theme, isDarkTheme, qconfig
 class StyleSheet(StyleSheetBase, Enum):
     """ Style sheet  """
 
+    MAIN_WINDOW = "main_window"
     LINK_CARD = "link_card"
     SAMPLE_CARD = "sample_card"
     HOME_INTERFACE = "home_interface"
