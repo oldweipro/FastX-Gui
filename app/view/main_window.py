@@ -11,10 +11,11 @@ from qfluentwidgets import (NavigationItemPosition, MessageBox, setTheme, Theme,
 from qframelesswindow import FramelessWindow, TitleBar
 
 from app.common.translator import Translator
-from ..common.style_sheet import StyleSheet
-from .home_interface import HomeInterface
-from .setting_interface import SettingInterface
-from .app_interface import AppInterface
+from app.common.style_sheet import StyleSheet
+from app.view.home_interface import HomeInterface
+from app.view.setting_interface import SettingInterface
+from app.view.app_interface import AppInterface
+from app.view.log_interface import LogInterface
 
 
 class Widget(QWidget):
@@ -223,7 +224,7 @@ class MainWindow(MSFluentWindow):
         self.appInterface     = AppInterface(self)
         self.projectInterface = Widget('Project Interface', self)
         self.libraryInterface = Widget('Library Interface', self)
-        self.logInterface     = Widget('Log Interface', self)
+        self.logInterface     = LogInterface(self)
         self.settingInterface = SettingInterface(self)
 
         self.initNavigation()
