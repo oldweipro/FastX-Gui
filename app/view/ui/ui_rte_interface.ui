@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Frame</class>
+ <widget class="QFrame" name="Frame">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1197</width>
+    <height>479</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Frame</string>
+  </property>
+  <widget class="TabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1181</width>
+     <height>461</height>
+    </rect>
+   </property>
+   <property name="whatsThis">
+    <string/>
+   </property>
+   <property name="accessibleName">
+    <string/>
+   </property>
+   <widget class="QWidget" name="TabSrp">
+    <property name="font">
+     <font>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <widget class="LineEdit" name="LineEdit">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>761</width>
+       <height>33</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="LineEdit" name="LineEdit_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>761</width>
+       <height>33</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="PushButton" name="PushButton">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>790</x>
+       <y>10</y>
+       <width>131</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Excel Path</string>
+     </property>
+     <property name="icon">
+      <iconset theme="FluentIcon.FOLDER">
+       <normaloff>.</normaloff>.</iconset>
+     </property>
+     <property name="fluentIcon">
+      <number>65</number>
+     </property>
+     <property name="hasIcon" stdset="0">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="PushButton" name="PushButton_2">
+     <property name="geometry">
+      <rect>
+       <x>790</x>
+       <y>50</y>
+       <width>131</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Output Path</string>
+     </property>
+     <property name="fluentIcon">
+      <number>65</number>
+     </property>
+     <property name="hasIcon" stdset="0">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="TextBrowser" name="TextBrowser">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>761</width>
+       <height>301</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="ComboBox" name="ComboBox">
+     <property name="geometry">
+      <rect>
+       <x>960</x>
+       <y>10</y>
+       <width>111</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>SRP</string>
+     </property>
+     <property name="items_" stdset="0">
+      <string>SRP
+IPC
+Func</string>
+     </property>
+    </widget>
+    <widget class="CardWidget" name="CardWidget">
+     <property name="geometry">
+      <rect>
+       <x>780</x>
+       <y>90</y>
+       <width>401</width>
+       <height>301</height>
+      </rect>
+     </property>
+     <widget class="CheckBox" name="CheckBox">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>60</y>
+        <width>92</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Check box</string>
+      </property>
+     </widget>
+     <widget class="IconWidget" name="IconWidget">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>31</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="fluentIcon">
+       <number>22</number>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>D:/Github/FastX-Gui/app/resource/images/todo.png</normaloff>D:/Github/FastX-Gui/app/resource/images/todo.png</iconset>
+      </property>
+     </widget>
+     <widget class="StrongBodyLabel" name="StrongBodyLabel">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>10</y>
+        <width>121</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Strong body label</string>
+      </property>
+     </widget>
+     <widget class="TransparentToolButton" name="TransparentToolButton">
+      <property name="geometry">
+       <rect>
+        <x>310</x>
+        <y>10</y>
+        <width>36</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="fluentIcon">
+       <number>6</number>
+      </property>
+     </widget>
+     <widget class="TransparentToolButton" name="TransparentToolButton_2">
+      <property name="geometry">
+       <rect>
+        <x>350</x>
+        <y>10</y>
+        <width>36</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="fluentIcon">
+       <number>27</number>
+      </property>
+     </widget>
+     <widget class="CheckBox" name="CheckBox_2">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>90</y>
+        <width>92</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Check box</string>
+      </property>
+     </widget>
+     <widget class="CheckBox" name="CheckBox_3">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>120</y>
+        <width>92</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Check box</string>
+      </property>
+     </widget>
+     <widget class="CheckBox" name="CheckBox_4">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>150</y>
+        <width>92</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Check box</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="TabIpc"/>
+   <widget class="QWidget" name="TabFunc"/>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>ComboBox</class>
+   <extends>QPushButton</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>PushButton</class>
+   <extends>QPushButton</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>ToolButton</class>
+   <extends>QToolButton</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>TransparentToolButton</class>
+   <extends>ToolButton</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>IconWidget</class>
+   <extends>QWidget</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>CardWidget</class>
+   <extends>QFrame</extends>
+   <header>qfluentwidgets</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TabWidget</class>
+   <extends>QWidget</extends>
+   <header>qfluentwidgets</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>StrongBodyLabel</class>
+   <extends>QLabel</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>LineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>TextBrowser</class>
+   <extends>QTextBrowser</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

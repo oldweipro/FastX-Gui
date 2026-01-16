@@ -16,6 +16,7 @@ from app.view.home_interface import HomeInterface
 from app.view.setting_interface import SettingInterface
 from app.view.app_interface import AppInterface
 from app.view.log_interface import LogInterface
+from app.view.rte_interface import RteInterface
 
 
 class Widget(QWidget):
@@ -222,7 +223,7 @@ class MainWindow(MSFluentWindow):
 
         self.homeInterface    = HomeInterface(self)
         self.appInterface     = AppInterface(self)
-        self.projectInterface = Widget('Project Interface', self)
+        self.projectInterface = RteInterface(self)
         self.libraryInterface = Widget('Library Interface', self)
         self.logInterface     = LogInterface(self)
         self.settingInterface = SettingInterface(self)
@@ -276,8 +277,8 @@ class MainWindow(MSFluentWindow):
         self.navigationInterface.setCurrentItem(self.homeInterface.objectName())
 
     def initWindow(self):
-        self.resize(1200, 700)
-        self.setMinimumWidth(1200)
+        self.resize(1250, 700)
+        self.setMinimumWidth(1250)
         self.setWindowTitle('福瑞泰克软件中心MCU工具平台')
         self.setWindowIcon(QIcon(':/qfluentwidgets/images/logo.png'))
         self.titleBar.setAttribute(Qt.WA_StyledBackground)
