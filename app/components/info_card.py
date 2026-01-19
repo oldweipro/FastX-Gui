@@ -12,7 +12,38 @@ from qfluentwidgets import (BodyLabel, TransparentToolButton, FluentIcon, Elevat
 from app.components.statistic_widget import StatisticsWidget
 
 
-class M3U8DLInfoCard(SimpleCardWidget):
+class CompactTagContainer(QWidget):
+    """紧凑标签容器"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.layout = QHBoxLayout(self)
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setSpacing(5)  # 设置较小的间距，使标签紧凑
+
+        # 添加弹簧，使标签靠左
+        self.layout.addStretch(1)
+
+        self.tags = []
+
+    def add_tag(self, text: str) -> PillPushButton:
+        """添加标签并返回标签按钮"""
+        tag = PillPushButton(text, self)
+        tag.setCheckable(False)
+        setFont(tag, 12)
+        tag.setFixedSize(80, 32)
+
+        self.layout.addWidget(tag)
+        self.tags.append(tag)
+        return tag
+
+    def add_tags(self, texts: List[str]):
+        """批量添加标签"""
+        for text in texts:
+            self.add_tag(text)
+
+
+class AppInfoCard(SimpleCardWidget):
     """ M3U8DL information card """
 
     def __init__(self, parent=None):
@@ -20,27 +51,30 @@ class M3U8DLInfoCard(SimpleCardWidget):
         self.setBorderRadius(8)
         self.iconLabel = ImageLabel(QIcon(":/app/images/ico/M3U8DL.ico").pixmap(120, 120), self)
 
-        self.nameLabel = TitleLabel(self.tr('M3U8 Downloader'), self)
+        self.nameLabel = TitleLabel(self.tr('RTE Connector'), self)
         self.updateButton = PrimaryPushButton(self.tr("Update"), self)
-        self.companyLabel = HyperlinkLabel(
-            QUrl('https://github.com/nilaoda/N_m3u8DL-RE'), 'Nilaoda', self)
+        self.companyLabel = HyperlinkLabel(QUrl('https://github.com/fastxteam/FastX-Gui'), 'FastXTeam', self)
 
         self.versionWidget = StatisticsWidget(
-            self.tr('Version'), 'v0.3.0', self)
+            self.tr('Version'), 'v0.1.0', self)
         self.fileSizeWidget = StatisticsWidget(self.tr('File Size'), '19MB', self)
-        self.updateTimeWidget = StatisticsWidget(self.tr('Update Time'), '2024-12-01', self)
+        self.updateTimeWidget = StatisticsWidget(self.tr('Update Time'), '2026-01-19', self)
 
         self.descriptionLabel = BodyLabel(
-            self.tr('Cross-Platform, modern and powerful stream downloader for MPD/M3U8/ISM. Supports regular AES-128-CBC decryption, multi threading and custom request headers.'), self)
+            self.tr(
+                'Rte Connecter is an application tool. The current application field is AUTOSAR CP. The adaptation tool ETAS is used to connect RTE wiring between SWCs. It can generate DataType, Interface and Composition Rte wiring from the table content, which greatly improves the development speed.'),
+            self)
 
-        self.tagButton = PillPushButton(self.tr('M3U8'), self)
+        # 使用紧凑标签容器
+        self.tag_container = CompactTagContainer(self)
+
         self.shareButton = TransparentToolButton(FluentIcon.SHARE, self)
 
         self.hBoxLayout = QHBoxLayout(self)
         self.vBoxLayout = QVBoxLayout()
         self.topLayout = QHBoxLayout()
         self.statisticsLayout = QHBoxLayout()
-        self.buttonLayout = QHBoxLayout()
+        self.bottomLayout = QHBoxLayout()  # 底部布局，包含标签容器和分享按钮
 
         self.__initWidgets()
 
@@ -53,15 +87,15 @@ class M3U8DLInfoCard(SimpleCardWidget):
         self.descriptionLabel.setWordWrap(True)
         # self.shareButton.clicked.connect(lambda: openUrl(DEPLOY_URL))
 
-        self.tagButton.setCheckable(False)
-        setFont(self.tagButton, 12)
-        self.tagButton.setFixedSize(80, 32)
-
         self.shareButton.setFixedSize(32, 32)
         self.shareButton.setIconSize(QSize(14, 14))
 
         self.nameLabel.setObjectName("nameLabel")
         self.descriptionLabel.setObjectName("descriptionLabel")
+
+        # 初始化标签
+        self.tag_container.add_tags(['FUNC', 'IPC', 'SRP'])
+
         self.initLayout()
 
     def initLayout(self):
@@ -99,15 +133,18 @@ class M3U8DLInfoCard(SimpleCardWidget):
         self.vBoxLayout.addSpacing(20)
         self.vBoxLayout.addWidget(self.descriptionLabel)
 
-        # button
+        # 底部布局：标签容器 + 分享按钮
         self.vBoxLayout.addSpacing(12)
-        self.buttonLayout.setContentsMargins(0, 0, 0, 0)
-        self.vBoxLayout.addLayout(self.buttonLayout)
-        self.buttonLayout.addWidget(self.tagButton, 0, Qt.AlignLeft)
-        self.buttonLayout.addWidget(self.shareButton, 0, Qt.AlignRight)
+        self.bottomLayout.setContentsMargins(0, 0, 0, 0)
+        self.vBoxLayout.addLayout(self.bottomLayout)
+        # 添加标签容器
+        self.bottomLayout.addWidget(self.tag_container)
+        # 添加弹簧使分享按钮靠右
+        self.bottomLayout.addStretch(1)
+        # 分享按钮靠右
+        self.bottomLayout.addWidget(self.shareButton, 0, Qt.AlignRight)
 
     def setVersion(self, version: str):
-        text = version or '0.3.0'
+        text = version or '0.1.0'
         self.versionWidget.valueLabel.setText(text)
-        self.versionWidget.valueLabel.setTextColor(
-            QColor(0, 0, 0), QColor(255, 255, 255))
+        self.versionWidget.valueLabel.setTextColor(QColor(0, 0, 0), QColor(255, 255, 255))

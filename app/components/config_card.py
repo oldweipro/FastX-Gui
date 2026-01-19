@@ -23,17 +23,15 @@ class BasicConfigCard(GroupHeaderCardWidget):
         self.setTitle(self.tr("Basic Settings"))
         self.mediaParser = None
 
-        self.urlLineEdit = LineEdit()
-        self.fileNameLineEdit = LineEdit()
-        self.saveFolderButton = PushButton(self.tr("Choose"))
-        self.threadCountSpinBox = CompactSpinBox()
-        self.streamInfoComboBox = ComboBox()
+        self.toolsEngineComboBox = ComboBox()
+        self.chooseMappingTableButton = PushButton(self.tr("Choose"))
+        self.chooseDataTypeButton = PushButton(self.tr("Choose"))
+        self.chooseInterfaceButton = PushButton(self.tr("Choose"))
+        self.outputFolderButton = PushButton(self.tr("Choose"))
 
         self.hintIcon = IconWidget(InfoBarIcon.INFORMATION, self)
-        self.hintLabel = BodyLabel(
-            self.tr("Click the download button to start downloading") + ' 👉')
-        self.downloadButton = PrimaryPushButton(
-            self.tr("Download"), self, FluentIcon.PLAY_SOLID)
+        self.hintLabel = BodyLabel(self.tr("Click the execute button to start running") + ' 👉')
+        self.exeButton = PrimaryPushButton(self.tr("Execute"), self, FluentIcon.PLAY_SOLID)
 
         self.toolBarLayout = QHBoxLayout()
 
@@ -42,99 +40,108 @@ class BasicConfigCard(GroupHeaderCardWidget):
     def _initWidgets(self):
         self.setBorderRadius(8)
 
-        self.streamInfoComboBox.setMinimumWidth(120)
-        self.streamInfoComboBox.addItem(self.tr("Default"))
+        self.toolsEngineComboBox.setMinimumWidth(120)
+        self.toolsEngineComboBox.addItem(self.tr("L2 Func"), userData="FUNC")
+        self.toolsEngineComboBox.addItem(self.tr("Ipc Com"), userData="IPC")
+        self.toolsEngineComboBox.addItem(self.tr("Srp Com"), userData="SRP")
 
-        self.downloadButton.setEnabled(False)
+        self.toolsEngineComboBox.setMinimumWidth(120)
+        self.chooseMappingTableButton.setFixedWidth(120)
+        self.chooseDataTypeButton.setFixedWidth(120)
+        self.chooseInterfaceButton.setFixedWidth(120)
+        self.outputFolderButton.setFixedWidth(120)
+        self.exeButton.setFixedWidth(120)
+
+        self.exeButton.setEnabled(True)
+        self.chooseDataTypeButton.setEnabled(False)
+        self.chooseInterfaceButton.setEnabled(False)
         self.hintIcon.setFixedSize(16, 16)
-
-        self.urlLineEdit.setFixedWidth(300)
-        self.fileNameLineEdit.setFixedWidth(300)
-        self.saveFolderButton.setFixedWidth(120)
-
-        self.urlLineEdit.setClearButtonEnabled(True)
-        self.fileNameLineEdit.setClearButtonEnabled(True)
-
-        self.fileNameLineEdit.setPlaceholderText(self.tr("Please enter the name of downloaded file"))
-        self.urlLineEdit.setPlaceholderText(self.tr("Please enter the path of m3u8, mpd or txt"))
-        self.urlLineEdit.setToolTip(self.tr("The format of each line in the txt file is FileName,URL"))
-        self.urlLineEdit.setToolTipDuration(3000)
-        self.urlLineEdit.installEventFilter(ToolTipFilter(self.urlLineEdit))
 
         self._initLayout()
         self._connectSignalToSlot()
 
+        self.toolsEngineComboBox.setCurrentText(cfg.get(cfg.fastRteToolsEngine))
+
     def _initLayout(self):
         # add widget to group
-        self.addGroup(
-            icon=Logo.GLOBE.icon(),
-            title=self.tr("Download URL"),
-            content=self.tr("The path of m3u8, mpd or txt file, support drag and drop txt file"),
-            widget=self.urlLineEdit
+        self.toolsEngineGroup = self.addGroup(
+            icon=Logo.FFMPEG.icon(),
+            title=self.tr("Change Tools"),
+            content=self.tr("Select the Tools Engine to Generator"),
+            widget=self.toolsEngineComboBox
         )
-        self.addGroup(
-            icon=Logo.FILM.icon(),
-            title=self.tr("File Name"),
-            content=self.tr("The name of downloaded file"),
-            widget=self.fileNameLineEdit
+        self.chooseMappingTableGroup = self.addGroup(
+            icon=Logo.GEAR.icon(),
+            title=self.tr("Mapping Table Path"),
+            content=cfg.get(cfg.fastRteMappingTableFolder),
+            widget=self.chooseMappingTableButton
         )
-        self.addGroup(
-            icon=Logo.PROJECTOR.icon(),
-            title=self.tr("Stream Info"),
-            content=self.tr("Select the stream to be downloaded"),
-            widget=self.streamInfoComboBox
+        self.chooseDataTypGroup = self.addGroup(
+            icon=Logo.GEAR.icon(),
+            title=self.tr("DataType Arxml Path"),
+            content=cfg.get(cfg.fastRteDataTypeFolder),
+            widget=self.chooseDataTypeButton
         )
-        self.saveFolderGroup = self.addGroup(
+        self.chooseInterfaceGroup = self.addGroup(
+            icon=Logo.GEAR.icon(),
+            title=self.tr("Interface Arxml Path"),
+            content=cfg.get(cfg.fastRteInterfaceFolder),
+            widget=self.chooseInterfaceButton
+        )
+        self.outputFolderGroup = self.addGroup(
             icon=Logo.FOLDER.icon(),
-            title=self.tr("Save Folder"),
-            content=cfg.get(cfg.saveFolder),
-            widget=self.saveFolderButton
+            title=self.tr("Output Folder"),
+            content=cfg.get(cfg.fastRteOutputFolder),
+            widget=self.outputFolderButton
         )
-        group = self.addGroup(
-            icon=Logo.KNOT.icon(),
-            title=self.tr("Download Threads"),
-            content=self.tr("Set the number of concurrent download threads"),
-            widget=self.threadCountSpinBox
-        )
-        group.setSeparatorVisible(True)
 
         # add widgets to bottom toolbar
         self.toolBarLayout.setContentsMargins(24, 15, 24, 20)
         self.toolBarLayout.setSpacing(10)
-        self.toolBarLayout.addWidget(
-            self.hintIcon, 0, Qt.AlignmentFlag.AlignLeft)
-        self.toolBarLayout.addWidget(
-            self.hintLabel, 0, Qt.AlignmentFlag.AlignLeft)
+        self.toolBarLayout.addWidget(self.hintIcon, 0, Qt.AlignmentFlag.AlignLeft)
+        self.toolBarLayout.addWidget(self.hintLabel, 0, Qt.AlignmentFlag.AlignLeft)
         self.toolBarLayout.addStretch(1)
-        self.toolBarLayout.addWidget(
-            self.downloadButton, 0, Qt.AlignmentFlag.AlignRight)
+        self.toolBarLayout.addWidget(self.exeButton, 0, Qt.AlignmentFlag.AlignRight)
         self.toolBarLayout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
-
         self.vBoxLayout.addLayout(self.toolBarLayout)
 
-    def _onTextChanged(self):
-        url = self.urlLineEdit.text().strip()
-        fileName = self.fileNameLineEdit.text()
+    def _onChooseMappingTableButtonClicked(self):
+        path, _ = QFileDialog.getOpenFileName(self, self.tr("Choose"))
+        if not path or cfg.get(cfg.fastRteMappingTableFolder) == path:
+            return
+        cfg.set(cfg.fastRteMappingTableFolder, path)
+        self.chooseMappingTableGroup.setContent(path)
 
-    def _onUrlChanged(self, url: str):
-        url = url.strip()
+    def _onChooseDataTypeButtonClicked(self):
+        path, _ = QFileDialog.getOpenFileName(self, self.tr("Choose"))
+        if not path or cfg.get(cfg.fastRteDataTypeFolder) == path:
+            return
+        cfg.set(cfg.fastRteDataTypeFolder, path)
+        self.chooseDataTypGroup.setContent(path)
 
-    def _chooseSaveFolder(self):
-        folder = QFileDialog.getExistingDirectory(
-            self, self.tr("Choose folder"), self.saveFolderGroup.content())
+    def _onChooseInterfaceButtonClicked(self):
+        path, _ = QFileDialog.getOpenFileName(self, self.tr("Choose"))
+        if not path or cfg.get(cfg.fastRteInterfaceFolder) == path:
+            return
+        cfg.set(cfg.fastRteInterfaceFolder, path)
+        self.chooseInterfaceGroup.setContent(path)
+
+    def _chooseOutputFolder(self):
+        folder = QFileDialog.getExistingDirectory(self, self.tr("Choose folder"), self.outputFolderGroup.content())
 
         if folder:
             folder = folder.replace("\\", "/")
-            cfg.set(cfg.saveFolder, folder)
-            self.saveFolderGroup.setContent(folder)
+            cfg.set(cfg.fastRteOutputFolder, folder)
+            self.outputFolderGroup.setContent(folder)
 
-    def _resetStreamInfo(self):
-        self.streamInfoComboBox.clear()
-        self.streamInfoComboBox.addItem(self.tr("Default"))
+    def _onToolsEngineChanged(self):
+        icons = [Logo.FFMPEG, Logo.BENTO, PNG.SHAKA_PACKAGER]
+        self.toolsEngineGroup.setIcon(icons[self.toolsEngineComboBox.currentIndex()].icon())
+        cfg.set(cfg.fastRteToolsEngine, self.toolsEngineComboBox.currentText())
 
     def _connectSignalToSlot(self):
-        self.urlLineEdit.textChanged.connect(self._onUrlChanged)
-        self.urlLineEdit.textChanged.connect(self._onTextChanged)
-        self.fileNameLineEdit.textChanged.connect(self._onTextChanged)
-        self.saveFolderButton.clicked.connect(self._chooseSaveFolder)
-        self.threadCountSpinBox.valueChanged.connect(lambda v: cfg.set(cfg.threadCount, v))
+        self.toolsEngineComboBox.currentIndexChanged.connect(self._onToolsEngineChanged)
+        self.outputFolderButton.clicked.connect(self._chooseOutputFolder)
+        self.chooseMappingTableButton.clicked.connect(self._onChooseMappingTableButtonClicked)
+        self.chooseDataTypeButton.clicked.connect(self._onChooseDataTypeButtonClicked)
+        self.chooseInterfaceButton.clicked.connect(self._onChooseInterfaceButtonClicked)

@@ -10,7 +10,8 @@ from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QStandardPaths
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog
 
-from ..common.config import cfg, HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR, isWin11
+from ..common.config import cfg, isWin11
+from ..common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR
 from ..common.signal_bus import signalBus
 from ..common.style_sheet import StyleSheet
 
@@ -51,7 +52,6 @@ class SettingInterface(ScrollArea):
             cfg.micaEnabled,
             self.personalGroup
         )
-        self.micaCard.setEnabled(isWin11())
         self.themeCard = OptionsSettingCard(
             cfg.themeMode,
             FIF.BRUSH,
@@ -118,14 +118,14 @@ class SettingInterface(ScrollArea):
             FIF.HELP,
             self.tr('Help'),
             self.tr(
-                'Discover new features and learn useful tips about Fluent M3U8'),
+                'Discover new features and learn useful tips about FastXTeam/FastX-Gui'),
             self.aboutGroup
         )
         self.feedbackCard = PrimaryPushSettingCard(
             self.tr('Provide feedback'),
             FIF.FEEDBACK,
             self.tr('Provide feedback'),
-            self.tr('Help us improve Fluent M3U8 by providing feedback'),
+            self.tr('Help us improve FastXTeam/FastX-Gui by providing feedback'),
             self.aboutGroup
         )
         self.aboutCard = PrimaryPushSettingCard(
@@ -148,6 +148,7 @@ class SettingInterface(ScrollArea):
 
         # initialize style sheet
         self.__setQss()
+        self.micaCard.setEnabled(isWin11())
 
         # initialize layout
         self.__initLayout()

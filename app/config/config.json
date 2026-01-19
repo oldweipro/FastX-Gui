@@ -14,8 +14,15 @@
     },
     "MainWindow": {
         "DpiScale": "Auto",
-        "Language": "zh_CN",
+        "Language": "en_US",
         "MicaEnabled": true
+    },
+    "FastRte": {
+        "FastRteDataTypeFolder": "D:/Github/FastX-Gui/i18n.md",
+        "FastRteInterfaceFolder": "D:/Github/FastX-Gui/main.py",
+        "FastRteMappingTableFolder": "D:/Github/FastX-Gui/i18n.md",
+        "FastRteOutputFolder": "C:/Users/91974/Downloads/python-cli-toolset",
+        "FastRteToolsEngine": "L2 Func"
     },
     "QFluentWidgets": {
         "FontFamilies": [
@@ -25,8 +32,5 @@
         ],
         "ThemeColor": "#ff009faa",
         "ThemeMode": "Light"
-    },
-    "Download": {
-        "SaveFolder": "C:/Users/91974/Downloads"
     }
 }

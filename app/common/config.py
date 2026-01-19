@@ -1,5 +1,7 @@
 # coding:utf-8
 import sys
+from .setting import CONFIG_FILE, EXE_SUFFIX
+from pathlib import Path
 from enum import Enum
 
 from PyQt5.QtCore import QLocale, QStandardPaths
@@ -49,20 +51,12 @@ class Config(QConfig):
     # software update
     checkUpdateAtStartUp = ConfigItem("Update", "CheckUpdateAtStartUp", True, BoolValidator())
 
-    # download
-    saveFolder = ConfigItem("Download", "SaveFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation),FolderValidator())
-
-
-YEAR = 2026
-AUTHOR = "wanqiang.liu"
-VERSION = __version__
-HELP_URL = "https://qfluentwidgets.com"
-REPO_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets"
-EXAMPLE_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/tree/master/examples"
-FEEDBACK_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/issues"
-RELEASE_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/releases/latest"
-ZH_SUPPORT_URL = "https://qfluentwidgets.com/zh/price/"
-EN_SUPPORT_URL = "https://qfluentwidgets.com/price/"
+    # FastRte
+    fastRteToolsEngine = OptionsConfigItem("FastRte", "FastRteToolsEngine", "L2 Func", OptionsValidator(["L2 Func", "Ipc Com", "Srp Com"]))
+    fastRteOutputFolder = ConfigItem("FastRte", "FastRteOutputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation),FolderValidator())
+    fastRteMappingTableFolder = ConfigItem("FastRte", "FastRteMappingTableFolder", str(Path(f"tools/ffmpeg{EXE_SUFFIX}").absolute()))
+    fastRteDataTypeFolder = ConfigItem("FastRte", "FastRteDataTypeFolder", str(Path(f"tools/ffmpeg{EXE_SUFFIX}").absolute()))
+    fastRteInterfaceFolder = ConfigItem("FastRte", "FastRteInterfaceFolder", str(Path(f"tools/ffmpeg{EXE_SUFFIX}").absolute()))
 
 
 cfg = Config()

@@ -156,10 +156,11 @@ class MainWindow(MSFluentWindow):
         self.navigationInterface.setCurrentItem(self.homeInterface.objectName())
 
     def initWindow(self):
-        self.resize(1250, 700)
+        self.resize(1350, 850)
         self.setMinimumWidth(1250)
+        self.setMaximumWidth(1400)
         self.setWindowTitle('福瑞泰克软件中心MCU工具平台')
-        self.setWindowIcon(QIcon(':/qfluentwidgets/images/logo.png'))
+        self.setWindowIcon(QIcon(':/app/images/logo-m.png'))
         self.titleBar.setAttribute(Qt.WA_StyledBackground)
 
         desktop = QApplication.desktop().availableGeometry()

@@ -1,0 +1,1 @@
+pylupdate5 -noobsolete .\main.pro

@@ -2,6 +2,39 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN" sourcelanguage="en_US">
 <context>
+    <name>AppInfoCard</name>
+    <message>
+        <location filename="../../components/info_card.py" line="54"/>
+        <source>RTE Connector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../components/info_card.py" line="55"/>
+        <source>Update</source>
+        <translation type="unfinished">更新</translation>
+    </message>
+    <message>
+        <location filename="../../components/info_card.py" line="58"/>
+        <source>Version</source>
+        <translation type="unfinished">当前版本</translation>
+    </message>
+    <message>
+        <location filename="../../components/info_card.py" line="60"/>
+        <source>File Size</source>
+        <translation type="unfinished">文件大小</translation>
+    </message>
+    <message>
+        <location filename="../../components/info_card.py" line="61"/>
+        <source>Update Time</source>
+        <translation type="unfinished">更新时间</translation>
+    </message>
+    <message>
+        <location filename="../../components/info_card.py" line="63"/>
+        <source>Rte Connecter is an application tool. The current application field is AUTOSAR CP. The adaptation tool ETAS is used to connect RTE wiring between SWCs. It can generate DataType, Interface and Composition Rte wiring from the table content, which greatly improves the development speed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>BasicConfigCard</name>
     <message>
         <location filename="../../components/config_card.py" line="23"/>
@@ -9,308 +42,250 @@
         <translation>基础设置</translation>
     </message>
     <message>
-        <location filename="../../components/config_card.py" line="28"/>
+        <location filename="../../components/config_card.py" line="123"/>
         <source>Choose</source>
         <translation>选择</translation>
     </message>
     <message>
-        <location filename="../../components/config_card.py" line="33"/>
-        <source>Click the download button to start downloading</source>
-        <translation>点击下载按钮开始下载</translation>
-    </message>
-    <message>
-        <location filename="../../components/config_card.py" line="35"/>
-        <source>Download</source>
-        <translation>下载</translation>
-    </message>
-    <message>
-        <location filename="../../components/config_card.py" line="133"/>
-        <source>Default</source>
-        <translation>默认</translation>
-    </message>
-    <message>
-        <location filename="../../components/config_card.py" line="58"/>
-        <source>Please enter the name of downloaded file</source>
-        <translation>请输入下载文件名</translation>
-    </message>
-    <message>
-        <location filename="../../components/config_card.py" line="59"/>
-        <source>Please enter the path of m3u8, mpd or txt</source>
-        <translation>请输入m3u8，mpd，txt的路径</translation>
-    </message>
-    <message>
-        <location filename="../../components/config_card.py" line="60"/>
-        <source>The format of each line in the txt file is FileName,URL</source>
-        <translation>txt 文件中每一行的格式是 文件名,URL</translation>
-    </message>
-    <message>
-        <location filename="../../components/config_card.py" line="69"/>
-        <source>Download URL</source>
-        <translation>下载链接</translation>
-    </message>
-    <message>
-        <location filename="../../components/config_card.py" line="69"/>
-        <source>The path of m3u8, mpd or txt file, support drag and drop txt file</source>
-        <translation>m3u8、mpd 或 txt 文件的路径，支持拖放 txt 文件使用</translation>
-    </message>
-    <message>
-        <location filename="../../components/config_card.py" line="75"/>
-        <source>File Name</source>
-        <translation>文件名</translation>
-    </message>
-    <message>
-        <location filename="../../components/config_card.py" line="75"/>
-        <source>The name of downloaded file</source>
-        <translation>下载文件名</translation>
-    </message>
-    <message>
-        <location filename="../../components/config_card.py" line="81"/>
-        <source>Stream Info</source>
-        <translation>流信息</translation>
-    </message>
-    <message>
-        <location filename="../../components/config_card.py" line="81"/>
-        <source>Select the stream to be downloaded</source>
-        <translation>请选择要下载的流</translation>
-    </message>
-    <message>
-        <location filename="../../components/config_card.py" line="87"/>
-        <source>Save Folder</source>
-        <translation>保存文件夹</translation>
-    </message>
-    <message>
-        <location filename="../../components/config_card.py" line="93"/>
-        <source>Download Threads</source>
-        <translation>下载线程</translation>
-    </message>
-    <message>
-        <location filename="../../components/config_card.py" line="93"/>
-        <source>Set the number of concurrent download threads</source>
-        <translation>设置并发下载线程数</translation>
-    </message>
-    <message>
-        <location filename="../../components/config_card.py" line="123"/>
+        <location filename="../../components/config_card.py" line="130"/>
         <source>Choose folder</source>
         <translation>选择文件夹</translation>
     </message>
-</context>
-<context>
-    <name>M3U8DLInfoCard</name>
     <message>
-        <location filename="../../components/info_card.py" line="23"/>
-        <source>M3U8 Downloader</source>
-        <translation>M3U8 下载器</translation>
+        <location filename="../../components/config_card.py" line="33"/>
+        <source>Click the execute button to start running</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../components/info_card.py" line="24"/>
-        <source>Update</source>
-        <translation>更新</translation>
+        <location filename="../../components/config_card.py" line="34"/>
+        <source>Execute</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../components/info_card.py" line="28"/>
-        <source>Version</source>
-        <translation>当前版本</translation>
+        <location filename="../../components/config_card.py" line="44"/>
+        <source>L2 Func</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../components/info_card.py" line="30"/>
-        <source>File Size</source>
-        <translation>文件大小</translation>
+        <location filename="../../components/config_card.py" line="45"/>
+        <source>Ipc Com</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../components/info_card.py" line="31"/>
-        <source>Update Time</source>
-        <translation>更新时间</translation>
+        <location filename="../../components/config_card.py" line="46"/>
+        <source>Srp Com</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../components/info_card.py" line="33"/>
-        <source>Cross-Platform, modern and powerful stream downloader for MPD/M3U8/ISM. Supports regular AES-128-CBC decryption, multi threading and custom request headers.</source>
-        <translation>开源的跨平台命令行 M3U8/MPD/ISM 文件下载器，功能强大，支持普通 AES-128-CBC 解密、多线程并发下载、自定义请求头等特性。</translation>
+        <location filename="../../components/config_card.py" line="67"/>
+        <source>Change Tools</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../components/info_card.py" line="36"/>
-        <source>M3U8</source>
-        <translation>M3U8</translation>
+        <location filename="../../components/config_card.py" line="67"/>
+        <source>Select the Tools Engine to Generator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../components/config_card.py" line="73"/>
+        <source>Mapping Table Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../components/config_card.py" line="79"/>
+        <source>DataType Arxml Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../components/config_card.py" line="85"/>
+        <source>Interface Arxml Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../components/config_card.py" line="91"/>
+        <source>Output Folder</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>SettingInterface</name>
     <message>
-        <location filename="../../view/setting_interface.py" line="27"/>
+        <location filename="../../view/setting_interface.py" line="28"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="207"/>
+        <location filename="../../view/setting_interface.py" line="208"/>
         <source>Choose folder</source>
         <translation>选择文件夹</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="46"/>
+        <location filename="../../view/setting_interface.py" line="47"/>
         <source>Personalization</source>
         <translation>个性化</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="55"/>
+        <location filename="../../view/setting_interface.py" line="56"/>
         <source>Application theme</source>
         <translation>应用主题</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="55"/>
+        <location filename="../../view/setting_interface.py" line="56"/>
         <source>Change the appearance of your application</source>
         <translation>调整你的应用的外观</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="55"/>
+        <location filename="../../view/setting_interface.py" line="56"/>
         <source>Light</source>
         <translation>浅色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="55"/>
+        <location filename="../../view/setting_interface.py" line="56"/>
         <source>Dark</source>
         <translation>深色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="84"/>
+        <location filename="../../view/setting_interface.py" line="85"/>
         <source>Use system setting</source>
         <translation>跟随系统设置</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="66"/>
+        <location filename="../../view/setting_interface.py" line="67"/>
         <source>Theme color</source>
         <translation>主题色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="66"/>
+        <location filename="../../view/setting_interface.py" line="67"/>
         <source>Change the theme color of you application</source>
         <translation>调整你的应用的主题色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="84"/>
+        <location filename="../../view/setting_interface.py" line="85"/>
         <source>Language</source>
         <translation>语言</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="84"/>
+        <location filename="../../view/setting_interface.py" line="85"/>
         <source>Set your preferred language for UI</source>
         <translation>选择界面所使用的语言</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="131"/>
+        <location filename="../../view/setting_interface.py" line="132"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="124"/>
+        <location filename="../../view/setting_interface.py" line="125"/>
         <source>Provide feedback</source>
         <translation>提供反馈</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="198"/>
+        <location filename="../../view/setting_interface.py" line="199"/>
         <source>Configuration takes effect after restart</source>
         <translation>配置在重启软件后生效</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="198"/>
+        <location filename="../../view/setting_interface.py" line="199"/>
         <source>Updated successfully</source>
         <translation>更新成功</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="47"/>
+        <location filename="../../view/setting_interface.py" line="48"/>
         <source>Mica effect</source>
         <translation>云母效果</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="47"/>
+        <location filename="../../view/setting_interface.py" line="48"/>
         <source>Apply semi transparent to windows and surfaces</source>
         <translation>窗口和表面显示半透明</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="30"/>
+        <location filename="../../view/setting_interface.py" line="31"/>
         <source>Project on this PC</source>
         <translation>此电脑上的项目</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="31"/>
+        <location filename="../../view/setting_interface.py" line="32"/>
         <source>Local Project library</source>
         <translation>本地项目库</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="37"/>
+        <location filename="../../view/setting_interface.py" line="38"/>
         <source>Project directory</source>
         <translation>项目文件夹</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="73"/>
+        <location filename="../../view/setting_interface.py" line="74"/>
         <source>Interface zoom</source>
         <translation>缩放</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="73"/>
+        <location filename="../../view/setting_interface.py" line="74"/>
         <source>Change the size of widgets and fonts</source>
         <translation>改变组件和字体的大小</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="94"/>
+        <location filename="../../view/setting_interface.py" line="95"/>
         <source>Material</source>
         <translation>材料</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="95"/>
+        <location filename="../../view/setting_interface.py" line="96"/>
         <source>Acrylic blur radius</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="95"/>
+        <location filename="../../view/setting_interface.py" line="96"/>
         <source>The greater the radius, the more blurred the image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="104"/>
+        <location filename="../../view/setting_interface.py" line="105"/>
         <source>Software update</source>
         <translation>软件更新</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="105"/>
+        <location filename="../../view/setting_interface.py" line="106"/>
         <source>Check for updates when the application starts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="105"/>
+        <location filename="../../view/setting_interface.py" line="106"/>
         <source>The new version will be more stable and have more features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="115"/>
+        <location filename="../../view/setting_interface.py" line="116"/>
         <source>Open help page</source>
         <translation>打开帮助页面</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="115"/>
+        <location filename="../../view/setting_interface.py" line="116"/>
         <source>Help</source>
         <translation>帮助</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="115"/>
+        <location filename="../../view/setting_interface.py" line="116"/>
         <source>Discover new features and learn useful tips about Fluent M3U8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="124"/>
+        <location filename="../../view/setting_interface.py" line="125"/>
         <source>Help us improve Fluent M3U8 by providing feedback</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="131"/>
+        <location filename="../../view/setting_interface.py" line="132"/>
         <source>Check update</source>
         <translation>检查更新</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="131"/>
+        <location filename="../../view/setting_interface.py" line="132"/>
         <source>Copyright</source>
         <translation>版权</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="131"/>
+        <location filename="../../view/setting_interface.py" line="132"/>
         <source>Version</source>
         <translation>当前版本</translation>
     </message>

@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout
 
 from qfluentwidgets import ScrollArea, InfoBar, InfoBarPosition, PushButton
 
-from app.components.info_card import M3U8DLInfoCard
+from app.components.info_card import AppInfoCard
 from ..components.config_card import BasicConfigCard
 
 class FuncInterface(ScrollArea):
@@ -15,7 +15,7 @@ class FuncInterface(ScrollArea):
         super().__init__(parent)
         self.view = QWidget(self)
 
-        self.funcInfoCard = M3U8DLInfoCard()
+        self.funcInfoCard = AppInfoCard()
         self.basicSettingCard = BasicConfigCard()
         # self.muxSettingCard = MuxConfigCard()
         # self.advanceSettingCard = AdvanceConfigCard()
@@ -44,5 +44,8 @@ class FuncInterface(ScrollArea):
         self.enableTransparentBackground()
         # self._connectSignalToSlot()
 
+    def _onDownloadButtonClicked(self):
+        pass
+
     def _connectSignalToSlot(self):
-        self.basicSettingCard.downloadButton.clicked.connect(self._onDownloadButtonClicked)
+        self.basicSettingCard.exeButton.clicked.connect(self._onDownloadButtonClicked)

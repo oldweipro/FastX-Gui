@@ -133,7 +133,9 @@
         <file>images/icons/Text_black.svg</file>
         <file>images/icons/Text_white.svg</file>
         <file>images/kunkun.png</file>
-        <file>images/logo.png</file>
+        <file>images/logo-m.ico</file>
+        <file>images/logo-m.png</file>
+        <file>images/logo-w.png</file>
         <file>images/logo/Airplane.svg</file>
         <file>images/logo/Alembic.svg</file>
         <file>images/logo/Bandage.svg</file>
@@ -183,6 +185,7 @@
         <file>images/logo/Wastebasket.svg</file>
         <file>images/logo/Whale.svg</file>
         <file>images/logo/Window.svg</file>
+        <file>images/png/ShakaPackager.png</file>
         <file>images/shoko.png</file>
         <file>images/tips.png</file>
         <file>images/todo.png</file>
