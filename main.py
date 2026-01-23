@@ -11,8 +11,15 @@ from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QSplashScreen
 from qfluentwidgets import isDarkTheme, FluentTranslator
 
 from app.view.main_window import MainWindow
+from app.view.register_window import RegisterWindow
 from app.common.config import cfg, Language
 
+# Using global variables to prevent the interface from being destructed
+mainWindow = None
+def showMainWindow():
+    global mainWindow
+    mainWindow = MainWindow()
+    mainWindow.show()
 
 if __name__ == '__main__':
     os.chdir(Path(getsourcefile(lambda: 0)).resolve().parent)
@@ -34,6 +41,8 @@ if __name__ == '__main__':
     app.installTranslator(fluentTranslator)
     app.installTranslator(galleryTranslator)
 
-    w = MainWindow()
+    w = RegisterWindow()
+    w.loginSignal.connect(showMainWindow)
     w.show()
-    app.exec_()
+
+    app.exec()

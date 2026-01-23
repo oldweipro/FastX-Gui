@@ -10,6 +10,7 @@ from qfluentwidgets import (NavigationItemPosition, MessageBox, setTheme, Theme,
                             InfoBarPosition)
 from qframelesswindow import FramelessWindow, TitleBar
 
+from app.common.icon import Icon
 from app.common.translator import Translator
 from app.common.style_sheet import StyleSheet
 from app.common import resource
@@ -99,12 +100,11 @@ class MainWindow(MSFluentWindow):
         # 调整布局边距以适应标题栏高度
         self.hBoxLayout.setContentsMargins(0, 48, 0, 0)  # 底部增加40px给状态栏
 
-        # 创建启动页面
-        self.splashScreen = SplashScreen(self.windowIcon(), self)
-        self.splashScreen.setIconSize(QSize(102, 102))
-
-        # 显示窗口
-        self.show()
+        # # 创建启动页面
+        # self.splashScreen = SplashScreen(self.windowIcon(), self)
+        # self.splashScreen.setIconSize(QSize(102, 102))
+        # # 显示窗口
+        # self.show()
 
         # 创建子界面
         self.createSubInterface()
@@ -126,7 +126,7 @@ class MainWindow(MSFluentWindow):
         self.initWindow()
 
         # 隐藏启动页面
-        self.splashScreen.finish()
+        # self.splashScreen.finish()
 
         loop.exec_()
 
@@ -146,13 +146,13 @@ class MainWindow(MSFluentWindow):
         self.navigationInterface.addItem(
             routeKey='Help',
             icon=FIF.HELP,
-            text=t.help,
+            text= self.tr("Help"),
             onClick=self.showMessageBox,
             selectable=False,
             position=pos,
         )
-        self.addSubInterface(self.libraryInterface, FIF.BOOK_SHELF, t.library, FIF.LIBRARY_FILL, position=pos, isTransparent=False)
-        self.addSubInterface(self.settingInterface, FIF.SETTING, t.settings, position=pos, isTransparent=False)
+        self.addSubInterface(self.libraryInterface, FIF.BOOK_SHELF, self.tr("Library"), FIF.LIBRARY_FILL, position=pos, isTransparent=False)
+        self.addSubInterface(self.settingInterface, self.tr('Settings'), t.settings, Icon.SETTINGS_FILLED, position=pos, isTransparent=False)
 
         self.navigationInterface.setCurrentItem(self.homeInterface.objectName())
 

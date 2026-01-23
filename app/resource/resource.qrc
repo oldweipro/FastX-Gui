@@ -13,6 +13,7 @@
         <file>images/Singer.png</file>
         <file>images/Smiling_with_heart.png</file>
         <file>images/alarms.png</file>
+        <file>images/background.jpg</file>
         <file>images/banner_home_bg.png</file>
         <file>images/bg37.jpg</file>
         <file>images/chidanta.jpg</file>
@@ -130,12 +131,18 @@
         <file>images/icons/Menu_white.svg</file>
         <file>images/icons/Price_black.svg</file>
         <file>images/icons/Price_white.svg</file>
+        <file>images/icons/SettingsFilled_black.svg</file>
+        <file>images/icons/SettingsFilled_white.svg</file>
+        <file>images/icons/Settings_black.svg</file>
+        <file>images/icons/Settings_white.svg</file>
         <file>images/icons/Text_black.svg</file>
         <file>images/icons/Text_white.svg</file>
         <file>images/kunkun.png</file>
         <file>images/logo-m.ico</file>
         <file>images/logo-m.png</file>
         <file>images/logo-w.png</file>
+        <file>images/logo.ico</file>
+        <file>images/logo.png</file>
         <file>images/logo/Airplane.svg</file>
         <file>images/logo/Alembic.svg</file>
         <file>images/logo/Bandage.svg</file>
@@ -195,6 +202,7 @@
         <file>qss/dark/link_card.qss</file>
         <file>qss/dark/main_window.qss</file>
         <file>qss/dark/navigation_view_interface.qss</file>
+        <file>qss/dark/rte_interface.qss</file>
         <file>qss/dark/sample_card.qss</file>
         <file>qss/dark/setting_interface.qss</file>
         <file>qss/dark/view_interface.qss</file>
@@ -204,6 +212,7 @@
         <file>qss/light/link_card.qss</file>
         <file>qss/light/main_window.qss</file>
         <file>qss/light/navigation_view_interface.qss</file>
+        <file>qss/light/rte_interface.qss</file>
         <file>qss/light/sample_card.qss</file>
         <file>qss/light/setting_interface.qss</file>
         <file>qss/light/view_interface.qss</file>

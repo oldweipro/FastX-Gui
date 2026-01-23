@@ -19,18 +19,4 @@ ZH_SUPPORT_URL = "https://github.com/fastxteam/FastX-Gui.git"
 EN_SUPPORT_URL = "https://github.com/fastxteam/FastX-Gui.git"
 
 CONFIG_FOLDER = Path('AppData').absolute()
-
-if sys.platform == "win32" and not DEBUG:
-    CONFIG_FOLDER = Path(QStandardPaths.writableLocation(QStandardPaths.AppDataLocation)) / APP_NAME
-
-
 CONFIG_FILE = CONFIG_FOLDER / "config.json"
-DB_PATH = CONFIG_FOLDER / "database.db"
-
-COVER_FOLDER = CONFIG_FOLDER / "Cover"
-COVER_FOLDER.mkdir(exist_ok=True, parents=True)
-
-if sys.platform == "win32":
-    EXE_SUFFIX = ".exe"
-else:
-    EXE_SUFFIX = ""

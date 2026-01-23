@@ -1,6 +1,5 @@
 # coding:utf-8
 import sys
-from .setting import CONFIG_FILE, EXE_SUFFIX
 from pathlib import Path
 from enum import Enum
 
@@ -35,6 +34,10 @@ def isWin11():
 
 class Config(QConfig):
     """ Config of application """
+    # register
+    rememberMe = ConfigItem("Register", "RememberMe", True)
+    email = ConfigItem("Register", "Email", "")
+    activationCode = ConfigItem("Register", "ActivationCode", "")
 
     # folders
     projectFolders   = ConfigItem("Folders", "LocalProject", [], FolderListValidator())
@@ -54,9 +57,9 @@ class Config(QConfig):
     # FastRte
     fastRteToolsEngine = OptionsConfigItem("FastRte", "FastRteToolsEngine", "L2 Func", OptionsValidator(["L2 Func", "Ipc Com", "Srp Com"]))
     fastRteOutputFolder = ConfigItem("FastRte", "FastRteOutputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation),FolderValidator())
-    fastRteMappingTableFolder = ConfigItem("FastRte", "FastRteMappingTableFolder", str(Path(f"tools/ffmpeg{EXE_SUFFIX}").absolute()))
-    fastRteDataTypeFolder = ConfigItem("FastRte", "FastRteDataTypeFolder", str(Path(f"tools/ffmpeg{EXE_SUFFIX}").absolute()))
-    fastRteInterfaceFolder = ConfigItem("FastRte", "FastRteInterfaceFolder", str(Path(f"tools/ffmpeg{EXE_SUFFIX}").absolute()))
+    fastRteMappingTableFolder = ConfigItem("FastRte", "FastRteMappingTableFolder", '')
+    fastRteDataTypeFolder = ConfigItem("FastRte", "FastRteDataTypeFolder", '')
+    fastRteInterfaceFolder = ConfigItem("FastRte", "FastRteInterfaceFolder", '')
 
 
 cfg = Config()

@@ -15,7 +15,7 @@
     "MainWindow": {
         "DpiScale": 1,
         "Language": "en_US",
-        "MicaEnabled": true
+        "MicaEnabled": false
     },
     "FastRte": {
         "FastRteDataTypeFolder": "D:/Github/FastX-Gui/i18n.md",
@@ -31,6 +31,6 @@
             "PingFang SC"
         ],
         "ThemeColor": "#ff009faa",
-        "ThemeMode": "Dark"
+        "ThemeMode": "Light"
     }
 }

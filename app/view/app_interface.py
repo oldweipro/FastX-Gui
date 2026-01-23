@@ -60,7 +60,7 @@ class AppInterface(QWidget):
         """ 添加默认主页标签页 """
         homeContent = TabContent('默认主页', self)
         self.tabWidget.addTab(
-            homeContent, 
+            homeContent,
             '默认主页', 
             icon=FIF.HOME
         )
@@ -68,11 +68,14 @@ class AppInterface(QWidget):
     def addNewTab(self):
         """ 添加新标签页 """
         tabCount = self.tabWidget.count()
+        if tabCount == 0:
+            self.addHomeTab()
+            return
         text = f'新标签页 {tabCount}'
         content = TabContent(text, self)
         
         self.tabWidget.addTab(
             content, 
             text, 
-            icon=FIF.ADD
+            icon=FIF.BRIGHTNESS
         )
