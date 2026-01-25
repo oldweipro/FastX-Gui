@@ -10,6 +10,9 @@
     "Update": {
         "CheckUpdateAtStartUp": true
     },
+    "settings": {
+        "close_window_action": "ask"
+    },
     "Folders": {
         "Download": "D:/Github/FastX-Gui/tools",
         "LocalProject": [
@@ -36,6 +39,6 @@
             "PingFang SC"
         ],
         "ThemeColor": "#ff009faa",
-        "ThemeMode": "Dark"
+        "ThemeMode": "Light"
     }
 }

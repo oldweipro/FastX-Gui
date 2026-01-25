@@ -89,6 +89,18 @@ class SettingInterface(ScrollArea):
             texts=['简体中文', '繁體中文', 'English', self.tr('Use system setting')],
             parent=self.personalGroup
         )
+        self.closeWindowActionCard = ComboBoxSettingCard(
+            cfg.close_window_action,
+            FIF.MINIMIZE,
+            self.tr('when close windows'),
+            self.tr('Select the default behavior when closing the window, or you can be asked by the dialog box on closing'),
+            texts = [
+                self.tr("ask"),
+                self.tr("minimize"),
+                self.tr("close")
+            ],
+            parent = self.personalGroup
+        )
 
         # material
         self.materialGroup = SettingCardGroup(self.tr('Material'), self.scrollWidget)
@@ -178,6 +190,7 @@ class SettingInterface(ScrollArea):
         self.personalGroup.addSettingCard(self.themeColorCard)
         self.personalGroup.addSettingCard(self.zoomCard)
         self.personalGroup.addSettingCard(self.languageCard)
+        self.personalGroup.addSettingCard(self.closeWindowActionCard)
 
         self.materialGroup.addSettingCard(self.blurRadiusCard)
         self.updateSoftwareGroup.addSettingCard(self.updateOnStartUpCard)

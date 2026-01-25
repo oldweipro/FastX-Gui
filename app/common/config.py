@@ -34,6 +34,9 @@ def isWin11():
 
 class Config(QConfig):
     """ Config of application """
+    # common settings
+    close_window_action = OptionsConfigItem("settings", "close_window_action", 'ask', OptionsValidator(['ask', 'minimize', "close"]), restart=True)
+
     # register
     rememberMe = ConfigItem("Register", "RememberMe", True)
     email = ConfigItem("Register", "Email", "")
