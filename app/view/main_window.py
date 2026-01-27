@@ -8,7 +8,8 @@ from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QSp
 from qfluentwidgets import (NavigationItemPosition, MessageBox, setTheme, Theme, MSFluentWindow, isDarkTheme,
                             NavigationAvatarWidget, SearchLineEdit, qrouter, SubtitleLabel, setFont, SplashScreen,
                             IndeterminateProgressBar, ProgressBar, PushButton, FluentIcon as FIF, InfoBar,
-                            InfoBarPosition, SystemTrayMenu, NavigationBarPushButton, SystemThemeListener)
+                            InfoBarPosition, SystemTrayMenu, NavigationBarPushButton, SystemThemeListener,
+                            SplitFluentWindow)
 from qframelesswindow import FramelessWindow, TitleBar
 
 from app.common.background_manager import get_background_manager
@@ -94,7 +95,7 @@ class CustomTitleBar(TitleBar):
     def resizeEvent(self, e):
         self.searchLineEdit.move((self.width() - self.searchLineEdit.width()) // 2, 8)
 
-class MainWindow(MSFluentWindow):
+class MainWindow(SplitFluentWindow):
     def __init__(self):
         # 先调用父类初始化
         super().__init__()
@@ -129,10 +130,10 @@ class MainWindow(MSFluentWindow):
         self.setMinimumWidth(1200)
         self.setMaximumWidth(1200)
         # 设置自定义标题栏
-        self.setTitleBar(CustomTitleBar(self))
-        self.titleBar.raise_()
-        # 调整布局边距以适应标题栏高度
-        self.hBoxLayout.setContentsMargins(0, 48, 0, 0)
+        # self.setTitleBar(CustomTitleBar(self))
+        # self.titleBar.raise_()
+        # # 调整布局边距以适应标题栏高度
+        # self.hBoxLayout.setContentsMargins(0, 48, 0, 0)
         # 设置图标,标题
         self.setWindowIcon(QIcon(':/app/images/logo-m.png'))
         self.setWindowTitle(f'FastXGui {VERSION}')
@@ -163,28 +164,33 @@ class MainWindow(MSFluentWindow):
     def __initNavigation(self):
         # add navigation items
         t = Translator()
-        pos = NavigationItemPosition.TOP
-        self.addSubInterface(self.homeInterface, FIF.HOME, self.tr("Home"), FIF.HOME_FILL, position=pos, isTransparent=False)
-        self.addSubInterface(self.appInterface , FIF.APPLICATION, self.tr("App"), position=pos, isTransparent=False)
+        self.addSubInterface(self.homeInterface, FIF.HOME, self.tr("Home"), FIF.HOME_FILL, isTransparent=False)
+        self.addSubInterface(self.appInterface , FIF.APPLICATION, self.tr("App"), isTransparent=False)
+        self.navigationInterface.addSeparator()
+        self.addSubInterface(self.funcInterface, FIF.BRIGHTNESS, self.tr("FastRte"), isTransparent=True)
+        self.addSubInterface(self.logInterface, FIF.COMMAND_PROMPT, self.tr("Log"), isTransparent=False)
+        self.addSubInterface(self.libraryInterface, FIF.BOOK_SHELF, self.tr("Library"), FIF.LIBRARY_FILL, isTransparent=False)
 
-        pos = NavigationItemPosition.SCROLL
-        self.addSubInterface(self.funcInterface, FIF.BRIGHTNESS, self.tr("FastRte"), position=pos, isTransparent=True)
-        self.addSubInterface(self.logInterface, FIF.COMMAND_PROMPT, self.tr("Log"), position=pos, isTransparent=False)
-        self.addSubInterface(self.libraryInterface, FIF.BOOK_SHELF, self.tr("Library"), FIF.LIBRARY_FILL, position=pos, isTransparent=False)
-
-        pos = NavigationItemPosition.BOTTOM
+        # self.navigationInterface.addWidget(
+        #     routeKey='avatar',
+        #     widget=NavigationBarPushButton(FIF.HEART, '赞赏', isSelectable=False),
+        #     onClick=lambda: MessageBoxSupport(
+        #         '支持作者🥰',
+        #         '此程序为免费开源项目，如果你付了钱请立刻退款\n如果喜欢本项目，可以微信赞赏送作者一杯咖啡☕\n您的支持就是作者开发和维护项目的动力🚀',
+        #         ':/app/images/sponsor.jpg',
+        #         self
+        #     ).exec(),
+        #     position=NavigationItemPosition.BOTTOM,
+        # )
+        # add custom widget to bottom
         self.navigationInterface.addWidget(
-            'avatar',
-            NavigationBarPushButton(FIF.HEART, '赞赏', isSelectable=False),
-            lambda: MessageBoxSupport(
-                '支持作者🥰',
-                '此程序为免费开源项目，如果你付了钱请立刻退款\n如果喜欢本项目，可以微信赞赏送作者一杯咖啡☕\n您的支持就是作者开发和维护项目的动力🚀',
-                ':/app/images/sponsor.jpg',
-                self
-            ).exec(),
-            NavigationItemPosition.BOTTOM
+            routeKey='avatar',
+            widget=NavigationAvatarWidget('zhiyiYo', 'resource/shoko.png'),
+            onClick=None,
+            position=NavigationItemPosition.BOTTOM,
         )
-        self.addSubInterface(self.settingInterface, Icon.SETTINGS, self.tr('Settings'), Icon.SETTINGS_FILLED, position=pos, isTransparent=False)
+
+        self.addSubInterface(self.settingInterface, Icon.SETTINGS, self.tr('Settings'), Icon.SETTINGS_FILLED, isTransparent=False)
         self.navigationInterface.setCurrentItem(self.homeInterface.objectName())
         self.splashScreen.finish()
 

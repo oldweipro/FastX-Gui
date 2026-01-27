@@ -188,16 +188,16 @@ class GalleryInterface(ScrollArea):
         super().__init__(parent=parent)
         self.view = QWidget(self)
         self.toolBar = ToolBar(title, subtitle, self)
-        self.vBoxLayout = QVBoxLayout(self.view)
 
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setViewportMargins(0, self.toolBar.height(), 0, 0)
         self.setWidget(self.view)
         self.setWidgetResizable(True)
 
+        self.vBoxLayout = QVBoxLayout(self.view)
         self.vBoxLayout.setSpacing(30)
-        self.vBoxLayout.setAlignment(Qt.AlignTop)
         self.vBoxLayout.setContentsMargins(36, 20, 36, 36)
+        self.vBoxLayout.setAlignment(Qt.AlignTop)
 
         self.view.setObjectName('view')
         StyleSheet.GALLERY_INTERFACE.apply(self)

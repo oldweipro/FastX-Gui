@@ -17,7 +17,7 @@ class LogLevel(Enum):
     SUCCESS = 4
 
 
-class LogItem(QFrame):
+class LogItem(QWidget):
     """日志条目组件"""
 
     def __init__(self, message: str, level: LogLevel, parent=None):
@@ -122,11 +122,14 @@ class LogInterface(ScrollArea):
 
     def __init__(self, title: str, parent=None):
         super().__init__(parent)
+        self.view = QWidget(self)
         self.title = title
         self.log_count = 0
         self.max_logs = 1000  # 最大日志数量
         self.filter_level = None  # 当前过滤级别
 
+        self.__initWidget()
+        self.__initLayout()
         self.init_ui()
         self.setup_connections()
         
@@ -136,22 +139,26 @@ class LogInterface(ScrollArea):
         self.add_log("配置文件加载完成", LogLevel.SUCCESS)
         self.add_log("日志系统初始化完成", LogLevel.INFO)
 
-    def init_ui(self):
-        """初始化界面"""
+    def __initWidget(self):
         self.setObjectName("LogInterface")
         self.setWidgetResizable(True)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-        # 创建容器
-        container = QWidget()
-        container.setObjectName("LogContainer")
-        self.main_layout = QVBoxLayout(container)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setWidget(self.view)
+        self.setWidgetResizable(True)
+
+    def __initLayout(self):
+        self.Layout = QHBoxLayout(self.view)
+        self.Layout.setContentsMargins(0, 48, 0, 0)
+
+        self.main_layout = QVBoxLayout()
         self.main_layout.setContentsMargins(20, 20, 20, 20)
         self.main_layout.setSpacing(10)
 
-        # 设置滚动区域的内容
-        self.setWidget(container)
-
+        self.Layout.addLayout(self.main_layout)
+    def init_ui(self):
+        """初始化界面"""
         # 创建标题栏
         self.create_title_bar()
 
@@ -370,7 +377,7 @@ class LogInterface(ScrollArea):
                 border: 1px solid rgba(0, 0, 0, 0.05);
             }
             LogItem {
-                background-color: white;
+                background-color: transparent;
                 border: 1px solid rgba(0, 0, 0, 0.08);
                 border-radius: 8px;
                 padding: 10px;

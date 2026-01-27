@@ -1,9 +1,11 @@
 # coding:utf-8
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QVBoxLayout, QWidget, QLabel
-from qfluentwidgets import TabWidget, SubtitleLabel, setFont, IconWidget
+from PyQt5.QtWidgets import QVBoxLayout, QWidget, QLabel, QHBoxLayout
+from qfluentwidgets import TabWidget, SubtitleLabel, setFont, IconWidget, ScrollArea
 from qfluentwidgets import FluentIcon as FIF
+
+from app.common.style_sheet import StyleSheet
 
 
 class TabContent(QWidget):
@@ -20,32 +22,50 @@ class TabContent(QWidget):
         self.setObjectName(text.replace(' ', '-'))
 
 
-class AppInterface(QWidget):
+class AppInterface(ScrollArea):
     """ 应用界面，包含标签页功能 """
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
+        self.view = QWidget(self)
         self.tabWidget = TabWidget(self)
-        self.vBoxLayout = QVBoxLayout(self)
         
         self.__initWidget()
+        self.__setQss()
         self.__initLayout()
         self.__initTabs()
 
     def __initWidget(self):
         """ 初始化小部件 """
         self.setObjectName('appInterface')
-        
-        # 设置标签页属性
+        self.view.setObjectName('view')
+
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setWidget(self.view)
+        self.setWidgetResizable(True)
+
+        # 设置标签页属性  注意：tabAddRequested信号默认是可用的，不需要额外设置
         self.tabWidget.setMovable(True)  # 允许标签页拖动
         self.tabWidget.setTabsClosable(True)  # 允许关闭标签页
-        # 注意：tabAddRequested信号默认是可用的，不需要额外设置
+
+    def __setQss(self):
+        """ set style sheet """
+        # initialize style sheet
+        StyleSheet.APP_INTERFACE.apply(self)
 
     def __initLayout(self):
         """ 初始化布局 """
-        self.vBoxLayout.setSpacing(0)
-        self.vBoxLayout.setContentsMargins(0, 0, 0, 0)
-        self.vBoxLayout.addWidget(self.tabWidget)
+        self.Layout = QHBoxLayout(self.view)
+        self.Layout.setContentsMargins(0, 48, 0, 0)
+
+        self.main_layout = QVBoxLayout()
+        self.main_layout.setObjectName('vBoxLayout')
+        self.main_layout.setContentsMargins(10, 0, 10, 10)
+        self.main_layout.setSpacing(20)
+        self.main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        self.Layout.addLayout(self.main_layout)
+        self.main_layout.addWidget(self.tabWidget)
 
     def __initTabs(self):
         """ 初始化标签页 """

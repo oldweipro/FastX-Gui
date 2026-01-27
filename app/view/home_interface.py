@@ -78,8 +78,8 @@ class HomeInterface(ScrollArea):
         self.__connectSignalToSlot()
 
     def __initWidget(self):
-        self.view.setObjectName('view')
         self.setObjectName(f"homeInterface")
+        self.view.setObjectName('view')
         StyleSheet.HOME_INTERFACE.apply(self)
 
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -88,9 +88,13 @@ class HomeInterface(ScrollArea):
 
     def __initLayout(self):
         # Create Layouts
-        self.main_layout = QVBoxLayout(self.view)
+        self.Layout = QHBoxLayout(self.view)
+        self.Layout.setContentsMargins(0, 48, 0, 0)
+
+        self.main_layout = QVBoxLayout()
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.main_layout.setSpacing(25)
+        self.main_layout.setAlignment(Qt.AlignTop)
 
         self.top_layout = QVBoxLayout()
         self.top_layout.setContentsMargins(10, 0, 0, 0)
@@ -102,16 +106,14 @@ class HomeInterface(ScrollArea):
         self.bottom_layout.setContentsMargins(20, 20, 20, 20)
         self.bottom_layout.setSpacing(12)
 
-        self.main_layout.addWidget(self.banner)
-        self.top_layout.addWidget(self.intro)
 
         # Add Layouts
+        self.Layout.addLayout(self.main_layout)
+        self.main_layout.addWidget(self.banner)
         self.main_layout.addLayout(self.top_layout)
         self.main_layout.addLayout(self.guide_layout)
+        self.top_layout.addWidget(self.intro)
         # self.main_layout.addLayout(self.bottom_layout)
-
-        self.main_layout.setAlignment(Qt.AlignTop)
-
     def loadSamples(self):
         pass
 

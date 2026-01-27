@@ -5,6 +5,17 @@ TabInterface QLabel {
     color: black;
 }
 
+LibraryViewInterface, #view {
+    border: none;
+    background: transparent
+}
+
+QScrollArea {
+    background-color: transparent;
+    border: none;
+}
+
+
 #controlPanel BodyLabel {
     padding-left: 0px;
 }

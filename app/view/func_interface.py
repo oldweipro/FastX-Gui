@@ -171,41 +171,45 @@ class FuncInterface(ScrollArea):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.view = QWidget(self)
-        self.vBoxLayout = QVBoxLayout(self.view)
 
         self.funcInfoCard = AppInfoCard()
         self.basicSettingCard = BasicConfigCard()
 
         self._initWidget()
-
+        self.__initLayout()
+        self._connectSignalToSlot()
 
     def _initWidget(self):
+        self.setObjectName('funcInterface')
+        self.view.setObjectName('scrollWidget')
         self.setWidget(self.view)
         self.setAcceptDrops(True)
         self.setWidgetResizable(True)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
-        self.vBoxLayout.setSpacing(20)
-        self.vBoxLayout.setContentsMargins(10, 0, 10, 10)
-        self.vBoxLayout.setAlignment(Qt.AlignmentFlag.AlignTop)
-
-        self.vBoxLayout.addWidget(self.funcInfoCard)
-        self.vBoxLayout.addWidget(self.basicSettingCard)
-        
-        self.resize(780, 800)
-        self.__initLayout()
         self.__setQss()
-        self._connectSignalToSlot()
+        self.resize(780, 800)
+
 
     def __initLayout(self):
-        pass
+        self.Layout = QHBoxLayout(self.view)
+        self.Layout.setContentsMargins(0, 48, 0, 0)
+
+        self.main_layout = QVBoxLayout()
+        self.main_layout.setObjectName('vBoxLayout')
+        self.main_layout.setContentsMargins(10, 0, 10, 10)
+        self.main_layout.setSpacing(20)
+        self.main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        self.Layout.addLayout(self.main_layout)
+        self.main_layout.addWidget(self.funcInfoCard)
+        self.main_layout.addWidget(self.basicSettingCard)
 
     def __setQss(self):
         """ set style sheet """
         # initialize style sheet
-        self.setObjectName('rteInterface')
-        self.view.setObjectName('scrollWidget')
-        self.vBoxLayout.setObjectName('vBoxLayout')
+
+
         self.enableTransparentBackground()
         StyleSheet.RTE_INTERFACE.apply(self)
 

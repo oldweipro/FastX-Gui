@@ -1,0 +1,8 @@
+AppInterface, #view {
+    background-color: transparent;
+}
+
+ScrollArea {
+    border: none;
+    background-color: transparent;
+}

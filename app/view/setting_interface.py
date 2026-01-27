@@ -59,8 +59,7 @@ class SettingInterface(ScrollArea):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.scrollWidget = QWidget()
-        self.expandLayout = ExpandLayout(self.scrollWidget)
+        self.view = QWidget()
         # initialize background manager
         self.backgroundManager = get_background_manager(cfg)
 
@@ -68,7 +67,7 @@ class SettingInterface(ScrollArea):
         self.settingLabel = QLabel(self.tr("Settings"), self)
 
         # Project folders
-        self.projectInThisPCGroup = SettingCardGroup(self.tr("Project on this PC"), self.scrollWidget)
+        self.projectInThisPCGroup = SettingCardGroup(self.tr("Project on this PC"), self.view)
         self.projectFolderCard = FolderListSettingCard(
             cfg.projectFolders,
             self.tr("Local Project library"),
@@ -84,7 +83,7 @@ class SettingInterface(ScrollArea):
         )
 
         # personalization
-        self.personalGroup = SettingCardGroup(self.tr('Personalization'), self.scrollWidget)
+        self.personalGroup = SettingCardGroup(self.tr('Personalization'), self.view)
         self.micaCard = SwitchSettingCard(
             FIF.TRANSPARENT,
             self.tr('Mica effect'),
@@ -134,7 +133,7 @@ class SettingInterface(ScrollArea):
             FIF.PHOTO,
             self.tr('Background'),
             self.tr('Customize application background settings'),
-            self.scrollWidget)
+            self.view)
         self.backgroundEnabledCard = SwitchSettingCard(
             FIF.PHOTO,
             self.tr('Background image'),
@@ -175,7 +174,7 @@ class SettingInterface(ScrollArea):
         )
 
         # material
-        self.materialGroup = SettingCardGroup(self.tr('Material'), self.scrollWidget)
+        self.materialGroup = SettingCardGroup(self.tr('Material'), self.view)
         self.blurRadiusCard = RangeSettingCard(
             cfg.blurRadius,
             FIF.ALBUM,
@@ -185,7 +184,7 @@ class SettingInterface(ScrollArea):
         )
 
         # Application
-        self.appGroup = SettingCardGroup(self.tr('Application settings'), self.scrollWidget)
+        self.appGroup = SettingCardGroup(self.tr('Application settings'), self.view)
         self.betaCard = SwitchSettingCard(
             FIF.DEVELOPER_TOOLS,
             self.tr('Beta experimental features'),
@@ -207,7 +206,7 @@ class SettingInterface(ScrollArea):
         )
 
         # update software
-        self.updateSoftwareGroup = SettingCardGroup(self.tr("Software update"), self.scrollWidget)
+        self.updateSoftwareGroup = SettingCardGroup(self.tr("Software update"), self.view)
         self.updateOnStartUpCard = SwitchSettingCard(
             FIF.UPDATE,
             self.tr('Check for updates when the application starts'),
@@ -217,7 +216,7 @@ class SettingInterface(ScrollArea):
         )
 
         # About
-        self.aboutGroup = SettingCardGroup(self.tr('About'), self.scrollWidget)
+        self.aboutGroup = SettingCardGroup(self.tr('About'), self.view)
         self.helpCard = HyperlinkCard(
             HELP_URL,
             self.tr('Open help page'),
@@ -244,26 +243,24 @@ class SettingInterface(ScrollArea):
         )
 
         self.__initWidget()
+        self.__setQss()
+        self.__initLayout()
+        self.__connectSignalToSlot()
+
 
     def __initWidget(self):
         self.resize(1000, 800)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.setViewportMargins(0, 80, 0, 20)
-        self.setWidget(self.scrollWidget)
+        self.setViewportMargins(0, 120, 0, 20)
+        self.setWidget(self.view)
         self.setWidgetResizable(True)
 
-        # initialize style sheet
-        self.__setQss()
-
-        # initialize layout
-        self.__initLayout()
-        self.__connectSignalToSlot()
 
     def __setQss(self):
         """ set style sheet """
         # initialize style sheet
         self.setObjectName('settingInterface')
-        self.scrollWidget.setObjectName('scrollWidget')
+        self.view.setObjectName('scrollWidget')
         self.settingLabel.setObjectName('settingLabel')
         StyleSheet.SETTING_INTERFACE.apply(self)
         # micaCard
@@ -272,10 +269,12 @@ class SettingInterface(ScrollArea):
         self.__updateBackgroundCardsState()
 
     def __initLayout(self):
-        self.settingLabel.move(36, 30)
+        self.settingLabel.move(36, 68)
 
         # add setting card group to layout
+        self.expandLayout = ExpandLayout(self.view)
         self.expandLayout.setSpacing(28)
+        self.expandLayout.setContentsMargins(36, 10, 36, 0)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
         # add cards to group
@@ -288,6 +287,7 @@ class SettingInterface(ScrollArea):
         self.personalGroup.addSettingCard(self.zoomCard)
         self.personalGroup.addSettingCard(self.languageCard)
         self.personalGroup.addSettingCard(self.backgroundGroupCard)
+
         # Add widgets to expand card view instead of as setting cards
         self.backgroundGroupCard.viewLayout.addWidget(self.backgroundEnabledCard)
         self.backgroundGroupCard.viewLayout.addWidget(self.backgroundImageCard)
@@ -305,7 +305,7 @@ class SettingInterface(ScrollArea):
         self.aboutGroup.addSettingCard(self.feedbackCard)
         self.aboutGroup.addSettingCard(self.aboutCard)
 
-        self.expandLayout.setContentsMargins(36, 10, 36, 0)
+        # add setting card groups to layout
         self.expandLayout.addWidget(self.projectInThisPCGroup)
         self.expandLayout.addWidget(self.personalGroup)
         self.expandLayout.addWidget(self.appGroup)
@@ -316,7 +316,7 @@ class SettingInterface(ScrollArea):
 
 
     def _createBetaSetting(self):
-        self.BetaGroup = SettingCardGroup(self.tr('Beta'), self.scrollWidget)
+        self.BetaGroup = SettingCardGroup(self.tr('Beta'), self.view)
         self.debug_Card = SwitchSettingCard(
                 FIF.CODE,
                 self.tr('Debug Mode'),
