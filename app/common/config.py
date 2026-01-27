@@ -46,6 +46,15 @@ class Config(QConfig):
     micaEnabled = ConfigItem("personalization", "MicaEnabled", isWin11(), BoolValidator())
     dpiScale = OptionsConfigItem("personalization", "DpiScale", "Auto", OptionsValidator([1, 1.25, 1.5, 1.75, 2, "Auto"]), restart=True)
     language = OptionsConfigItem("personalization", "Language", Language.AUTO, OptionsValidator(Language), LanguageSerializer(), restart=True)
+    # Settings/background settings
+    backgroundImageEnabled = ConfigItem("Background", "ImageEnabled", False, BoolValidator())
+    backgroundImagePath = ConfigItem("Background", "ImagePath", "")
+    backgroundOpacity = RangeConfigItem("Background", "Opacity", 30, RangeValidator(0, 100))
+    backgroundBlurRadius = RangeConfigItem("Background", "BlurRadius", 0, RangeValidator(0, 50))
+    backgroundDisplayMode = OptionsConfigItem(
+        "Background", "DisplayMode", "Keep Aspect Ratio",
+        OptionsValidator(["Stretch", "Keep Aspect Ratio", "Tile", "Original Size", "Fit Window"])
+    )
     # Settings/Material
     blurRadius  = RangeConfigItem("Material", "AcrylicBlurRadius", 15, RangeValidator(0, 40))
     # Settings/Application

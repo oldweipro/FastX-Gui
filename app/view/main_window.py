@@ -2,15 +2,16 @@
 import sys
 
 from PyQt5.QtCore import Qt, QUrl, QSize, QEventLoop, QTimer, QDateTime
-from PyQt5.QtGui import QIcon, QDesktopServices, QFont, QColor
+from PyQt5.QtGui import QIcon, QDesktopServices, QFont, QColor, QPainter
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QSplashScreen, QLabel, QStatusBar, QFrame, \
     QSystemTrayIcon, QAction
 from qfluentwidgets import (NavigationItemPosition, MessageBox, setTheme, Theme, MSFluentWindow, isDarkTheme,
                             NavigationAvatarWidget, SearchLineEdit, qrouter, SubtitleLabel, setFont, SplashScreen,
                             IndeterminateProgressBar, ProgressBar, PushButton, FluentIcon as FIF, InfoBar,
-                            InfoBarPosition, SystemTrayMenu, NavigationBarPushButton)
+                            InfoBarPosition, SystemTrayMenu, NavigationBarPushButton, SystemThemeListener)
 from qframelesswindow import FramelessWindow, TitleBar
 
+from app.common.background_manager import get_background_manager
 from app.view.home_interface import HomeInterface
 from app.view.setting_interface import SettingInterface
 from app.view.app_interface import AppInterface
@@ -98,12 +99,30 @@ class MainWindow(MSFluentWindow):
         # 先调用父类初始化
         super().__init__()
         self.initWindow()
-        self.initInterface()
+
+        # create system theme listener
+        self.themeListener = SystemThemeListener(self)
+
+        # create sub interface
+        self.__initInterface()
+
+        # initialize background manager
+        self.backgroundManager = get_background_manager(cfg)
+
+        # set sidebar expand width
+        # self.navigationInterface.setFixedWidth(70)
+
         # 创建信号连接到槽
-        self.connectSignalToSlot()
+        self.__connectSignalToSlot()
+
         # add items to navigation interface
-        self.initNavigation()
-        self.initSystemTray()
+        self.__initNavigation()
+
+        # add systemTray Menu
+        self.__initSystemTray()
+
+        # start theme listener
+        self.themeListener.start()
 
     def initWindow(self):
         self.resize(1200, 860)
@@ -130,7 +149,7 @@ class MainWindow(MSFluentWindow):
         self.show()
         QApplication.processEvents()
 
-    def initInterface(self):
+    def __initInterface(self):
         # 创建子界面
         self.homeInterface = HomeInterface(self)
         self.appInterface = AppInterface(self)
@@ -139,10 +158,10 @@ class MainWindow(MSFluentWindow):
         self.logInterface = LogInterface(self)
         self.settingInterface = SettingInterface(self)
 
-    def connectSignalToSlot(self):
+    def __connectSignalToSlot(self):
         signalBus.micaEnableChanged.connect(self.setMicaEffectEnabled)
 
-    def initNavigation(self):
+    def __initNavigation(self):
         # add navigation items
         t = Translator()
         pos = NavigationItemPosition.TOP
@@ -170,7 +189,7 @@ class MainWindow(MSFluentWindow):
         self.navigationInterface.setCurrentItem(self.homeInterface.objectName())
         self.splashScreen.finish()
 
-    def initSystemTray(self):
+    def __initSystemTray(self):
         """初始化系统托盘"""
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(QIcon(':/app/images/logo-m.png'))
@@ -317,3 +336,66 @@ class MainWindow(MSFluentWindow):
                 QSystemTrayIcon.Information,
                 2000
             )
+
+    def paintEvent(self, e):
+        """ Paint event - draw background image if enabled """
+        super().paintEvent(e)
+
+        # Draw background image if enabled
+        if hasattr(self, 'backgroundManager') and self.backgroundManager.is_background_enabled():
+            painter = QPainter(self)
+            painter.setRenderHint(QPainter.Antialiasing)
+
+            # Get background pixmap
+            window_size = self.size()
+            background_pixmap = self.backgroundManager.get_background_pixmap(window_size)
+
+            if background_pixmap and not background_pixmap.isNull():
+                # Apply opacity
+                opacity = self.backgroundManager.get_background_opacity() / 100.0  # Convert percentage to float
+                painter.setOpacity(opacity)
+
+                # Get display mode
+                display_mode = self.backgroundManager.get_background_display_mode()
+
+                # Draw based on display mode
+                self.__draw_background_by_mode(painter, background_pixmap, window_size, display_mode)
+
+            painter.end()
+
+    def __draw_background_by_mode(self, painter, background_pixmap, window_size, display_mode):
+        """Draw background image according to display mode
+
+        Args:
+            painter: QPainter instance
+            background_pixmap: Background image pixmap
+            window_size: Window size
+            display_mode: Display mode string
+        """
+        pixmap_size = background_pixmap.size()
+
+        if display_mode == "Tile":
+            # Tile the image across the window
+            for x in range(0, window_size.width(), pixmap_size.width()):
+                for y in range(0, window_size.height(), pixmap_size.height()):
+                    painter.drawPixmap(x, y, background_pixmap)
+
+        elif display_mode == "Original Size":
+            # Center the image at original size
+            x = max(0, (window_size.width() - pixmap_size.width()) // 2)
+            y = max(0, (window_size.height() - pixmap_size.height()) // 2)
+            painter.drawPixmap(x, y, background_pixmap)
+
+        else:
+            # For "Stretch", "Keep Aspect Ratio", "Fit Window" modes
+            # The scaling is already handled in BackgroundManager, just center and draw
+            if display_mode == "Fit Window":
+                # Center the image that fits within window
+                x = max(0, (window_size.width() - pixmap_size.width()) // 2)
+                y = max(0, (window_size.height() - pixmap_size.height()) // 2)
+            else:
+                # For stretch and keep aspect ratio modes, image should fill the window
+                x = max(0, (window_size.width() - pixmap_size.width()) // 2)
+                y = max(0, (window_size.height() - pixmap_size.height()) // 2)
+
+            painter.drawPixmap(x, y, background_pixmap)
