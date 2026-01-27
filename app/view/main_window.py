@@ -146,7 +146,6 @@ class MainWindow(MSFluentWindow):
         desktop = QApplication.desktop().availableGeometry()
         w, h = desktop.width(), desktop.height()
         self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
-        self.show()
         QApplication.processEvents()
 
     def __initInterface(self):
@@ -165,7 +164,7 @@ class MainWindow(MSFluentWindow):
         # add navigation items
         t = Translator()
         pos = NavigationItemPosition.TOP
-        self.addSubInterface(self.homeInterface, FIF.HOME, self.tr("Home"), FIF.HOME_FILL, position=pos, isTransparent=True)
+        self.addSubInterface(self.homeInterface, FIF.HOME, self.tr("Home"), FIF.HOME_FILL, position=pos, isTransparent=False)
         self.addSubInterface(self.appInterface , FIF.APPLICATION, self.tr("App"), position=pos, isTransparent=False)
 
         pos = NavigationItemPosition.SCROLL

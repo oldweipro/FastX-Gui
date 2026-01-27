@@ -1,12 +1,15 @@
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, pyqtSlot, QRectF
 from PyQt5.QtGui import QPixmap, QPainter, QColor, QBrush, QPainterPath, QLinearGradient, QImage
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QGraphicsDropShadowEffect
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QGraphicsDropShadowEffect, QSpacerItem, \
+    QSizePolicy
 from qfluentwidgets import TextEdit, SwitchButton, IndicatorPosition, PushButton, TitleLabel, BodyLabel, \
     PrimaryPushSettingCard, SubtitleLabel, ScrollArea, isDarkTheme, InfoBar, InfoBarIcon, InfoBarPosition
 from qfluentwidgets import FluentIcon as FIF
 from PIL import Image
 import numpy as np
 
+from app.card.public_card import GuideWidget
+from app.common.icon import PNG, Icon
 from app.components.link_card import LinkCardView
 from app.common.style_sheet import StyleSheet
 from app.components.type_writer import TypewriterLabel
@@ -18,7 +21,7 @@ class BannerWidget(QWidget):
         self.setFixedHeight(320)
         self.setMaximumHeight(320)
 
-        self.vBoxLayout = QVBoxLayout(self)
+        self.main_layout = QVBoxLayout(self)
         self.galleryLabel = QLabel(f'', self)
         self.galleryLabel.setStyleSheet("color: white;font-size: 30px; font-weight: 600;")
         # self.banner = QPixmap('./app/resource/images/bg37.jpg')
@@ -36,10 +39,10 @@ class BannerWidget(QWidget):
         self.galleryLabel.setGraphicsEffect(shadow)
         self.galleryLabel.setObjectName('galleryLabel')
 
-        self.vBoxLayout.setSpacing(0)
-        self.vBoxLayout.setContentsMargins(0, 20, 0, 0)
-        self.vBoxLayout.addWidget(self.galleryLabel)
-        self.vBoxLayout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.main_layout.setSpacing(0)
+        self.main_layout.setContentsMargins(0, 20, 0, 0)
+        self.main_layout.addWidget(self.galleryLabel)
+        self.main_layout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
 
     def paintEvent(self, e):
         super().paintEvent(e)
@@ -68,7 +71,7 @@ class HomeInterface(ScrollArea):
         super().__init__(parent=parent)
         self.view = QWidget(self)
         self.banner = BannerWidget(self.view)
-        self.intro = TypewriterLabel(self.view)
+        self.intro = TypewriterLabel()
         self.__initWidget()
         self.__initLayout()
         self.loadSamples()
@@ -84,12 +87,30 @@ class HomeInterface(ScrollArea):
         self.setWidgetResizable(True)
 
     def __initLayout(self):
-        self.vBoxLayout = QVBoxLayout(self.view)
-        self.vBoxLayout.setContentsMargins(0, 0, 0, 0)
-        self.vBoxLayout.setSpacing(25)
-        self.vBoxLayout.addWidget(self.banner)
-        self.vBoxLayout.addWidget(self.intro)
-        self.vBoxLayout.setAlignment(Qt.AlignTop)
+        # Create Layouts
+        self.main_layout = QVBoxLayout(self.view)
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.setSpacing(25)
+
+        self.top_layout = QVBoxLayout()
+        self.top_layout.setContentsMargins(10, 0, 0, 0)
+
+        self.guide_layout = QVBoxLayout()
+        self.guide_layout.setContentsMargins(20, 20, 20, 20)
+
+        self.bottom_layout = QHBoxLayout()
+        self.bottom_layout.setContentsMargins(20, 20, 20, 20)
+        self.bottom_layout.setSpacing(12)
+
+        self.main_layout.addWidget(self.banner)
+        self.top_layout.addWidget(self.intro)
+
+        # Add Layouts
+        self.main_layout.addLayout(self.top_layout)
+        self.main_layout.addLayout(self.guide_layout)
+        # self.main_layout.addLayout(self.bottom_layout)
+
+        self.main_layout.setAlignment(Qt.AlignTop)
 
     def loadSamples(self):
         pass

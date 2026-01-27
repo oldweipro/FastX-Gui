@@ -5,9 +5,9 @@
         "RememberMe": true
     },
     "Background": {
-        "BlurRadius": 8,
+        "BlurRadius": 0,
         "DisplayMode": "Keep Aspect Ratio",
-        "ImageEnabled": true,
+        "ImageEnabled": false,
         "ImagePath": "C:/Users/91974/Pictures/02 壁纸/金克丝，金克斯，猫，4K壁纸_彼岸图网.jpg",
         "Opacity": 11
     },
