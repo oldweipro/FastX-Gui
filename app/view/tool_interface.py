@@ -1,11 +1,14 @@
 # coding:utf-8
+from typing import Union
+
 from PyQt5.QtCore import Qt, QEasingCurve
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QStackedWidget, QVBoxLayout, QLabel, QHBoxLayout, QFrame, QSizePolicy, QSpacerItem, \
     QScroller, QScrollerProperties
 from qfluentwidgets import (Pivot, qrouter, SegmentedWidget, TabBar, CheckBox, ComboBox,
                             TabCloseButtonDisplayMode, BodyLabel, SpinBox, BreadcrumbBar,
                             SegmentedToggleToolWidget, ScrollArea, SettingCardGroup, SwitchSettingCard,
-                            SegmentedToolWidget)
+                            SegmentedToolWidget, FluentIconBase)
 from qfluentwidgets import FluentIcon as FIF
 
 from app.common.config import cfg
@@ -84,12 +87,12 @@ class ToolsInterface(ScrollArea):
         scroller.setScrollerProperties(scroller_props)
 
     def __initLayout(self):
-        self.pivot = Pivot(self)
+        self.pivot = SegmentedWidget(self)
         self.stackedWidget = QStackedWidget(self)
         self.Layout = QHBoxLayout(self.view)
         self.Layout.setContentsMargins(36, 0, 36, 0)
         self.platformToolsLabel.move(36, 48)
-        self.pivot.move(40, 90)
+        self.pivot.move(40, 98)
 
         self.main_layout = QVBoxLayout()
         self.main_layout.setObjectName('mainLayout')
@@ -107,12 +110,6 @@ class ToolsInterface(ScrollArea):
         # 添加标签页
         self.addSubInterface(self.DemGroup, 'DemInterface', self.tr('Dem'))
         self.addSubInterface(self.DcmGroup, 'DcmInterface', self.tr('Dcm'))
-        # 添加分隔符（竖线）
-        self.pivot.addItem(
-            routeKey='verticalBar',
-            text="|",
-            onClick=lambda: self.pivot.setCurrentItem(self.stackedWidget.currentWidget().objectName()),
-        )
         self.addSubInterface(self.E2EGroup, 'E2EInterface', self.tr('E2E'))
 
     def __connectSignalToSlot(self):
@@ -121,14 +118,15 @@ class ToolsInterface(ScrollArea):
         self.pivot.setCurrentItem(self.stackedWidget.currentWidget().objectName())
         self.stackedWidget.setFixedHeight(self.stackedWidget.currentWidget().sizeHint().height())
 
-    def addSubInterface(self, widget: QLabel, objectName: str, text: str):
+    def addSubInterface(self, widget: QLabel, objectName: str, text: str, icon: Union[str, QIcon, FluentIconBase]=None):
         """
         添加子界面到标签页系统
 
         Args:
-            widget: 界面组件
-            objectName: 组件唯一标识
-            text: 标签页显示文本
+            :param widget:
+            :param objectName:
+            :param text:
+            :param icon:
         """
         def remove_spacing(layout):
             for i in range(layout.count()):
@@ -148,6 +146,7 @@ class ToolsInterface(ScrollArea):
         self.pivot.addItem(
             routeKey=objectName,
             text=text,
+            icon = icon,
             onClick=lambda: self.stackedWidget.setCurrentWidget(widget)
         )
 
