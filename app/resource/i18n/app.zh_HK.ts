@@ -6,32 +6,32 @@
     <message>
         <location filename="../../components/info_card.py" line="54"/>
         <source>RTE Connector</source>
-        <translation type="unfinished"></translation>
+        <translation>算法接口制作</translation>
     </message>
     <message>
         <location filename="../../components/info_card.py" line="55"/>
         <source>Update</source>
-        <translation type="unfinished"></translation>
+        <translation>更新</translation>
     </message>
     <message>
         <location filename="../../components/info_card.py" line="58"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>当前版本</translation>
     </message>
     <message>
         <location filename="../../components/info_card.py" line="60"/>
         <source>File Size</source>
-        <translation type="unfinished"></translation>
+        <translation>文件大小</translation>
     </message>
     <message>
         <location filename="../../components/info_card.py" line="61"/>
         <source>Update Time</source>
-        <translation type="unfinished"></translation>
+        <translation>更新时间</translation>
     </message>
     <message>
         <location filename="../../components/info_card.py" line="63"/>
         <source>Rte Connecter is an application tool. The current application field is AUTOSAR CP. The adaptation tool ETAS is used to connect RTE wiring between SWCs. It can generate DataType, Interface and Composition Rte wiring from the table content, which greatly improves the development speed.</source>
-        <translation type="unfinished"></translation>
+        <translation>FastRte是一个应用工具。目前的应用领域是AUTOSAR CP。适配工具 ETAS 用于连接 SWC 之间的 RTE 接线。可以根据表格内容生成DataType、Interface和Composition Rte接线，大大提高开发速度</translation>
     </message>
 </context>
 <context>
@@ -54,12 +54,12 @@
     <message>
         <location filename="../../components/config_card.py" line="33"/>
         <source>Click the execute button to start running</source>
-        <translation type="unfinished"></translation>
+        <translation>点击执行按钮开始运行程序</translation>
     </message>
     <message>
         <location filename="../../components/config_card.py" line="34"/>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation>执行</translation>
     </message>
     <message>
         <location filename="../../components/config_card.py" line="44"/>
@@ -79,32 +79,32 @@
     <message>
         <location filename="../../components/config_card.py" line="67"/>
         <source>Change Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>更換工具</translation>
     </message>
     <message>
         <location filename="../../components/config_card.py" line="67"/>
         <source>Select the Tools Engine to Generator</source>
-        <translation type="unfinished"></translation>
+        <translation>选择 合适的工具引擎</translation>
     </message>
     <message>
         <location filename="../../components/config_card.py" line="73"/>
         <source>Mapping Table Path</source>
-        <translation type="unfinished"></translation>
+        <translation>接口表路径</translation>
     </message>
     <message>
         <location filename="../../components/config_card.py" line="79"/>
         <source>DataType Arxml Path</source>
-        <translation type="unfinished"></translation>
+        <translation>数据类型ARXML文件路径</translation>
     </message>
     <message>
         <location filename="../../components/config_card.py" line="85"/>
         <source>Interface Arxml Path</source>
-        <translation type="unfinished"></translation>
+        <translation>接口ARXML文件路径</translation>
     </message>
     <message>
         <location filename="../../components/config_card.py" line="91"/>
         <source>Output Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>输出文件夹</translation>
     </message>
 </context>
 <context>

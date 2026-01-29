@@ -4,7 +4,7 @@ from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, FolderListSetti
                             HyperlinkCard, PrimaryPushSettingCard, ScrollArea,
                             ComboBoxSettingCard, ExpandLayout, Theme, CustomColorSettingCard,
                             setTheme, setThemeColor, RangeSettingCard, isDarkTheme, SettingCard, PushButton,
-                            ExpandSettingCard)
+                            ExpandSettingCard, GroupHeaderCardWidget, SwitchButton)
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import InfoBar
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QStandardPaths
@@ -16,6 +16,7 @@ from app.common.config import cfg, isWin11
 from app.common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
+from app.components.config_card import FloatingWindowBasicSettings
 
 
 class BackgroundImageCard(SettingCard):
@@ -173,6 +174,13 @@ class SettingInterface(ScrollArea):
             parent=self.backgroundGroupCard
         )
 
+        self.floatingWindowGroupCard = ExpandSettingCard(
+            FIF.PHOTO,
+            self.tr('FloatWindow'),
+            self.tr('Float Windows Settings'),
+            self.view)
+        self.floatingWindowSettingCard = FloatingWindowBasicSettings(self.floatingWindowGroupCard)
+
         # material
         self.materialGroup = SettingCardGroup(self.tr('Material'), self.view)
         self.blurRadiusCard = RangeSettingCard(
@@ -287,6 +295,7 @@ class SettingInterface(ScrollArea):
         self.personalGroup.addSettingCard(self.zoomCard)
         self.personalGroup.addSettingCard(self.languageCard)
         self.personalGroup.addSettingCard(self.backgroundGroupCard)
+        self.personalGroup.addSettingCard(self.floatingWindowGroupCard)
 
         # Add widgets to expand card view instead of as setting cards
         self.backgroundGroupCard.viewLayout.addWidget(self.backgroundEnabledCard)
@@ -295,6 +304,8 @@ class SettingInterface(ScrollArea):
         self.backgroundGroupCard.viewLayout.addWidget(self.backgroundBlurCard)
         self.backgroundGroupCard.viewLayout.addWidget(self.backgroundDisplayModeCard)
         self.backgroundGroupCard._adjustViewSize()
+        # float window
+        self.floatingWindowGroupCard.viewLayout.addWidget(self.floatingWindowSettingCard)
 
         self.materialGroup.addSettingCard(self.blurRadiusCard)
         self.appGroup.addSettingCard(self.betaCard)

@@ -200,6 +200,8 @@
         <file>images/sponsor.jpg</file>
         <file>images/tips.png</file>
         <file>images/todo.png</file>
+        <file>images/unicodeIcon/FluentSystemIcons-Filled.json</file>
+        <file>images/unicodeIcon/FluentSystemIcons-Filled.ttf</file>
         <file>qss/dark/app_interface.qss</file>
         <file>qss/dark/gallery_interface.qss</file>
         <file>qss/dark/home_interface.qss</file>
@@ -208,9 +210,11 @@
         <file>qss/dark/link_card.qss</file>
         <file>qss/dark/log_interface.qss</file>
         <file>qss/dark/main_window.qss</file>
+        <file>qss/dark/pivot.qss</file>
         <file>qss/dark/rte_interface.qss</file>
         <file>qss/dark/sample_card.qss</file>
         <file>qss/dark/setting_interface.qss</file>
+        <file>qss/dark/tools_interface.qss</file>
         <file>qss/dark/view_interface.qss</file>
         <file>qss/light/app_interface.qss</file>
         <file>qss/light/gallery_interface.qss</file>
@@ -220,9 +224,11 @@
         <file>qss/light/link_card.qss</file>
         <file>qss/light/log_interface.qss</file>
         <file>qss/light/main_window.qss</file>
+        <file>qss/light/pivot.qss</file>
         <file>qss/light/rte_interface.qss</file>
         <file>qss/light/sample_card.qss</file>
         <file>qss/light/setting_interface.qss</file>
+        <file>qss/light/tools_interface.qss</file>
         <file>qss/light/view_interface.qss</file>
     </qresource>
 </RCC>

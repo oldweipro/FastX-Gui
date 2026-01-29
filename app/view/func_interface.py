@@ -10,7 +10,7 @@ from qfluentwidgets import ScrollArea, InfoBar, InfoBarPosition, PushButton, Sub
     FluentIcon as FIF, Action, CheckableMenu, MenuIndicatorType, CommandBar, TransparentDropDownPushButton
 
 from app.components.info_card import AppInfoCard
-from app.components.config_card import BasicConfigCard
+from app.components.config_card import BasicConfigCard, FloatingWindowBasicSettings
 from app.card.autoplot_setting_card import AutoPlotSettingCard
 from app.common.style_sheet import StyleSheet
 
@@ -174,6 +174,7 @@ class FuncInterface(ScrollArea):
 
         self.funcInfoCard = AppInfoCard()
         self.basicSettingCard = BasicConfigCard()
+
 
         self._initWidget()
         self.__initLayout()

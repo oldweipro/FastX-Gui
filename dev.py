@@ -646,6 +646,32 @@ QMAKE_EXTRA_TARGETS += no_temp_files
             if i18n_count > 0:
                 self.print_info(f"添加了 {i18n_count} 个翻译资源")
 
+        # 4. 添加 JSON 资源
+        json_count = 0
+        for json_file in self.resource_dir.rglob("*.json"):
+            if json_file.is_file():
+                relative_path = json_file.relative_to(self.resource_dir)
+                file_elem = ET.SubElement(qresource_app, "file")
+                file_elem.text = str(relative_path).replace('\\', '/')
+                added_files.append(str(relative_path))
+                json_count += 1
+
+        if json_count > 0:
+            self.print_info(f"添加了 {json_count} 个 JSON 资源")
+
+        # 5. 添加 TTF 字体资源
+        ttf_count = 0
+        for ttf_file in self.resource_dir.rglob("*.ttf"):
+            if ttf_file.is_file():
+                relative_path = ttf_file.relative_to(self.resource_dir)
+                file_elem = ET.SubElement(qresource_app, "file")
+                file_elem.text = str(relative_path).replace('\\', '/')
+                added_files.append(str(relative_path))
+                ttf_count += 1
+
+        if ttf_count > 0:
+            self.print_info(f"添加了 {ttf_count} 个 TTF 字体资源")
+
         # 按字母顺序排序
         qresource_app[:] = sorted(qresource_app, key=lambda x: x.text)
 

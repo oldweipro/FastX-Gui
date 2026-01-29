@@ -1,0 +1,67 @@
+{
+    "Register": {
+        "ActivationCode": "",
+        "Email": "",
+        "RememberMe": true
+    },
+    "Background": {
+        "BlurRadius": 6,
+        "DisplayMode": "Keep Aspect Ratio",
+        "ImageEnabled": true,
+        "ImagePath": "C:/Users/91974/Pictures/02 壁纸/朋克狐耳女孩4k壁纸3840x2160_彼岸图网.jpg",
+        "Opacity": 30
+    },
+    "Application": {
+        "beta": false,
+        "close_window_action": "ask"
+    },
+    "Material": {
+        "AcrylicBlurRadius": 15
+    },
+    "software update": {
+        "CheckUpdateAtStartUp": true
+    },
+    "Beta": {
+        "debug_card": false
+    },
+    "FloatingWindow": {
+        "DoNotStealFocus": true,
+        "ButtonControl": 3,
+        "DisplayStyle": 0,
+        "Draggable": true,
+        "LongPressDuration": 500,
+        "Opacity": 80,
+        "Placement": 1,
+        "Size": 3,
+        "StickToEdge": true,
+        "StickToEdgeDisplayStyle": 1,
+        "StickToEdgeRecoverSeconds": 3,
+        "TopmostMode": 1,
+        "StartupDisplay": true
+    },
+    "Project folders": {
+        "Download": "D:/Github/FastX-Gui/app/download",
+        "LocalProject": []
+    },
+    "personalization": {
+        "DpiScale": "Auto",
+        "Language": "zh_CN",
+        "MicaEnabled": false
+    },
+    "FastRte": {
+        "FastRteDataTypeFolder": "",
+        "FastRteInterfaceFolder": "",
+        "FastRteMappingTableFolder": "",
+        "FastRteOutputFolder": "C:/Users/91974/Downloads",
+        "FastRteToolsEngine": "L2 Func"
+    },
+    "QFluentWidgets": {
+        "FontFamilies": [
+            "Segoe UI",
+            "Microsoft YaHei",
+            "PingFang SC"
+        ],
+        "ThemeColor": "#ff009faa",
+        "ThemeMode": "Dark"
+    }
+}

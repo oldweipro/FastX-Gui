@@ -9,10 +9,115 @@ from PyQt5.QtWidgets import QWidget, QHBoxLayout, QFileDialog
 from qfluentwidgets import (IconWidget, BodyLabel, FluentIcon, InfoBarIcon, ComboBox,
                             PrimaryPushButton, LineEdit, GroupHeaderCardWidget, PushButton,
                             CompactSpinBox, SwitchButton, IndicatorPosition, PlainTextEdit,
-                            ToolTipFilter, ConfigItem, SettingCardGroup)
+                            ToolTipFilter, ConfigItem, SettingCardGroup, SpinBox)
 from qfluentwidgets import FluentIcon as FIF
-from app.common.icon import Logo, PNG
-from app.common.config import cfg
+from app.common.icon import Logo, PNG, UnicodeIcon
+from app.common.config import cfg, TopmostMode
+
+
+class FloatingWindowBasicSettings(GroupHeaderCardWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setTitle(self.tr('basic_settings'))
+        self.setBorderRadius(8)
+
+        # 创建控件
+        self._create_controls()
+
+    def _create_controls(self):
+        """创建所有控件"""
+
+        # 启动时显示浮窗
+        self.startup_switch = SwitchButton()
+        self.startup_switch.setChecked(cfg.startupDisplayFloatingWindow.value)
+        self.startup_switch.checkedChanged.connect(
+            lambda v: setattr(cfg.startupDisplayFloatingWindow, 'value', v)
+        )
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name('ic_fluent_desktop_sync_20_filled'),
+            "启动时显示浮窗",
+            "控制软件启动时是否自动显示浮窗",
+            self.startup_switch
+        )
+
+        # 浮窗透明度
+        self.opacity_spinbox = SpinBox()
+        self.opacity_spinbox.setRange(0, 100)
+        self.opacity_spinbox.setSuffix("%")
+        self.opacity_spinbox.setValue(cfg.floatingWindowOpacity.value)
+        self.opacity_spinbox.valueChanged.connect(
+            lambda v: setattr(cfg.floatingWindowOpacity, 'value', v)
+        )
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name('ic_fluent_brightness_high_20_filled'),
+            "浮窗透明度",
+            "调整浮窗透明度",
+            self.opacity_spinbox
+        )
+
+        # 置顶模式
+        self.topmost_combo = ComboBox()
+        self.topmost_combo.addItems(["关闭置顶", "置顶", "UIA置顶"])
+        self.topmost_combo.setCurrentIndex(cfg.floatingWindowTopmostMode.value.value)
+        self.topmost_combo.currentIndexChanged.connect(self._on_topmost_changed)
+        self.addGroup(
+            FIF.PIN,
+            "置顶模式",
+            "选择浮窗置顶方式（UIA置顶需以管理员运行）",
+            self.topmost_combo
+        )
+
+        # 浮窗可拖动
+        self.draggable_switch = SwitchButton()
+        self.draggable_switch.setChecked(cfg.floatingWindowDraggable.value)
+        self.draggable_switch.checkedChanged.connect(
+            lambda v: setattr(cfg.floatingWindowDraggable, 'value', v)
+        )
+        self.addGroup(
+            FIF.SHARE,
+            "浮窗可拖动",
+            "控制浮窗是否可被拖动",
+            self.draggable_switch
+        )
+
+        # 长按拖动时间
+        self.long_press_spinbox = SpinBox()
+        self.long_press_spinbox.setRange(50, 3000)
+        self.long_press_spinbox.setSingleStep(100)
+        self.long_press_spinbox.setSuffix("ms")
+        self.long_press_spinbox.setValue(cfg.floatingWindowLongPressDuration.value)
+        self.long_press_spinbox.valueChanged.connect(
+            lambda v: setattr(cfg.floatingWindowLongPressDuration, 'value', v)
+        )
+        self.addGroup(
+            FIF.SHARE,
+            "长按时间",
+            "设置浮窗长按时间（毫秒）",
+            self.long_press_spinbox
+        )
+
+        # 无焦点模式
+        self.focus_switch = SwitchButton()
+        self.focus_switch.setChecked(cfg.doNotStealFocus.value)
+        self.focus_switch.checkedChanged.connect(
+            lambda v: setattr(cfg.doNotStealFocus, 'value', v)
+        )
+        self.addGroup(
+            FIF.SHARE,
+            "无焦点模式",
+            "通知窗口显示时不抢占焦点，保持原有顶层软件焦点",
+            self.focus_switch
+        )
+
+    def _on_topmost_changed(self, index):
+        """置顶模式改变处理"""
+        mode_map = {
+            0: TopmostMode.DISABLED,
+            1: TopmostMode.NORMAL,
+            2: TopmostMode.UIA
+        }
+        cfg.floatingWindowTopmostMode.value = mode_map[index]
+
 
 class BasicConfigCard(GroupHeaderCardWidget):
     """ Basic config card """

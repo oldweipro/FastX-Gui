@@ -51,7 +51,7 @@ class AppInfoCard(SimpleCardWidget):
         self.setBorderRadius(8)
         self.iconLabel = ImageLabel(QIcon(":/app/images/ico/M3U8DL.ico").pixmap(120, 120), self)
 
-        self.nameLabel = TitleLabel(self.tr('RTE Connector'), self)
+        self.nameLabel = TitleLabel(self.tr('FastRte'), self)
         self.updateButton = PrimaryPushButton(self.tr("Update"), self)
         self.companyLabel = HyperlinkLabel(QUrl('https://github.com/fastxteam/FastX-Gui'), 'FastXTeam', self)
         self.versionWidget = StatisticsWidget(self.tr('Version'), 'v0.1.0', self)
