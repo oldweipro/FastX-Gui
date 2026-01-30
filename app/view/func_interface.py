@@ -9,6 +9,7 @@ from qfluentwidgets import ScrollArea, InfoBar, InfoBarPosition, PushButton, Sub
     SettingCardGroup, MessageBoxBase, LineEdit, PlainTextEdit, SimpleCardWidget, SplitPushButton, ExpandSettingCard, \
     FluentIcon as FIF, Action, CheckableMenu, MenuIndicatorType, CommandBar, TransparentDropDownPushButton
 
+from app.common.icon import UnicodeIcon
 from app.components.info_card import AppInfoCard
 from app.components.config_card import BasicConfigCard, FloatingWindowBasicSettings
 from app.card.autoplot_setting_card import AutoPlotSettingCard
@@ -22,7 +23,7 @@ class CustomMessageBox(MessageBoxBase):
         self.titleLabel = SubtitleLabel(self.tr('Operation Console'), self)
 
         self.automaticPlotCard = AutoPlotSettingCard(
-            icon=FIF.IMAGE_EXPORT,
+            icon=FIF.CHECKBOX,
             title=self.tr("Select SWCs"),
             content="Select SWCs of which should be generate by tools"
         )

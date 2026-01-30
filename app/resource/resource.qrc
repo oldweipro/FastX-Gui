@@ -3,24 +3,12 @@
         <file>i18n/app.zh_CN.qm</file>
         <file>i18n/app.zh_HK.qm</file>
         <file>images/Dvd.png</file>
-        <file>images/Gyro.jpg</file>
         <file>images/MusicNote.png</file>
-        <file>images/SBR.jpg</file>
-        <file>images/Shoko1.jpg</file>
-        <file>images/Shoko2.jpg</file>
-        <file>images/Shoko3.jpg</file>
-        <file>images/Shoko4.jpg</file>
         <file>images/Singer.png</file>
         <file>images/Smiling_with_heart.png</file>
         <file>images/alarms.png</file>
         <file>images/background.jpg</file>
-        <file>images/banner_home_bg.png</file>
         <file>images/bg37.jpg</file>
-        <file>images/chidanta.jpg</file>
-        <file>images/chidanta2.jpg</file>
-        <file>images/chidanta3.jpg</file>
-        <file>images/chidanta4.jpg</file>
-        <file>images/chidanta5.jpg</file>
         <file>images/controls/Acrylic.png</file>
         <file>images/controls/AnimatedIcon.png</file>
         <file>images/controls/AnimatedVisualPlayer.png</file>
@@ -121,22 +109,11 @@
         <file>images/controls/XamlUICommand.png</file>
         <file>images/header.png</file>
         <file>images/header1.png</file>
-        <file>images/ico/CAR-RTE.ico</file>
         <file>images/ico/M3U8DL.ico</file>
-        <file>images/icons/EmojiTabSymbols_black.svg</file>
-        <file>images/icons/EmojiTabSymbols_white.svg</file>
-        <file>images/icons/Grid_black.svg</file>
-        <file>images/icons/Grid_white.svg</file>
-        <file>images/icons/Menu_black.svg</file>
-        <file>images/icons/Menu_white.svg</file>
-        <file>images/icons/Price_black.svg</file>
-        <file>images/icons/Price_white.svg</file>
         <file>images/icons/SettingsFilled_black.svg</file>
         <file>images/icons/SettingsFilled_white.svg</file>
         <file>images/icons/Settings_black.svg</file>
         <file>images/icons/Settings_white.svg</file>
-        <file>images/icons/Text_black.svg</file>
-        <file>images/icons/Text_white.svg</file>
         <file>images/kunkun.png</file>
         <file>images/logo-m.ico</file>
         <file>images/logo-m.png</file>
@@ -192,16 +169,13 @@
         <file>images/logo/Wastebasket.svg</file>
         <file>images/logo/Whale.svg</file>
         <file>images/logo/Window.svg</file>
-        <file>images/png/1.png</file>
-        <file>images/png/2.png</file>
-        <file>images/png/3.png</file>
         <file>images/png/ShakaPackager.png</file>
         <file>images/shoko.png</file>
         <file>images/sponsor.jpg</file>
         <file>images/tips.png</file>
         <file>images/todo.png</file>
-        <file>images/unicodeIcon/FluentSystemIcons-Filled.json</file>
-        <file>images/unicodeIcon/FluentSystemIcons-Filled.ttf</file>
+        <file>images/unicodeIcon/FluentSystemIcons-Regular.json</file>
+        <file>images/unicodeIcon/FluentSystemIcons-Regular.ttf</file>
         <file>qss/dark/app_interface.qss</file>
         <file>qss/dark/gallery_interface.qss</file>
         <file>qss/dark/home_interface.qss</file>

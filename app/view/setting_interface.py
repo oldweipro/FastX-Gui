@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QHBoxLayout
 
 from app.common.background_manager import get_background_manager
 from app.common.config import cfg, isWin11
+from app.common.icon import UnicodeIcon
 from app.common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
@@ -77,7 +78,7 @@ class SettingInterface(ScrollArea):
         )
         self.downloadFolderCard = PushSettingCard(
             self.tr('Choose folder'),
-            FIF.DOWNLOAD,
+            FIF.FOLDER_ADD,
             self.tr("Project directory"),
             cfg.get(cfg.downloadFolder),
             self.projectInThisPCGroup
@@ -145,7 +146,7 @@ class SettingInterface(ScrollArea):
         self.backgroundImageCard = BackgroundImageCard(
             self.tr('Background image path'),
             self.tr('Choose a custom background image file'),
-            FIF.FOLDER,
+            UnicodeIcon.get_icon_by_name('ic_fluent_image_add_32_regular'),
             self.backgroundGroupCard
         )
         self.backgroundOpacityCard = RangeSettingCard(
@@ -175,7 +176,7 @@ class SettingInterface(ScrollArea):
         )
 
         self.floatingWindowGroupCard = ExpandSettingCard(
-            FIF.PHOTO,
+            UnicodeIcon.get_icon_by_name('ic_fluent_panel_right_32_regular'),
             self.tr('FloatWindow'),
             self.tr('Float Windows Settings'),
             self.view)
@@ -194,7 +195,7 @@ class SettingInterface(ScrollArea):
         # Application
         self.appGroup = SettingCardGroup(self.tr('Application settings'), self.view)
         self.betaCard = SwitchSettingCard(
-            FIF.DEVELOPER_TOOLS,
+            UnicodeIcon.get_icon_by_name('ic_fluent_bug_prohibited_20_regular'),
             self.tr('Beta experimental features'),
             self.tr('When turned on, experimental features will be enabled'),
             configItem=cfg.beta,
@@ -329,7 +330,7 @@ class SettingInterface(ScrollArea):
     def _createBetaSetting(self):
         self.BetaGroup = SettingCardGroup(self.tr('Beta'), self.view)
         self.debug_Card = SwitchSettingCard(
-                FIF.CODE,
+                UnicodeIcon.get_icon_by_name('ic_fluent_bug_24_regular'),
                 self.tr('Debug Mode'),
                 self.tr('The global exception capture will be disabled, and there will be outputs in the commandline.(Code Running Only)'),
                 configItem=cfg.debug_card,

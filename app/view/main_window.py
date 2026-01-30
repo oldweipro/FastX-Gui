@@ -18,6 +18,7 @@ from app.view.log_interface import LogInterface
 from app.view.func_interface import FuncInterface
 from app.view.library_interface import LibraryViewInterface
 from app.view.tool_interface import ToolsInterface
+from app.view.floating_window import LevitationWindow
 
 from app.common.icon import Icon
 from app.common.translator import Translator
@@ -45,6 +46,9 @@ class MainWindow(SplitFluentWindow):
 
         # initialize background manager
         self.backgroundManager = get_background_manager(cfg)
+
+        # initialize floating window
+        self.__initFloatingWindow()
 
         # set sidebar expand width
         # self.navigationInterface.setFixedWidth(70)
@@ -162,6 +166,10 @@ class MainWindow(SplitFluentWindow):
         )
         w.exec_()
 
+    def __initFloatingWindow(self):
+        """初始化悬浮窗"""
+        self.floatingWindow = LevitationWindow(self)
+
     def __initSystemTray(self):
         """初始化系统托盘"""
         self.tray_icon = QSystemTrayIcon(self)
@@ -177,6 +185,14 @@ class MainWindow(SplitFluentWindow):
         show_action.triggered.connect(self.showNormal)
         show_action.triggered.connect(self.activateWindow)
         tray_menu.addAction(show_action)
+        
+        # 显示/隐藏悬浮窗
+        self.floating_window_action = QAction('显示悬浮窗', self)
+        self.floating_window_action.setCheckable(True)
+        self.floating_window_action.setChecked(False)
+        self.floating_window_action.triggered.connect(self._toggle_floating_window)
+        tray_menu.addAction(self.floating_window_action)
+        
         tray_menu.addSeparator()
         # 打开设置界面
         setting_action = QAction('设置', self)
@@ -216,6 +232,15 @@ class MainWindow(SplitFluentWindow):
                 self.switchTo(self.settingInterface)
         except Exception:
             pass
+
+    def _toggle_floating_window(self, checked):
+        """切换悬浮窗的显示/隐藏状态"""
+        if checked:
+            self.floatingWindow.show()
+            self.floating_window_action.setText('隐藏悬浮窗')
+        else:
+            self.floatingWindow.hide()
+            self.floating_window_action.setText('显示悬浮窗')
 
     def __setQss(self):
         """ set style sheet """

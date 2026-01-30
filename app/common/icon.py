@@ -15,8 +15,8 @@ class UnicodeIcon:
     """
     # 图标配置
     DEFAULT_ICON_CODEPOINT = 62634  # 默认图标码点(info图标)
-    FONT_PATH = ":/app/images/unicodeIcon/FluentSystemIcons-Filled.ttf"
-    ICON_MAP_PATH = ":/app/images/unicodeIcon/FluentSystemIcons-Filled.json"
+    FONT_PATH = ":/app/images/unicodeIcon/FluentSystemIcons-Regular.ttf"
+    ICON_MAP_PATH = ":/app/images/unicodeIcon/FluentSystemIcons-Regular.json"
 
     # 缓存
     _icon_cache: Dict[str, QIcon] = {}

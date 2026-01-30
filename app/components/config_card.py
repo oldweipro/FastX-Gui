@@ -34,7 +34,7 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
             lambda v: setattr(cfg.startupDisplayFloatingWindow, 'value', v)
         )
         self.addGroup(
-            UnicodeIcon.get_icon_by_name('ic_fluent_desktop_sync_20_filled'),
+            UnicodeIcon.get_icon_by_name('ic_fluent_view_desktop_24_regular'),
             "启动时显示浮窗",
             "控制软件启动时是否自动显示浮窗",
             self.startup_switch
@@ -49,7 +49,7 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
             lambda v: setattr(cfg.floatingWindowOpacity, 'value', v)
         )
         self.addGroup(
-            UnicodeIcon.get_icon_by_name('ic_fluent_brightness_high_20_filled'),
+            UnicodeIcon.get_icon_by_name('ic_fluent_brightness_high_20_regular'),
             "浮窗透明度",
             "调整浮窗透明度",
             self.opacity_spinbox
@@ -61,7 +61,7 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
         self.topmost_combo.setCurrentIndex(cfg.floatingWindowTopmostMode.value.value)
         self.topmost_combo.currentIndexChanged.connect(self._on_topmost_changed)
         self.addGroup(
-            FIF.PIN,
+            UnicodeIcon.get_icon_by_name('ic_fluent_note_pin_20_regular'),
             "置顶模式",
             "选择浮窗置顶方式（UIA置顶需以管理员运行）",
             self.topmost_combo
@@ -74,7 +74,7 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
             lambda v: setattr(cfg.floatingWindowDraggable, 'value', v)
         )
         self.addGroup(
-            FIF.SHARE,
+            UnicodeIcon.get_icon_by_name('ic_fluent_drag_24_regular'),
             "浮窗可拖动",
             "控制浮窗是否可被拖动",
             self.draggable_switch
@@ -90,7 +90,7 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
             lambda v: setattr(cfg.floatingWindowLongPressDuration, 'value', v)
         )
         self.addGroup(
-            FIF.SHARE,
+            UnicodeIcon.get_icon_by_name('ic_fluent_hand_draw_32_regular'),
             "长按时间",
             "设置浮窗长按时间（毫秒）",
             self.long_press_spinbox
@@ -103,7 +103,7 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
             lambda v: setattr(cfg.doNotStealFocus, 'value', v)
         )
         self.addGroup(
-            FIF.SHARE,
+            UnicodeIcon.get_icon_by_name('ic_fluent_group_dismiss_24_regular'),
             "无焦点模式",
             "通知窗口显示时不抢占焦点，保持原有顶层软件焦点",
             self.focus_switch
@@ -135,7 +135,7 @@ class BasicConfigCard(GroupHeaderCardWidget):
 
         self.hintIcon = IconWidget(InfoBarIcon.INFORMATION, self)
         self.hintLabel = BodyLabel(self.tr("Click the execute button to start running") + ' 👉')
-        self.exeButton = PrimaryPushButton(self.tr("Execute"), self, FluentIcon.PLAY_SOLID)
+        self.exeButton = PrimaryPushButton(self.tr("Execute"), self, UnicodeIcon.get_icon_by_name('ic_fluent_panel_bottom_20_regular'))
 
         self.toolBarLayout = QHBoxLayout()
 
@@ -169,31 +169,31 @@ class BasicConfigCard(GroupHeaderCardWidget):
     def _initLayout(self):
         # add widget to group
         self.toolsEngineGroup = self.addGroup(
-            icon=Logo.FFMPEG.icon(),
+            icon=UnicodeIcon.get_icon_by_name('ic_fluent_multiplier_2x_32_regular'),
             title=self.tr("Change Tools"),
             content=self.tr("Select the Tools Engine to Generator"),
             widget=self.toolsEngineComboBox
         )
         self.chooseMappingTableGroup = self.addGroup(
-            icon=Logo.GEAR.icon(),
+            icon=UnicodeIcon.get_icon_by_name('ic_fluent_document_table_24_regular'),
             title=self.tr("Mapping Table Path"),
             content=cfg.get(cfg.fastRteMappingTableFolder),
             widget=self.chooseMappingTableButton
         )
         self.chooseDataTypGroup = self.addGroup(
-            icon=Logo.GEAR.icon(),
+            icon=UnicodeIcon.get_icon_by_name('ic_fluent_document_contract_16_regular'),
             title=self.tr("DataType Arxml Path"),
             content=cfg.get(cfg.fastRteDataTypeFolder),
             widget=self.chooseDataTypeButton
         )
         self.chooseInterfaceGroup = self.addGroup(
-            icon=Logo.GEAR.icon(),
+            icon=UnicodeIcon.get_icon_by_name('ic_fluent_document_contract_16_regular'),
             title=self.tr("Interface Arxml Path"),
             content=cfg.get(cfg.fastRteInterfaceFolder),
             widget=self.chooseInterfaceButton
         )
         self.outputFolderGroup = self.addGroup(
-            icon=Logo.FOLDER.icon(),
+            icon=UnicodeIcon.get_icon_by_name('ic_fluent_folder_open_24_regular'),
             title=self.tr("Output Folder"),
             content=cfg.get(cfg.fastRteOutputFolder),
             widget=self.outputFolderButton
@@ -240,7 +240,12 @@ class BasicConfigCard(GroupHeaderCardWidget):
             self.outputFolderGroup.setContent(folder)
 
     def _onToolsEngineChanged(self):
-        icons = [Logo.FFMPEG, Logo.BENTO, PNG.SHAKA_PACKAGER]
+        icons = [
+            UnicodeIcon.get_icon_by_name('ic_fluent_multiplier_2x_32_regular'),
+            UnicodeIcon.get_icon_by_name('ic_fluent_dual_screen_span_20_regular'),
+            UnicodeIcon.get_icon_by_name('ic_fluent_diamond_link_24_regular')
+
+        ]
         self.toolsEngineGroup.setIcon(icons[self.toolsEngineComboBox.currentIndex()].icon())
         cfg.set(cfg.fastRteToolsEngine, self.toolsEngineComboBox.currentText())
 
