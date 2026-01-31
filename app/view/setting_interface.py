@@ -1,4 +1,5 @@
 # coding:utf-8
+from loguru import logger
 from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, FolderListSettingCard,
                             OptionsSettingCard, PushSettingCard,
                             HyperlinkCard, PrimaryPushSettingCard, ScrollArea,
@@ -175,6 +176,7 @@ class SettingInterface(ScrollArea):
             parent=self.backgroundGroupCard
         )
 
+        # 懸浮窗
         self.floatingWindowGroupCard = ExpandSettingCard(
             UnicodeIcon.get_icon_by_name('ic_fluent_panel_right_32_regular'),
             self.tr('FloatWindow'),
@@ -226,6 +228,70 @@ class SettingInterface(ScrollArea):
             parent = self.appGroup
         )
 
+        # Log
+        self.logGroupCard = ExpandSettingCard(
+            UnicodeIcon.get_icon_by_name('ic_fluent_document_bullet_list_24_regular'),
+            self.tr('Logs Settings'),
+            self.tr('Custom logs settings'),
+            self.view)
+        self.logLevelCard = ComboBoxSettingCard(
+            cfg.logLevel,
+            FIF.COMMAND_PROMPT,
+            self.tr('Log level'),
+            self.tr('Set the minimum log level to display'),
+            texts=[self.tr('TRACE'), self.tr('DEBUG'), self.tr('INFO'), self.tr('SUCCESS'), self.tr('WARNING'), self.tr('ERROR'), self.tr('CRITICAL')],
+            parent=self.logGroupCard
+        )
+        self.logColorTraceCard = CustomColorSettingCard(
+            cfg.logColorTrace,
+            FIF.PALETTE,
+            self.tr('Trace color'),
+            self.tr('Set the color for trace level logs'),
+            parent=self.logGroupCard
+        )
+        self.logColorDebugCard = CustomColorSettingCard(
+            cfg.logColorDebug,
+            FIF.PALETTE,
+            self.tr('Debug color'),
+            self.tr('Set the color for debug level logs'),
+            parent=self.logGroupCard
+        )
+        self.logColorInfoCard = CustomColorSettingCard(
+            cfg.logColorInfo,
+            FIF.PALETTE,
+            self.tr('Info color'),
+            self.tr('Set the color for info level logs'),
+            parent=self.logGroupCard
+        )
+        self.logColorSuccessCard = CustomColorSettingCard(
+            cfg.logColorSuccess,
+            FIF.PALETTE,
+            self.tr('Success color'),
+            self.tr('Set the color for success level logs'),
+            parent=self.logGroupCard
+        )
+        self.logColorWarningCard = CustomColorSettingCard(
+            cfg.logColorWarning,
+            FIF.PALETTE,
+            self.tr('Warning color'),
+            self.tr('Set the color for warning level logs'),
+            parent=self.logGroupCard
+        )
+        self.logColorErrorCard = CustomColorSettingCard(
+            cfg.logColorError,
+            FIF.PALETTE,
+            self.tr('Error color'),
+            self.tr('Set the color for error level logs'),
+            parent=self.logGroupCard
+        )
+        self.logColorCriticalCard = CustomColorSettingCard(
+            cfg.logColorCritical,
+            FIF.PALETTE,
+            self.tr('Critical color'),
+            self.tr('Set the color for critical level logs'),
+            parent=self.logGroupCard
+        )
+
         # update software
         self.updateSoftwareGroup = SettingCardGroup(self.tr("Software update"), self.view)
         self.updateOnStartUpCard = SwitchSettingCard(
@@ -256,10 +322,10 @@ class SettingInterface(ScrollArea):
         )
         self.aboutCard = PrimaryPushSettingCard(
             self.tr('Check update'),
-            ":/app/images/logo.png",
+            ":/app/images/png/logo.png",
             self.tr('About'),
             '© ' + self.tr('Copyright') + f" {YEAR}, {AUTHOR}. " +
-            self.tr('Version') + " v" + VERSION,
+            self.tr('Version') + VERSION,
             self.aboutGroup
         )
 
@@ -276,7 +342,13 @@ class SettingInterface(ScrollArea):
         self.setWidget(self.view)
         self.setWidgetResizable(True)
 
-
+        logger.trace('Hello')
+        logger.info('Hello')
+        logger.debug('Hello')
+        logger.warning('Hello')
+        logger.success('Hello')
+        logger.error('Hello')
+        logger.critical('Hello')
     def __setQss(self):
         """ set style sheet """
         # initialize style sheet
@@ -317,13 +389,27 @@ class SettingInterface(ScrollArea):
         self.backgroundGroupCard.viewLayout.addWidget(self.backgroundBlurCard)
         self.backgroundGroupCard.viewLayout.addWidget(self.backgroundDisplayModeCard)
         self.backgroundGroupCard._adjustViewSize()
+
         # float window
         self.floatingWindowGroupCard.viewLayout.addWidget(self.floatingWindowSettingCard)
 
+        # add log setting cards
+        self.logGroupCard.viewLayout.addWidget(self.logLevelCard)
+        self.logGroupCard.viewLayout.addWidget(self.logColorTraceCard)
+        self.logGroupCard.viewLayout.addWidget(self.logColorDebugCard)
+        self.logGroupCard.viewLayout.addWidget(self.logColorInfoCard)
+        self.logGroupCard.viewLayout.addWidget(self.logColorSuccessCard)
+        self.logGroupCard.viewLayout.addWidget(self.logColorWarningCard)
+        self.logGroupCard.viewLayout.addWidget(self.logColorErrorCard)
+        self.logGroupCard.viewLayout.addWidget(self.logColorCriticalCard)
+
         self.materialGroup.addSettingCard(self.blurRadiusCard)
+
         self.appGroup.addSettingCard(self.betaCard)
         self.appGroup.addSettingCard(self.closeWindowActionCard)
         self.appGroup.addSettingCard(self.windowSizeModeCard)
+        self.appGroup.addSettingCard(self.logGroupCard)
+
         self.updateSoftwareGroup.addSettingCard(self.updateOnStartUpCard)
 
         self.aboutGroup.addSettingCard(self.helpCard)

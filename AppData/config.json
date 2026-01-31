@@ -5,10 +5,10 @@
         "RememberMe": true
     },
     "Background": {
-        "BlurRadius": 6,
+        "BlurRadius": 0,
         "DisplayMode": "Keep Aspect Ratio",
         "ImageEnabled": false,
-        "ImagePath": "C:/Users/91974/Pictures/02 壁纸/朋克狐耳女孩4k壁纸3840x2160_彼岸图网.jpg",
+        "ImagePath": "",
         "Opacity": 30
     },
     "Application": {
@@ -46,7 +46,7 @@
     },
     "personalization": {
         "DpiScale": "Auto",
-        "Language": "zh_CN",
+        "Language": "Auto",
         "MicaEnabled": true
     },
     "FastRte": {
@@ -63,6 +63,16 @@
             "PingFang SC"
         ],
         "ThemeColor": "#ff009faa",
-        "ThemeMode": "Light"
+        "ThemeMode": "Auto"
+    },
+    "Log": {
+        "LogColorCritical": "#ffff1493",
+        "LogColorDebug": "#ffff2d37",
+        "LogColorError": "#ffff4500",
+        "LogColorInfo": "#ff00ff7f",
+        "LogColorSuccess": "#ff32cd32",
+        "LogColorTrace": "#ffc4d320",
+        "LogColorWarning": "#ffffd700",
+        "LogLevel": "DEBUG"
     }
 }

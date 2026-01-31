@@ -1,80 +1,92 @@
 # coding:utf-8
 import sys
+from loguru import logger
 from PyQt5.QtCore import Qt, QUrl, QSize, QEventLoop, QTimer, QDateTime, QPoint
 from PyQt5.QtGui import QIcon, QDesktopServices, QFont, QColor, QPainter
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QSplashScreen, QLabel, QStatusBar, QFrame, \
-    QSystemTrayIcon, QAction, QDesktopWidget
+    QSystemTrayIcon, QAction, QDesktopWidget, QPlainTextEdit
 from PyQt5.uic.properties import QtCore
 from qfluentwidgets import (NavigationItemPosition, MessageBox, setTheme, Theme, MSFluentWindow, isDarkTheme,
                             NavigationAvatarWidget, SearchLineEdit, qrouter, SubtitleLabel, setFont, SplashScreen,
                             IndeterminateProgressBar, ProgressBar, PushButton, FluentIcon as FIF, InfoBar,
                             InfoBarPosition, SystemTrayMenu, NavigationBarPushButton, SystemThemeListener,
-                            SplitFluentWindow, FluentTitleBarButton)
+                            SplitFluentWindow)
 
-
+from app.view.log_interface import QTextEditLogger, LoguruInterface
 from app.view.home_interface import HomeInterface
 from app.view.setting_interface import SettingInterface
 from app.view.app_interface import AppInterface
-from app.view.log_interface import LogInterface
 from app.view.func_interface import FuncInterface
 from app.view.library_interface import LibraryViewInterface
 from app.view.tool_interface import ToolsInterface
 from app.view.floating_window import LevitationWindow
 
-from app.common.icon import Icon
+from app.common.icon import Icon, UnicodeIcon
 from app.common.translator import Translator
 from app.common.style_sheet import StyleSheet
 from app.common.signal_bus import signalBus
 from app.common.config import cfg
 from app.common import resource
-from app.common.setting import VERSION
+from app.common.setting import VERSION, APPLY_NAME
 from app.common.background_manager import get_background_manager
 from app.card.messagebox_custom import MessageBoxCloseWindow, MessageBoxSupport
 from app.components.custom_titlebar import CustomTitleBar1, CustomTitleBar
-
 
 class MainWindow(SplitFluentWindow):
     def __init__(self):
         # 先调用父类初始化
         super().__init__()
-        self.initWindow()
+        self._initWindow()
         self._init_services()
-        self.__initInterface()
+        self._initInterface()
         # initialize floating window
-        self.__initFloatingWindow()
-
-        # set sidebar expand width
-        # self.navigationInterface.setFixedWidth(70)
-        # enable acrylic effect
-        self.navigationInterface.setAcrylicEnabled(True)
-        # set sidebar expand width
-        # self.navigationInterface.setMinimumExpandWidth(120)
-        self.navigationInterface.setReturnButtonVisible(False)
-        # force sidebar to always expanded state (disable collapsible)
-        self.navigationInterface.setCollapsible(True)
-        # 導航路由切換滑動特效
-        self.navigationInterface.setUpdateIndicatorPosOnCollapseFinished(True)
-        # ensure sidebar is expanded
-        # self.navigationInterface.expand(useAni=False)
-
+        self._initFloatingWindow()
         # add items to navigation interface
-        self.__initNavigation()
-
+        self._initNavigation()
         # add systemTray Menu
-        self.__initSystemTray()
-
+        self._initSystemTray()
         # 创建信号连接到槽
-        self.__connectSignalToSlot()
+        self._connectSignalToSlot()
+        self._setQss()
 
     def _init_services(self):
-        # create system theme listener
+        # 創建主題監聽器
         self.themeListener = SystemThemeListener(self)
-        # start theme listener
-        self.themeListener.start()
-        # initialize background manager
+        # 初始化背景圖片管理器
         self.backgroundManager = get_background_manager(cfg)
+        # 初始化日志系统
+        self._setup_log_viewer()
+        # ComponentUsageTracker()  # 日志使用情况监督
+        # ComponentScanner()       # 日志实时监控服务
+        # 開始主題監聽
+        self.themeListener.start()
 
-    def initWindow(self):
+    def _setup_log_viewer(self):
+        self.loguru_interface = LoguruInterface(self)
+        self.text_logger = QTextEditLogger(self.loguru_interface.log_viewer, max_lines=1000)
+        # 连接信号
+        self.text_logger.new_log_signal.connect(self.loguru_interface.on_new_log)
+        logger.remove()
+        # 添加自定义处理器
+        def log_sink(message, format : bool=False):
+            """将loguru消息转发到Qt界面"""
+            try:
+                if format:
+                    # 获取格式化后的消息
+                    self.text_logger.write(message.record["message"])
+                else:
+                    # 写入Qt日志器
+                    self.text_logger.write(message)
+            except Exception:
+                pass
+        # 配置loguru使用我们的sink()
+        logger.add(
+            log_sink,
+            format="{time:YYYY/MM/DD hh:mm:ss} | {level:7} | {file}:{line} {message}",
+            level="DEBUG"
+        )
+
+    def _initWindow(self):
         # create splash screen
         self.splashScreen = SplashScreen(self.windowIcon(), self)
         self.splashScreen.setIconSize(QSize(106, 106))
@@ -93,9 +105,10 @@ class MainWindow(SplitFluentWindow):
             self.setResizeEnabled(True)
             self.titleBar.maxBtn.show()
             self.titleBar.setDoubleClickEnabled(True)
+            self.navigationInterface.setExpandWidth(275)
         else:
             # 固定大小模式
-            self.resize(960, 800)
+            self.resize(960, 1070)
             self.setResizeEnabled(False)
             self.titleBar.maxBtn.hide()
             self.titleBar.setDoubleClickEnabled(False)
@@ -105,38 +118,49 @@ class MainWindow(SplitFluentWindow):
             # 调整布局边距以适应标题栏高度
             # self.hBoxLayout.setContentsMargins(0, 48, 0, 0)
         # 设置图标,标题
-        self.setWindowIcon(QIcon(':/app/images/logo-m.png'))
-        self.setWindowTitle(f'FastXGui {VERSION}')
-        self.__setQss()
+        self.setWindowIcon(QIcon(':/app/images/png/logo-m.png'))
+        self.setWindowTitle(f'{APPLY_NAME} {VERSION}')
+        # self.__setQss()
         # 初始化位置
         self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
-        self.navigationInterface.setExpandWidth(175)
         # 显示窗口
         self.show()
         QApplication.processEvents()
 
-    def __initInterface(self):
+    def _initInterface(self):
         # 创建子界面
         self.homeInterface = HomeInterface(self)
         self.appInterface = AppInterface(self)
         self.funcInterface = FuncInterface(self)
         self.toolInterface = ToolsInterface(self)
-        self.logInterface = LogInterface(self)
+        #self.loguru_interface = LoguruInterface(self)
         self.libraryInterface = LibraryViewInterface(self)
         self.settingInterface = SettingInterface(self)
 
-    def __connectSignalToSlot(self):
+    def _connectSignalToSlot(self):
         signalBus.micaEnableChanged.connect(self.setMicaEffectEnabled)
 
-    def __initNavigation(self):
-        # add navigation items
-        t = Translator()
+    def _initNavigation(self):
+        # set sidebar expand width
+        # self.navigationInterface.setFixedWidth(70)
+        # enable acrylic effect
+        self.navigationInterface.setAcrylicEnabled(True)
+        # set sidebar expand width
+        # self.navigationInterface.setMinimumExpandWidth(120)
+        self.navigationInterface.setReturnButtonVisible(False)
+        # force sidebar to always expanded state (disable collapsible)
+        self.navigationInterface.setCollapsible(True)
+        # 導航路由切換滑動特效
+        self.navigationInterface.setUpdateIndicatorPosOnCollapseFinished(True)
+        # ensure sidebar is expanded
+        # self.navigationInterface.expand(useAni=False)
 
+        # 主功能区
         pos = NavigationItemPosition.TOP
         # add user card with custom parameters
         self.userCard = self.navigationInterface.addUserCard(
             routeKey='userCard',
-            avatar=':/app/images/shoko.png',
+            avatar=':/app/images/png/shoko.png',
             title='FastXTeam/MG',
             subtitle='wanqiang.liu@fastxteam.com',
             onClick=self.__showMessageBox,
@@ -147,13 +171,14 @@ class MainWindow(SplitFluentWindow):
         self.addSubInterface(self.appInterface , FIF.APPLICATION, self.tr("App"), pos, isTransparent=False)
         self.navigationInterface.addSeparator()
 
+        # 滾動工作區
         pos = NavigationItemPosition.SCROLL
         self.addSubInterface(self.libraryInterface, FIF.BOOK_SHELF, self.tr("Library"), pos, isTransparent=False)
         self.addSubInterface(self.funcInterface, FIF.BRIGHTNESS, self.tr("FastRte"), pos, isTransparent=True)
         self.addSubInterface(self.toolInterface, FIF.DEVELOPER_TOOLS, self.tr("FastPackage"), pos, isTransparent=False)
 
+        # 底部功能区
         pos = NavigationItemPosition.BOTTOM
-        self.addSubInterface(self.logInterface, FIF.COMMAND_PROMPT, self.tr("Log"), pos, isTransparent=False)
         # add custom widget to bottom
         self.navigationInterface.addItem(
             routeKey='sponsor',
@@ -162,16 +187,28 @@ class MainWindow(SplitFluentWindow):
             onClick=lambda: MessageBoxSupport(
                 '支持作者🥰',
                 '此程序为免费开源项目，如果你付了钱请立刻退款\n如果喜欢本项目，可以微信赞赏送作者一杯咖啡☕\n您的支持就是作者开发和维护项目的动力🚀',
-                ':/app/images/sponsor.jpg',
+                ':/app/images/jpg/sponsor.jpg',
                 self
             ).exec(),
             selectable=False,
             tooltip=self.tr('sponsor this tools'),
             position=pos
         )
+        self.addSubInterface(self.loguru_interface, FIF.COMMAND_PROMPT, self.tr("Logs"), pos, isTransparent=False)
+        # self.log_item = self.addSubInterface(
+        #     self.log_viewer,
+        #     UnicodeIcon.get_icon_by_name("ic_fluent_document_bullet_list_clock_24_regular"),
+        #     self.tr('执行日志'),
+        #     position=pos
+        # )
+        # self.log_item.clicked.connect(self._on_log_clicked)
         self.addSubInterface(self.settingInterface, FIF.SETTING, self.tr('Settings'), pos, isTransparent=False)
         self.navigationInterface.setCurrentItem(self.homeInterface.objectName())
         self.splashScreen.finish()
+
+    def _on_log_clicked(self):
+        self.text_logger._clean_trailing_empty_lines()
+        self.text_logger.scroll_to_bottom(force=True)
 
     def __showMessageBox(self):
         w = MessageBox(
@@ -184,15 +221,15 @@ class MainWindow(SplitFluentWindow):
         )
         w.exec_()
 
-    def __initFloatingWindow(self):
+    def _initFloatingWindow(self):
         """初始化悬浮窗"""
         self.floatingWindow = LevitationWindow(self)
 
-    def __initSystemTray(self):
+    def _initSystemTray(self):
         """初始化系统托盘"""
         self.tray_icon = QSystemTrayIcon(self)
-        self.tray_icon.setIcon(QIcon(':/app/images/logo-m.png'))
-        self.tray_icon.setToolTip(f'FastXGui {VERSION}')
+        self.tray_icon.setIcon(QIcon(':/app/images/png/logo-m.png'))
+        self.tray_icon.setToolTip(f'{APPLY_NAME} {VERSION}')
 
         # 创建托盘菜单
         tray_menu = SystemTrayMenu(parent=self)
@@ -260,13 +297,13 @@ class MainWindow(SplitFluentWindow):
             self.floatingWindow.hide()
             self.floating_window_action.setText('显示悬浮窗')
 
-    def __setQss(self):
+    def _setQss(self):
         """ set style sheet """
         # initialize style sheet
         self.setObjectName('mainWindow')
         StyleSheet.MAIN_WINDOW.apply(self)
         self.setMicaEffectEnabled(cfg.get(cfg.micaEnabled))
-
+        logger.info('Succsee Setup qss')
     def resizeEvent(self, e):
         super().resizeEvent(e)
         if hasattr(self, 'splashScreen'):
@@ -284,11 +321,23 @@ class MainWindow(SplitFluentWindow):
             pass
 
         # 停止运行任务和主题监听
-
-        # 可选地清理日志界面资源
-        if hasattr(self, 'logInterface'):
+        if hasattr(self, 'themeListener'):
             try:
-                self.logInterface.cleanup()
+                # 停止主题监听器线程
+                self.themeListener.stop()
+            except Exception:
+                pass
+
+        # 清理日志界面资源
+        if hasattr(self, 'text_logger'):
+            try:
+                self.text_logger.close()
+            except Exception:
+                pass
+
+        if hasattr(self, 'loguru_interface'):
+            try:
+                self.loguru_interface.cleanup()
             except Exception:
                 pass
 
@@ -315,7 +364,7 @@ class MainWindow(SplitFluentWindow):
                 e.ignore()
                 self.hide()
                 self.tray_icon.showMessage(
-                    'FastXGui',
+                    f'{APPLY_NAME}',
                     '程序已最小化到托盘',
                     QSystemTrayIcon.Information,
                     2000
@@ -344,7 +393,7 @@ class MainWindow(SplitFluentWindow):
             e.ignore()
             self.hide()
             self.tray_icon.showMessage(
-                'FastXGui',
+                f'{APPLY_NAME}',
                 '程序已最小化到托盘',
                 QSystemTrayIcon.Information,
                 2000

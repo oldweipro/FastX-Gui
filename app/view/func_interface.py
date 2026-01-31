@@ -15,6 +15,8 @@ from app.components.config_card import BasicConfigCard, FloatingWindowBasicSetti
 from app.card.autoplot_setting_card import AutoPlotSettingCard
 from app.common.style_sheet import StyleSheet
 
+from loguru import logger
+
 class CustomMessageBox(MessageBoxBase):
     """ Custom message box """
 
@@ -28,7 +30,6 @@ class CustomMessageBox(MessageBoxBase):
             content="Select SWCs of which should be generate by tools"
         )
         self.automaticPlotCard.switchButton.setVisible(False)
-
         self.card = SimpleCardWidget(self)
         self.logPanel = QWidget(self)
         self.controlPanel = QFrame(self)
@@ -172,7 +173,7 @@ class FuncInterface(ScrollArea):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.view = QWidget(self)
-
+        logger.info('FUnc')
         self.funcInfoCard = AppInfoCard()
         self.basicSettingCard = BasicConfigCard()
 
@@ -182,6 +183,7 @@ class FuncInterface(ScrollArea):
         self._connectSignalToSlot()
 
     def _initWidget(self):
+        self.setViewportMargins(0, 48, 0, 20)
         self.setObjectName('funcInterface')
         self.view.setObjectName('scrollWidget')
         self.setWidget(self.view)
@@ -195,7 +197,7 @@ class FuncInterface(ScrollArea):
 
     def __initLayout(self):
         self.Layout = QHBoxLayout(self.view)
-        self.Layout.setContentsMargins(0, 48, 0, 0)
+        self.Layout.setContentsMargins(0, 0, 0, 0)
 
         self.main_layout = QVBoxLayout()
         self.main_layout.setObjectName('vBoxLayout')
@@ -219,6 +221,7 @@ class FuncInterface(ScrollArea):
         w = CustomMessageBox(self.window())
         if w.exec():
             print(w.urlLineEdit.text())
+        logger.info('Btn Click')
 
     def _connectSignalToSlot(self):
         self.basicSettingCard.exeButton.clicked.connect(self.showCustomDialog)

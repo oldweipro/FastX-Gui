@@ -34,3 +34,12 @@ LogItem:hover {
     background-color: rgba(0, 0, 0, 0.02);
     border-color: rgba(0, 0, 0, 0.12);
 }
+
+TransparentToggleToolButton, ToggleToolButton {
+    background-color: transparent;
+    border-radius: 8px;
+
+}
+TransparentToggleToolButton:checked, ToggleToolButton:checked {{
+    background-color: rgba(0, 0, 0, 0.05);
+}

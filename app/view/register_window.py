@@ -34,8 +34,8 @@ class RegisterWindow(Window):
         self.setTitleBar(MSFluentTitleBar(self))
         self.register = LicenseService()
 
-        self.imageLabel = ImageLabel(':/app/images/background.jpg', self)
-        self.iconLabel = ImageLabel(':/app/images/logo.png', self)
+        self.imageLabel = ImageLabel(':/app/images/jpg/background.jpg', self)
+        self.iconLabel = ImageLabel(':/app/images/png/logo.png', self)
 
         self.emailLabel = BodyLabel(self.tr('Email'), self)
         self.emailLineEdit = LineEdit(self)
@@ -75,7 +75,7 @@ class RegisterWindow(Window):
             self.setStyleSheet(f"RegisterWindow{{background: {color.name()}}}")
 
         self.setWindowTitle('PyQt-Fluent-Widgets')
-        self.setWindowIcon(QIcon(":/app/images/logo.png"))
+        self.setWindowIcon(QIcon(":/app/images/png/logo.png"))
         self.resize(1000, 650)
 
         if sys.platform == "darwin":

@@ -2,13 +2,6 @@
     <qresource prefix="/app">
         <file>i18n/app.zh_CN.qm</file>
         <file>i18n/app.zh_HK.qm</file>
-        <file>images/Dvd.png</file>
-        <file>images/MusicNote.png</file>
-        <file>images/Singer.png</file>
-        <file>images/Smiling_with_heart.png</file>
-        <file>images/alarms.png</file>
-        <file>images/background.jpg</file>
-        <file>images/bg37.jpg</file>
         <file>images/controls/Acrylic.png</file>
         <file>images/controls/AnimatedIcon.png</file>
         <file>images/controls/AnimatedVisualPlayer.png</file>
@@ -107,19 +100,16 @@
         <file>images/controls/Viewbox.png</file>
         <file>images/controls/WebView.png</file>
         <file>images/controls/XamlUICommand.png</file>
-        <file>images/header.png</file>
-        <file>images/header1.png</file>
         <file>images/ico/M3U8DL.ico</file>
+        <file>images/ico/logo-m.ico</file>
+        <file>images/ico/logo.ico</file>
         <file>images/icons/SettingsFilled_black.svg</file>
         <file>images/icons/SettingsFilled_white.svg</file>
         <file>images/icons/Settings_black.svg</file>
         <file>images/icons/Settings_white.svg</file>
-        <file>images/kunkun.png</file>
-        <file>images/logo-m.ico</file>
-        <file>images/logo-m.png</file>
-        <file>images/logo-w.png</file>
-        <file>images/logo.ico</file>
-        <file>images/logo.png</file>
+        <file>images/jpg/background.jpg</file>
+        <file>images/jpg/background2.jpg</file>
+        <file>images/jpg/sponsor.jpg</file>
         <file>images/logo/Airplane.svg</file>
         <file>images/logo/Alembic.svg</file>
         <file>images/logo/Bandage.svg</file>
@@ -169,11 +159,18 @@
         <file>images/logo/Wastebasket.svg</file>
         <file>images/logo/Whale.svg</file>
         <file>images/logo/Window.svg</file>
+        <file>images/png/Dvd.png</file>
+        <file>images/png/MusicNote.png</file>
         <file>images/png/ShakaPackager.png</file>
-        <file>images/shoko.png</file>
-        <file>images/sponsor.jpg</file>
-        <file>images/tips.png</file>
-        <file>images/todo.png</file>
+        <file>images/png/alarms.png</file>
+        <file>images/png/header.png</file>
+        <file>images/png/header1.png</file>
+        <file>images/png/kunkun.png</file>
+        <file>images/png/logo-m.png</file>
+        <file>images/png/logo.png</file>
+        <file>images/png/shoko.png</file>
+        <file>images/png/tips.png</file>
+        <file>images/png/todo.png</file>
         <file>images/unicodeIcon/FluentSystemIcons-Regular.json</file>
         <file>images/unicodeIcon/FluentSystemIcons-Regular.ttf</file>
         <file>qss/dark/app_interface.qss</file>

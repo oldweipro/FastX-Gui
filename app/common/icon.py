@@ -174,15 +174,18 @@ class Ico(FluentIconBase, Enum):
 
 
 class PNG(FluentIconBase, Enum):
-
     SHAKA_PACKAGER = "ShakaPackager"
-    STEP_1 = "1"
-    STEP_2 = "2"
-    STEP_3 = "3"
 
     def path(self, theme=Theme.AUTO):
         return f":/app/images/png/{self.value}.png"
 
+class JPG(FluentIconBase, Enum):
+    BACKGROUND_1 = "background"
+    BACKGROUND_2 = "background2"
+    SPONSOR_WX = "sponsor"
+
+    def path(self, theme=Theme.AUTO):
+        return f":/app/images/jpg/{self.value}.jpg"
 
 class Logo(FluentIconBase, Enum):
 

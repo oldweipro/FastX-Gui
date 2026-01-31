@@ -6,7 +6,8 @@ from enum import Enum
 from PyQt5.QtCore import QLocale, QStandardPaths
 from qfluentwidgets import (qconfig, QConfig, ConfigItem, OptionsConfigItem, BoolValidator,
                             OptionsValidator, RangeConfigItem, RangeValidator,
-                            FolderListValidator, Theme, FolderValidator, ConfigSerializer, __version__)
+                            FolderListValidator, Theme, FolderValidator, ConfigSerializer, __version__,
+                            ColorConfigItem)
 
 from .setting import CONFIG_FILE
 
@@ -86,6 +87,16 @@ class Config(QConfig):
     fastRteMappingTableFolder = ConfigItem("FastRte", "FastRteMappingTableFolder", '')
     fastRteDataTypeFolder = ConfigItem("FastRte", "FastRteDataTypeFolder", '')
     fastRteInterfaceFolder = ConfigItem("FastRte", "FastRteInterfaceFolder", '')
+
+    # Log
+    logLevel = OptionsConfigItem("Log", "LogLevel", "DEBUG", OptionsValidator(["TRACE", "DEBUG", "INFO", "SUCCESS", "WARNING", "ERROR", "CRITICAL"]))
+    logColorTrace = ColorConfigItem("Log", "LogColorTrace", "#9400D3")
+    logColorDebug = ColorConfigItem("Log", "LogColorDebug", "#00BFFF")
+    logColorInfo = ColorConfigItem("Log", "LogColorInfo", "#00FF7F")
+    logColorSuccess = ColorConfigItem("Log", "LogColorSuccess", "#32CD32")
+    logColorWarning = ColorConfigItem("Log", "LogColorWarning", "#FFD700")
+    logColorError = ColorConfigItem("Log", "LogColorError", "#FF4500")
+    logColorCritical = ColorConfigItem("Log", "LogColorCritical", "#FF1493")
 
 
     """浮窗配置类"""
