@@ -74,6 +74,7 @@ class Config(QConfig):
     # Settings/Application
     beta = ConfigItem("Application", "beta", False, BoolValidator())
     close_window_action = OptionsConfigItem("Application", "close_window_action", 'ask', OptionsValidator(['ask', 'minimize', "close"]), restart=True)
+    windowSizeMode = OptionsConfigItem("Application", "WindowSizeMode", "fixed", OptionsValidator(["fixed", "auto"]), restart=True)
     # Settings/software update
     checkUpdateAtStartUp = ConfigItem("software update", "CheckUpdateAtStartUp", True, BoolValidator())
     # Settings/Beta

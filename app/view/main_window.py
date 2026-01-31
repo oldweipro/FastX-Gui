@@ -3,7 +3,8 @@ import sys
 from PyQt5.QtCore import Qt, QUrl, QSize, QEventLoop, QTimer, QDateTime, QPoint
 from PyQt5.QtGui import QIcon, QDesktopServices, QFont, QColor, QPainter
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QSplashScreen, QLabel, QStatusBar, QFrame, \
-    QSystemTrayIcon, QAction
+    QSystemTrayIcon, QAction, QDesktopWidget
+from PyQt5.uic.properties import QtCore
 from qfluentwidgets import (NavigationItemPosition, MessageBox, setTheme, Theme, MSFluentWindow, isDarkTheme,
                             NavigationAvatarWidget, SearchLineEdit, qrouter, SubtitleLabel, setFont, SplashScreen,
                             IndeterminateProgressBar, ProgressBar, PushButton, FluentIcon as FIF, InfoBar,
@@ -37,30 +38,24 @@ class MainWindow(SplitFluentWindow):
         # 先调用父类初始化
         super().__init__()
         self.initWindow()
-
-        # create system theme listener
-        self.themeListener = SystemThemeListener(self)
-
-        # create sub interface
+        self._init_services()
         self.__initInterface()
-
-        # initialize background manager
-        self.backgroundManager = get_background_manager(cfg)
-
         # initialize floating window
         self.__initFloatingWindow()
 
         # set sidebar expand width
         # self.navigationInterface.setFixedWidth(70)
-        self.navigationInterface.setAcrylicEnabled(True)                        # enable acrylic effect
-        # self.navigationInterface.setMinimumExpandWidth(120)                     # set sidebar expand width
-        self.navigationInterface.setReturnButtonVisible(False)                  #
-        self.navigationInterface.setCollapsible(True)                           # force sidebar to always expanded state (disable collapsible)
-        self.navigationInterface.setUpdateIndicatorPosOnCollapseFinished(True)  #
-        # self.navigationInterface.expand(useAni=False)                           # ensure sidebar is expanded
-
-        # 创建信号连接到槽
-        self.__connectSignalToSlot()
+        # enable acrylic effect
+        self.navigationInterface.setAcrylicEnabled(True)
+        # set sidebar expand width
+        # self.navigationInterface.setMinimumExpandWidth(120)
+        self.navigationInterface.setReturnButtonVisible(False)
+        # force sidebar to always expanded state (disable collapsible)
+        self.navigationInterface.setCollapsible(True)
+        # 導航路由切換滑動特效
+        self.navigationInterface.setUpdateIndicatorPosOnCollapseFinished(True)
+        # ensure sidebar is expanded
+        # self.navigationInterface.expand(useAni=False)
 
         # add items to navigation interface
         self.__initNavigation()
@@ -68,33 +63,56 @@ class MainWindow(SplitFluentWindow):
         # add systemTray Menu
         self.__initSystemTray()
 
+        # 创建信号连接到槽
+        self.__connectSignalToSlot()
+
+    def _init_services(self):
+        # create system theme listener
+        self.themeListener = SystemThemeListener(self)
         # start theme listener
         self.themeListener.start()
+        # initialize background manager
+        self.backgroundManager = get_background_manager(cfg)
 
     def initWindow(self):
-        self.resize(960, 800)
-        self.setResizeEnabled(False)
-        self.titleBar.maxBtn.hide()
-        self.titleBar.setDoubleClickEnabled(False)
-        # 设置自定义标题栏
-        # self.setTitleBar(CustomTitleBar1(self))
-        # self.titleBar.raise_()
-        # # 调整布局边距以适应标题栏高度
-        # self.hBoxLayout.setContentsMargins(0, 48, 0, 0)
-        # 设置图标,标题
-        self.setWindowIcon(QIcon(':/app/images/logo-m.png'))
-        self.setWindowTitle(f'FastXGui {VERSION}')
-        self.__setQss()
-
         # create splash screen
         self.splashScreen = SplashScreen(self.windowIcon(), self)
         self.splashScreen.setIconSize(QSize(106, 106))
         self.splashScreen.raise_()
-        # desktop show
+        # 获取窗口大小模式配置
+        window_size_mode = cfg.get(cfg.windowSizeMode)
+        # 桌面可用区域
         desktop = QApplication.primaryScreen().availableGeometry()
         w, h = desktop.width(), desktop.height()
+        self.window_width = int(0.8 * w)
+        self.window_height = int(0.85 * h)
+        if window_size_mode == "auto":
+            # self.setAttribute(Qt.WA_TranslucentBackground)
+            # 自适应分辨率模式
+            self.resize(self.window_width, self.window_height)
+            self.setResizeEnabled(True)
+            self.titleBar.maxBtn.show()
+            self.titleBar.setDoubleClickEnabled(True)
+        else:
+            # 固定大小模式
+            self.resize(960, 800)
+            self.setResizeEnabled(False)
+            self.titleBar.maxBtn.hide()
+            self.titleBar.setDoubleClickEnabled(False)
+            # 设置自定义标题栏
+            # self.setTitleBar(CustomTitleBar(self))
+            # self.titleBar.raise_()
+            # 调整布局边距以适应标题栏高度
+            # self.hBoxLayout.setContentsMargins(0, 48, 0, 0)
+        # 设置图标,标题
+        self.setWindowIcon(QIcon(':/app/images/logo-m.png'))
+        self.setWindowTitle(f'FastXGui {VERSION}')
+        self.__setQss()
+        # 初始化位置
         self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
-        self.show() # ISSUE-FIX: 修复RegisterLogin无法跳转到Main-Window
+        self.navigationInterface.setExpandWidth(175)
+        # 显示窗口
+        self.show()
         QApplication.processEvents()
 
     def __initInterface(self):

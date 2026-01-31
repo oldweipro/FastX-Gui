@@ -213,6 +213,18 @@ class SettingInterface(ScrollArea):
             ],
             parent = self.appGroup
         )
+        
+        self.windowSizeModeCard = ComboBoxSettingCard(
+            cfg.windowSizeMode,
+            UnicodeIcon.get_icon_by_name('ic_fluent_resize_large_24_regular'),
+            self.tr('window size mode'),
+            self.tr('Select the window size mode, fixed size or auto-adaptive to screen resolution'),
+            texts = [
+                self.tr("fixed"),
+                self.tr("auto")
+            ],
+            parent = self.appGroup
+        )
 
         # update software
         self.updateSoftwareGroup = SettingCardGroup(self.tr("Software update"), self.view)
@@ -311,6 +323,7 @@ class SettingInterface(ScrollArea):
         self.materialGroup.addSettingCard(self.blurRadiusCard)
         self.appGroup.addSettingCard(self.betaCard)
         self.appGroup.addSettingCard(self.closeWindowActionCard)
+        self.appGroup.addSettingCard(self.windowSizeModeCard)
         self.updateSoftwareGroup.addSettingCard(self.updateOnStartUpCard)
 
         self.aboutGroup.addSettingCard(self.helpCard)

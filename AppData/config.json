@@ -7,13 +7,14 @@
     "Background": {
         "BlurRadius": 6,
         "DisplayMode": "Keep Aspect Ratio",
-        "ImageEnabled": true,
+        "ImageEnabled": false,
         "ImagePath": "C:/Users/91974/Pictures/02 壁纸/朋克狐耳女孩4k壁纸3840x2160_彼岸图网.jpg",
         "Opacity": 30
     },
     "Application": {
         "beta": false,
-        "close_window_action": "ask"
+        "close_window_action": "ask",
+        "WindowSizeMode": "fixed"
     },
     "Material": {
         "AcrylicBlurRadius": 15
@@ -46,7 +47,7 @@
     "personalization": {
         "DpiScale": "Auto",
         "Language": "zh_CN",
-        "MicaEnabled": false
+        "MicaEnabled": true
     },
     "FastRte": {
         "FastRteDataTypeFolder": "",
@@ -62,6 +63,6 @@
             "PingFang SC"
         ],
         "ThemeColor": "#ff009faa",
-        "ThemeMode": "Dark"
+        "ThemeMode": "Light"
     }
 }
