@@ -18,7 +18,7 @@ from qfluentwidgets import FluentIcon as FIF
 from app.common.icon import Logo, PNG, UnicodeIcon, JPG
 from app.common.config import cfg, TopmostMode
 from app.common.setting import REPO_URL, BILIBILI_WEB, SYSTEM, ARCH, SPECIAL_VERSION, CODENAME, INITIAL_AUTHORING_YEAR, \
-    CURRENT_YEAR, COPYRIGHT_HOLDER, DONATION_URL
+    CURRENT_YEAR, COPYRIGHT_HOLDER, DONATION_URL, AUTHOR
 
 
 class FloatingWindowBasicSettings(GroupHeaderCardWidget):
@@ -394,9 +394,9 @@ class AboutInfoHomeIf(GroupHeaderCardWidget):
         # 查看当前软件版权所属
         # 根据发布年份和当前年份是否相同，决定显示格式
         if INITIAL_AUTHORING_YEAR == CURRENT_YEAR:
-            copyright_text = f"Copyright © {INITIAL_AUTHORING_YEAR} {COPYRIGHT_HOLDER}"
+            copyright_text = f"Copyright © {INITIAL_AUTHORING_YEAR} {AUTHOR}/{COPYRIGHT_HOLDER}"
         else:
-            copyright_text = f"Copyright © {INITIAL_AUTHORING_YEAR}-{CURRENT_YEAR} {COPYRIGHT_HOLDER}"
+            copyright_text = f"Copyright © {INITIAL_AUTHORING_YEAR}-{CURRENT_YEAR} {AUTHOR}/{COPYRIGHT_HOLDER}"
 
         self.about_author_label = BodyLabel(copyright_text)
         copyright_widget = self._create_label_with_icon(

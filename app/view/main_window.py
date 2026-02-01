@@ -106,14 +106,15 @@ class MainWindow(SplitFluentWindow):
         self.splashScreen = SplashScreen(self.windowIcon(), self)
         self.splashScreen.setIconSize(QSize(106, 106))
         self.splashScreen.raise_()
-        # 获取窗口大小模式配置
-        window_size_mode = cfg.get(cfg.windowSizeMode)
+
         # 桌面可用区域
         desktop = QApplication.primaryScreen().availableGeometry()
         w, h = desktop.width(), desktop.height()
         self.window_width = int(0.8 * w)
         self.window_height = int(0.85 * h)
-        if window_size_mode == "auto":
+
+        # 获取窗口大小模式配置
+        if cfg.get(cfg.windowSizeMode) == "auto":
             # self.setAttribute(Qt.WA_TranslucentBackground)
             # 自适应分辨率模式
             self.resize(self.window_width, self.window_height)
@@ -123,19 +124,23 @@ class MainWindow(SplitFluentWindow):
             self.navigationInterface.setExpandWidth(275)
         else:
             # 固定大小模式
-            self.resize(960, 1070)
+            self.resize(1400, 960)
+            # 可以避免導航欄展開往右推動界面,當前設置是懸浮在内容區上
+            self.navigationInterface.setMinimumExpandWidth(2000)
+            # 設置是否可以改變大小
             self.setResizeEnabled(False)
+            # 是否隱藏最大化菜單
             self.titleBar.maxBtn.hide()
+            # 是否禁用雙擊最大化
             self.titleBar.setDoubleClickEnabled(False)
-            # 设置自定义标题栏
+            # 设置自定义标题栏 | 目前有點BUG(暫時保留)
             # self.setTitleBar(CustomTitleBar(self))
             # self.titleBar.raise_()
-            # 调整布局边距以适应标题栏高度
+            # 调整布局边距以适应标题栏高度 | SplitWindows軟件圖標和標題會占據一部分
             # self.hBoxLayout.setContentsMargins(0, 48, 0, 0)
         # 设置图标,标题
         self.setWindowIcon(QIcon(':/app/images/png/logo-m.png'))
         self.setWindowTitle(f'{APPLY_NAME} {VERSION}')
-        # self.__setQss()
         # 初始化位置
         self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
         # 显示窗口

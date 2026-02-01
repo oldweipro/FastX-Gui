@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QHBoxLayout
 from app.common.background_manager import get_background_manager
 from app.common.config import cfg, isWin11
 from app.common.icon import UnicodeIcon
-from app.common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR
+from app.common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR, COPYRIGHT_HOLDER
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
 from app.components.config_card import FloatingWindowBasicSettings
@@ -324,7 +324,7 @@ class SettingInterface(ScrollArea):
             self.tr('Check update'),
             ":/app/images/png/logo.png",
             self.tr('About'),
-            '© ' + self.tr('Copyright') + f" {YEAR}, {AUTHOR}. " +
+            '© ' + self.tr('Copyright (C)') + f" {YEAR}, {AUTHOR}/{COPYRIGHT_HOLDER}" +
             self.tr('Version') + VERSION,
             self.aboutGroup
         )
@@ -479,8 +479,6 @@ class SettingInterface(ScrollArea):
         )
 
         if file_path:
-
-
             cfg.set(cfg.backgroundImagePath, file_path)
             self.backgroundManager.update_background()
             self.backgroundImageCard._updateDisplay()

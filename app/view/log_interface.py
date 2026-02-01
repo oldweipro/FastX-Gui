@@ -434,12 +434,13 @@ class LoguruInterface(ScrollArea):
         self.Layout.setContentsMargins(0, 48, 0, 0)
         # 主布局
         self.main_layout = QVBoxLayout()
-        self.main_layout.setContentsMargins(20, 20, 20, 20)
+        self.main_layout.setContentsMargins(10, 0, 20, 20)
         self.main_layout.setSpacing(10)
         self.Layout.addLayout(self.main_layout)
 
         # 创建标题栏
         self.title_layout = QHBoxLayout()
+        self.title_layout.setContentsMargins(0, 0, 0, 0)
         self.title_layout.addSpacing(10)
         self.title_layout.addWidget(self.title_label)
         self.title_layout.addWidget(self.subtitle_label)
