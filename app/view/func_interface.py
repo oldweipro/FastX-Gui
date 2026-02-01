@@ -173,7 +173,6 @@ class FuncInterface(ScrollArea):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.view = QWidget(self)
-        logger.info('FUnc')
         self.funcInfoCard = AppInfoCard()
         self.basicSettingCard = BasicConfigCard()
 

@@ -14,11 +14,8 @@ from app.common.config import cfg, Language
 mainWindow = None
 def showMainWindow():
     global mainWindow
-    try:
-        mainWindow = MainWindow()
-        mainWindow.show()
-    except Exception as e:
-        logger.error(e)
+    mainWindow = MainWindow()
+    mainWindow.show()
 
 def main():
     # enable dpi scale

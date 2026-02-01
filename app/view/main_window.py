@@ -32,6 +32,7 @@ from app.common.background_manager import get_background_manager
 from app.card.messagebox_custom import MessageBoxCloseWindow, MessageBoxSupport
 from app.components.custom_titlebar import CustomTitleBar1, CustomTitleBar
 
+
 class MainWindow(SplitFluentWindow):
     def __init__(self):
         # 先调用父类初始化
@@ -48,6 +49,20 @@ class MainWindow(SplitFluentWindow):
         # 创建信号连接到槽
         self._connectSignalToSlot()
         self._setQss()
+
+    @staticmethod
+    def safe_block(default=None, error_msg=""):
+        """安全执行代码块的上下文管理器"""
+        class SafeBlock:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc_val, exc_tb):
+                if exc_type is not None:
+                    logger.critical(f"{error_msg}失败: {exc_val}" if error_msg else f"操作失败: {exc_val}")
+                    return True  # 抑制异常
+                return False
+        return SafeBlock()
 
     def _init_services(self):
         # 創建主題監聽器
@@ -129,12 +144,19 @@ class MainWindow(SplitFluentWindow):
 
     def _initInterface(self):
         # 创建子界面
-        self.homeInterface = HomeInterface(self)
-        self.appInterface = AppInterface(self)
-        self.funcInterface = FuncInterface(self)
-        self.toolInterface = ToolsInterface(self)
-        self.libraryInterface = LibraryViewInterface(self)
-        self.settingInterface = SettingInterface(self)
+        with self.safe_block(default=None, error_msg="创建Home界面"):
+            self.homeInterface = HomeInterface(self)
+        with self.safe_block(default=None, error_msg="创建APP界面"):
+            self.appInterface = AppInterface(self)
+        with self.safe_block(default=None, error_msg="创建Func界面"):
+            self.funcInterface = FuncInterface(self)
+        with self.safe_block(default=None, error_msg="创建Tools界面"):
+            self.toolInterface = ToolsInterface(self)
+        with self.safe_block(default=None, error_msg="创建Library界面"):
+            self.libraryInterface = LibraryViewInterface(self)
+        with self.safe_block(default=None, error_msg="创建Settings界面"):
+            self.settingInterface = SettingInterface(self)
+
 
     def _connectSignalToSlot(self):
         signalBus.micaEnableChanged.connect(self.setMicaEffectEnabled)
@@ -169,15 +191,23 @@ class MainWindow(SplitFluentWindow):
             position=pos,
             aboveMenuButton=False  # place below the expand/collapse button
         )
-        self.addSubInterface(self.homeInterface, FIF.HOME, self.tr("Home"), pos, isTransparent=False)
-        self.addSubInterface(self.appInterface , FIF.APPLICATION, self.tr("App"), pos, isTransparent=False)
+        with self.safe_block(default=None, error_msg="加載Home界面到左側路由"):
+            self.addSubInterface(self.homeInterface, FIF.HOME, self.tr("Home"), pos, isTransparent=False)
+
+        with self.safe_block(default=None, error_msg="加載APP界面到左側路由"):
+            self.addSubInterface(self.appInterface , FIF.APPLICATION, self.tr("App"), pos, isTransparent=False)
         self.navigationInterface.addSeparator()
 
         # 滾動工作區
         pos = NavigationItemPosition.SCROLL
-        self.addSubInterface(self.libraryInterface, FIF.BOOK_SHELF, self.tr("Library"), pos, isTransparent=False)
-        self.addSubInterface(self.funcInterface, FIF.BRIGHTNESS, self.tr("FastRte"), pos, isTransparent=True)
-        self.addSubInterface(self.toolInterface, FIF.DEVELOPER_TOOLS, self.tr("FastPackage"), pos, isTransparent=False)
+        with self.safe_block(default=None, error_msg="加載Library界面到左側路由"):
+            self.addSubInterface(self.libraryInterface, FIF.BOOK_SHELF, self.tr("Library"), pos, isTransparent=False)
+
+        with self.safe_block(default=None, error_msg="加載Func界面到左側路由"):
+            self.addSubInterface(self.funcInterface, FIF.BRIGHTNESS, self.tr("FastRte"), pos, isTransparent=True)
+
+        with self.safe_block(default=None, error_msg="加載Tools界面到左側路由"):
+            self.addSubInterface(self.toolInterface, FIF.DEVELOPER_TOOLS, self.tr("FastPackage"), pos, isTransparent=False)
 
         # 底部功能区
         pos = NavigationItemPosition.BOTTOM
@@ -196,9 +226,15 @@ class MainWindow(SplitFluentWindow):
             tooltip=self.tr('sponsor this tools'),
             position=pos
         )
-        self.addSubInterface(self.loguru_interface, UnicodeIcon.get_icon_by_name("ic_fluent_document_bullet_list_clock_24_regular"), self.tr("Logs"), pos, isTransparent=False)
-        self.addSubInterface(self.settingInterface, FIF.SETTING, self.tr('Settings'), pos, isTransparent=False)
-        self.navigationInterface.setCurrentItem(self.homeInterface.objectName())
+        with self.safe_block(default=None, error_msg="加載Log界面到左側路由"):
+            self.addSubInterface(self.loguru_interface, UnicodeIcon.get_icon_by_name("ic_fluent_document_bullet_list_clock_24_regular"), self.tr("Logs"), pos, isTransparent=False)
+
+        with self.safe_block(default=None, error_msg="加載Settings界面到左側路由"):
+            self.addSubInterface(self.settingInterface, FIF.SETTING, self.tr('Settings'), pos, isTransparent=False)
+
+        with self.safe_block(default=None, error_msg="激活Home為默認選擇"):
+            self.navigationInterface.setCurrentItem(self.homeInterface.objectName())
+
         self.splashScreen.finish()
 
     def _on_log_clicked(self):
