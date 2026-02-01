@@ -3,6 +3,16 @@
 FastX-Gui是一个基于PyQt5和PyQt-Fluent-Widgets开发的图形用户界面应用程序，提供了现代化、美观的用户界面和丰富的功能。
 
 ![](./app/resource/images/png/app.png)
+
+## 需求徵集
+1. 懸浮窗功能  誰能把這個移植過來（https://github.com/SECTL/SecRandom）
+2. 檢測更新功能
+3. 插件系統
+
+暫時就上面這些，先做這三件事,項目先不專注於具體業務，只做一些通用的功能,後續各自業務自行繼承，最好等插件系統完善後
+
+
+
 ## 系统要求
 
 - Python 3.10+
