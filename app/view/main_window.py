@@ -77,11 +77,15 @@ class MainWindow(SplitFluentWindow):
         self.themeListener.start()
 
     def _setup_log_viewer(self):
+        # 先清除所有现有的日志处理器
+        logger.remove()
+        
+        # 创建LoguruInterface和QTextEditLogger
         self.loguru_interface = LoguruInterface(self)
         self.text_logger = QTextEditLogger(self.loguru_interface.log_viewer, max_lines=1000)
         # 连接信号
         self.text_logger.new_log_signal.connect(self.loguru_interface.on_new_log)
-        logger.remove()
+        
         # 添加自定义处理器
         def log_sink(message, format : bool=False):
             """将loguru消息转发到Qt界面"""
@@ -100,6 +104,10 @@ class MainWindow(SplitFluentWindow):
             format="{time:YYYY/MM/DD hh:mm:ss} | {level:8} | {file}:{line} {message}",
             level="DEBUG"
         )
+        
+        # 测试日志
+        logger.debug("日志系统初始化完成")
+        logger.info("应用程序启动中...")
 
     def _initWindow(self):
         # create splash screen

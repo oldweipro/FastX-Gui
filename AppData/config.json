@@ -7,8 +7,8 @@
     "Background": {
         "BlurRadius": 0,
         "DisplayMode": "Keep Aspect Ratio",
-        "ImageEnabled": false,
-        "ImagePath": "",
+        "ImageEnabled": true,
+        "ImagePath": "C:/Users/91974/Pictures/02 壁纸/朋克狐耳女孩4k壁纸3840x2160_彼岸图网.jpg",
         "Opacity": 30
     },
     "Application": {
@@ -63,7 +63,7 @@
             "PingFang SC"
         ],
         "ThemeColor": "#ff009faa",
-        "ThemeMode": "Auto"
+        "ThemeMode": "Dark"
     },
     "Log": {
         "LogColorCritical": "#ffff1493",

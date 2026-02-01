@@ -249,8 +249,8 @@ class QTextEditLogger(QObject):
             # 缓存到内存
             self.buffer.append((level, text))
 
-            # 通过信号安全传递到主线程
-            self.log_signal.emit(level, text)
+            # 直接调用安全处理方法
+            self._safe_append_line(level, text)
         except Exception as e:
             logger.error(f"写入日志错误: {e}")
 
@@ -274,33 +274,13 @@ class QTextEditLogger(QObject):
         if not self._is_widget_valid():
             return
 
-        # 2. 检查日志级别有效性
-        color = self.colors.get(level, QColor("#FFFFFF"))
-
-        # 3. 创建格式化对象
-        fmt = QTextCharFormat()
-        fmt.setForeground(color)
-
-        # 4. 安全获取文档
-        doc = self.text_edit.document()
-        if not doc:
-            return
-
-        # 5. 直接操作文档
-        cursor = QTextCursor(doc)
-        cursor.movePosition(QTextCursor.End)
-
-        # 关键修复：总是添加换行符（确保每条日志独占一行）
-        # 注意：QPlainTextEdit需要显式换行符才能分行显示
-        cursor.insertText(line + "\n", fmt)
-
-        # 6. 发送信号通知有新日志
+        # 2. 发送信号通知有新日志
         self.new_log_signal.emit(level, line)
 
-        # 7. 清理底部空白（关键：在滚动前清理）
+        # 3. 清理底部空白（关键：在滚动前清理）
         self._clean_trailing_empty_lines()
 
-        # 8. 滚动到底部（使用更可靠的方法）
+        # 4. 滚动到底部（使用更可靠的方法）
         self._safe_scroll_to_bottom()
 
     def _clean_trailing_empty_lines(self):
@@ -427,6 +407,8 @@ class LoguruInterface(ScrollArea):
         self.create_search_box()  # 创建搜索框
         self.setup_connections()
         StyleSheet.LOG_INTERFACE.apply(self)
+        # 初始化完成后立即过滤并显示日志
+        self.filter_logs()
 
     def __initLayout(self):
         # 顶层布局
@@ -576,6 +558,8 @@ class LoguruInterface(ScrollArea):
         self.original_logs.append((level, line))
         # 更新日志计数
         self.log_count += 1
+        # 立即过滤并显示日志
+        self.filter_logs()
 
     def clear_logs(self):
         """清空所有日志"""
@@ -616,12 +600,18 @@ class LoguruInterface(ScrollArea):
                     if target_level != level:
                         continue
 
-                # 显示过滤后的日志（使用insertPlainText避免重复添加换行符）
-                self.log_viewer.insertPlainText(text + "\n")
+                # 显示过滤后的日志（使用带有颜色格式化的方式）
+                color = LogConfig.get_colors_dict().get(level, QColor("#FFFFFF"))
+                fmt = QTextCharFormat()
+                fmt.setForeground(color)
+                cursor = QTextCursor(self.log_viewer.document())
+                cursor.movePosition(QTextCursor.End)
+                cursor.insertText(text + "\n", fmt)
                 filtered_count += 1
-
             # 重新应用样式
             StyleSheet.LOG_INTERFACE.apply(self)
+            # 滚动到底部
+            self.log_viewer.verticalScrollBar().setValue(self.log_viewer.verticalScrollBar().maximum())
 
         except Exception as e:
             # 防止筛选功能崩溃
@@ -715,3 +705,10 @@ class LoguruInterface(ScrollArea):
         """清理资源"""
         # 实现清理逻辑
         pass
+
+    def showEvent(self, event):
+        """界面显示事件"""
+        # 刷新日志
+        self.filter_logs()
+        # 调用父类的 showEvent 方法
+        super().showEvent(event)

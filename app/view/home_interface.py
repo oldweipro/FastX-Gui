@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QGraphics
 from qfluentwidgets import TextEdit, SwitchButton, IndicatorPosition, PushButton, TitleLabel, BodyLabel, \
     PrimaryPushSettingCard, SubtitleLabel, ScrollArea, isDarkTheme, InfoBar, InfoBarIcon, InfoBarPosition
 from qfluentwidgets import FluentIcon as FIF
+from loguru import logger
 from app.card.public_card import GuideWidget
 from app.common.icon import PNG, Icon
 from app.components.config_card import AboutInfoHomeIf, BannerWidgetHomeIF2
