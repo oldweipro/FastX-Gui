@@ -8,10 +8,11 @@ from PyQt5.QtWidgets import QWidget, QStackedWidget, QVBoxLayout, QLabel, QHBoxL
 from qfluentwidgets import (Pivot, qrouter, SegmentedWidget, TabBar, CheckBox, ComboBox,
                             TabCloseButtonDisplayMode, BodyLabel, SpinBox, BreadcrumbBar,
                             SegmentedToggleToolWidget, ScrollArea, SettingCardGroup, SwitchSettingCard,
-                            SegmentedToolWidget, FluentIconBase)
+                            SegmentedToolWidget, FluentIconBase, ExpandSettingCard, PushSettingCard)
 from qfluentwidgets import FluentIcon as FIF
 
 from app.common.config import cfg
+from app.common.icon import UnicodeIcon
 from app.common.translator import Translator
 from app.common.style_sheet import StyleSheet
 from app.components.pivot import SettingPivot
@@ -56,6 +57,32 @@ class ToolsInterface(ScrollArea):
             cfg.micaEnabled,
             self.E2EGroup
         )
+
+        self.ComGroup = SettingCardGroup(self.tr("Com"), self.view)
+        self.SomeIpGroup = SettingCardGroup(self.tr("SomeIp"), self.view)
+        self.SerialGroup = SettingCardGroup(self.tr("Serial"), self.view)
+
+        self.PubGroup = SettingCardGroup(self.tr("Pub"), self.view)
+        self.rmCodeCommentsGroupCard = ExpandSettingCard(
+            UnicodeIcon.get_icon_by_name('ic_fluent_comment_dismiss_24_regular'),
+            self.tr('Remove Python Code Comment'),
+            self.tr('To apply software copyrights, need supply whole code without comments'),
+            self.view)
+        self.rmCodeCommentsInputFolderCard = PushSettingCard(
+            self.tr('Choose folder'),
+            FIF.FOLDER_ADD,
+            self.tr("Project Input Directory"),
+            cfg.get(cfg.RmCommentsInputFolder),
+            self.rmCodeCommentsGroupCard
+        )
+        self.rmCodeCommentsOutputFolderCard = PushSettingCard(
+            self.tr('Choose folder'),
+            FIF.FOLDER_ADD,
+            self.tr("Project Output Directory"),
+            cfg.get(cfg.RmCommentsOutputFolder),
+            self.rmCodeCommentsGroupCard
+        )
+
 
         self.__initWidget()
         self.__initLayout()
@@ -106,17 +133,30 @@ class ToolsInterface(ScrollArea):
         self.DemGroup.addSettingCard(self.micaCard1)
         self.DcmGroup.addSettingCard(self.micaCard2)
         self.E2EGroup.addSettingCard(self.micaCard3)
+        self.PubGroup.addSettingCard(self.rmCodeCommentsGroupCard)
+
+        self.rmCodeCommentsGroupCard.viewLayout.addWidget(self.rmCodeCommentsInputFolderCard)
+        self.rmCodeCommentsGroupCard.viewLayout.addWidget(self.rmCodeCommentsOutputFolderCard)
+        self.rmCodeCommentsGroupCard._adjustViewSize()
 
         # 添加标签页
-        self.addSubInterface(self.DemGroup, 'DemInterface', self.tr('Dem'))
-        self.addSubInterface(self.DcmGroup, 'DcmInterface', self.tr('Dcm'))
-        self.addSubInterface(self.E2EGroup, 'E2EInterface', self.tr('E2E'))
+        self.addSubInterface(self.DemGroup, 'TabDemInterface', self.tr('Dem'))
+        self.addSubInterface(self.DcmGroup, 'TabDcmInterface', self.tr('Dcm'))
+        self.addSubInterface(self.E2EGroup, 'TabE2EInterface', self.tr('E2E'))
+        self.addSubInterface(self.ComGroup, 'TabComInterface', self.tr('Com'))
+        self.addSubInterface(self.SomeIpGroup, 'TabSomeIpInterface', self.tr('SomeIp'))
+        self.addSubInterface(self.SerialGroup, 'TabSerialInterface', self.tr('Serial'))
+        self.addSubInterface(self.PubGroup, 'TabPubInterface', self.tr('Pub'))
 
     def __connectSignalToSlot(self):
         # 连接信号并初始化当前标签页
         self.stackedWidget.currentChanged.connect(self.onCurrentIndexChanged)
         self.pivot.setCurrentItem(self.stackedWidget.currentWidget().objectName())
-        self.stackedWidget.setFixedHeight(self.stackedWidget.currentWidget().sizeHint().height())
+        # self.stackedWidget.setFixedHeight(self.stackedWidget.currentWidget().sizeHint().height())
+
+        # 按钮 | 去除Python代码备注,空行
+        self.rmCodeCommentsInputFolderCard.clicked.connect(lambda: self.__onChooseFolderClicked(cfg.RmCommentsInputFolder, self.rmCodeCommentsInputFolderCard))
+        self.rmCodeCommentsOutputFolderCard.clicked.connect(lambda: self.__onChooseFolderClicked(cfg.RmCommentsOutputFolder, self.rmCodeCommentsOutputFolderCard))
 
     def addSubInterface(self, widget: QLabel, objectName: str, text: str, icon: Union[str, QIcon, FluentIconBase]=None):
         """
@@ -162,5 +202,21 @@ class ToolsInterface(ScrollArea):
         self.pivot.setCurrentItem(widget.objectName())
         # 滚动到顶部
         self.verticalScrollBar().setValue(0)
-        # 更新堆叠窗口高度 | 使用sizeHint获取建议高度
-        self.stackedWidget.setFixedHeight(self.stackedWidget.currentWidget().sizeHint().height())
+        # 更新堆叠窗口高度 | 使用sizeHint获取建议高度 | 如果有ExpandSettingCard,卡片的高度会被限制在固定高度,无法展开（这里先屏蔽）
+        # self.stackedWidget.setFixedHeight(self.stackedWidget.currentWidget().sizeHint().height())
+
+    def __onChooseFolderClicked(self, config_item, card):
+        """
+        通用文件夹选择方法
+
+        Args:
+            config_item: 配置项
+            card: 卡片对象
+        """
+        from PyQt5.QtWidgets import QFileDialog
+        folder = QFileDialog.getExistingDirectory(
+            self, self.tr("Choose folder"), "./")
+        if not folder or cfg.get(config_item) == folder:
+            return
+        cfg.set(config_item, folder)
+        card.setContent(folder)

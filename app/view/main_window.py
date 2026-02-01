@@ -105,7 +105,7 @@ class MainWindow(SplitFluentWindow):
         # 配置loguru使用我们的sink()
         self.log_handler_id = logger.add(
             log_sink,
-            format="{time:YYYY/MM/DD hh:mm:ss} | {level:8} | {file}:{line} {message}",
+            format="{time:YYYY/MM/DD HH:mm:ss} | {level:8} | {file}:{line} {message}",
             level=log_level
         )
         
@@ -185,7 +185,7 @@ class MainWindow(SplitFluentWindow):
             # 调整布局边距以适应标题栏高度 | SplitWindows軟件圖標和標題會占據一部分
             # self.hBoxLayout.setContentsMargins(0, 48, 0, 0)
         # 设置图标,标题
-        self.setWindowIcon(QIcon(':/app/images/png/logo-m.png'))
+        self.setWindowIcon(QIcon(':/app/images/png/logo1.png'))
         self.setWindowTitle(f'{APPLY_NAME} {VERSION}')
         # 初始化位置
         self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
@@ -310,7 +310,7 @@ class MainWindow(SplitFluentWindow):
     def _initSystemTray(self):
         """初始化系统托盘"""
         self.tray_icon = QSystemTrayIcon(self)
-        self.tray_icon.setIcon(QIcon(':/app/images/png/logo-m.png'))
+        self.tray_icon.setIcon(QIcon(':/app/images/png/logo1.png'))
         self.tray_icon.setToolTip(f'{APPLY_NAME} {VERSION}')
 
         # 创建托盘菜单

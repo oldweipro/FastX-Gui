@@ -98,6 +98,10 @@ class Config(QConfig):
     logColorError = ColorConfigItem("Log", "LogColorError", "#FF4500")
     logColorCritical = ColorConfigItem("Log", "LogColorCritical", "#FF1493")
 
+    # Tools/Pub/RemoveComments
+    RmCommentsInputFolder = ConfigItem("ToolsPub", "RmCommentsInputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation),FolderValidator())
+    RmCommentsOutputFolder = ConfigItem("ToolsPub", "RmCommentsOutputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation),FolderValidator())
+
 
     """浮窗配置类"""
 

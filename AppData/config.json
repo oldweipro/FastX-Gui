@@ -1,4 +1,8 @@
 {
+    "ToolsPub": {
+        "RmCommentsInputFolder": "C:/Users/91974/Documents",
+        "RmCommentsOutputFolder": "C:/Users/91974/Pictures"
+    },
     "Register": {
         "ActivationCode": "",
         "Email": "",
@@ -17,7 +21,7 @@
         "WindowSizeMode": "fixed"
     },
     "Material": {
-        "AcrylicBlurRadius": 20
+        "AcrylicBlurRadius": 40
     },
     "software update": {
         "CheckUpdateAtStartUp": true

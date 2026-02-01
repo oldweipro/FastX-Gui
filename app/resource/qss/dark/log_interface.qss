@@ -14,8 +14,8 @@ ScrollArea {
 }
 
 #LogItem {
-    border-left: 3px solid {border_color};
-    background-color: {config['bg_color']};
+    border-left: 3px solid #0078d4;
+    background-color: rgba(0, 120, 212, 0.1);
 }
 
 
@@ -40,6 +40,6 @@ TransparentToggleToolButton, ToggleToolButton {
     border-radius: 8px;
 
 }
-TransparentToggleToolButton:checked, ToggleToolButton:checked {{
+TransparentToggleToolButton:checked, ToggleToolButton:checked {
     background-color: rgba(0, 0, 0, 0.05);
 }
