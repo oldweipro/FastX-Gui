@@ -392,12 +392,12 @@ class LoguruInterface(ScrollArea):
         self.title_label = StrongBodyLabel(self.view)
         self.title_label.setFont(QFont("Segoe UI", 16, QFont.Bold))
         self.title_label.setObjectName('title_label')
-        self.title_label.setText(self.tr("日志中心"))
+        self.title_label.setText(self.tr("Log Center"))
 
         self.subtitle_label = CaptionLabel(self.view)
         self.subtitle_label.setTextColor("#666666")
         self.subtitle_label.setObjectName('subtitle_label')
-        self.subtitle_label.setText(self.tr("实时记录系统运行状态"))
+        self.subtitle_label.setText(self.tr("Real-time system status monitoring"))
 
 
         """初始化界面"""
@@ -445,19 +445,19 @@ class LoguruInterface(ScrollArea):
         self.toolbar.setSpacing(10)
         # 清空按钮
         self.clear_btn = ToolButton(FIF.DELETE, self)
-        self.clear_btn.setToolTip("清空日志")
+        self.clear_btn.setToolTip(self.tr("Clear logs"))
         # 复制按钮
         self.copy_all_btn = ToolButton(FIF.COPY, self)
-        self.copy_all_btn.setToolTip("复制全部日志")
+        self.copy_all_btn.setToolTip(self.tr("Copy all logs"))
         # 保存按钮
         self.save_all_btn = ToolButton(FIF.SAVE, self)
-        self.save_all_btn.setToolTip("保存全部日志")
+        self.save_all_btn.setToolTip(self.tr("Save all logs"))
         # 切换主题按钮
         self.themeButton = ToolButton(FIF.CONSTRACT, self)
-        self.themeButton.setToolTip("切换主题")
+        self.themeButton.setToolTip(self.tr("Switch theme"))
         # 设置按钮
         self.settingsButton = ToolButton(FIF.SETTING, self)
-        self.settingsButton.setToolTip("日志设置")
+        self.settingsButton.setToolTip(self.tr("Log settings"))
         # 分隔符
         self.separator1 = VerticalSeparator()
         # 级别过滤按钮组
@@ -466,7 +466,7 @@ class LoguruInterface(ScrollArea):
 
         # 添加"所有日志"按钮
         self.all_logs_btn = ToggleToolButton(UnicodeIcon.get_icon_by_name('ic_fluent_channel_28_regular'))
-        self.all_logs_btn.setToolTip("显示所有日志")
+        self.all_logs_btn.setToolTip(self.tr("Show all logs"))
         self.all_logs_btn.setFixedSize(36, 36)
         self.all_logs_btn.setProperty('level', -1)  # -1表示所有日志
         self.filter_buttons["ALL"] = self.all_logs_btn
@@ -477,7 +477,7 @@ class LoguruInterface(ScrollArea):
             # 使用LogConfig获取图标
             icon = LogConfig.get_level_icon(level, use_unicode=True)
             btn.setIcon(icon)
-            btn.setToolTip(f"仅显示{LogConfig.get_level_name(level)}")
+            btn.setToolTip(self.tr(f"Show only {LogConfig.get_level_name(level)}"))
             btn.setFixedSize(36, 36)
             btn.setProperty('level', level.value)
             self.filter_buttons[level] = btn
@@ -509,12 +509,12 @@ class LoguruInterface(ScrollArea):
         self.search_layout.setSpacing(10)
         # 搜索框
         self.search_box = SearchLineEdit()
-        self.search_box.setPlaceholderText("搜索日志内容...")
+        self.search_box.setPlaceholderText(self.tr("Search log content..."))
         self.search_box.setFixedHeight(32)
         # 时间范围选择
         self.time_filter = ComboBox()
         self.time_filter.setFixedWidth(150)
-        self.time_filter.addItems(["全部时间", "最近1小时", "最近24小时", "最近7天"])
+        self.time_filter.addItems([self.tr("All time"), self.tr("Last 1 hour"), self.tr("Last 24 hours"), self.tr("Last 7 days")])
         self.search_layout.addWidget(self.search_box)
         self.search_layout.addWidget(self.time_filter)
         self.main_layout.addLayout(self.search_layout)
@@ -613,7 +613,7 @@ class LoguruInterface(ScrollArea):
 
         except Exception as e:
             # 防止筛选功能崩溃
-            logger.error(f"筛选功能错误: {e}")
+            logger.error(f"Filter function error: {e}")
 
     def on_filter_clicked(self):
         """处理过滤器点击"""
@@ -648,7 +648,7 @@ class LoguruInterface(ScrollArea):
             self.filter_logs()
         except Exception as e:
             # 防止筛选功能崩溃
-            logger.error(f"筛选功能错误: {e}")
+            logger.error(f"Filter function error: {e}")
             self.filter_level = None
             self.filter_logs()
 
@@ -680,9 +680,9 @@ class LoguruInterface(ScrollArea):
             # 打开文件保存对话框
             file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
                 self,
-                "保存日志",
+                self.tr("Save logs"),
                 filename,
-                "文本文件 (*.txt);;所有文件 (*)"
+                self.tr("Text files (*.txt);;All files (*)")
             )
 
             if file_path:
@@ -690,7 +690,7 @@ class LoguruInterface(ScrollArea):
                 with open(file_path, 'w', encoding='utf-8') as f:
                     f.write(self.log_viewer.toPlainText())
         except Exception as e:
-            logger.error(f"保存全部日志错误: {e}")
+            logger.error(f"Save all logs error: {e}")
 
     def toggle_theme(self):
         """切换应用主题"""

@@ -195,17 +195,17 @@ class MainWindow(SplitFluentWindow):
 
     def _initInterface(self):
         # 创建子界面
-        with self.safe_block(default=None, error_msg="创建Home界面"):
+        with self.safe_block(default=None, error_msg=self.tr("Create Home interface")):
             self.homeInterface = HomeInterface(self)
-        with self.safe_block(default=None, error_msg="创建APP界面"):
+        with self.safe_block(default=None, error_msg=self.tr("Create App interface")):
             self.appInterface = AppInterface(self)
-        with self.safe_block(default=None, error_msg="创建Func界面"):
+        with self.safe_block(default=None, error_msg=self.tr("Create Func interface")):
             self.funcInterface = FuncInterface(self)
-        with self.safe_block(default=None, error_msg="创建Tools界面"):
+        with self.safe_block(default=None, error_msg=self.tr("Create Tools interface")):
             self.toolInterface = ToolsInterface(self)
-        with self.safe_block(default=None, error_msg="创建Library界面"):
+        with self.safe_block(default=None, error_msg=self.tr("Create Library interface")):
             self.libraryInterface = LibraryViewInterface(self)
-        with self.safe_block(default=None, error_msg="创建Settings界面"):
+        with self.safe_block(default=None, error_msg=self.tr("Create Settings interface")):
             self.settingInterface = SettingInterface(self)
 
 
@@ -242,22 +242,22 @@ class MainWindow(SplitFluentWindow):
             position=pos,
             aboveMenuButton=False  # place below the expand/collapse button
         )
-        with self.safe_block(default=None, error_msg="加載Home界面到左側路由"):
+        with self.safe_block(default=None, error_msg=self.tr("Load Home interface to left route")):
             self.addSubInterface(self.homeInterface, FIF.HOME, self.tr("Home"), pos, isTransparent=False)
 
-        with self.safe_block(default=None, error_msg="加載APP界面到左側路由"):
+        with self.safe_block(default=None, error_msg=self.tr("Load App interface to left route")):
             self.addSubInterface(self.appInterface , FIF.APPLICATION, self.tr("App"), pos, isTransparent=False)
         self.navigationInterface.addSeparator()
 
         # 滾動工作區
         pos = NavigationItemPosition.SCROLL
-        with self.safe_block(default=None, error_msg="加載Library界面到左側路由"):
+        with self.safe_block(default=None, error_msg=self.tr("Load Library interface to left route")):
             self.addSubInterface(self.libraryInterface, FIF.BOOK_SHELF, self.tr("Library"), pos, isTransparent=False)
 
-        with self.safe_block(default=None, error_msg="加載Func界面到左側路由"):
+        with self.safe_block(default=None, error_msg=self.tr("Load Func interface to left route")):
             self.addSubInterface(self.funcInterface, FIF.BRIGHTNESS, self.tr("FastRte"), pos, isTransparent=True)
 
-        with self.safe_block(default=None, error_msg="加載Tools界面到左側路由"):
+        with self.safe_block(default=None, error_msg=self.tr("Load Tools interface to left route")):
             self.addSubInterface(self.toolInterface, FIF.DEVELOPER_TOOLS, self.tr("FastPackage"), pos, isTransparent=False)
 
         # 底部功能区
@@ -277,13 +277,13 @@ class MainWindow(SplitFluentWindow):
             tooltip=self.tr('sponsor this tools'),
             position=pos
         )
-        with self.safe_block(default=None, error_msg="加載Log界面到左側路由"):
+        with self.safe_block(default=None, error_msg=self.tr("Load Log interface to left route")):
             self.addSubInterface(self.loguru_interface, UnicodeIcon.get_icon_by_name("ic_fluent_document_bullet_list_clock_24_regular"), self.tr("Logs"), pos, isTransparent=False)
 
-        with self.safe_block(default=None, error_msg="加載Settings界面到左側路由"):
+        with self.safe_block(default=None, error_msg=self.tr("Load Settings interface to left route")):
             self.addSubInterface(self.settingInterface, FIF.SETTING, self.tr('Settings'), pos, isTransparent=False)
 
-        with self.safe_block(default=None, error_msg="激活Home為默認選擇"):
+        with self.safe_block(default=None, error_msg=self.tr("Activate Home as default selection")):
             self.navigationInterface.setCurrentItem(self.homeInterface.objectName())
 
         self.splashScreen.finish()
@@ -318,13 +318,13 @@ class MainWindow(SplitFluentWindow):
         tray_menu.aboutToShow.connect(self._on_tray_menu_about_to_show)
 
         # 显示主界面
-        show_action = QAction('显示主界面', self)
+        show_action = QAction(self.tr('Show main window'), self)
         show_action.triggered.connect(self.showNormal)
         show_action.triggered.connect(self.activateWindow)
         tray_menu.addAction(show_action)
         
         # 显示/隐藏悬浮窗
-        self.floating_window_action = QAction('显示悬浮窗', self)
+        self.floating_window_action = QAction(self.tr('Show floating window'), self)
         self.floating_window_action.setCheckable(True)
         self.floating_window_action.setChecked(False)
         self.floating_window_action.triggered.connect(self._toggle_floating_window)
@@ -332,11 +332,11 @@ class MainWindow(SplitFluentWindow):
         
         tray_menu.addSeparator()
         # 打开设置界面
-        setting_action = QAction('设置', self)
+        setting_action = QAction(self.tr('Settings'), self)
         setting_action.triggered.connect(self._open_settings)
         tray_menu.addAction(setting_action)
         # 退出程序
-        quit_action = QAction('退出', self)
+        quit_action = QAction(self.tr('Exit'), self)
         quit_action.triggered.connect(self._quitApp)
         tray_menu.addAction(quit_action)
 
@@ -371,13 +371,13 @@ class MainWindow(SplitFluentWindow):
             pass
 
     def _toggle_floating_window(self, checked):
-        """切换悬浮窗的显示/隐藏状态"""
+        """Toggle floating window visibility"""
         if checked:
             self.floatingWindow.show()
-            self.floating_window_action.setText('隐藏悬浮窗')
+            self.floating_window_action.setText(self.tr('Hide floating window'))
         else:
             self.floatingWindow.hide()
-            self.floating_window_action.setText('显示悬浮窗')
+            self.floating_window_action.setText(self.tr('Show floating window'))
 
     def _setQss(self):
         """ set style sheet """
@@ -452,7 +452,7 @@ class MainWindow(SplitFluentWindow):
                 self.hide()
                 self.tray_icon.showMessage(
                     f'{APPLY_NAME}',
-                    '程序已最小化到托盘',
+                    self.tr('Application minimized to tray'),
                     QSystemTrayIcon.Information,
                     2000
                 )
@@ -481,7 +481,7 @@ class MainWindow(SplitFluentWindow):
             self.hide()
             self.tray_icon.showMessage(
                 f'{APPLY_NAME}',
-                '程序已最小化到托盘',
+                self.tr('Application minimized to tray'),
                 QSystemTrayIcon.Information,
                 2000
             )

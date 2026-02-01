@@ -50,7 +50,7 @@
     },
     "personalization": {
         "DpiScale": "Auto",
-        "Language": "Auto",
+        "Language": "zh_HK",
         "MicaEnabled": true
     },
     "FastRte": {
@@ -73,7 +73,7 @@
         "LogColorCritical": "#ffff1493",
         "LogColorDebug": "#ffff1060",
         "LogColorError": "#ffff4500",
-        "LogColorInfo": "#ff00ff7f",
+        "LogColorInfo": "#fff832ff",
         "LogColorSuccess": "#ff32cd32",
         "LogColorTrace": "#ff9400d3",
         "LogColorWarning": "#ffffd700",
