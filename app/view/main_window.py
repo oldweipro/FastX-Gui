@@ -98,16 +98,54 @@ class MainWindow(SplitFluentWindow):
                     self.text_logger.write(message)
             except Exception:
                 pass
+        
+        # 从配置文件中读取日志等级
+        log_level = cfg.get(cfg.logLevel)
+        
         # 配置loguru使用我们的sink()
-        logger.add(
+        self.log_handler_id = logger.add(
             log_sink,
             format="{time:YYYY/MM/DD hh:mm:ss} | {level:8} | {file}:{line} {message}",
-            level="DEBUG"
+            level=log_level
         )
         
+        # 连接日志等级配置变化信号
+        cfg.logLevel.valueChanged.connect(self.on_log_level_changed)
+        
         # 测试日志
-        logger.debug("日志系统初始化完成")
-        logger.info("应用程序启动中...")
+        logger.trace("日志系统初始化完成")
+        logger.debug("调试日志测试")
+        logger.info("信息日志测试")
+    
+    def on_log_level_changed(self):
+        """处理日志等级配置变化"""
+        # 从配置文件中读取新的日志等级
+        new_log_level = cfg.get(cfg.logLevel)
+        
+        # 更新loguru的日志等级
+        logger.remove(self.log_handler_id)
+        
+        # 重新添加处理器
+        def log_sink(message, format : bool=False):
+            """将loguru消息转发到Qt界面"""
+            try:
+                if format:
+                    # 获取格式化后的消息
+                    self.text_logger.write(message.record["message"])
+                else:
+                    # 写入Qt日志器
+                    self.text_logger.write(message)
+            except Exception:
+                pass
+        
+        self.log_handler_id = logger.add(
+            log_sink,
+            format="{time:YYYY/MM/DD hh:mm:ss} | {level:8} | {file}:{line} {message}",
+            level=new_log_level
+        )
+        
+        # 打印日志等级变更信息
+        logger.critical(f"日志等级已变更为: {new_log_level}")
 
     def _initWindow(self):
         # create splash screen

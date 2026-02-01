@@ -608,8 +608,6 @@ class LoguruInterface(ScrollArea):
                 cursor.movePosition(QTextCursor.End)
                 cursor.insertText(text + "\n", fmt)
                 filtered_count += 1
-            # 重新应用样式
-            StyleSheet.LOG_INTERFACE.apply(self)
             # 滚动到底部
             self.log_viewer.verticalScrollBar().setValue(self.log_viewer.verticalScrollBar().maximum())
 
