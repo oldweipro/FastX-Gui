@@ -1,13 +1,11 @@
 # coding:utf-8
 import os
 import sys
+from loguru import logger
 
 from PyQt5.QtCore import Qt, QUrl, QSize, QEventLoop, QTimer, QTranslator
-from PyQt5.QtGui import QIcon, QDesktopServices
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QSplashScreen
-
 from qfluentwidgets import isDarkTheme, FluentTranslator
-
 from app.view.main_window import MainWindow
 from app.view.register_window import RegisterWindow
 from app.common.config import cfg, Language
@@ -16,8 +14,11 @@ from app.common.config import cfg, Language
 mainWindow = None
 def showMainWindow():
     global mainWindow
-    mainWindow = MainWindow()
-    mainWindow.show()
+    try:
+        mainWindow = MainWindow()
+        mainWindow.show()
+    except Exception as e:
+        logger.error(e)
 
 def main():
     # enable dpi scale

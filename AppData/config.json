@@ -17,7 +17,7 @@
         "WindowSizeMode": "fixed"
     },
     "Material": {
-        "AcrylicBlurRadius": 15
+        "AcrylicBlurRadius": 20
     },
     "software update": {
         "CheckUpdateAtStartUp": true
@@ -67,11 +67,11 @@
     },
     "Log": {
         "LogColorCritical": "#ffff1493",
-        "LogColorDebug": "#ffff2d37",
+        "LogColorDebug": "#ffff1060",
         "LogColorError": "#ffff4500",
         "LogColorInfo": "#ff00ff7f",
         "LogColorSuccess": "#ff32cd32",
-        "LogColorTrace": "#ffc4d320",
+        "LogColorTrace": "#ff9400d3",
         "LogColorWarning": "#ffffd700",
         "LogLevel": "DEBUG"
     }

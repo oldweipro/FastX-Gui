@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt, QUrl, QSize, QEventLoop, QTimer, QDateTime, QPoint
 from PyQt5.QtGui import QIcon, QDesktopServices, QFont, QColor, QPainter
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QSplashScreen, QLabel, QStatusBar, QFrame, \
     QSystemTrayIcon, QAction
+from loguru import logger
 from qfluentwidgets import (NavigationItemPosition, MessageBox, setTheme, Theme, MSFluentWindow, isDarkTheme,
                             NavigationAvatarWidget, SearchLineEdit, qrouter, SubtitleLabel, setFont, SplashScreen,
                             IndeterminateProgressBar, ProgressBar, PushButton, FluentIcon as FIF, InfoBar,
@@ -44,7 +45,7 @@ class CustomTitleBar1(MSFluentTitleBar):
         self.tabBar.setTabSelectedBackgroundColor(QColor(255, 255, 255, 125), QColor(255, 255, 255, 50))
 
         self.tabBar.tabCloseRequested.connect(self.tabBar.removeTab)
-        self.tabBar.currentChanged.connect(lambda i: print(self.tabBar.tabText(i)))
+        self.tabBar.currentChanged.connect(lambda i: logger.info(self.tabBar.tabText(i)))
 
         self.hBoxLayout.insertWidget(5, self.tabBar, 1)
         self.hBoxLayout.setStretch(6, 0)

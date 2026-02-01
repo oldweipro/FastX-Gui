@@ -220,8 +220,7 @@ class FuncInterface(ScrollArea):
     def showCustomDialog(self):
         w = CustomMessageBox(self.window())
         if w.exec():
-            print(w.urlLineEdit.text())
-        logger.info('Btn Click')
+            logger.info(w.urlLineEdit.text())
 
     def _connectSignalToSlot(self):
         self.basicSettingCard.exeButton.clicked.connect(self.showCustomDialog)

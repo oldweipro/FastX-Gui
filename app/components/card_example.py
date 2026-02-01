@@ -2,6 +2,7 @@
 """ 可组装卡片系统示例 """
 from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout
+from loguru import logger
 
 from qfluentwidgets import (
     FluentIcon, PushButton, PrimaryPushButton, ComboBox,
@@ -123,7 +124,7 @@ class CardExample(QWidget):
                     "text": "开始",
                     "icon": FluentIcon.PLAY,
                     "width": 100,
-                    "callback": lambda: print("开始操作")
+                    "callback": lambda: logger.debug("开始操作")
                 },
                 {
                     "text": "暂停",

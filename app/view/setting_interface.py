@@ -5,7 +5,7 @@ from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, FolderListSetti
                             HyperlinkCard, PrimaryPushSettingCard, ScrollArea,
                             ComboBoxSettingCard, ExpandLayout, Theme, CustomColorSettingCard,
                             setTheme, setThemeColor, RangeSettingCard, isDarkTheme, SettingCard, PushButton,
-                            ExpandSettingCard, GroupHeaderCardWidget, SwitchButton)
+                            ExpandSettingCard, GroupHeaderCardWidget, SwitchButton, ColorConfigItem, ColorSettingCard)
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import InfoBar
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QStandardPaths
@@ -237,54 +237,54 @@ class SettingInterface(ScrollArea):
         self.logLevelCard = ComboBoxSettingCard(
             cfg.logLevel,
             FIF.COMMAND_PROMPT,
-            self.tr('Log level'),
+            self.tr('Log level Filter'),
             self.tr('Set the minimum log level to display'),
             texts=[self.tr('TRACE'), self.tr('DEBUG'), self.tr('INFO'), self.tr('SUCCESS'), self.tr('WARNING'), self.tr('ERROR'), self.tr('CRITICAL')],
             parent=self.logGroupCard
         )
-        self.logColorTraceCard = CustomColorSettingCard(
+        self.logColorTraceCard = ColorSettingCard(
             cfg.logColorTrace,
             FIF.PALETTE,
             self.tr('Trace color'),
             self.tr('Set the color for trace level logs'),
             parent=self.logGroupCard
         )
-        self.logColorDebugCard = CustomColorSettingCard(
+        self.logColorDebugCard = ColorSettingCard(
             cfg.logColorDebug,
             FIF.PALETTE,
             self.tr('Debug color'),
             self.tr('Set the color for debug level logs'),
             parent=self.logGroupCard
         )
-        self.logColorInfoCard = CustomColorSettingCard(
+        self.logColorInfoCard = ColorSettingCard(
             cfg.logColorInfo,
             FIF.PALETTE,
             self.tr('Info color'),
             self.tr('Set the color for info level logs'),
             parent=self.logGroupCard
         )
-        self.logColorSuccessCard = CustomColorSettingCard(
+        self.logColorSuccessCard = ColorSettingCard(
             cfg.logColorSuccess,
             FIF.PALETTE,
             self.tr('Success color'),
             self.tr('Set the color for success level logs'),
             parent=self.logGroupCard
         )
-        self.logColorWarningCard = CustomColorSettingCard(
+        self.logColorWarningCard = ColorSettingCard(
             cfg.logColorWarning,
             FIF.PALETTE,
             self.tr('Warning color'),
             self.tr('Set the color for warning level logs'),
             parent=self.logGroupCard
         )
-        self.logColorErrorCard = CustomColorSettingCard(
+        self.logColorErrorCard = ColorSettingCard(
             cfg.logColorError,
             FIF.PALETTE,
             self.tr('Error color'),
             self.tr('Set the color for error level logs'),
             parent=self.logGroupCard
         )
-        self.logColorCriticalCard = CustomColorSettingCard(
+        self.logColorCriticalCard = ColorSettingCard(
             cfg.logColorCritical,
             FIF.PALETTE,
             self.tr('Critical color'),
@@ -342,13 +342,6 @@ class SettingInterface(ScrollArea):
         self.setWidget(self.view)
         self.setWidgetResizable(True)
 
-        logger.trace('Hello')
-        logger.info('Hello')
-        logger.debug('Hello')
-        logger.warning('Hello')
-        logger.success('Hello')
-        logger.error('Hello')
-        logger.critical('Hello')
     def __setQss(self):
         """ set style sheet """
         # initialize style sheet
@@ -441,6 +434,9 @@ class SettingInterface(ScrollArea):
         InfoBar.success(
             self.tr('Updated successfully'),
             self.tr('Configuration takes effect after restart'),
+
+
+
             duration=1500,
             parent=self
         )
@@ -483,6 +479,8 @@ class SettingInterface(ScrollArea):
         )
 
         if file_path:
+
+
             cfg.set(cfg.backgroundImagePath, file_path)
             self.backgroundManager.update_background()
             self.backgroundImageCard._updateDisplay()
@@ -519,6 +517,9 @@ class SettingInterface(ScrollArea):
         parent_window = self.window()
         if hasattr(parent_window, 'update'):
             parent_window.update()  # Trigger repaint to show background changes
+
+    def scrollToGroup(self, group):
+        self.verticalScrollBar().setValue(group.y())
 
     def __updateBackgroundCardsState(self):
         """ Update the enabled state of background setting cards """

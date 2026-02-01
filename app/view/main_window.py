@@ -82,7 +82,7 @@ class MainWindow(SplitFluentWindow):
         # 配置loguru使用我们的sink()
         logger.add(
             log_sink,
-            format="{time:YYYY/MM/DD hh:mm:ss} | {level:7} | {file}:{line} {message}",
+            format="{time:YYYY/MM/DD hh:mm:ss} | {level:8} | {file}:{line} {message}",
             level="DEBUG"
         )
 
@@ -133,12 +133,14 @@ class MainWindow(SplitFluentWindow):
         self.appInterface = AppInterface(self)
         self.funcInterface = FuncInterface(self)
         self.toolInterface = ToolsInterface(self)
-        #self.loguru_interface = LoguruInterface(self)
         self.libraryInterface = LibraryViewInterface(self)
         self.settingInterface = SettingInterface(self)
 
     def _connectSignalToSlot(self):
         signalBus.micaEnableChanged.connect(self.setMicaEffectEnabled)
+        signalBus.switchToSettingGroup.connect(self.switchToSetting)
+        signalBus.switchToExpandGroup.connect(self.switchToSetting)
+        self.loguru_interface.settingsButton.clicked.connect(lambda: signalBus.switchToSettingGroup.emit(self.settingInterface.appGroup))
 
     def _initNavigation(self):
         # set sidebar expand width
@@ -194,14 +196,7 @@ class MainWindow(SplitFluentWindow):
             tooltip=self.tr('sponsor this tools'),
             position=pos
         )
-        self.addSubInterface(self.loguru_interface, FIF.COMMAND_PROMPT, self.tr("Logs"), pos, isTransparent=False)
-        # self.log_item = self.addSubInterface(
-        #     self.log_viewer,
-        #     UnicodeIcon.get_icon_by_name("ic_fluent_document_bullet_list_clock_24_regular"),
-        #     self.tr('执行日志'),
-        #     position=pos
-        # )
-        # self.log_item.clicked.connect(self._on_log_clicked)
+        self.addSubInterface(self.loguru_interface, UnicodeIcon.get_icon_by_name("ic_fluent_document_bullet_list_clock_24_regular"), self.tr("Logs"), pos, isTransparent=False)
         self.addSubInterface(self.settingInterface, FIF.SETTING, self.tr('Settings'), pos, isTransparent=False)
         self.navigationInterface.setCurrentItem(self.homeInterface.objectName())
         self.splashScreen.finish()
@@ -303,11 +298,16 @@ class MainWindow(SplitFluentWindow):
         self.setObjectName('mainWindow')
         StyleSheet.MAIN_WINDOW.apply(self)
         self.setMicaEffectEnabled(cfg.get(cfg.micaEnabled))
-        logger.info('Succsee Setup qss')
+
     def resizeEvent(self, e):
         super().resizeEvent(e)
         if hasattr(self, 'splashScreen'):
             self.splashScreen.resize(self.size())
+
+    def switchToSetting(self, settingGroup):
+        """ switch to sample """
+        self.stackedWidget.setCurrentWidget(self.settingInterface, False)
+        self.settingInterface.scrollToGroup(settingGroup)
 
     def _do_quit(self, e=None):
         """执行退出前的清理并退出程序

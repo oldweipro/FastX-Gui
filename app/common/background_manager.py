@@ -4,14 +4,11 @@ Background Manager - Handles application background image, blur effects and opac
 """
 
 import os
-import logging
+from loguru import logger
 from pathlib import Path
 from PyQt5.QtCore import QObject, pyqtSignal, QSize
 from PyQt5.QtGui import QPixmap, QPainter
 from PyQt5.QtCore import Qt
-
-logger = logging.getLogger(__name__)
-
 
 class BackgroundManager(QObject):
     """Background manager - Unified management of background related settings and styles"""

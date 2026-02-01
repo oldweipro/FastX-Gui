@@ -63,7 +63,7 @@ class UnicodeIcon:
                     logger.warning(f"图标映射表文件不存在: {cls.ICON_MAP_PATH}")
                     cls._icon_map_cache = {}
             except Exception as e:
-                logger.exception(f"加载图标映射表失败: {e}")
+                logger.error(f"加载图标映射表失败: {e}")
                 cls._icon_map_cache = {}
         return cls._icon_map_cache
 
@@ -105,7 +105,7 @@ class UnicodeIcon:
             cls._icon_cache[icon_name] = default_icon
             return default_icon
         except Exception as default_error:
-            logger.exception(f"加载默认图标也失败: {default_error}")
+            logger.error(f"加载默认图标也失败: {default_error}")
             return QIcon()
 
     @classmethod
@@ -149,7 +149,7 @@ class UnicodeIcon:
                 cls._icon_cache[icon_name] = icon
             return icon
         except Exception as e:
-            logger.exception(f"加载图标{icon_name}出错: {e}")
+            logger.error(f"加载图标{icon_name}出错: {e}")
             return cls._get_default_icon(icon_name)
 
 

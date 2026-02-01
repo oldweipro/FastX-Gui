@@ -3,6 +3,7 @@ from enum import Enum
 from PyQt5.QtCore import QObject, pyqtSignal, Qt, QSize
 from PyQt5.QtGui import QTextCharFormat, QColor, QTextCursor, QFont
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QFrame
+from loguru import logger
 from qfluentwidgets import ScrollArea, StrongBodyLabel, CaptionLabel, PlainTextEdit, \
     FluentIcon as FIF, TransparentToolButton, TransparentToggleToolButton, SwitchButton, \
     VerticalSeparator, SearchLineEdit, ComboBox, PushButton, isDarkTheme, ToolButton, setTheme, Theme, ToggleToolButton
@@ -210,6 +211,19 @@ class QTextEditLogger(QObject):
         # 连接滚动条信号
         self.text_edit.verticalScrollBar().valueChanged.connect(self._on_scroll_value_changed)
 
+        # 监听日志配置变化
+        cfg.logColorTrace.valueChanged.connect(self.update_colors)
+        cfg.logColorDebug.valueChanged.connect(self.update_colors)
+        cfg.logColorInfo.valueChanged.connect(self.update_colors)
+        cfg.logColorSuccess.valueChanged.connect(self.update_colors)
+        cfg.logColorWarning.valueChanged.connect(self.update_colors)
+        cfg.logColorError.valueChanged.connect(self.update_colors)
+        cfg.logColorCritical.valueChanged.connect(self.update_colors)
+
+    def update_colors(self):
+        """更新颜色配置"""
+        self.colors = LogConfig.get_colors_dict()
+
     def write(self, message):
         """安全写入日志（可被任何线程调用）"""
         try:
@@ -238,7 +252,7 @@ class QTextEditLogger(QObject):
             # 通过信号安全传递到主线程
             self.log_signal.emit(level, text)
         except Exception as e:
-            print(f"写入日志错误: {e}")
+            logger.error(f"写入日志错误: {e}")
 
     def _on_scroll_value_changed(self, value):
         """当用户滚动时更新状态"""
@@ -382,25 +396,29 @@ class QTextEditLogger(QObject):
         self.buffer.clear()
 
 class LoguruInterface(ScrollArea):
-    def __init__(self, title: str, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.view = QWidget(self)
-        self.title = title
         self.log_count = 0
-        self.max_logs = 1000  # 最大日志数量
         self.filter_level = None  # 当前过滤级别
         self.original_logs = []  # 保存原始日志内容
 
         self.log_viewer = PlainTextEdit(self)
         self.log_viewer.document().setDocumentMargin(0)
-        self.log_viewer.setObjectName(self.tr('运行日志'))
+        self.log_viewer.setObjectName('log_viewer')
         self.log_viewer.setReadOnly(True)
         self.log_viewer.setFont(QFont("Consolas", 11))
 
-        self.title_label = StrongBodyLabel("日志中心")
+        self.title_label = StrongBodyLabel(self.view)
         self.title_label.setFont(QFont("Segoe UI", 16, QFont.Bold))
-        self.subtitle_label = CaptionLabel("实时记录系统运行状态")
+        self.title_label.setObjectName('title_label')
+        self.title_label.setText(self.tr("日志中心"))
+
+        self.subtitle_label = CaptionLabel(self.view)
         self.subtitle_label.setTextColor("#666666")
+        self.subtitle_label.setObjectName('subtitle_label')
+        self.subtitle_label.setText(self.tr("实时记录系统运行状态"))
+
 
         """初始化界面"""
         self.__initWidget()
@@ -408,6 +426,7 @@ class LoguruInterface(ScrollArea):
         self.create_tool_bar()  # 创建工具栏
         self.create_search_box()  # 创建搜索框
         self.setup_connections()
+        StyleSheet.LOG_INTERFACE.apply(self)
 
     def __initLayout(self):
         # 顶层布局
@@ -431,8 +450,6 @@ class LoguruInterface(ScrollArea):
     def __initWidget(self):
         self.setObjectName("loguruInterface")
         self.view.setObjectName('view')
-        StyleSheet.LOG_INTERFACE.apply(self)
-
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setWidget(self.view)
         self.setWidgetResizable(True)
@@ -455,6 +472,9 @@ class LoguruInterface(ScrollArea):
         # 切换主题按钮
         self.themeButton = ToolButton(FIF.CONSTRACT, self)
         self.themeButton.setToolTip("切换主题")
+        # 设置按钮
+        self.settingsButton = ToolButton(FIF.SETTING, self)
+        self.settingsButton.setToolTip("日志设置")
         # 分隔符
         self.separator1 = VerticalSeparator()
         # 级别过滤按钮组
@@ -482,11 +502,12 @@ class LoguruInterface(ScrollArea):
         # 分隔符
         self.separator2 = VerticalSeparator()
 
-        # 添加按钮到工具栏 - 左侧：清空、复制全部、保存全部、切换主题、筛选按钮
+        # 添加按钮到工具栏 - 左侧：清空、复制全部、保存全部、切换主题、设置、筛选按钮
         self.toolbar.addWidget(self.clear_btn)
         self.toolbar.addWidget(self.copy_all_btn)
         self.toolbar.addWidget(self.save_all_btn)
         self.toolbar.addWidget(self.themeButton)
+        self.toolbar.addWidget(self.settingsButton)
         self.toolbar.addWidget(self.separator1)
         # 筛选按钮（靠左，跟分隔符挨着）
         self.toolbar.addWidget(self.all_logs_btn)
@@ -530,8 +551,23 @@ class LoguruInterface(ScrollArea):
         for btn in self.filter_buttons.values():
             btn.clicked.connect(self.on_filter_clicked)
 
+        # 监听日志配置变化
+        cfg.logColorTrace.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorDebug.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorInfo.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorSuccess.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorWarning.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorError.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorCritical.valueChanged.connect(self.on_log_config_changed)
+        cfg.logLevel.valueChanged.connect(self.on_log_config_changed)
+
         # 确保"所有日志"按钮默认选中
         self.all_logs_btn.setChecked(True)
+
+    def on_log_config_changed(self):
+        """处理日志配置变化"""
+        # 重新过滤日志，以应用新的配置
+        self.filter_logs()
 
     def on_new_log(self, level: str, line: str):
         """处理新日志"""
@@ -583,9 +619,12 @@ class LoguruInterface(ScrollArea):
                 self.log_viewer.insertPlainText(text + "\n")
                 filtered_count += 1
 
+            # 重新应用样式
+            StyleSheet.LOG_INTERFACE.apply(self)
+
         except Exception as e:
             # 防止筛选功能崩溃
-            print(f"筛选功能错误: {e}")
+            logger.error(f"筛选功能错误: {e}")
 
     def on_filter_clicked(self):
         """处理过滤器点击"""
@@ -620,7 +659,7 @@ class LoguruInterface(ScrollArea):
             self.filter_logs()
         except Exception as e:
             # 防止筛选功能崩溃
-            print(f"筛选功能错误: {e}")
+            logger.error(f"筛选功能错误: {e}")
             self.filter_level = None
             self.filter_logs()
 
@@ -637,7 +676,7 @@ class LoguruInterface(ScrollArea):
             if text:
                 QtWidgets.QApplication.clipboard().setText(text)
         except Exception as e:
-            print(f"复制全部日志错误: {e}")
+            logger.error(f"复制全部日志错误: {e}")
 
     def save_all_logs(self):
         """保存全部日志"""
@@ -662,7 +701,7 @@ class LoguruInterface(ScrollArea):
                 with open(file_path, 'w', encoding='utf-8') as f:
                     f.write(self.log_viewer.toPlainText())
         except Exception as e:
-            print(f"保存全部日志错误: {e}")
+            logger.error(f"保存全部日志错误: {e}")
 
     def toggle_theme(self):
         """切换应用主题"""
