@@ -213,6 +213,7 @@ class MainWindow(SplitFluentWindow):
         signalBus.micaEnableChanged.connect(self.setMicaEffectEnabled)
         signalBus.switchToSettingGroup.connect(self.switchToSetting)
         signalBus.switchToExpandGroup.connect(self.switchToSetting)
+        signalBus.showMainWindow.connect(self._on_show_main_window)  # 连接显示主窗口信号
         self.loguru_interface.settingsButton.clicked.connect(lambda: signalBus.switchToSettingGroup.emit(self.settingInterface.appGroup))
 
     def _initNavigation(self):
@@ -305,7 +306,23 @@ class MainWindow(SplitFluentWindow):
 
     def _initFloatingWindow(self):
         """初始化悬浮窗"""
-        self.floatingWindow = LevitationWindow(self)
+        try:
+            self.floatingWindow = LevitationWindow(self)
+            
+            # 连接浮窗可见性变更信号
+            self.floatingWindow.visibilityChanged.connect(self._on_floating_window_visibility_changed)
+            
+            # 根据配置决定是否显示浮窗（但不设置托盘菜单状态，因为此时还没创建）
+            if cfg.get(cfg.startupDisplayFloatingWindow):
+                self.floatingWindow.show()
+            else:
+                self.floatingWindow.hide()
+        except Exception as e:
+            logger.error(f"浮窗初始化失败: {e}")
+            import traceback
+            traceback.print_exc()
+            # 即使浮窗初始化失败，也不影响主窗口启动
+            self.floatingWindow = None
 
     def _initSystemTray(self):
         """初始化系统托盘"""
@@ -326,7 +343,15 @@ class MainWindow(SplitFluentWindow):
         # 显示/隐藏悬浮窗
         self.floating_window_action = QAction(self.tr('Show floating window'), self)
         self.floating_window_action.setCheckable(True)
-        self.floating_window_action.setChecked(False)
+        
+        # 根据浮窗当前状态设置菜单项
+        if hasattr(self, 'floatingWindow') and self.floatingWindow is not None and self.floatingWindow.isVisible():
+            self.floating_window_action.setChecked(True)
+            self.floating_window_action.setText(self.tr('Hide floating window'))
+        else:
+            self.floating_window_action.setChecked(False)
+            self.floating_window_action.setText(self.tr('Show floating window'))
+            
         self.floating_window_action.triggered.connect(self._toggle_floating_window)
         tray_menu.addAction(self.floating_window_action)
         
@@ -371,12 +396,32 @@ class MainWindow(SplitFluentWindow):
             pass
 
     def _toggle_floating_window(self, checked):
-        """Toggle floating window visibility"""
+        """切换浮窗显示状态，并同步更新配置"""
+        if not hasattr(self, 'floatingWindow') or self.floatingWindow is None:
+            logger.warning("浮窗未初始化")
+            return
+        
+        # 更新配置：同步浮窗开关状态
+        cfg.set(cfg.startupDisplayFloatingWindow, checked)
+        
         if checked:
             self.floatingWindow.show()
             self.floating_window_action.setText(self.tr('Hide floating window'))
         else:
             self.floatingWindow.hide()
+            self.floating_window_action.setText(self.tr('Show floating window'))
+    
+    def _on_floating_window_visibility_changed(self, visible):
+        """浮窗可见性变更事件处理"""
+        # 同步菜单项状态（如果托盘菜单已创建）
+        if not hasattr(self, 'floating_window_action'):
+            # 托盘菜单还未创建，跳过
+            return
+            
+        self.floating_window_action.setChecked(visible)
+        if visible:
+            self.floating_window_action.setText(self.tr('Hide floating window'))
+        else:
             self.floating_window_action.setText(self.tr('Show floating window'))
 
     def _setQss(self):
@@ -394,7 +439,14 @@ class MainWindow(SplitFluentWindow):
     def switchToSetting(self, settingGroup):
         """ switch to sample """
         self.stackedWidget.setCurrentWidget(self.settingInterface, False)
-        self.settingInterface.scrollToGroup(settingGroup)
+        # 如果settingGroup不为None，则滚动到指定的组
+        if settingGroup is not None:
+            self.settingInterface.scrollToGroup(settingGroup)
+    
+    def _on_show_main_window(self):
+        """显示主窗口"""
+        self.showNormal()
+        self.activateWindow()
 
     def _do_quit(self, e=None):
         """执行退出前的清理并退出程序

@@ -184,6 +184,15 @@ class Config(QConfig):
         OptionsValidator([0, 1, 2])
     )
 
+    # 浮窗位置设置
+    floatingWindowPosX = ConfigItem(
+        "FloatingWindow", "PosX", 100
+    )
+
+    floatingWindowPosY = ConfigItem(
+        "FloatingWindow", "PosY", 100
+    )
+
 cfg = Config()
 cfg.themeMode.value = Theme.AUTO
 qconfig.load(str(CONFIG_FILE.absolute()), cfg)
