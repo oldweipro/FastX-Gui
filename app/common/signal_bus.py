@@ -12,5 +12,6 @@ class SignalBus(QObject):
     supportSignal = pyqtSignal()
     checkUpdateSig = pyqtSignal()
     micaEnableChanged = pyqtSignal(bool)
+    showMainWindow = pyqtSignal()  # 显示主窗口信号
 
 signalBus = SignalBus()

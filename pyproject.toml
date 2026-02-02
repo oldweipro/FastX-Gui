@@ -1,0 +1,11 @@
+[project]
+name = "fastx-gui"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = [
+    "PyQt-Fluent-Widgets[full]",
+    "loguru",
+]
+[tool.uv]
+required-environments = "sys_platform == 'win32' and platform_machine == 'AMD64'"

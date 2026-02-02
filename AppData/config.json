@@ -37,6 +37,8 @@
         "LongPressDuration": 500,
         "Opacity": 80,
         "Placement": 1,
+        "PosX": 2059,
+        "PosY": 546,
         "Size": 3,
         "StickToEdge": true,
         "StickToEdgeDisplayStyle": 1,
@@ -50,7 +52,7 @@
     },
     "personalization": {
         "DpiScale": "Auto",
-        "Language": "zh_HK",
+        "Language": "zh_CN",
         "MicaEnabled": true
     },
     "FastRte": {

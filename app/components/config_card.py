@@ -33,18 +33,19 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
     def _create_controls(self):
         """创建所有控件"""
 
-        # 启动时显示浮窗
+        # 启动时显示浮窗 → 改为浮窗开关
         self.startup_switch = SwitchButton()
         self.startup_switch.setChecked(cfg.startupDisplayFloatingWindow.value)
-        self.startup_switch.checkedChanged.connect(
-            lambda v: setattr(cfg.startupDisplayFloatingWindow, 'value', v)
-        )
+        self.startup_switch.checkedChanged.connect(self._on_floating_window_switch_changed)
         self.addGroup(
             UnicodeIcon.get_icon_by_name('ic_fluent_view_desktop_24_regular'),
-            "启动时显示浮窗",
-            "控制软件启动时是否自动显示浮窗",
+            "浮窗开关",
+            "控制浮窗的开启与关闭（开启后程序启动时自动显示）",
             self.startup_switch
         )
+        
+        # 监听配置变化，同步开关状态
+        cfg.startupDisplayFloatingWindow.valueChanged.connect(self._sync_switch_state)
 
         # 浮窗透明度
         self.opacity_spinbox = SpinBox()
@@ -123,6 +124,43 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
             2: TopmostMode.UIA
         }
         cfg.floatingWindowTopmostMode.value = mode_map[index]
+    
+    def _sync_switch_state(self, value):
+        """同步开关状态（当配置被其他地方修改时）"""
+        # 使用 blockSignals 避免触发循环事件
+        self.startup_switch.blockSignals(True)
+        self.startup_switch.setChecked(value)
+        self.startup_switch.blockSignals(False)
+    
+    def _on_floating_window_switch_changed(self, checked):
+        """浮窗开关改变处理"""
+        # 更新配置（使用 cfg.set 确保立即保存）
+        cfg.set(cfg.startupDisplayFloatingWindow, checked)
+        
+        # 立即控制浮窗显示/隐藏
+        try:
+            # 获取主窗口
+            from ..view.main_window import MainWindow
+            from PyQt5.QtWidgets import QApplication
+            
+            for widget in QApplication.topLevelWidgets():
+                if isinstance(widget, MainWindow):
+                    if hasattr(widget, 'floatingWindow') and widget.floatingWindow:
+                        if checked:
+                            widget.floatingWindow.show()
+                            # 同步更新托盘菜单
+                            if hasattr(widget, 'floating_window_action'):
+                                widget.floating_window_action.setChecked(True)
+                                widget.floating_window_action.setText(widget.tr('Hide floating window'))
+                        else:
+                            widget.floatingWindow.hide()
+                            # 同步更新托盘菜单
+                            if hasattr(widget, 'floating_window_action'):
+                                widget.floating_window_action.setChecked(False)
+                                widget.floating_window_action.setText(widget.tr('Show floating window'))
+                    break
+        except Exception as e:
+            print(f"控制浮窗显示失败: {e}")
 
 class BasicConfigCard(GroupHeaderCardWidget):
     """ Basic config card """

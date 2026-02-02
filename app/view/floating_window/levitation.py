@@ -1,13 +1,11 @@
 # coding:utf-8
 # 标准库导入
-import ctypes
-import os
 from typing import Dict, Any
 
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 # 第三方库导入
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
 from qfluentwidgets import *
 from qfluentwidgets import FluentIcon as FIF
 
@@ -70,15 +68,30 @@ class LevitationWindow(QWidget):
         # ==================== 主题应用 ====================
         self._apply_theme_style()
 
+        # ==================== 边缘感应定时器 ====================
+        self._edge_detect_timer = QTimer(self)
+        self._edge_detect_timer.timeout.connect(self._detect_mouse_near_edge)
+        self._edge_detect_timer.start(100)  # 每100ms检测一次
+
     # ==================== 初始化方法 ====================
 
     def _setup_window_properties(self):
         """设置窗口基础属性"""
         self.setAttribute(Qt.WA_TranslucentBackground)
+        # 使用 Qt.Window 而不是 Qt.Tool，这样浮窗不会随主窗口最小化而消失
         self._base_window_flags = (
-            Qt.FramelessWindowHint | Qt.Tool | Qt.NoDropShadowWindowHint
+                Qt.FramelessWindowHint |
+                Qt.Window |
+                Qt.NoDropShadowWindowHint |
+                Qt.WindowStaysOnTopHint  # 默认包含置顶
         )
-        self.setWindowFlags(self._base_window_flags | Qt.WindowStaysOnTopHint)
+        # 设置窗口标志
+        self.setWindowFlags(
+            Qt.FramelessWindowHint |
+            Qt.Window |  # 使用 Window 而不是 Tool
+            Qt.WindowStaysOnTopHint |
+            Qt.NoDropShadowWindowHint
+        )
 
     def _init_drag_properties(self):
         """初始化拖拽相关属性"""
@@ -104,7 +117,7 @@ class LevitationWindow(QWidget):
 
     def _init_ui_properties(self):
         """初始化UI相关属性"""
-        self._buttons_spec = ["download", "settings"]
+        self._buttons_spec = ["settings", "close"]  # 添加关闭按钮，移除下载按钮
         self._font_family = QFont().family()
         self._container = QWidget(self)
         self._layout = None
@@ -121,33 +134,53 @@ class LevitationWindow(QWidget):
 
     def _init_settings(self):
         """初始化设置配置"""
-        # 基础显示设置
-        self._visible_on_start = False
-        self._opacity = self.DEFAULT_OPACITY
+        try:
+            # 从配置文件读取设置
+            self._visible_on_start = cfg.get(cfg.startupDisplayFloatingWindow)
+            self._opacity = cfg.get(cfg.floatingWindowOpacity) / 100.0
 
-        # 布局设置
-        self._placement = 0
-        self._display_style = 0
+            # 布局设置
+            self._placement = cfg.get(cfg.floatingWindowPlacement)
+            self._display_style = cfg.get(cfg.floatingWindowDisplayStyle)
 
-        # 拖拽设置
-        self._draggable = True
-        self._long_press_ms = self.DEFAULT_LONG_PRESS_MS
+            # 拖拽设置
+            self._draggable = cfg.get(cfg.floatingWindowDraggable)
+            self._long_press_ms = cfg.get(cfg.floatingWindowLongPressDuration)
 
-        # 贴边设置
-        self._stick_to_edge = True
-        self._retract_seconds = self.DEFAULT_RETRACT_SECONDS
-        self._stick_indicator_style = 0
+            # 贴边设置
+            self._stick_to_edge = cfg.get(cfg.floatingWindowStickToEdge)
+            self._retract_seconds = cfg.get(cfg.floatingWindowStickToEdgeRecoverSeconds)
+            self._stick_indicator_style = cfg.get(cfg.floatingWindowStickToEdgeDisplayStyle)
 
-        # 浮窗大小设置
-        self._apply_size_setting(1)
+            # 浮窗大小设置
+            self._apply_size_setting(cfg.get(cfg.floatingWindowSize))
 
-        # 无焦点模式设置
-        self._do_not_steal_focus = False
-        self._topmost_mode = 1
-        self._refresh_window_flags()
+            # 无焦点模式设置
+            self._do_not_steal_focus = cfg.get(cfg.doNotStealFocus)
+            self._topmost_mode = cfg.get(cfg.floatingWindowTopmostMode).value
+            self._refresh_window_flags()
+        except Exception as e:
+            # 如果配置读取失败，使用默认值
+            print(f"浮窗配置读取失败，使用默认值: {e}")
+            self._visible_on_start = False
+            self._opacity = self.DEFAULT_OPACITY
+            self._placement = self.DEFAULT_PLACEMENT
+            self._display_style = self.DEFAULT_DISPLAY_STYLE
+            self._draggable = True
+            self._long_press_ms = self.DEFAULT_LONG_PRESS_MS
+            self._stick_to_edge = True
+            self._retract_seconds = self.DEFAULT_RETRACT_SECONDS
+            self._stick_indicator_style = 0
+            self._apply_size_setting(1)
+            self._do_not_steal_focus = False
+            self._topmost_mode = 1
+            self._refresh_window_flags()
 
         # 贴边隐藏功能配置
         self._init_edge_hide_settings()
+
+        # 连接配置变更信号
+        self._connect_config_signals()
 
     def _init_edge_hide_settings(self):
         """初始化贴边隐藏功能设置"""
@@ -205,6 +238,73 @@ class LevitationWindow(QWidget):
             cfg.themeChanged.connect(self._on_theme_changed)
         except Exception:
             pass
+
+    def _connect_config_signals(self):
+        """连接配置变更信号"""
+        try:
+            cfg.floatingWindowOpacity.valueChanged.connect(self._on_opacity_changed)
+            cfg.floatingWindowDraggable.valueChanged.connect(self._on_draggable_changed)
+            cfg.floatingWindowLongPressDuration.valueChanged.connect(self._on_long_press_changed)
+            cfg.floatingWindowStickToEdge.valueChanged.connect(self._on_stick_to_edge_changed)
+            cfg.floatingWindowStickToEdgeRecoverSeconds.valueChanged.connect(self._on_retract_seconds_changed)
+            cfg.floatingWindowSize.valueChanged.connect(self._on_size_changed)
+            cfg.floatingWindowPlacement.valueChanged.connect(self._on_placement_changed)
+            cfg.floatingWindowDisplayStyle.valueChanged.connect(self._on_display_style_changed)
+            cfg.floatingWindowTopmostMode.valueChanged.connect(self._on_topmost_mode_changed)
+            cfg.doNotStealFocus.valueChanged.connect(self._on_focus_mode_changed)
+        except Exception as e:
+            pass
+
+    def _on_opacity_changed(self, value):
+        """透明度变更"""
+        self._opacity = value / 100.0
+        self.setWindowOpacity(self._opacity)
+
+    def _on_draggable_changed(self, value):
+        """可拖动状态变更"""
+        self._draggable = value
+
+    def _on_long_press_changed(self, value):
+        """长按时间变更"""
+        self._long_press_ms = value
+
+    def _on_stick_to_edge_changed(self, value):
+        """贴边隐藏开关变更"""
+        self._stick_to_edge = value
+        self.floating_window_stick_to_edge = value
+        if not value and self._retracted:
+            # 如果关闭贴边隐藏且当前处于收纳状态，则展开
+            self._expand_from_edge()
+
+    def _on_retract_seconds_changed(self, value):
+        """收纳延迟时间变更"""
+        self._retract_seconds = value
+        self.custom_retract_time = value
+
+    def _on_size_changed(self, value):
+        """浮窗大小变更"""
+        self._apply_size_setting(value)
+        self.rebuild_ui()
+
+    def _on_placement_changed(self, value):
+        """布局方式变更"""
+        self._placement = value
+        self.rebuild_ui()
+
+    def _on_display_style_changed(self, value):
+        """显示样式变更"""
+        self._display_style = value
+        self.rebuild_ui()
+
+    def _on_topmost_mode_changed(self, value):
+        """置顶模式变更"""
+        self._topmost_mode = value.value
+        self._refresh_window_flags()
+
+    def _on_focus_mode_changed(self, value):
+        """焦点模式变更"""
+        self._do_not_steal_focus = value
+        self._refresh_window_flags()
 
     def _on_theme_changed(self):
         """主题变更处理"""
@@ -352,8 +452,13 @@ class LevitationWindow(QWidget):
 
     def _apply_position(self):
         """应用位置设置"""
-        x = 100
-        y = 100
+        # 从配置中读取位置，如果没有则使用默认值
+        try:
+            x = cfg.get(cfg.floatingWindowPosX) if hasattr(cfg, 'floatingWindowPosX') else 100
+            y = cfg.get(cfg.floatingWindowPosY) if hasattr(cfg, 'floatingWindowPosY') else 100
+        except Exception:
+            x = 100
+            y = 100
         nx, ny = self._clamp_to_screen(x, y)
         self.move(nx, ny)
 
@@ -415,13 +520,46 @@ class LevitationWindow(QWidget):
         Args:
             spec: 按钮类型标识
         """
-        # 这里可以根据需要添加按钮点击后的处理逻辑
-        if spec == "download":
-            # 触发下载功能
-            pass
-        elif spec == "settings":
-            # 打开设置界面
-            pass
+        from ...common.signal_bus import signalBus
+
+        if spec == "settings":
+            # 打开设置界面 - 显示主窗口并切换到设置页面
+            try:
+                # 先显示主窗口
+                signalBus.showMainWindow.emit()
+                # 稍等一下再切换，确保主窗口已完全显示
+                from PyQt5.QtCore import QTimer
+                QTimer.singleShot(100, lambda: self._switch_to_settings())
+            except Exception as e:
+                print(f"打开设置失败: {e}")
+        elif spec == "close":
+            # 关闭浮窗：同时关闭开关和隐藏浮窗
+            try:
+                from ...common.config import cfg
+
+                # 更新配置：关闭浮窗开关（使用 cfg.set 确保立即保存）
+                cfg.set(cfg.startupDisplayFloatingWindow, False)
+
+                # 隐藏浮窗
+                self.hide()
+
+                # 同步更新托盘菜单状态
+                if self.parent() and hasattr(self.parent(), 'floating_window_action'):
+                    self.parent().floating_window_action.setChecked(False)
+                    self.parent().floating_window_action.setText(self.parent().tr('Show floating window'))
+            except Exception as e:
+                print(f"关闭浮窗失败: {e}")
+
+    def _switch_to_settings(self):
+        """切换到设置界面"""
+        try:
+            # 通过父窗口直接切换
+            if self.parent() and hasattr(self.parent(), 'settingInterface'):
+                parent = self.parent()
+                if hasattr(parent, 'stackedWidget'):
+                    parent.stackedWidget.setCurrentWidget(parent.settingInterface, False)
+        except Exception as e:
+            print(f"切换到设置界面失败: {e}")
 
     def _create_button(self, spec: str) -> QPushButton:
         """创建按钮
@@ -460,13 +598,13 @@ class LevitationWindow(QWidget):
             按钮配置字典，包含图标、文本
         """
         button_configs = {
-            "download": {
-                "icon": FIF.DOWNLOAD,
-                "text": "下载",
-            },
             "settings": {
                 "icon": FIF.SETTING,
                 "text": "设置",
+            },
+            "close": {
+                "icon": FIF.CLOSE,
+                "text": "关闭",
             },
         }
 
@@ -752,8 +890,8 @@ class LevitationWindow(QWidget):
             if not self._retracted:
                 # 清除旧的定时器
                 if (
-                    hasattr(self, "_auto_hide_timer")
-                    and self._auto_hide_timer.isActive()
+                        hasattr(self, "_auto_hide_timer")
+                        and self._auto_hide_timer.isActive()
                 ):
                     self._auto_hide_timer.stop()
                 # 创建或重置自动隐藏定时器
@@ -816,8 +954,8 @@ class LevitationWindow(QWidget):
         """检测窗口是否靠近屏幕边缘，并实现贴边隐藏功能（带动画效果）"""
         # 如果有正在进行的动画，先停止它
         if (
-            hasattr(self, "animation")
-            and self.animation.state() == QPropertyAnimation.Running
+                hasattr(self, "animation")
+                and self.animation.state() == QPropertyAnimation.Running
         ):
             self.animation.stop()
 
@@ -910,8 +1048,8 @@ class LevitationWindow(QWidget):
 
         # 保存新位置（仅在窗口未贴边隐藏时）
         if (
-            window_pos.x() > edge_threshold
-            and window_pos.x() + window_width < screen.width() - edge_threshold
+                window_pos.x() > edge_threshold
+                and window_pos.x() + window_width < screen.width() - edge_threshold
         ):
             # 只有在非收纳状态下才保存位置
             if not self._retracted:
@@ -928,9 +1066,16 @@ class LevitationWindow(QWidget):
             self._check_edge_proximity()
 
     def _save_position(self):
-        """保存窗口位置"""
-        # 这里可以根据需要保存窗口位置到配置文件
-        pass
+        """保存窗口位置到配置文件"""
+        try:
+            pos = self.pos()
+            # 保存位置到配置
+            if hasattr(cfg, 'floatingWindowPosX'):
+                cfg.set(cfg.floatingWindowPosX, pos.x())
+            if hasattr(cfg, 'floatingWindowPosY'):
+                cfg.set(cfg.floatingWindowPosY, pos.y())
+        except Exception as e:
+            pass
 
     def show(self):
         """显示窗口"""
@@ -938,6 +1083,45 @@ class LevitationWindow(QWidget):
         # 浮窗显示后立即检测边缘
         QTimer.singleShot(100, self._check_edge_proximity)
         self.visibilityChanged.emit(True)
+
+    def _detect_mouse_near_edge(self):
+        """检测鼠标是否靠近已收纳的浮窗边缘"""
+        # 如果没有处于收纳状态，不需要检测
+        if not self._retracted or not self.floating_window_stick_to_edge:
+            return
+
+        try:
+            from PyQt5.QtGui import QCursor
+
+            # 获取鼠标全局位置
+            mouse_pos = QCursor.pos()
+
+            # 获取屏幕几何信息
+            screen = QApplication.primaryScreen().availableGeometry()
+
+            # 定义感应区域（像素）
+            sense_distance = 20
+
+            # 获取浮窗几何信息
+            window_geometry = self.geometry()
+            window_y_center = window_geometry.center().y()
+            window_height = window_geometry.height()
+
+            # 判断鼠标是否在浮窗高度范围内
+            mouse_in_window_height = (window_y_center - window_height // 2 - sense_distance <= mouse_pos.y() <=
+                                      window_y_center + window_height // 2 + sense_distance)
+
+            if not mouse_in_window_height:
+                return
+
+            # 检测左边缘
+            if window_geometry.x() < screen.left() and mouse_pos.x() <= screen.left() + sense_distance:
+                self._expand_from_edge()  # 使用立即展开
+            # 检测右边缘
+            elif window_geometry.x() + window_geometry.width() > screen.right() and mouse_pos.x() >= screen.right() - sense_distance:
+                self._expand_from_edge()  # 使用立即展开
+        except Exception:
+            pass
 
     def hide(self):
         """隐藏窗口"""
