@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QInputDialog, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QInputDialog, QFileDialog, QMessageBox, QHBoxLayout, QVBoxLayout
 from qfluentwidgets import (
     ExpandSettingCard,
     PushSettingCard,
@@ -133,20 +133,28 @@ class RmCommentsUI:
         """
         添加卡片到布局
         """
-        self.rmCodeCommentsGroupCard.viewLayout.addWidget(self.rmCodeCommentsInputFolderCard)
-        self.rmCodeCommentsGroupCard.viewLayout.addWidget(self.rmCodeCommentsOutputFolderCard)
+        self.columnLayout = QHBoxLayout()
+        self.rowLeftLayout = QVBoxLayout()
+        self.rowRightLayout = QVBoxLayout()
+        self.rmCodeCommentsGroupCard.viewLayout.addLayout(self.columnLayout)
+        self.columnLayout.addLayout(self.rowLeftLayout)
+        self.columnLayout.addLayout(self.rowRightLayout)
+
+        self.rowLeftLayout.addWidget(self.rmCodeCommentsInputFolderCard)
+        self.rowLeftLayout.addWidget(self.rmCodeCommentsOutputFolderCard)
 
         # Add option cards
-        self.rmCodeCommentsGroupCard.viewLayout.addWidget(self.rmCodeCommentsRemoveCommentsCard)
-        self.rmCodeCommentsGroupCard.viewLayout.addWidget(self.rmCodeCommentsRemoveDocstringsCard)
-        self.rmCodeCommentsGroupCard.viewLayout.addWidget(self.rmCodeCommentsRemoveEmptyLinesCard)
-        self.rmCodeCommentsGroupCard.viewLayout.addWidget(self.rmCodeCommentsKeepTripleQuotesCard)
-        self.rmCodeCommentsGroupCard.viewLayout.addWidget(self.rmCodeCommentsRecursiveCard)
+        self.rowLeftLayout.addWidget(self.rmCodeCommentsRemoveCommentsCard)
+        self.rowLeftLayout.addWidget(self.rmCodeCommentsRemoveDocstringsCard)
+        self.rowLeftLayout.addWidget(self.rmCodeCommentsRemoveEmptyLinesCard)
+
+        self.rowRightLayout.addWidget(self.rmCodeCommentsKeepTripleQuotesCard)
+        self.rowRightLayout.addWidget(self.rmCodeCommentsRecursiveCard)
 
         # Add input cards
-        self.rmCodeCommentsGroupCard.viewLayout.addWidget(self.rmCodeCommentsOutputSuffixCard)
-        self.rmCodeCommentsGroupCard.viewLayout.addWidget(self.rmCodeCommentsExcludeFilesCard)
-        self.rmCodeCommentsGroupCard.viewLayout.addWidget(self.rmCodeCommentsExcludePatternsCard)
+        self.rowRightLayout.addWidget(self.rmCodeCommentsOutputSuffixCard)
+        self.rowRightLayout.addWidget(self.rmCodeCommentsExcludeFilesCard)
+        self.rowRightLayout.addWidget(self.rmCodeCommentsExcludePatternsCard)
 
         # Add execute button
         self.rmCodeCommentsGroupCard.viewLayout.addWidget(self.rmCodeCommentsExecuteCard)
