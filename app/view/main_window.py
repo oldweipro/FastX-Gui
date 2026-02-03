@@ -233,8 +233,8 @@ class MainWindow(SplitFluentWindow):
             self.appInterface = AppInterface(self)
         with self.safe_block(default=None, error_msg=self.tr("Create Func interface")):
             self.funcInterface = FuncInterface(self)
-        with self.safe_block(default=None, error_msg=self.tr("Create Tools interface")):
-            self.toolInterface = ToolsInterface(self)
+        # with self.safe_block(default=None, error_msg=self.tr("Create Tools interface")):
+        self.toolInterface = ToolsInterface(self)
         with self.safe_block(default=None, error_msg=self.tr("Create Library interface")):
             self.libraryInterface = LibraryViewInterface(self)
         with self.safe_block(default=None, error_msg=self.tr("Create Settings interface")):

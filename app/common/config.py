@@ -187,6 +187,15 @@ class Config(QConfig):
         QStandardPaths.writableLocation(QStandardPaths.DownloadLocation),
         FolderValidator(),
     )
+    # RemoveComments options
+    RmCommentsRemoveComments = ConfigItem("ToolsPub", "RmCommentsRemoveComments", True, BoolValidator())
+    RmCommentsRemoveDocstrings = ConfigItem("ToolsPub", "RmCommentsRemoveDocstrings", True, BoolValidator())
+    RmCommentsRemoveEmptyLines = ConfigItem("ToolsPub", "RmCommentsRemoveEmptyLines", True, BoolValidator())
+    RmCommentsKeepTripleQuotes = ConfigItem("ToolsPub", "RmCommentsKeepTripleQuotes", False, BoolValidator())
+    RmCommentsOutputSuffix = ConfigItem("ToolsPub", "RmCommentsOutputSuffix", "_clean.py")
+    RmCommentsRecursive = ConfigItem("ToolsPub", "RmCommentsRecursive", False, BoolValidator())
+    RmCommentsExcludeFiles = ConfigItem("ToolsPub", "RmCommentsExcludeFiles", "__init__.py,config.py")
+    RmCommentsExcludePatterns = ConfigItem("ToolsPub", "RmCommentsExcludePatterns", "*_test.py,test_*.py")
 
     """浮窗配置类"""
 

@@ -73,26 +73,10 @@ class ToolsInterface(ScrollArea):
         self.SerialGroup = SettingCardGroup(self.tr("Serial"), self.view)
 
         self.PubGroup = SettingCardGroup(self.tr("Pub"), self.view)
-        self.rmCodeCommentsGroupCard = ExpandSettingCard(
-            UnicodeIcon.get_icon_by_name("ic_fluent_comment_dismiss_24_regular"),
-            self.tr("Remove Python Code Comment"),
-            self.tr("To apply software copyrights, need supply whole code without comments"),
-            self.view,
-        )
-        self.rmCodeCommentsInputFolderCard = PushSettingCard(
-            self.tr("Choose folder"),
-            FIF.FOLDER_ADD,
-            self.tr("Project Input Directory"),
-            cfg.get(cfg.RmCommentsInputFolder),
-            self.rmCodeCommentsGroupCard,
-        )
-        self.rmCodeCommentsOutputFolderCard = PushSettingCard(
-            self.tr("Choose folder"),
-            FIF.FOLDER_ADD,
-            self.tr("Project Output Directory"),
-            cfg.get(cfg.RmCommentsOutputFolder),
-            self.rmCodeCommentsGroupCard,
-        )
+        
+        # Import and initialize Remove Comments tool
+        from app.tools.ui.rm_comments_ui import RmCommentsUI
+        self.rmCommentsUI = RmCommentsUI(self)
 
         self.__initWidget()
         self.__initLayout()
@@ -149,11 +133,9 @@ class ToolsInterface(ScrollArea):
         self.DemGroup.addSettingCard(self.micaCard1)
         self.DcmGroup.addSettingCard(self.micaCard2)
         self.E2EGroup.addSettingCard(self.micaCard3)
-        self.PubGroup.addSettingCard(self.rmCodeCommentsGroupCard)
 
-        self.rmCodeCommentsGroupCard.viewLayout.addWidget(self.rmCodeCommentsInputFolderCard)
-        self.rmCodeCommentsGroupCard.viewLayout.addWidget(self.rmCodeCommentsOutputFolderCard)
-        self.rmCodeCommentsGroupCard._adjustViewSize()
+        # Add Remove Comments tool card
+        self.PubGroup.addSettingCard(self.rmCommentsUI.rmCodeCommentsGroupCard)
 
         # 添加标签页
         self.addSubInterface(self.DemGroup, "TabDemInterface", self.tr("Dem"))
@@ -170,13 +152,8 @@ class ToolsInterface(ScrollArea):
         self.pivot.setCurrentItem(self.stackedWidget.currentWidget().objectName())
         # self.stackedWidget.setFixedHeight(self.stackedWidget.currentWidget().sizeHint().height())
 
-        # 按钮 | 去除Python代码备注,空行
-        self.rmCodeCommentsInputFolderCard.clicked.connect(
-            lambda: self.__onChooseFolderClicked(cfg.RmCommentsInputFolder, self.rmCodeCommentsInputFolderCard)
-        )
-        self.rmCodeCommentsOutputFolderCard.clicked.connect(
-            lambda: self.__onChooseFolderClicked(cfg.RmCommentsOutputFolder, self.rmCodeCommentsOutputFolderCard)
-        )
+        # Connect signals for Remove Comments tool
+        self.rmCommentsUI.connectSignals()
 
     def addSubInterface(
         self,
@@ -233,18 +210,4 @@ class ToolsInterface(ScrollArea):
         # 更新堆叠窗口高度 | 使用sizeHint获取建议高度 | 如果有ExpandSettingCard,卡片的高度会被限制在固定高度,无法展开（这里先屏蔽）
         # self.stackedWidget.setFixedHeight(self.stackedWidget.currentWidget().sizeHint().height())
 
-    def __onChooseFolderClicked(self, config_item, card):
-        """
-        通用文件夹选择方法
 
-        Args:
-            config_item: 配置项
-            card: 卡片对象
-        """
-        from PyQt5.QtWidgets import QFileDialog
-
-        folder = QFileDialog.getExistingDirectory(self, self.tr("Choose folder"), "./")
-        if not folder or cfg.get(config_item) == folder:
-            return
-        cfg.set(config_item, folder)
-        card.setContent(folder)

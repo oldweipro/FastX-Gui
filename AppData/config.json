@@ -1,7 +1,15 @@
 {
     "ToolsPub": {
-        "RmCommentsInputFolder": "C:/Users/91974/Documents",
-        "RmCommentsOutputFolder": "C:/Users/91974/Pictures"
+        "RmCommentsExcludeFiles": "__init__.py,config.py",
+        "RmCommentsExcludePatterns": "*_test.py,test_*.py",
+        "RmCommentsInputFolder": "D:/CodeRepo/python-cli-tools_20251217/utils/00_ADC25/J6E_FaultManager",
+        "RmCommentsKeepTripleQuotes": true,
+        "RmCommentsOutputFolder": "D:/CodeRepo/python-cli-tools_20251217/utils/00_ADC25/J6E_FaultManager",
+        "RmCommentsOutputSuffix": "_clean.py",
+        "RmCommentsRecursive": true,
+        "RmCommentsRemoveComments": true,
+        "RmCommentsRemoveDocstrings": true,
+        "RmCommentsRemoveEmptyLines": true
     },
     "Register": {
         "ActivationCode": "",
@@ -48,7 +56,9 @@
     },
     "Project folders": {
         "Download": "D:/Github/FastX-Gui/app/download",
-        "LocalProject": []
+        "LocalProject": [
+            "C:/Users/91974/Music/AZMusicDownload"
+        ]
     },
     "personalization": {
         "DpiScale": "Auto",

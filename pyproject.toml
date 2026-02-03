@@ -31,12 +31,10 @@ select = [
     "C4",  # flake8-comprehensions
     "UP",  # pyupgrade
 ]
-
 # 忽略的规则
 ignore = [
     "E501",  # 行过长检查 - 因为你设置了 line-length = 200
 ]
-
 # 每行最大长度
 line-length = 120
 target-version = "py313"
