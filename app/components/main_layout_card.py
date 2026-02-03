@@ -1,20 +1,28 @@
-# coding:utf-8
-from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QEvent
-from PyQt5.QtGui import QDesktopServices, QPainter, QPen, QColor
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QFrame
+from PyQt5.QtCore import QEvent, Qt, QUrl
+from PyQt5.QtGui import QColor, QDesktopServices, QPainter, QPen
+from PyQt5.QtWidgets import QFrame, QHBoxLayout, QVBoxLayout, QWidget
+from qfluentwidgets import (
+    BodyLabel,
+    CaptionLabel,
+    FluentIcon,
+    IconWidget,
+    PushButton,
+    ScrollArea,
+    StrongBodyLabel,
+    TitleLabel,
+    ToolButton,
+    ToolTipFilter,
+    isDarkTheme,
+    toggleTheme,
+)
 
-from qfluentwidgets import (ScrollArea, PushButton, ToolButton, FluentIcon,
-                            isDarkTheme, IconWidget, Theme, ToolTipFilter, TitleLabel, CaptionLabel,
-                            StrongBodyLabel, BodyLabel, toggleTheme)
-from app.common.config import cfg
-from app.common.setting import FEEDBACK_URL, HELP_URL, EXAMPLE_URL
-from app.common.icon import Icon
-from app.common.style_sheet import StyleSheet
+from app.common.setting import EXAMPLE_URL, FEEDBACK_URL, HELP_URL
 from app.common.signal_bus import signalBus
+from app.common.style_sheet import StyleSheet
 
 
 class SeparatorWidget(QWidget):
-    """ Seperator widget """
+    """Seperator widget"""
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -33,16 +41,15 @@ class SeparatorWidget(QWidget):
 
 
 class ToolBar(QWidget):
-    """ Tool bar """
+    """Tool bar"""
 
     def __init__(self, title, subtitle, parent=None):
         super().__init__(parent=parent)
         self.titleLabel = TitleLabel(title, self)
         self.subtitleLabel = CaptionLabel(subtitle, self)
 
-        self.documentButton = PushButton(
-            self.tr('Documentation'), self, FluentIcon.DOCUMENT)
-        self.sourceButton = PushButton(self.tr('Source'), self, FluentIcon.GITHUB)
+        self.documentButton = PushButton(self.tr("Documentation"), self, FluentIcon.DOCUMENT)
+        self.sourceButton = PushButton(self.tr("Source"), self, FluentIcon.GITHUB)
         self.themeButton = ToolButton(FluentIcon.CONSTRACT, self)
         self.separator = SeparatorWidget(self)
         self.supportButton = ToolButton(FluentIcon.HEART, self)
@@ -77,26 +84,22 @@ class ToolBar(QWidget):
 
         self.themeButton.installEventFilter(ToolTipFilter(self.themeButton))
         self.supportButton.installEventFilter(ToolTipFilter(self.supportButton))
-        self.feedbackButton.installEventFilter(
-            ToolTipFilter(self.feedbackButton))
-        self.themeButton.setToolTip(self.tr('Toggle theme'))
-        self.supportButton.setToolTip(self.tr('Support me'))
-        self.feedbackButton.setToolTip(self.tr('Send feedback'))
+        self.feedbackButton.installEventFilter(ToolTipFilter(self.feedbackButton))
+        self.themeButton.setToolTip(self.tr("Toggle theme"))
+        self.supportButton.setToolTip(self.tr("Support me"))
+        self.feedbackButton.setToolTip(self.tr("Send feedback"))
 
         self.themeButton.clicked.connect(lambda: toggleTheme(True))
         self.supportButton.clicked.connect(signalBus.supportSignal)
-        self.documentButton.clicked.connect(
-            lambda: QDesktopServices.openUrl(QUrl(HELP_URL)))
-        self.sourceButton.clicked.connect(
-            lambda: QDesktopServices.openUrl(QUrl(EXAMPLE_URL)))
-        self.feedbackButton.clicked.connect(
-            lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))
+        self.documentButton.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(HELP_URL)))
+        self.sourceButton.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(EXAMPLE_URL)))
+        self.feedbackButton.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))
 
         self.subtitleLabel.setTextColor(QColor(96, 96, 96), QColor(216, 216, 216))
 
 
 class ExampleCard(QWidget):
-    """ Example card """
+    """Example card"""
 
     def __init__(self, title, widget: QWidget, sourcePath, stretch=0, parent=None):
         super().__init__(parent=parent)
@@ -108,8 +111,7 @@ class ExampleCard(QWidget):
 
         self.sourceWidget = QFrame(self.card)
         self.sourcePath = sourcePath
-        self.sourcePathLabel = BodyLabel(
-            self.tr('Source code'), self.sourceWidget)
+        self.sourcePathLabel = BodyLabel(self.tr("Source code"), self.sourceWidget)
         self.linkIcon = IconWidget(FluentIcon.LINK, self.sourceWidget)
 
         self.vBoxLayout = QVBoxLayout(self)
@@ -126,8 +128,8 @@ class ExampleCard(QWidget):
         self.sourceWidget.setCursor(Qt.PointingHandCursor)
         self.sourceWidget.installEventFilter(self)
 
-        self.card.setObjectName('card')
-        self.sourceWidget.setObjectName('sourceWidget')
+        self.card.setObjectName("card")
+        self.sourceWidget.setObjectName("sourceWidget")
 
     def __initLayout(self):
         self.vBoxLayout.setSizeConstraint(QVBoxLayout.SetMinimumSize)
@@ -170,7 +172,7 @@ class ExampleCard(QWidget):
 
 
 class GalleryInterface(ScrollArea):
-    """ Gallery interface """
+    """Gallery interface"""
 
     def __init__(self, title: str, subtitle: str, parent=None):
         """
@@ -199,7 +201,7 @@ class GalleryInterface(ScrollArea):
         self.vBoxLayout.setContentsMargins(36, 20, 36, 36)
         self.vBoxLayout.setAlignment(Qt.AlignTop)
 
-        self.view.setObjectName('view')
+        self.view.setObjectName("view")
         StyleSheet.GALLERY_INTERFACE.apply(self)
 
     def addExampleCard(self, title, widget, sourcePath: str, stretch=0):
@@ -208,7 +210,7 @@ class GalleryInterface(ScrollArea):
         return card
 
     def scrollToCard(self, index: int):
-        """ scroll to example card """
+        """scroll to example card"""
         w = self.vBoxLayout.itemAt(index).widget()
         self.verticalScrollBar().setValue(w.y())
 

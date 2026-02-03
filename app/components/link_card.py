@@ -1,14 +1,17 @@
-# coding:utf-8
 from PyQt5.QtCore import Qt, QUrl
-from PyQt5.QtGui import QPixmap, QDesktopServices
-from PyQt5.QtWidgets import QFrame, QLabel, QVBoxLayout, QWidget, QHBoxLayout
+from PyQt5.QtGui import QDesktopServices
+from PyQt5.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout, QWidget
+from qfluentwidgets import (
+    FluentIcon,
+    IconWidget,
+    SingleDirectionScrollArea,
+    TextWrap,
+)
 
-from qfluentwidgets import IconWidget, FluentIcon, TextWrap, SingleDirectionScrollArea
 from ..common.style_sheet import StyleSheet
 
 
 class LinkCard(QFrame):
-
     def __init__(self, icon, title, content, url, parent=None):
         super().__init__(parent=parent)
         self.url = QUrl(url)
@@ -37,8 +40,8 @@ class LinkCard(QFrame):
         self.vBoxLayout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.urlWidget.move(170, 192)
 
-        self.titleLabel.setObjectName('titleLabel')
-        self.contentLabel.setObjectName('contentLabel')
+        self.titleLabel.setObjectName("titleLabel")
+        self.contentLabel.setObjectName("contentLabel")
 
     def mouseReleaseEvent(self, e):
         super().mouseReleaseEvent(e)
@@ -46,7 +49,7 @@ class LinkCard(QFrame):
 
 
 class LinkCardView(SingleDirectionScrollArea):
-    """ Link card view """
+    """Link card view"""
 
     def __init__(self, parent=None):
         super().__init__(parent, Qt.Horizontal)
@@ -62,10 +65,10 @@ class LinkCardView(SingleDirectionScrollArea):
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-        self.view.setObjectName('view')
+        self.view.setObjectName("view")
         StyleSheet.LINK_CARD.apply(self)
 
     def addCard(self, icon, title, content, url):
-        """ add link card """
+        """add link card"""
         card = LinkCard(icon, title, content, url, self.view)
         self.hBoxLayout.addWidget(card, 0, Qt.AlignLeft)

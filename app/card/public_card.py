@@ -1,8 +1,12 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QLayout
-from qfluentwidgets import ImageLabel, TitleLabel, StrongBodyLabel, CaptionLabel, PushButton, FluentIcon, \
-    SingleDirectionScrollArea, BodyLabel, IconWidget, \
-    CardWidget, SearchLineEdit, InfoBar, InfoBarPosition
+from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout
+from qfluentwidgets import (
+    BodyLabel,
+    CaptionLabel,
+    CardWidget,
+    IconWidget,
+)
+
 
 class GuideWidget(CardWidget):
     def __init__(self, parent, icon, title, content):

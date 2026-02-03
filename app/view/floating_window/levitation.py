@@ -1,9 +1,9 @@
-# coding:utf-8
 # 标准库导入
-from typing import Dict, Any
+from typing import Any
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+
 # 第三方库导入
 from PyQt5.QtWidgets import *
 from qfluentwidgets import *
@@ -80,17 +80,14 @@ class LevitationWindow(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
         # 使用 Qt.Window 而不是 Qt.Tool，这样浮窗不会随主窗口最小化而消失
         self._base_window_flags = (
-                Qt.FramelessWindowHint |
-                Qt.Window |
-                Qt.NoDropShadowWindowHint |
-                Qt.WindowStaysOnTopHint  # 默认包含置顶
+            Qt.FramelessWindowHint | Qt.Window | Qt.NoDropShadowWindowHint | Qt.WindowStaysOnTopHint  # 默认包含置顶
         )
         # 设置窗口标志
         self.setWindowFlags(
-            Qt.FramelessWindowHint |
-            Qt.Window |  # 使用 Window 而不是 Tool
-            Qt.WindowStaysOnTopHint |
-            Qt.NoDropShadowWindowHint
+            Qt.FramelessWindowHint
+            | Qt.Window  # 使用 Window 而不是 Tool
+            | Qt.WindowStaysOnTopHint
+            | Qt.NoDropShadowWindowHint
         )
 
     def _init_drag_properties(self):
@@ -117,7 +114,10 @@ class LevitationWindow(QWidget):
 
     def _init_ui_properties(self):
         """初始化UI相关属性"""
-        self._buttons_spec = ["settings", "close"]  # 添加关闭按钮，移除下载按钮
+        self._buttons_spec = [
+            "settings",
+            "close",
+        ]  # 添加关闭按钮，移除下载按钮
         self._font_family = QFont().family()
         self._container = QWidget(self)
         self._layout = None
@@ -252,7 +252,7 @@ class LevitationWindow(QWidget):
             cfg.floatingWindowDisplayStyle.valueChanged.connect(self._on_display_style_changed)
             cfg.floatingWindowTopmostMode.valueChanged.connect(self._on_topmost_mode_changed)
             cfg.doNotStealFocus.valueChanged.connect(self._on_focus_mode_changed)
-        except Exception as e:
+        except Exception:
             pass
 
     def _on_opacity_changed(self, value):
@@ -422,14 +422,10 @@ class LevitationWindow(QWidget):
             lay.deleteLater()
         if not self._layout:
             self._layout = QHBoxLayout(self)
-            self._layout.setContentsMargins(
-                self._margins, self._margins, self._margins, self._margins
-            )
+            self._layout.setContentsMargins(self._margins, self._margins, self._margins, self._margins)
             self._layout.addWidget(self._container)
         else:
-            self._layout.setContentsMargins(
-                self._margins, self._margins, self._margins, self._margins
-            )
+            self._layout.setContentsMargins(self._margins, self._margins, self._margins, self._margins)
         self._container_layout = self._create_container_layout()
         self._container.setLayout(self._container_layout)
         self._container_layout.setAlignment(Qt.AlignCenter)
@@ -454,8 +450,8 @@ class LevitationWindow(QWidget):
         """应用位置设置"""
         # 从配置中读取位置，如果没有则使用默认值
         try:
-            x = cfg.get(cfg.floatingWindowPosX) if hasattr(cfg, 'floatingWindowPosX') else 100
-            y = cfg.get(cfg.floatingWindowPosY) if hasattr(cfg, 'floatingWindowPosY') else 100
+            x = cfg.get(cfg.floatingWindowPosX) if hasattr(cfg, "floatingWindowPosX") else 100
+            y = cfg.get(cfg.floatingWindowPosY) if hasattr(cfg, "floatingWindowPosY") else 100
         except Exception:
             x = 100
             y = 100
@@ -481,22 +477,16 @@ class LevitationWindow(QWidget):
             self._bottom = None
         if self._placement == 1:  # 垂直布局
             lay = QVBoxLayout()
-            lay.setContentsMargins(
-                self._margins, self._margins, self._margins, self._margins
-            )
+            lay.setContentsMargins(self._margins, self._margins, self._margins, self._margins)
             lay.setSpacing(self._spacing)
             return lay
         if self._placement == 2:  # 水平布局
             lay = QHBoxLayout()
-            lay.setContentsMargins(
-                self._margins, self._margins, self._margins, self._margins
-            )
+            lay.setContentsMargins(self._margins, self._margins, self._margins, self._margins)
             lay.setSpacing(self._spacing)
             return lay
         lay = QVBoxLayout()
-        lay.setContentsMargins(
-            self._margins, self._margins, self._margins, self._margins
-        )
+        lay.setContentsMargins(self._margins, self._margins, self._margins, self._margins)
         lay.setSpacing(self._spacing)
         self._top = QWidget()
         self._top.setAttribute(Qt.WA_TranslucentBackground)
@@ -529,6 +519,7 @@ class LevitationWindow(QWidget):
                 signalBus.showMainWindow.emit()
                 # 稍等一下再切换，确保主窗口已完全显示
                 from PyQt5.QtCore import QTimer
+
                 QTimer.singleShot(100, lambda: self._switch_to_settings())
             except Exception as e:
                 print(f"打开设置失败: {e}")
@@ -544,9 +535,9 @@ class LevitationWindow(QWidget):
                 self.hide()
 
                 # 同步更新托盘菜单状态
-                if self.parent() and hasattr(self.parent(), 'floating_window_action'):
+                if self.parent() and hasattr(self.parent(), "floating_window_action"):
                     self.parent().floating_window_action.setChecked(False)
-                    self.parent().floating_window_action.setText(self.parent().tr('Show floating window'))
+                    self.parent().floating_window_action.setText(self.parent().tr("Show floating window"))
             except Exception as e:
                 print(f"关闭浮窗失败: {e}")
 
@@ -554,9 +545,9 @@ class LevitationWindow(QWidget):
         """切换到设置界面"""
         try:
             # 通过父窗口直接切换
-            if self.parent() and hasattr(self.parent(), 'settingInterface'):
+            if self.parent() and hasattr(self.parent(), "settingInterface"):
                 parent = self.parent()
-                if hasattr(parent, 'stackedWidget'):
+                if hasattr(parent, "stackedWidget"):
                     parent.stackedWidget.setCurrentWidget(parent.settingInterface, False)
         except Exception as e:
             print(f"切换到设置界面失败: {e}")
@@ -588,7 +579,7 @@ class LevitationWindow(QWidget):
         btn.setAttribute(Qt.WA_TranslucentBackground)
         return btn
 
-    def _get_button_config(self, spec: str) -> Dict[str, Any]:
+    def _get_button_config(self, spec: str) -> dict[str, Any]:
         """获取按钮配置信息
 
         Args:
@@ -736,9 +727,7 @@ class LevitationWindow(QWidget):
             # 检查是否需要开始拖拽，添加时间检测避免误识别点击为拖动
             if not self._dragging:
                 delta = cur - self._press_pos
-                press_duration = (
-                    e.timestamp() - self._press_time if self._press_time > 0 else 0
-                )
+                press_duration = e.timestamp() - self._press_time if self._press_time > 0 else 0
                 if self._should_start_drag(delta, press_duration):
                     self._begin_drag()
 
@@ -825,9 +814,7 @@ class LevitationWindow(QWidget):
             # 检查是否需要开始拖拽，添加时间检测避免误识别点击为拖动
             if not self._dragging:
                 delta = cur - self._press_pos
-                press_duration = (
-                    event.timestamp() - self._press_time if self._press_time > 0 else 0
-                )
+                press_duration = event.timestamp() - self._press_time if self._press_time > 0 else 0
                 if self._should_start_drag(delta, press_duration):
                     self._begin_drag()
 
@@ -889,10 +876,7 @@ class LevitationWindow(QWidget):
             # 如果已经处于收纳状态，不需要额外处理
             if not self._retracted:
                 # 清除旧的定时器
-                if (
-                        hasattr(self, "_auto_hide_timer")
-                        and self._auto_hide_timer.isActive()
-                ):
+                if hasattr(self, "_auto_hide_timer") and self._auto_hide_timer.isActive():
                     self._auto_hide_timer.stop()
                 # 创建或重置自动隐藏定时器
                 self._auto_hide_timer = QTimer(self)
@@ -953,10 +937,7 @@ class LevitationWindow(QWidget):
     def _check_edge_proximity(self):
         """检测窗口是否靠近屏幕边缘，并实现贴边隐藏功能（带动画效果）"""
         # 如果有正在进行的动画，先停止它
-        if (
-                hasattr(self, "animation")
-                and self.animation.state() == QPropertyAnimation.Running
-        ):
+        if hasattr(self, "animation") and self.animation.state() == QPropertyAnimation.Running:
             self.animation.stop()
 
         # 如果贴边隐藏功能未启用，直接返回
@@ -1047,10 +1028,7 @@ class LevitationWindow(QWidget):
             return
 
         # 保存新位置（仅在窗口未贴边隐藏时）
-        if (
-                window_pos.x() > edge_threshold
-                and window_pos.x() + window_width < screen.width() - edge_threshold
-        ):
+        if window_pos.x() > edge_threshold and window_pos.x() + window_width < screen.width() - edge_threshold:
             # 只有在非收纳状态下才保存位置
             if not self._retracted:
                 self._save_position()
@@ -1070,11 +1048,11 @@ class LevitationWindow(QWidget):
         try:
             pos = self.pos()
             # 保存位置到配置
-            if hasattr(cfg, 'floatingWindowPosX'):
+            if hasattr(cfg, "floatingWindowPosX"):
                 cfg.set(cfg.floatingWindowPosX, pos.x())
-            if hasattr(cfg, 'floatingWindowPosY'):
+            if hasattr(cfg, "floatingWindowPosY"):
                 cfg.set(cfg.floatingWindowPosY, pos.y())
-        except Exception as e:
+        except Exception:
             pass
 
     def show(self):
@@ -1108,8 +1086,11 @@ class LevitationWindow(QWidget):
             window_height = window_geometry.height()
 
             # 判断鼠标是否在浮窗高度范围内
-            mouse_in_window_height = (window_y_center - window_height // 2 - sense_distance <= mouse_pos.y() <=
-                                      window_y_center + window_height // 2 + sense_distance)
+            mouse_in_window_height = (
+                window_y_center - window_height // 2 - sense_distance
+                <= mouse_pos.y()
+                <= window_y_center + window_height // 2 + sense_distance
+            )
 
             if not mouse_in_window_height:
                 return
@@ -1118,7 +1099,10 @@ class LevitationWindow(QWidget):
             if window_geometry.x() < screen.left() and mouse_pos.x() <= screen.left() + sense_distance:
                 self._expand_from_edge()  # 使用立即展开
             # 检测右边缘
-            elif window_geometry.x() + window_geometry.width() > screen.right() and mouse_pos.x() >= screen.right() - sense_distance:
+            elif (
+                window_geometry.x() + window_geometry.width() > screen.right()
+                and mouse_pos.x() >= screen.right() - sense_distance
+            ):
                 self._expand_from_edge()  # 使用立即展开
         except Exception:
             pass

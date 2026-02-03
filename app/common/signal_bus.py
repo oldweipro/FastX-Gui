@@ -1,10 +1,9 @@
-# coding: utf-8
 from PyQt5.QtCore import QObject, pyqtSignal
-from qfluentwidgets import SettingCardGroup, ExpandSettingCard
-from loguru import logger
+from qfluentwidgets import ExpandSettingCard, SettingCardGroup
+
 
 class SignalBus(QObject):
-    """ Signal bus """
+    """Signal bus"""
 
     switchToSampleCard = pyqtSignal(str, int)
     switchToSettingGroup = pyqtSignal(SettingCardGroup)
@@ -13,5 +12,6 @@ class SignalBus(QObject):
     checkUpdateSig = pyqtSignal()
     micaEnableChanged = pyqtSignal(bool)
     showMainWindow = pyqtSignal()  # 显示主窗口信号
+
 
 signalBus = SignalBus()

@@ -72,5 +72,3 @@ coverage.xml
 *.tmp
 *.temp
 .cache/
-
-uv.lock

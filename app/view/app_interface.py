@@ -1,44 +1,42 @@
-# coding:utf-8
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QVBoxLayout, QWidget, QLabel, QHBoxLayout
-from qfluentwidgets import TabWidget, SubtitleLabel, setFont, IconWidget, ScrollArea
+from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 from qfluentwidgets import FluentIcon as FIF
+from qfluentwidgets import ScrollArea, SubtitleLabel, TabWidget, setFont
 
 from app.common.style_sheet import StyleSheet
 
 
 class TabContent(QWidget):
-    """ 标签页内容部件 """
+    """标签页内容部件"""
 
     def __init__(self, text: str, parent=None):
         super().__init__(parent=parent)
         self.label = SubtitleLabel(text, self)
         self.label.setAlignment(Qt.AlignCenter)
-        
+
         self.vBoxLayout = QVBoxLayout(self)
         self.vBoxLayout.addWidget(self.label, 1, Qt.AlignCenter)
         setFont(self.label, 24)
-        self.setObjectName(text.replace(' ', '-'))
+        self.setObjectName(text.replace(" ", "-"))
 
 
 class AppInterface(ScrollArea):
-    """ 应用界面，包含标签页功能 """
+    """应用界面，包含标签页功能"""
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.view = QWidget(self)
         self.tabWidget = TabWidget(self)
-        
+
         self.__initWidget()
         self.__setQss()
         self.__initLayout()
         self.__initTabs()
 
     def __initWidget(self):
-        """ 初始化小部件 """
-        self.setObjectName('appInterface')
-        self.view.setObjectName('view')
+        """初始化小部件"""
+        self.setObjectName("appInterface")
+        self.view.setObjectName("view")
 
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setWidget(self.view)
@@ -49,17 +47,17 @@ class AppInterface(ScrollArea):
         self.tabWidget.setTabsClosable(True)  # 允许关闭标签页
 
     def __setQss(self):
-        """ set style sheet """
+        """set style sheet"""
         # initialize style sheet
         StyleSheet.APP_INTERFACE.apply(self)
 
     def __initLayout(self):
-        """ 初始化布局 """
+        """初始化布局"""
         self.Layout = QHBoxLayout(self.view)
         self.Layout.setContentsMargins(0, 48, 0, 0)
 
         self.main_layout = QVBoxLayout()
-        self.main_layout.setObjectName('vBoxLayout')
+        self.main_layout.setObjectName("vBoxLayout")
         self.main_layout.setContentsMargins(10, 0, 10, 10)
         self.main_layout.setSpacing(20)
         self.main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
@@ -68,34 +66,26 @@ class AppInterface(ScrollArea):
         self.main_layout.addWidget(self.tabWidget)
 
     def __initTabs(self):
-        """ 初始化标签页 """
+        """初始化标签页"""
         # 添加默认主页标签页
         self.addHomeTab()
-        
+
         # 连接信号和槽
         self.tabWidget.tabAddRequested.connect(self.addNewTab)
         self.tabWidget.tabCloseRequested.connect(self.tabWidget.removeTab)
 
     def addHomeTab(self):
-        """ 添加默认主页标签页 """
-        homeContent = TabContent('默认主页', self)
-        self.tabWidget.addTab(
-            homeContent,
-            '默认主页', 
-            icon=FIF.HOME
-        )
+        """添加默认主页标签页"""
+        homeContent = TabContent("默认主页", self)
+        self.tabWidget.addTab(homeContent, "默认主页", icon=FIF.HOME)
 
     def addNewTab(self):
-        """ 添加新标签页 """
+        """添加新标签页"""
         tabCount = self.tabWidget.count()
         if tabCount == 0:
             self.addHomeTab()
             return
-        text = f'新标签页 {tabCount}'
+        text = f"新标签页 {tabCount}"
         content = TabContent(text, self)
-        
-        self.tabWidget.addTab(
-            content, 
-            text, 
-            icon=FIF.BRIGHTNESS
-        )
+
+        self.tabWidget.addTab(content, text, icon=FIF.BRIGHTNESS)

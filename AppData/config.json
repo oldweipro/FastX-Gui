@@ -12,13 +12,13 @@
         "BlurRadius": 0,
         "DisplayMode": "Keep Aspect Ratio",
         "ImageEnabled": true,
-        "ImagePath": "C:/Users/91974/Pictures/02 壁纸/朋克狐耳女孩4k壁纸3840x2160_彼岸图网.jpg",
+        "ImagePath": "C:/Users/91974/Pictures/02 壁纸/短发美 外套 帅气 纹身4k高清壁纸3840x2160_彼岸图网.jpg",
         "Opacity": 30
     },
     "Application": {
         "beta": false,
         "close_window_action": "ask",
-        "WindowSizeMode": "fixed"
+        "WindowSizeMode": "auto"
     },
     "Material": {
         "AcrylicBlurRadius": 40
@@ -30,15 +30,15 @@
         "debug_card": false
     },
     "FloatingWindow": {
-        "DoNotStealFocus": true,
+        "DoNotStealFocus": false,
         "ButtonControl": 3,
         "DisplayStyle": 0,
         "Draggable": true,
         "LongPressDuration": 500,
         "Opacity": 80,
         "Placement": 1,
-        "PosX": 2059,
-        "PosY": 546,
+        "PosX": 2417,
+        "PosY": 230,
         "Size": 3,
         "StickToEdge": true,
         "StickToEdgeDisplayStyle": 1,
@@ -69,7 +69,7 @@
             "PingFang SC"
         ],
         "ThemeColor": "#ff009faa",
-        "ThemeMode": "Dark"
+        "ThemeMode": "Light"
     },
     "Log": {
         "LogColorCritical": "#ffff1493",

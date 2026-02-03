@@ -1,22 +1,25 @@
 import sys
-from PyQt5.QtCore import Qt, QUrl, QSize, QEventLoop, QTimer, QDateTime, QPoint
-from PyQt5.QtGui import QIcon, QDesktopServices, QFont, QColor, QPainter
-from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QSplashScreen, QLabel, QStatusBar, QFrame, \
-    QSystemTrayIcon, QAction
+
 from loguru import logger
-from qfluentwidgets import (NavigationItemPosition, MessageBox, setTheme, Theme, MSFluentWindow, isDarkTheme,
-                            NavigationAvatarWidget, SearchLineEdit, qrouter, SubtitleLabel, setFont, SplashScreen,
-                            IndeterminateProgressBar, ProgressBar, PushButton, FluentIcon as FIF, InfoBar,
-                            InfoBarPosition, SystemTrayMenu, NavigationBarPushButton, SystemThemeListener,
-                            SplitFluentWindow, FluentTitleBarButton, MSFluentTitleBar, TransparentToolButton, TabBar,
-                            TransparentDropDownToolButton)
-from qframelesswindow import FramelessWindow, TitleBar
+from PyQt5.QtCore import QPoint, QSize, Qt
+from PyQt5.QtGui import QColor, QIcon
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout
+from qfluentwidgets import FluentIcon as FIF
+from qfluentwidgets import (
+    MSFluentTitleBar,
+    SearchLineEdit,
+    TabBar,
+    TransparentDropDownToolButton,
+    TransparentToolButton,
+    isDarkTheme,
+)
+from qframelesswindow import TitleBar
 
 from app.common.style_sheet import StyleSheet
 
 
 class CustomTitleBar1(MSFluentTitleBar):
-    """ Title bar with icon and title """
+    """Title bar with icon and title"""
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -51,7 +54,7 @@ class CustomTitleBar1(MSFluentTitleBar):
         self.hBoxLayout.setStretch(6, 0)
 
         # 添加头像
-        self.avatar = TransparentDropDownToolButton('resource/shoko.png', self)
+        self.avatar = TransparentDropDownToolButton("resource/shoko.png", self)
         self.avatar.setIconSize(QSize(26, 26))
         self.avatar.setFixedHeight(30)
         self.hBoxLayout.insertWidget(7, self.avatar, 0, Qt.AlignRight)
@@ -60,9 +63,8 @@ class CustomTitleBar1(MSFluentTitleBar):
         if sys.platform == "darwin":
             self.hBoxLayout.insertSpacing(8, 52)
 
-
     def canDrag(self, pos: QPoint):
-        """ 判断鼠标的点击位置是否允许拖拽 """
+        """判断鼠标的点击位置是否允许拖拽"""
         if not super().canDrag(pos):
             return False
 
@@ -70,9 +72,8 @@ class CustomTitleBar1(MSFluentTitleBar):
         return not self.tabBar.tabRegion().contains(pos)
 
 
-
 class CustomTitleBar(TitleBar):
-    """ Title bar with icon and title """
+    """Title bar with icon and title"""
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -91,13 +92,13 @@ class CustomTitleBar(TitleBar):
         # add title label
         self.titleLabel = QLabel(self)
         self.hBoxLayout.insertWidget(2, self.titleLabel, 0, Qt.AlignLeft | Qt.AlignVCenter)
-        self.titleLabel.setObjectName('titleLabel')
+        self.titleLabel.setObjectName("titleLabel")
         self.window().windowTitleChanged.connect(self.setTitle)
 
         # add search line edit
         self.searchLineEdit = SearchLineEdit(self)
-        self.searchLineEdit.setObjectName('searchLineEdit')
-        self.searchLineEdit.setPlaceholderText('搜索应用、脚本、工具、设置等')
+        self.searchLineEdit.setObjectName("searchLineEdit")
+        self.searchLineEdit.setPlaceholderText("搜索应用、脚本、工具、设置等")
         self.searchLineEdit.setFixedWidth(400)
         self.searchLineEdit.setClearButtonEnabled(True)
 

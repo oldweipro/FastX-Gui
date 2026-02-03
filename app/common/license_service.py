@@ -1,12 +1,8 @@
-# coding: utf-8
-
-
 class LicenseService:
-    """ License service """
+    """License service"""
 
     def validate(self, license: str, email: str):
-        """ Verify if the activation code is legal """
+        """Verify if the activation code is legal"""
         # TODO: ADD YOUR VALIDATE LOGIC HERE
 
         return True
-

@@ -1,32 +1,31 @@
-# coding:utf-8
-from typing import Union
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QLabel, QButtonGroup, QHBoxLayout, QVBoxLayout, QWidget, QActionGroup
+from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 from qfluentwidgets import (
+    CheckBox,
     ExpandSettingCard,
     FluentIconBase,
     IndicatorPosition,
-    RadioButton,
-    SpinBox,
     SwitchButton,
-    CheckBox,
-    isDarkTheme,
-    qconfig, CommandBar, Action,
-    FluentIcon as FIF, TransparentDropDownPushButton, setFont, CheckableMenu, MenuIndicatorType
 )
 
 
 class AutoPlotSettingCard(ExpandSettingCard):
-    """ Setting card for auto plot with switch and expandable options """
+    """Setting card for auto plot with switch and expandable options"""
 
     switchChanged = pyqtSignal(bool)
     optionsChanged = pyqtSignal(dict)
 
-    def __init__(self, icon: Union[str, QIcon, FluentIconBase], title, content=None, parent=None):
+    def __init__(
+        self,
+        icon: str | QIcon | FluentIconBase,
+        title,
+        content=None,
+        parent=None,
+    ):
         super().__init__(icon, title, content, parent)
         # Switch button
-        self.switchButton = SwitchButton('关', self, IndicatorPosition.RIGHT)
+        self.switchButton = SwitchButton("关", self, IndicatorPosition.RIGHT)
         # Add switch button to card layout using addWidget method
         self.card.addWidget(self.switchButton)
         # Configuration options
@@ -76,10 +75,11 @@ class AutoPlotSettingCard(ExpandSettingCard):
         """Switch button checked state changed slot"""
         self.setValue(isChecked)
         self.switchChanged.emit(isChecked)
+
     def setValue(self, isChecked: bool):
         """Set switch button state"""
         self.switchButton.setChecked(isChecked)
-        self.switchButton.setText('开' if isChecked else '关')
+        self.switchButton.setText("开" if isChecked else "关")
 
     def getSwitchState(self) -> bool:
         """Get current switch state"""

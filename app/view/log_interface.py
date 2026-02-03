@@ -1,19 +1,34 @@
 from collections import deque
 from enum import Enum
-from PyQt5.QtCore import QObject, pyqtSignal, Qt, QSize
-from PyQt5.QtGui import QTextCharFormat, QColor, QTextCursor, QFont
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QFrame
-from loguru import logger
-from qfluentwidgets import ScrollArea, StrongBodyLabel, CaptionLabel, PlainTextEdit, \
-    FluentIcon as FIF, TransparentToolButton, TransparentToggleToolButton, SwitchButton, \
-    VerticalSeparator, SearchLineEdit, ComboBox, PushButton, isDarkTheme, ToolButton, setTheme, Theme, ToggleToolButton
 
+from loguru import logger
+from PyQt5.QtCore import QObject, Qt, pyqtSignal
+from PyQt5.QtGui import QColor, QFont, QTextCharFormat, QTextCursor
+from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
+from qfluentwidgets import (
+    CaptionLabel,
+    ComboBox,
+    PlainTextEdit,
+    ScrollArea,
+    SearchLineEdit,
+    StrongBodyLabel,
+    Theme,
+    ToggleToolButton,
+    ToolButton,
+    VerticalSeparator,
+    isDarkTheme,
+    setTheme,
+)
+from qfluentwidgets import FluentIcon as FIF
+
+from app.common.config import cfg
 from app.common.icon import UnicodeIcon
 from app.common.style_sheet import StyleSheet
-from app.common.config import cfg
+
 
 class LogLevel(Enum):
     """日志级别枚举"""
+
     TRACE = 0
     DEBUG = 1
     INFO = 2
@@ -21,6 +36,7 @@ class LogLevel(Enum):
     WARNING = 4
     ERROR = 5
     CRITICAL = 6
+
 
 class LogConfig:
     """日志配置管理类"""
@@ -33,7 +49,7 @@ class LogConfig:
         LogLevel.SUCCESS: "SUCCESS",
         LogLevel.WARNING: "WARNING",
         LogLevel.ERROR: "ERROR",
-        LogLevel.CRITICAL: "CRITICAL"
+        LogLevel.CRITICAL: "CRITICAL",
     }
 
     # 反向级别映射
@@ -44,61 +60,61 @@ class LogConfig:
         "SUCCESS": LogLevel.SUCCESS,
         "WARNING": LogLevel.WARNING,
         "ERROR": LogLevel.ERROR,
-        "CRITICAL": LogLevel.CRITICAL
+        "CRITICAL": LogLevel.CRITICAL,
     }
 
     # 级别配置
     LEVEL_CONFIG = {
         LogLevel.TRACE: {
-            'name': '追踪',
-            'icon': 'ic_fluent_number_circle_0_32_regular',
-            'fif_icon': FIF.CODE,
-            'bg_color': '#f3e6ff'
+            "name": "追踪",
+            "icon": "ic_fluent_number_circle_0_32_regular",
+            "fif_icon": FIF.CODE,
+            "bg_color": "#f3e6ff",
         },
         LogLevel.DEBUG: {
-            'name': '调试',
-            'icon': 'ic_fluent_bug_arrow_counterclockwise_20_regular',
-            'fif_icon': FIF.CODE,
-            'bg_color': '#e6f7ff'
+            "name": "调试",
+            "icon": "ic_fluent_bug_arrow_counterclockwise_20_regular",
+            "fif_icon": FIF.CODE,
+            "bg_color": "#e6f7ff",
         },
         LogLevel.INFO: {
-            'name': '信息',
-            'icon': 'ic_fluent_info_24_regular',
-            'fif_icon': FIF.INFO,
-            'bg_color': '#e6ffe6'
+            "name": "信息",
+            "icon": "ic_fluent_info_24_regular",
+            "fif_icon": FIF.INFO,
+            "bg_color": "#e6ffe6",
         },
         LogLevel.SUCCESS: {
-            'name': '成功',
-            'icon': 'ic_fluent_flash_checkmark_16_regular',
-            'fif_icon': FIF.COMPLETED,
-            'bg_color': '#e6ffe6'
+            "name": "成功",
+            "icon": "ic_fluent_flash_checkmark_16_regular",
+            "fif_icon": FIF.COMPLETED,
+            "bg_color": "#e6ffe6",
         },
         LogLevel.WARNING: {
-            'name': '警告',
-            'icon': 'ic_fluent_warning_12_regular',
-            'fif_icon': FIF.QUESTION,
-            'bg_color': '#fff7e6'
+            "name": "警告",
+            "icon": "ic_fluent_warning_12_regular",
+            "fif_icon": FIF.QUESTION,
+            "bg_color": "#fff7e6",
         },
         LogLevel.ERROR: {
-            'name': '错误',
-            'icon': 'ic_fluent_warning_shield_20_regular',
-            'fif_icon': FIF.CLOSE,
-            'bg_color': '#ffe6e6'
+            "name": "错误",
+            "icon": "ic_fluent_warning_shield_20_regular",
+            "fif_icon": FIF.CLOSE,
+            "bg_color": "#ffe6e6",
         },
         LogLevel.CRITICAL: {
-            'name': '严重',
-            'icon': 'ic_fluent_share_screen_stop_24_regular',
-            'fif_icon': FIF.EDUCATION,
-            'bg_color': '#ffe6f0'
-        }
+            "name": "严重",
+            "icon": "ic_fluent_share_screen_stop_24_regular",
+            "fif_icon": FIF.EDUCATION,
+            "bg_color": "#ffe6f0",
+        },
     }
 
     @classmethod
     def get_level_name(cls, level):
         """获取级别的中文名称"""
         if isinstance(level, LogLevel):
-            return cls.LEVEL_CONFIG.get(level, {}).get('name', '未知')
-        return '未知'
+            return cls.LEVEL_CONFIG.get(level, {}).get("name", "未知")
+        return "未知"
 
     @classmethod
     def get_level_color(cls, level):
@@ -118,7 +134,7 @@ class LogConfig:
                 return cfg.get(cfg.logColorError)
             elif level == LogLevel.CRITICAL:
                 return cfg.get(cfg.logColorCritical)
-        return '#FFFFFF'
+        return "#FFFFFF"
 
     @classmethod
     def get_level_qcolor(cls, level):
@@ -137,22 +153,22 @@ class LogConfig:
         if isinstance(level, LogLevel):
             config = cls.LEVEL_CONFIG.get(level, {})
             if use_unicode:
-                icon_name = config.get('icon')
+                icon_name = config.get("icon")
                 if icon_name:
                     try:
                         return UnicodeIcon.get_icon_by_name(icon_name)
                     except Exception:
                         # 如果UnicodeIcon加载失败，回退到使用FIF图标
                         pass
-            return config.get('fif_icon')
+            return config.get("fif_icon")
         return None
 
     @classmethod
     def get_level_bg_color(cls, level):
         """获取级别的背景颜色"""
         if isinstance(level, LogLevel):
-            return cls.LEVEL_CONFIG.get(level, {}).get('bg_color', '#FFFFFF')
-        return '#FFFFFF'
+            return cls.LEVEL_CONFIG.get(level, {}).get("bg_color", "#FFFFFF")
+        return "#FFFFFF"
 
     @classmethod
     def get_level_by_name(cls, name):
@@ -181,7 +197,7 @@ class LogConfig:
             cls.LEVEL_NAME_MAP[LogLevel.SUCCESS]: cls.get_level_qcolor(LogLevel.SUCCESS),
             cls.LEVEL_NAME_MAP[LogLevel.WARNING]: cls.get_level_qcolor(LogLevel.WARNING),
             cls.LEVEL_NAME_MAP[LogLevel.ERROR]: cls.get_level_qcolor(LogLevel.ERROR),
-            cls.LEVEL_NAME_MAP[LogLevel.CRITICAL]: cls.get_level_qcolor(LogLevel.CRITICAL)
+            cls.LEVEL_NAME_MAP[LogLevel.CRITICAL]: cls.get_level_qcolor(LogLevel.CRITICAL),
         }
 
     @classmethod
@@ -189,6 +205,7 @@ class LogConfig:
         """获取最小日志级别"""
         level_name = cfg.get(cfg.logLevel)
         return cls.get_level_by_name(level_name) or LogLevel.DEBUG
+
 
 class QTextEditLogger(QObject):
     """线程安全的日志记录器，专为Qt应用设计（无空白行版）"""
@@ -228,7 +245,7 @@ class QTextEditLogger(QObject):
         """安全写入日志（可被任何线程调用）"""
         try:
             # 处理message对象或字符串
-            if hasattr(message, 'record'):
+            if hasattr(message, "record"):
                 # 处理loguru的Message对象
                 # 获取完整的格式化文本
                 text = str(message).strip()
@@ -257,7 +274,7 @@ class QTextEditLogger(QObject):
     def _on_scroll_value_changed(self, value):
         """当用户滚动时更新状态"""
         max_value = self.text_edit.verticalScrollBar().maximum()
-        self.is_scrolling = (value >= max_value - 2)
+        self.is_scrolling = value >= max_value - 2
 
     def _safe_text_cursor(self) -> QTextCursor:
         """安全获取文本游标"""
@@ -297,7 +314,7 @@ class QTextEditLogger(QObject):
         max_scroll = self.text_edit.verticalScrollBar().maximum()
 
         # 如果当前在底部附近，标记为自动滚动
-        at_bottom = (scroll_pos >= max_scroll - 2)
+        at_bottom = scroll_pos >= max_scroll - 2
 
         cursor = QTextCursor(doc)
         cursor.movePosition(QTextCursor.End)
@@ -313,9 +330,7 @@ class QTextEditLogger(QObject):
 
         # 恢复滚动位置（如果之前在底部）
         if at_bottom:
-            self.text_edit.verticalScrollBar().setValue(
-                self.text_edit.verticalScrollBar().maximum()
-            )
+            self.text_edit.verticalScrollBar().setValue(self.text_edit.verticalScrollBar().maximum())
 
     def _safe_scroll_to_bottom(self):
         """安全滚动到底部（确保保留正常换行）"""
@@ -324,9 +339,7 @@ class QTextEditLogger(QObject):
 
         try:
             # 方法1：直接滚动到文档末尾（最可靠）
-            self.text_edit.verticalScrollBar().setValue(
-                self.text_edit.verticalScrollBar().maximum()
-            )
+            self.text_edit.verticalScrollBar().setValue(self.text_edit.verticalScrollBar().maximum())
         except RuntimeError:
             pass
 
@@ -353,7 +366,7 @@ class QTextEditLogger(QObject):
 
     def _is_widget_valid(self) -> bool:
         """检查文本编辑控件是否有效"""
-        if not hasattr(self, 'text_edit') or self.text_edit is None:
+        if not hasattr(self, "text_edit") or self.text_edit is None:
             return False
         try:
             self.text_edit.isVisible()
@@ -375,6 +388,7 @@ class QTextEditLogger(QObject):
         self.text_edit = None
         self.buffer.clear()
 
+
 class LoguruInterface(ScrollArea):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -385,20 +399,19 @@ class LoguruInterface(ScrollArea):
 
         self.log_viewer = PlainTextEdit(self)
         self.log_viewer.document().setDocumentMargin(0)
-        self.log_viewer.setObjectName('log_viewer')
+        self.log_viewer.setObjectName("log_viewer")
         self.log_viewer.setReadOnly(True)
         self.log_viewer.setFont(QFont("Consolas", 11))
 
         self.title_label = StrongBodyLabel(self.view)
         self.title_label.setFont(QFont("Segoe UI", 16, QFont.Bold))
-        self.title_label.setObjectName('title_label')
+        self.title_label.setObjectName("title_label")
         self.title_label.setText(self.tr("Log Center"))
 
         self.subtitle_label = CaptionLabel(self.view)
         self.subtitle_label.setTextColor("#666666")
-        self.subtitle_label.setObjectName('subtitle_label')
+        self.subtitle_label.setObjectName("subtitle_label")
         self.subtitle_label.setText(self.tr("Real-time system status monitoring"))
-
 
         """初始化界面"""
         self.__initWidget()
@@ -432,14 +445,13 @@ class LoguruInterface(ScrollArea):
 
     def __initWidget(self):
         self.setObjectName("loguruInterface")
-        self.view.setObjectName('view')
+        self.view.setObjectName("view")
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setWidget(self.view)
         self.setWidgetResizable(True)
 
     def create_tool_bar(self):
         """创建工具栏"""
-        from qfluentwidgets import InfoBadge, InfoBadgePosition
         # 创建菜单栏
         self.toolbar = QHBoxLayout()
         self.toolbar.setSpacing(10)
@@ -465,10 +477,10 @@ class LoguruInterface(ScrollArea):
         self.badge_labels = {}  # 用于存储每个级别的计数
 
         # 添加"所有日志"按钮
-        self.all_logs_btn = ToggleToolButton(UnicodeIcon.get_icon_by_name('ic_fluent_channel_28_regular'))
+        self.all_logs_btn = ToggleToolButton(UnicodeIcon.get_icon_by_name("ic_fluent_channel_28_regular"))
         self.all_logs_btn.setToolTip(self.tr("Show all logs"))
         self.all_logs_btn.setFixedSize(36, 36)
-        self.all_logs_btn.setProperty('level', -1)  # -1表示所有日志
+        self.all_logs_btn.setProperty("level", -1)  # -1表示所有日志
         self.filter_buttons["ALL"] = self.all_logs_btn
 
         # 添加其他级别按钮
@@ -479,7 +491,7 @@ class LoguruInterface(ScrollArea):
             btn.setIcon(icon)
             btn.setToolTip(self.tr(f"Show only {LogConfig.get_level_name(level)}"))
             btn.setFixedSize(36, 36)
-            btn.setProperty('level', level.value)
+            btn.setProperty("level", level.value)
             self.filter_buttons[level] = btn
 
         # 分隔符
@@ -514,7 +526,14 @@ class LoguruInterface(ScrollArea):
         # 时间范围选择
         self.time_filter = ComboBox()
         self.time_filter.setFixedWidth(150)
-        self.time_filter.addItems([self.tr("All time"), self.tr("Last 1 hour"), self.tr("Last 24 hours"), self.tr("Last 7 days")])
+        self.time_filter.addItems(
+            [
+                self.tr("All time"),
+                self.tr("Last 1 hour"),
+                self.tr("Last 24 hours"),
+                self.tr("Last 7 days"),
+            ]
+        )
         self.search_layout.addWidget(self.search_box)
         self.search_layout.addWidget(self.time_filter)
         self.main_layout.addLayout(self.search_layout)
@@ -567,8 +586,8 @@ class LoguruInterface(ScrollArea):
         # 清空原始日志列表
         self.original_logs.clear()
         # 重置统计
-        if hasattr(self, 'badge_labels'):
-            delattr(self, 'badge_labels')
+        if hasattr(self, "badge_labels"):
+            delattr(self, "badge_labels")
         # 重置日志计数
         self.log_count = 0
 
@@ -626,7 +645,7 @@ class LoguruInterface(ScrollArea):
                     btn.setChecked(False)
 
             if sender.isChecked():
-                level_value = sender.property('level')
+                level_value = sender.property("level")
                 if isinstance(level_value, int):
                     if level_value == -1:
                         # 所有日志
@@ -661,6 +680,7 @@ class LoguruInterface(ScrollArea):
         """复制全部日志"""
         try:
             import PyQt5.QtWidgets as QtWidgets
+
             text = self.log_viewer.toPlainText()
             if text:
                 QtWidgets.QApplication.clipboard().setText(text)
@@ -670,8 +690,9 @@ class LoguruInterface(ScrollArea):
     def save_all_logs(self):
         """保存全部日志"""
         try:
-            import PyQt5.QtWidgets as QtWidgets
             import datetime
+
+            import PyQt5.QtWidgets as QtWidgets
 
             # 获取当前时间作为文件名的一部分
             current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -682,12 +703,12 @@ class LoguruInterface(ScrollArea):
                 self,
                 self.tr("Save logs"),
                 filename,
-                self.tr("Text files (*.txt);;All files (*)")
+                self.tr("Text files (*.txt);;All files (*)"),
             )
 
             if file_path:
                 # 写入日志内容
-                with open(file_path, 'w', encoding='utf-8') as f:
+                with open(file_path, "w", encoding="utf-8") as f:
                     f.write(self.log_viewer.toPlainText())
         except Exception as e:
             logger.error(f"Save all logs error: {e}")

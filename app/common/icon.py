@@ -1,11 +1,16 @@
-# coding: utf-8
-from enum import Enum
 import json
-from typing import Dict, Optional
-from qfluentwidgets import FluentIconBase, getIconColor, Theme, FluentFontIconBase
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QFile, QIODevice
+from enum import Enum
+
 from loguru import logger
+from PyQt5.QtCore import QFile, QIODevice
+from PyQt5.QtGui import QIcon
+from qfluentwidgets import (
+    FluentFontIconBase,
+    FluentIconBase,
+    Theme,
+    getIconColor,
+)
+
 
 class UnicodeIcon:
     """图标管理器类
@@ -13,14 +18,15 @@ class UnicodeIcon:
     提供基于图标名称的图标获取功能，支持缓存机制
     底层使用 Fluent System Icons 字体图标
     """
+
     # 图标配置
     DEFAULT_ICON_CODEPOINT = 62634  # 默认图标码点(info图标)
     FONT_PATH = ":/app/images/unicodeIcon/FluentSystemIcons-Regular.ttf"
     ICON_MAP_PATH = ":/app/images/unicodeIcon/FluentSystemIcons-Regular.json"
 
     # 缓存
-    _icon_cache: Dict[str, QIcon] = {}
-    _icon_map_cache: Optional[Dict[str, int]] = None
+    _icon_cache: dict[str, QIcon] = {}
+    _icon_map_cache: dict[str, int] | None = None
 
     class FluentSystemIcon(FluentFontIconBase):
         """Fluent System Icons 字体图标类"""
@@ -38,7 +44,7 @@ class UnicodeIcon:
             return UnicodeIcon.FONT_PATH
 
     @classmethod
-    def _get_icon_map(cls) -> Dict[str, int]:
+    def _get_icon_map(cls) -> dict[str, int]:
         """获取图标映射表，使用缓存避免重复读取JSON
 
         Returns:
@@ -68,7 +74,7 @@ class UnicodeIcon:
         return cls._icon_map_cache
 
     @classmethod
-    def _create_icon_from_name(cls, icon_name) -> Optional[QIcon]:
+    def _create_icon_from_name(cls, icon_name) -> QIcon | None:
         """根据图标名称或码点创建图标
 
         Args:
@@ -154,7 +160,6 @@ class UnicodeIcon:
 
 
 class Icon(FluentIconBase, Enum):
-
     SELECT = "Select"
     SETTINGS = "Settings"
     SETTINGS_FILLED = "SettingsFilled"
@@ -166,7 +171,6 @@ class Icon(FluentIconBase, Enum):
 
 
 class Ico(FluentIconBase, Enum):
-
     M3U8DL = "M3U8DL"
 
     def path(self, theme=Theme.AUTO):
@@ -179,6 +183,7 @@ class PNG(FluentIconBase, Enum):
     def path(self, theme=Theme.AUTO):
         return f":/app/images/png/{self.value}.png"
 
+
 class JPG(FluentIconBase, Enum):
     BACKGROUND_1 = "background"
     BACKGROUND_2 = "background2"
@@ -187,8 +192,8 @@ class JPG(FluentIconBase, Enum):
     def path(self, theme=Theme.AUTO):
         return f":/app/images/jpg/{self.value}.jpg"
 
-class Logo(FluentIconBase, Enum):
 
+class Logo(FluentIconBase, Enum):
     KEY = "Key"
     GEAR = "Gear"
     FILM = "Film"

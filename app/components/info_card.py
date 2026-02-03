@@ -1,13 +1,19 @@
-# coding:utf-8
-from pathlib import Path
-from typing import List
-from PyQt5.QtCore import Qt, QSize, QUrl
-from PyQt5.QtGui import QPixmap, QIcon, QColor
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout
-
-from qfluentwidgets import (BodyLabel, TransparentToolButton, FluentIcon, ElevatedCardWidget,
-                            ImageLabel, SimpleCardWidget, HyperlinkLabel, VerticalSeparator,
-                            PrimaryPushButton, TitleLabel, PillPushButton, setFont)
+from PyQt5.QtCore import QSize, Qt, QUrl
+from PyQt5.QtGui import QColor, QIcon
+from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
+from qfluentwidgets import (
+    BodyLabel,
+    FluentIcon,
+    HyperlinkLabel,
+    ImageLabel,
+    PillPushButton,
+    PrimaryPushButton,
+    SimpleCardWidget,
+    TitleLabel,
+    TransparentToolButton,
+    VerticalSeparator,
+    setFont,
+)
 
 from app.components.statistic_widget import StatisticsWidget
 
@@ -37,31 +43,33 @@ class CompactTagContainer(QWidget):
         self.tags.append(tag)
         return tag
 
-    def add_tags(self, texts: List[str]):
+    def add_tags(self, texts: list[str]):
         """批量添加标签"""
         for text in texts:
             self.add_tag(text)
 
 
 class AppInfoCard(SimpleCardWidget):
-    """ M3U8DL information card """
+    """M3U8DL information card"""
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setBorderRadius(8)
         self.iconLabel = ImageLabel(QIcon(":/app/images/ico/M3U8DL.ico").pixmap(120, 120), self)
 
-        self.nameLabel = TitleLabel(self.tr('FastRte'), self)
+        self.nameLabel = TitleLabel(self.tr("FastRte"), self)
         self.updateButton = PrimaryPushButton(self.tr("Update"), self)
-        self.companyLabel = HyperlinkLabel(QUrl('https://github.com/fastxteam/FastX-Gui'), 'FastXTeam', self)
-        self.versionWidget = StatisticsWidget(self.tr('Version'), 'v0.1.0', self)
-        self.fileSizeWidget = StatisticsWidget(self.tr('File Size'), '19MB', self)
-        self.updateTimeWidget = StatisticsWidget(self.tr('Update Time'), '2026-01-19', self)
+        self.companyLabel = HyperlinkLabel(QUrl("https://github.com/fastxteam/FastX-Gui"), "FastXTeam", self)
+        self.versionWidget = StatisticsWidget(self.tr("Version"), "v0.1.0", self)
+        self.fileSizeWidget = StatisticsWidget(self.tr("File Size"), "19MB", self)
+        self.updateTimeWidget = StatisticsWidget(self.tr("Update Time"), "2026-01-19", self)
 
         self.descriptionLabel = BodyLabel(
             self.tr(
-                'Rte Connecter is an application tool. The current application field is AUTOSAR CP. The adaptation tool ETAS is used to connect RTE wiring between SWCs. It can generate DataType, Interface and Composition Rte wiring from the table content, which greatly improves the development speed.'),
-            self)
+                "Rte Connecter is an application tool. The current application field is AUTOSAR CP. The adaptation tool ETAS is used to connect RTE wiring between SWCs. It can generate DataType, Interface and Composition Rte wiring from the table content, which greatly improves the development speed."
+            ),
+            self,
+        )
 
         # 使用紧凑标签容器
         self.tag_container = CompactTagContainer(self)
@@ -92,7 +100,7 @@ class AppInfoCard(SimpleCardWidget):
         self.descriptionLabel.setObjectName("descriptionLabel")
 
         # 初始化标签
-        self.tag_container.add_tags(['FUNC', 'IPC', 'SRP'])
+        self.tag_container.add_tags(["FUNC", "IPC", "SRP"])
 
         self.initLayout()
 
@@ -143,6 +151,6 @@ class AppInfoCard(SimpleCardWidget):
         self.bottomLayout.addWidget(self.shareButton, 0, Qt.AlignRight)
 
     def setVersion(self, version: str):
-        text = version or '0.1.0'
+        text = version or "0.1.0"
         self.versionWidget.valueLabel.setText(text)
         self.versionWidget.valueLabel.setTextColor(QColor(0, 0, 0), QColor(255, 255, 255))

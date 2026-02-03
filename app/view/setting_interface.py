@@ -1,35 +1,54 @@
-# coding:utf-8
-from loguru import logger
-from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, FolderListSettingCard,
-                            OptionsSettingCard, PushSettingCard,
-                            HyperlinkCard, PrimaryPushSettingCard, ScrollArea,
-                            ComboBoxSettingCard, ExpandLayout, Theme, CustomColorSettingCard,
-                            setTheme, setThemeColor, RangeSettingCard, isDarkTheme, SettingCard, PushButton,
-                            ExpandSettingCard, GroupHeaderCardWidget, SwitchButton, ColorConfigItem, ColorSettingCard)
-from qfluentwidgets import FluentIcon as FIF
-from qfluentwidgets import InfoBar
-from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QStandardPaths
+from PyQt5.QtCore import QStandardPaths, Qt, QUrl
 from PyQt5.QtGui import QDesktopServices
-from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QHBoxLayout
+from PyQt5.QtWidgets import QFileDialog, QHBoxLayout, QLabel, QWidget
+from qfluentwidgets import (
+    ColorSettingCard,
+    ComboBoxSettingCard,
+    CustomColorSettingCard,
+    ExpandLayout,
+    ExpandSettingCard,
+    FolderListSettingCard,
+    HyperlinkCard,
+    InfoBar,
+    OptionsSettingCard,
+    PrimaryPushSettingCard,
+    PushButton,
+    PushSettingCard,
+    RangeSettingCard,
+    ScrollArea,
+    SettingCard,
+    SettingCardGroup,
+    SwitchSettingCard,
+    setTheme,
+    setThemeColor,
+)
+from qfluentwidgets import FluentIcon as FIF
 
 from app.common.background_manager import get_background_manager
 from app.common.config import cfg, isWin11
 from app.common.icon import UnicodeIcon
-from app.common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR, COPYRIGHT_HOLDER
+from app.common.setting import (
+    AUTHOR,
+    COPYRIGHT_HOLDER,
+    FEEDBACK_URL,
+    HELP_URL,
+    VERSION,
+    YEAR,
+)
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
 from app.components.config_card import FloatingWindowBasicSettings
 
 
 class BackgroundImageCard(SettingCard):
-    """ Custom setting card with select and clear buttons for background image """
+    """Custom setting card with select and clear buttons for background image"""
 
     def __init__(self, title, content, icon, parent=None):
         super().__init__(icon, title, content, parent)
 
         # Create buttons
-        self.selectButton = PushButton(self.tr('Select image'), self)
-        self.clearButton = PushButton(self.tr('Clear'), self)
+        self.selectButton = PushButton(self.tr("Select image"), self)
+        self.clearButton = PushButton(self.tr("Clear"), self)
 
         # Create button layout
         self.buttonLayout = QHBoxLayout()
@@ -45,20 +64,21 @@ class BackgroundImageCard(SettingCard):
         self._updateDisplay()
 
     def _updateDisplay(self):
-        """ Update the card display based on current background image path """
+        """Update the card display based on current background image path"""
         bg_path = cfg.get(cfg.backgroundImagePath)
         if bg_path:
             import os
+
             file_name = os.path.basename(bg_path)
             self.setContent(f"Selected: {file_name}")
             self.clearButton.setEnabled(True)
         else:
-            self.setContent(self.tr('Choose a custom background image file'))
+            self.setContent(self.tr("Choose a custom background image file"))
             self.clearButton.setEnabled(False)
 
 
 class SettingInterface(ScrollArea):
-    """ Setting interface """
+    """Setting interface"""
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -75,42 +95,43 @@ class SettingInterface(ScrollArea):
             cfg.projectFolders,
             self.tr("Local Project library"),
             directory=QStandardPaths.writableLocation(QStandardPaths.MusicLocation),
-            parent=self.projectInThisPCGroup
+            parent=self.projectInThisPCGroup,
         )
         self.downloadFolderCard = PushSettingCard(
-            self.tr('Choose folder'),
+            self.tr("Choose folder"),
             FIF.FOLDER_ADD,
             self.tr("Project directory"),
             cfg.get(cfg.downloadFolder),
-            self.projectInThisPCGroup
+            self.projectInThisPCGroup,
         )
 
         # personalization
-        self.personalGroup = SettingCardGroup(self.tr('Personalization'), self.view)
+        self.personalGroup = SettingCardGroup(self.tr("Personalization"), self.view)
         self.micaCard = SwitchSettingCard(
             FIF.TRANSPARENT,
-            self.tr('Mica effect'),
-            self.tr('Apply semi transparent to windows and surfaces'),
+            self.tr("Mica effect"),
+            self.tr("Apply semi transparent to windows and surfaces"),
             cfg.micaEnabled,
-            self.personalGroup
+            self.personalGroup,
         )
         self.themeCard = OptionsSettingCard(
             cfg.themeMode,
             FIF.BRUSH,
-            self.tr('Application theme'),
+            self.tr("Application theme"),
             self.tr("Change the appearance of your application"),
             texts=[
-                self.tr('Light'), self.tr('Dark'),
-                self.tr('Use system setting')
+                self.tr("Light"),
+                self.tr("Dark"),
+                self.tr("Use system setting"),
             ],
-            parent=self.personalGroup
+            parent=self.personalGroup,
         )
         self.themeColorCard = CustomColorSettingCard(
             cfg.themeColor,
             FIF.PALETTE,
-            self.tr('Theme color'),
-            self.tr('Change the theme color of you application'),
-            self.personalGroup
+            self.tr("Theme color"),
+            self.tr("Change the theme color of you application"),
+            self.personalGroup,
         )
         self.zoomCard = OptionsSettingCard(
             cfg.dpiScale,
@@ -118,222 +139,237 @@ class SettingInterface(ScrollArea):
             self.tr("Interface zoom"),
             self.tr("Change the size of widgets and fonts"),
             texts=[
-                "100%", "125%", "150%", "175%", "200%",
-                self.tr("Use system setting")
+                "100%",
+                "125%",
+                "150%",
+                "175%",
+                "200%",
+                self.tr("Use system setting"),
             ],
-            parent=self.personalGroup
+            parent=self.personalGroup,
         )
         self.languageCard = ComboBoxSettingCard(
             cfg.language,
             FIF.LANGUAGE,
-            self.tr('Language'),
-            self.tr('Set your preferred language for UI'),
-            texts=['简体中文', '繁體中文', 'English', self.tr('Use system setting')],
-            parent=self.personalGroup
+            self.tr("Language"),
+            self.tr("Set your preferred language for UI"),
+            texts=[
+                "简体中文",
+                "繁體中文",
+                "English",
+                self.tr("Use system setting"),
+            ],
+            parent=self.personalGroup,
         )
         # background settings
         self.backgroundGroupCard = ExpandSettingCard(
             FIF.PHOTO,
-            self.tr('Background'),
-            self.tr('Customize application background settings'),
-            self.view)
+            self.tr("Background"),
+            self.tr("Customize application background settings"),
+            self.view,
+        )
         self.backgroundEnabledCard = SwitchSettingCard(
             FIF.PHOTO,
-            self.tr('Background image'),
-            self.tr('Enable custom background image for the application'),
+            self.tr("Background image"),
+            self.tr("Enable custom background image for the application"),
             cfg.backgroundImageEnabled,
-            self.backgroundGroupCard
+            self.backgroundGroupCard,
         )
         self.backgroundImageCard = BackgroundImageCard(
-            self.tr('Background image path'),
-            self.tr('Choose a custom background image file'),
-            UnicodeIcon.get_icon_by_name('ic_fluent_image_add_32_regular'),
-            self.backgroundGroupCard
+            self.tr("Background image path"),
+            self.tr("Choose a custom background image file"),
+            UnicodeIcon.get_icon_by_name("ic_fluent_image_add_32_regular"),
+            self.backgroundGroupCard,
         )
         self.backgroundOpacityCard = RangeSettingCard(
             cfg.backgroundOpacity,
             FIF.TRANSPARENT,
-            self.tr('Background opacity'),
-            self.tr('Adjust the opacity of the background image (0-100%)'),
-            self.backgroundGroupCard
+            self.tr("Background opacity"),
+            self.tr("Adjust the opacity of the background image (0-100%)"),
+            self.backgroundGroupCard,
         )
         self.backgroundBlurCard = RangeSettingCard(
             cfg.backgroundBlurRadius,
             FIF.BRUSH,
-            self.tr('Background blur'),
-            self.tr('Adjust the blur radius of the background image (0-50px)'),
-            self.backgroundGroupCard
+            self.tr("Background blur"),
+            self.tr("Adjust the blur radius of the background image (0-50px)"),
+            self.backgroundGroupCard,
         )
         self.backgroundDisplayModeCard = ComboBoxSettingCard(
             cfg.backgroundDisplayMode,
             FIF.LAYOUT,
-            self.tr('Display mode'),
-            self.tr('Choose how the background image is displayed'),
+            self.tr("Display mode"),
+            self.tr("Choose how the background image is displayed"),
             texts=[
-                self.tr('Stretch'), self.tr('Keep Aspect Ratio'),
-                self.tr('Tile'), self.tr('Original Size'), self.tr('Fit Window')
+                self.tr("Stretch"),
+                self.tr("Keep Aspect Ratio"),
+                self.tr("Tile"),
+                self.tr("Original Size"),
+                self.tr("Fit Window"),
             ],
-            parent=self.backgroundGroupCard
+            parent=self.backgroundGroupCard,
         )
 
         # 懸浮窗
         self.floatingWindowGroupCard = ExpandSettingCard(
-            UnicodeIcon.get_icon_by_name('ic_fluent_panel_right_32_regular'),
-            self.tr('FloatWindow'),
-            self.tr('Float Windows Settings'),
-            self.view)
+            UnicodeIcon.get_icon_by_name("ic_fluent_panel_right_32_regular"),
+            self.tr("FloatWindow"),
+            self.tr("Float Windows Settings"),
+            self.view,
+        )
         self.floatingWindowSettingCard = FloatingWindowBasicSettings(self.floatingWindowGroupCard)
 
         # material
-        self.materialGroup = SettingCardGroup(self.tr('Material'), self.view)
+        self.materialGroup = SettingCardGroup(self.tr("Material"), self.view)
         self.blurRadiusCard = RangeSettingCard(
             cfg.blurRadius,
             FIF.ALBUM,
-            self.tr('Acrylic blur radius'),
-            self.tr('The greater the radius, the more blurred the image'),
-            self.materialGroup
+            self.tr("Acrylic blur radius"),
+            self.tr("The greater the radius, the more blurred the image"),
+            self.materialGroup,
         )
 
         # Application
-        self.appGroup = SettingCardGroup(self.tr('Application settings'), self.view)
+        self.appGroup = SettingCardGroup(self.tr("Application settings"), self.view)
         self.betaCard = SwitchSettingCard(
-            UnicodeIcon.get_icon_by_name('ic_fluent_bug_prohibited_20_regular'),
-            self.tr('Beta experimental features'),
-            self.tr('When turned on, experimental features will be enabled'),
+            UnicodeIcon.get_icon_by_name("ic_fluent_bug_prohibited_20_regular"),
+            self.tr("Beta experimental features"),
+            self.tr("When turned on, experimental features will be enabled"),
             configItem=cfg.beta,
-            parent=self.appGroup
+            parent=self.appGroup,
         )
         self.closeWindowActionCard = ComboBoxSettingCard(
             cfg.close_window_action,
             FIF.MINIMIZE,
-            self.tr('when close windows'),
-            self.tr('Select the default behavior when closing the window, or you can be asked by the dialog box on closing'),
-            texts = [
-                self.tr("ask"),
-                self.tr("minimize"),
-                self.tr("close")
-            ],
-            parent = self.appGroup
+            self.tr("when close windows"),
+            self.tr(
+                "Select the default behavior when closing the window, or you can be asked by the dialog box on closing"
+            ),
+            texts=[self.tr("ask"), self.tr("minimize"), self.tr("close")],
+            parent=self.appGroup,
         )
-        
+
         self.windowSizeModeCard = ComboBoxSettingCard(
             cfg.windowSizeMode,
-            UnicodeIcon.get_icon_by_name('ic_fluent_resize_large_24_regular'),
-            self.tr('window size mode'),
-            self.tr('Select the window size mode, fixed size or auto-adaptive to screen resolution'),
-            texts = [
-                self.tr("fixed"),
-                self.tr("auto")
-            ],
-            parent = self.appGroup
+            UnicodeIcon.get_icon_by_name("ic_fluent_resize_large_24_regular"),
+            self.tr("window size mode"),
+            self.tr("Select the window size mode, fixed size or auto-adaptive to screen resolution"),
+            texts=[self.tr("fixed"), self.tr("auto")],
+            parent=self.appGroup,
         )
 
         # Log
         self.logGroupCard = ExpandSettingCard(
-            UnicodeIcon.get_icon_by_name('ic_fluent_document_bullet_list_24_regular'),
-            self.tr('Logs Settings'),
-            self.tr('Custom logs settings'),
-            self.view)
+            UnicodeIcon.get_icon_by_name("ic_fluent_document_bullet_list_24_regular"),
+            self.tr("Logs Settings"),
+            self.tr("Custom logs settings"),
+            self.view,
+        )
         self.logLevelCard = ComboBoxSettingCard(
             cfg.logLevel,
             FIF.COMMAND_PROMPT,
-            self.tr('Log level Filter'),
-            self.tr('Set the minimum log level to display'),
-            texts=[self.tr('TRACE'), self.tr('DEBUG'), self.tr('INFO'), self.tr('SUCCESS'), self.tr('WARNING'), self.tr('ERROR'), self.tr('CRITICAL')],
-            parent=self.logGroupCard
+            self.tr("Log level Filter"),
+            self.tr("Set the minimum log level to display"),
+            texts=[
+                self.tr("TRACE"),
+                self.tr("DEBUG"),
+                self.tr("INFO"),
+                self.tr("SUCCESS"),
+                self.tr("WARNING"),
+                self.tr("ERROR"),
+                self.tr("CRITICAL"),
+            ],
+            parent=self.logGroupCard,
         )
         self.logColorTraceCard = ColorSettingCard(
             cfg.logColorTrace,
             FIF.PALETTE,
-            self.tr('Trace color'),
-            self.tr('Set the color for trace level logs'),
-            parent=self.logGroupCard
+            self.tr("Trace color"),
+            self.tr("Set the color for trace level logs"),
+            parent=self.logGroupCard,
         )
         self.logColorDebugCard = ColorSettingCard(
             cfg.logColorDebug,
             FIF.PALETTE,
-            self.tr('Debug color'),
-            self.tr('Set the color for debug level logs'),
-            parent=self.logGroupCard
+            self.tr("Debug color"),
+            self.tr("Set the color for debug level logs"),
+            parent=self.logGroupCard,
         )
         self.logColorInfoCard = ColorSettingCard(
             cfg.logColorInfo,
             FIF.PALETTE,
-            self.tr('Info color'),
-            self.tr('Set the color for info level logs'),
-            parent=self.logGroupCard
+            self.tr("Info color"),
+            self.tr("Set the color for info level logs"),
+            parent=self.logGroupCard,
         )
         self.logColorSuccessCard = ColorSettingCard(
             cfg.logColorSuccess,
             FIF.PALETTE,
-            self.tr('Success color'),
-            self.tr('Set the color for success level logs'),
-            parent=self.logGroupCard
+            self.tr("Success color"),
+            self.tr("Set the color for success level logs"),
+            parent=self.logGroupCard,
         )
         self.logColorWarningCard = ColorSettingCard(
             cfg.logColorWarning,
             FIF.PALETTE,
-            self.tr('Warning color'),
-            self.tr('Set the color for warning level logs'),
-            parent=self.logGroupCard
+            self.tr("Warning color"),
+            self.tr("Set the color for warning level logs"),
+            parent=self.logGroupCard,
         )
         self.logColorErrorCard = ColorSettingCard(
             cfg.logColorError,
             FIF.PALETTE,
-            self.tr('Error color'),
-            self.tr('Set the color for error level logs'),
-            parent=self.logGroupCard
+            self.tr("Error color"),
+            self.tr("Set the color for error level logs"),
+            parent=self.logGroupCard,
         )
         self.logColorCriticalCard = ColorSettingCard(
             cfg.logColorCritical,
             FIF.PALETTE,
-            self.tr('Critical color'),
-            self.tr('Set the color for critical level logs'),
-            parent=self.logGroupCard
+            self.tr("Critical color"),
+            self.tr("Set the color for critical level logs"),
+            parent=self.logGroupCard,
         )
 
         # update software
         self.updateSoftwareGroup = SettingCardGroup(self.tr("Software update"), self.view)
         self.updateOnStartUpCard = SwitchSettingCard(
             FIF.UPDATE,
-            self.tr('Check for updates when the application starts'),
-            self.tr('The new version will be more stable and have more features'),
+            self.tr("Check for updates when the application starts"),
+            self.tr("The new version will be more stable and have more features"),
             configItem=cfg.checkUpdateAtStartUp,
-            parent=self.updateSoftwareGroup
+            parent=self.updateSoftwareGroup,
         )
 
         # About
-        self.aboutGroup = SettingCardGroup(self.tr('About'), self.view)
+        self.aboutGroup = SettingCardGroup(self.tr("About"), self.view)
         self.helpCard = HyperlinkCard(
             HELP_URL,
-            self.tr('Open help page'),
+            self.tr("Open help page"),
             FIF.HELP,
-            self.tr('Help'),
-            self.tr(
-                'Discover new features and learn useful tips about FastXTeam/FastX-Gui'),
-            self.aboutGroup
+            self.tr("Help"),
+            self.tr("Discover new features and learn useful tips about FastXTeam/FastX-Gui"),
+            self.aboutGroup,
         )
         self.feedbackCard = PrimaryPushSettingCard(
-            self.tr('Provide feedback'),
+            self.tr("Provide feedback"),
             FIF.FEEDBACK,
-            self.tr('Provide feedback'),
-            self.tr('Help us improve FastXTeam/FastX-Gui by providing feedback'),
-            self.aboutGroup
+            self.tr("Provide feedback"),
+            self.tr("Help us improve FastXTeam/FastX-Gui by providing feedback"),
+            self.aboutGroup,
         )
         self.aboutCard = PrimaryPushSettingCard(
-            self.tr('Check update'),
+            self.tr("Check update"),
             ":/app/images/png/logo.png",
-            self.tr('About'),
-            '© ' + self.tr('Copyright (C)') + f" {YEAR}, {AUTHOR}/{COPYRIGHT_HOLDER}" +
-            self.tr('Version') + VERSION,
-            self.aboutGroup
+            self.tr("About"),
+            "© " + self.tr("Copyright (C)") + f" {YEAR}, {AUTHOR}/{COPYRIGHT_HOLDER}" + self.tr("Version") + VERSION,
+            self.aboutGroup,
         )
 
         self.__initWidget()
         self.__setQss()
         self.__initLayout()
         self.__connectSignalToSlot()
-
 
     def __initWidget(self):
         self.resize(1000, 800)
@@ -343,11 +379,11 @@ class SettingInterface(ScrollArea):
         self.setWidgetResizable(True)
 
     def __setQss(self):
-        """ set style sheet """
+        """set style sheet"""
         # initialize style sheet
-        self.setObjectName('settingInterface')
-        self.view.setObjectName('scrollWidget')
-        self.settingLabel.setObjectName('settingLabel')
+        self.setObjectName("settingInterface")
+        self.view.setObjectName("scrollWidget")
+        self.settingLabel.setObjectName("settingLabel")
         StyleSheet.SETTING_INTERFACE.apply(self)
         # micaCard
         self.micaCard.setEnabled(isWin11())
@@ -416,35 +452,32 @@ class SettingInterface(ScrollArea):
         self.expandLayout.addWidget(self.materialGroup)
         self.expandLayout.addWidget(self.updateSoftwareGroup)
         self.expandLayout.addWidget(self.aboutGroup)
-        self._betaEnable() if cfg.beta.value else None   #Beta
-
+        self._betaEnable() if cfg.beta.value else None  # Beta
 
     def _createBetaSetting(self):
-        self.BetaGroup = SettingCardGroup(self.tr('Beta'), self.view)
+        self.BetaGroup = SettingCardGroup(self.tr("Beta"), self.view)
         self.debug_Card = SwitchSettingCard(
-                UnicodeIcon.get_icon_by_name('ic_fluent_bug_24_regular'),
-                self.tr('Debug Mode'),
-                self.tr('The global exception capture will be disabled, and there will be outputs in the commandline.(Code Running Only)'),
-                configItem=cfg.debug_card,
-                parent=self.BetaGroup
+            UnicodeIcon.get_icon_by_name("ic_fluent_bug_24_regular"),
+            self.tr("Debug Mode"),
+            self.tr(
+                "The global exception capture will be disabled, and there will be outputs in the commandline.(Code Running Only)"
+            ),
+            configItem=cfg.debug_card,
+            parent=self.BetaGroup,
         )
 
     def __showRestartTooltip(self):
-        """ show restart tooltip """
+        """show restart tooltip"""
         InfoBar.success(
-            self.tr('Updated successfully'),
-            self.tr('Configuration takes effect after restart'),
-
-
-
+            self.tr("Updated successfully"),
+            self.tr("Configuration takes effect after restart"),
             duration=1500,
-            parent=self
+            parent=self,
         )
 
     def __onDownloadFolderCardClicked(self):
-        """ download folder card clicked slot """
-        folder = QFileDialog.getExistingDirectory(
-            self, self.tr("Choose folder"), "./")
+        """download folder card clicked slot"""
+        folder = QFileDialog.getExistingDirectory(self, self.tr("Choose folder"), "./")
         if not folder or cfg.get(cfg.downloadFolder) == folder:
             return
         cfg.set(cfg.downloadFolder, folder)
@@ -463,19 +496,19 @@ class SettingInterface(ScrollArea):
             self.BetaGroup.setVisible(False)
 
     def __onBackgroundEnabledChanged(self, isChecked: bool):
-        """ Handle background image enable/disable """
+        """Handle background image enable/disable"""
         cfg.set(cfg.backgroundImageEnabled, isChecked)
         self.backgroundManager.update_background()
         self.__updateBackgroundCardsState()
         self.__updateBackgroundPreview()
 
     def __onSelectBackgroundImage(self):
-        """ Handle background image selection """
+        """Handle background image selection"""
         file_path, _ = QFileDialog.getOpenFileName(
             self,
-            self.tr('Select background image'),
-            '',
-            self.tr('Image files (*.jpg *.jpeg *.png *.bmp *.gif *.webp)')
+            self.tr("Select background image"),
+            "",
+            self.tr("Image files (*.jpg *.jpeg *.png *.bmp *.gif *.webp)"),
         )
 
         if file_path:
@@ -485,42 +518,42 @@ class SettingInterface(ScrollArea):
             self.__updateBackgroundPreview()
 
     def __onClearBackgroundImage(self):
-        """ Handle background image clearing """
+        """Handle background image clearing"""
         cfg.set(cfg.backgroundImagePath, "")
         self.backgroundManager.update_background()
         self.backgroundImageCard._updateDisplay()
         self.__updateBackgroundPreview()
 
     def __onBackgroundOpacityChanged(self, value: int):
-        """ Handle background opacity change """
+        """Handle background opacity change"""
         cfg.set(cfg.backgroundOpacity, value)
         self.backgroundManager.update_background()
         self.__updateBackgroundPreview()
 
     def __onBackgroundBlurChanged(self, value: int):
-        """ Handle background blur radius change """
+        """Handle background blur radius change"""
         cfg.set(cfg.backgroundBlurRadius, value)
         self.backgroundManager.update_background()
         self.__updateBackgroundPreview()
 
     def __onBackgroundDisplayModeChanged(self, index: int):
-        """ Handle background display mode change """
+        """Handle background display mode change"""
         mode = self.backgroundDisplayModeCard.comboBox.itemData(index)
         cfg.set(cfg.backgroundDisplayMode, mode)
         self.backgroundManager.update_background()
         self.__updateBackgroundPreview()
 
     def __updateBackgroundPreview(self):
-        """ Update background preview in main window """
+        """Update background preview in main window"""
         parent_window = self.window()
-        if hasattr(parent_window, 'update'):
+        if hasattr(parent_window, "update"):
             parent_window.update()  # Trigger repaint to show background changes
 
     def scrollToGroup(self, group):
         self.verticalScrollBar().setValue(group.y())
 
     def __updateBackgroundCardsState(self):
-        """ Update the enabled state of background setting cards """
+        """Update the enabled state of background setting cards"""
         is_background_enabled = cfg.get(cfg.backgroundImageEnabled)
 
         # Enable/disable background related cards based on background enabled state
@@ -530,11 +563,11 @@ class SettingInterface(ScrollArea):
         self.backgroundDisplayModeCard.setEnabled(is_background_enabled)
 
         # Update display when background is enabled/disabled
-        if hasattr(self.backgroundImageCard, '_updateDisplay'):
+        if hasattr(self.backgroundImageCard, "_updateDisplay"):
             self.backgroundImageCard._updateDisplay()
 
     def __connectSignalToSlot(self):
-        """ connect signal to slot """
+        """connect signal to slot"""
         cfg.appRestartSig.connect(self.__showRestartTooltip)
 
         # project in the pc

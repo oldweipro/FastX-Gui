@@ -1,24 +1,34 @@
-# coding:utf-8
-from typing import Union
-
-from PyQt5.QtCore import Qt, QEasingCurve
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWidget, QStackedWidget, QVBoxLayout, QLabel, QHBoxLayout, QFrame, QSizePolicy, QSpacerItem, \
-    QScroller, QScrollerProperties
-from qfluentwidgets import (Pivot, qrouter, SegmentedWidget, TabBar, CheckBox, ComboBox,
-                            TabCloseButtonDisplayMode, BodyLabel, SpinBox, BreadcrumbBar,
-                            SegmentedToggleToolWidget, ScrollArea, SettingCardGroup, SwitchSettingCard,
-                            SegmentedToolWidget, FluentIconBase, ExpandSettingCard, PushSettingCard)
+from PyQt5.QtWidgets import (
+    QHBoxLayout,
+    QLabel,
+    QScroller,
+    QScrollerProperties,
+    QSpacerItem,
+    QStackedWidget,
+    QVBoxLayout,
+    QWidget,
+)
+from qfluentwidgets import (
+    ExpandSettingCard,
+    FluentIconBase,
+    PushSettingCard,
+    ScrollArea,
+    SegmentedWidget,
+    SettingCardGroup,
+    SwitchSettingCard,
+)
 from qfluentwidgets import FluentIcon as FIF
 
 from app.common.config import cfg
 from app.common.icon import UnicodeIcon
-from app.common.translator import Translator
 from app.common.style_sheet import StyleSheet
-from app.components.pivot import SettingPivot
+
 
 class ToolsInterface(ScrollArea):
-    """ Navigation view interface """
+    """Navigation view interface"""
+
     def __init__(self, parent=None):
         """
         初始化工具界面
@@ -29,33 +39,33 @@ class ToolsInterface(ScrollArea):
         super().__init__(parent)
         self.view = QWidget(self)
         self.platformToolsLabel = QLabel(self.tr("PlatformTools"), self)
-        self.platformToolsLabel.setObjectName('platformToolsLabel')
+        self.platformToolsLabel.setObjectName("platformToolsLabel")
 
         self.DemGroup = SettingCardGroup(self.tr("Dem"), self.view)
         self.micaCard1 = SwitchSettingCard(
             FIF.TRANSPARENT,
-            self.tr('Mica effect'),
-            self.tr('Apply semi transparent to windows and surfaces'),
+            self.tr("Mica effect"),
+            self.tr("Apply semi transparent to windows and surfaces"),
             cfg.micaEnabled,
-            self.DemGroup
+            self.DemGroup,
         )
 
         self.DcmGroup = SettingCardGroup(self.tr("Dcm"), self.view)
         self.micaCard2 = SwitchSettingCard(
             FIF.TRANSPARENT,
-            self.tr('Mica effect'),
-            self.tr('Apply semi transparent to windows and surfaces'),
+            self.tr("Mica effect"),
+            self.tr("Apply semi transparent to windows and surfaces"),
             cfg.micaEnabled,
-            self.DcmGroup
+            self.DcmGroup,
         )
 
         self.E2EGroup = SettingCardGroup(self.tr("E2E"), self.view)
         self.micaCard3 = SwitchSettingCard(
             FIF.TRANSPARENT,
-            self.tr('Mica effect'),
-            self.tr('Apply semi transparent to windows and surfaces'),
+            self.tr("Mica effect"),
+            self.tr("Apply semi transparent to windows and surfaces"),
             cfg.micaEnabled,
-            self.E2EGroup
+            self.E2EGroup,
         )
 
         self.ComGroup = SettingCardGroup(self.tr("Com"), self.view)
@@ -64,25 +74,25 @@ class ToolsInterface(ScrollArea):
 
         self.PubGroup = SettingCardGroup(self.tr("Pub"), self.view)
         self.rmCodeCommentsGroupCard = ExpandSettingCard(
-            UnicodeIcon.get_icon_by_name('ic_fluent_comment_dismiss_24_regular'),
-            self.tr('Remove Python Code Comment'),
-            self.tr('To apply software copyrights, need supply whole code without comments'),
-            self.view)
+            UnicodeIcon.get_icon_by_name("ic_fluent_comment_dismiss_24_regular"),
+            self.tr("Remove Python Code Comment"),
+            self.tr("To apply software copyrights, need supply whole code without comments"),
+            self.view,
+        )
         self.rmCodeCommentsInputFolderCard = PushSettingCard(
-            self.tr('Choose folder'),
+            self.tr("Choose folder"),
             FIF.FOLDER_ADD,
             self.tr("Project Input Directory"),
             cfg.get(cfg.RmCommentsInputFolder),
-            self.rmCodeCommentsGroupCard
+            self.rmCodeCommentsGroupCard,
         )
         self.rmCodeCommentsOutputFolderCard = PushSettingCard(
-            self.tr('Choose folder'),
+            self.tr("Choose folder"),
             FIF.FOLDER_ADD,
             self.tr("Project Output Directory"),
             cfg.get(cfg.RmCommentsOutputFolder),
-            self.rmCodeCommentsGroupCard
+            self.rmCodeCommentsGroupCard,
         )
-
 
         self.__initWidget()
         self.__initLayout()
@@ -92,7 +102,7 @@ class ToolsInterface(ScrollArea):
         # 设置对象名称用于样式表
         self.setObjectName("toolInterface")
         # 创建视图容器
-        self.view.setObjectName('view')
+        self.view.setObjectName("view")
         # 设置滚动区域属性  | 顶部留出空间给头部卡片 （顺时针-左上右下）
         self.setViewportMargins(0, 146, 0, 0)
         self.setWidget(self.view)
@@ -105,11 +115,17 @@ class ToolsInterface(ScrollArea):
         StyleSheet.TOOLS_INTERFACE.apply(self)
 
     def __setupSmoothScroll(self):
-        QScroller.grabGesture(self.viewport(), QScroller.ScrollerGestureType.LeftMouseButtonGesture)
+        QScroller.grabGesture(
+            self.viewport(),
+            QScroller.ScrollerGestureType.LeftMouseButtonGesture,
+        )
         scroller = QScroller.scroller(self.viewport())
         scroller_props = scroller.scrollerProperties()
         scroller_props.setScrollMetric(QScrollerProperties.ScrollMetric.OvershootDragDistanceFactor, 0.05)
-        scroller_props.setScrollMetric(QScrollerProperties.ScrollMetric.OvershootScrollDistanceFactor, 0.05)
+        scroller_props.setScrollMetric(
+            QScrollerProperties.ScrollMetric.OvershootScrollDistanceFactor,
+            0.05,
+        )
         scroller_props.setScrollMetric(QScrollerProperties.ScrollMetric.DecelerationFactor, 0.5)
         scroller.setScrollerProperties(scroller_props)
 
@@ -122,7 +138,7 @@ class ToolsInterface(ScrollArea):
         self.pivot.move(40, 98)
 
         self.main_layout = QVBoxLayout()
-        self.main_layout.setObjectName('mainLayout')
+        self.main_layout.setObjectName("mainLayout")
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.main_layout.setSpacing(20)
         self.main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
@@ -140,13 +156,13 @@ class ToolsInterface(ScrollArea):
         self.rmCodeCommentsGroupCard._adjustViewSize()
 
         # 添加标签页
-        self.addSubInterface(self.DemGroup, 'TabDemInterface', self.tr('Dem'))
-        self.addSubInterface(self.DcmGroup, 'TabDcmInterface', self.tr('Dcm'))
-        self.addSubInterface(self.E2EGroup, 'TabE2EInterface', self.tr('E2E'))
-        self.addSubInterface(self.ComGroup, 'TabComInterface', self.tr('Com'))
-        self.addSubInterface(self.SomeIpGroup, 'TabSomeIpInterface', self.tr('SomeIp'))
-        self.addSubInterface(self.SerialGroup, 'TabSerialInterface', self.tr('Serial'))
-        self.addSubInterface(self.PubGroup, 'TabPubInterface', self.tr('Pub'))
+        self.addSubInterface(self.DemGroup, "TabDemInterface", self.tr("Dem"))
+        self.addSubInterface(self.DcmGroup, "TabDcmInterface", self.tr("Dcm"))
+        self.addSubInterface(self.E2EGroup, "TabE2EInterface", self.tr("E2E"))
+        self.addSubInterface(self.ComGroup, "TabComInterface", self.tr("Com"))
+        self.addSubInterface(self.SomeIpGroup, "TabSomeIpInterface", self.tr("SomeIp"))
+        self.addSubInterface(self.SerialGroup, "TabSerialInterface", self.tr("Serial"))
+        self.addSubInterface(self.PubGroup, "TabPubInterface", self.tr("Pub"))
 
     def __connectSignalToSlot(self):
         # 连接信号并初始化当前标签页
@@ -155,10 +171,20 @@ class ToolsInterface(ScrollArea):
         # self.stackedWidget.setFixedHeight(self.stackedWidget.currentWidget().sizeHint().height())
 
         # 按钮 | 去除Python代码备注,空行
-        self.rmCodeCommentsInputFolderCard.clicked.connect(lambda: self.__onChooseFolderClicked(cfg.RmCommentsInputFolder, self.rmCodeCommentsInputFolderCard))
-        self.rmCodeCommentsOutputFolderCard.clicked.connect(lambda: self.__onChooseFolderClicked(cfg.RmCommentsOutputFolder, self.rmCodeCommentsOutputFolderCard))
+        self.rmCodeCommentsInputFolderCard.clicked.connect(
+            lambda: self.__onChooseFolderClicked(cfg.RmCommentsInputFolder, self.rmCodeCommentsInputFolderCard)
+        )
+        self.rmCodeCommentsOutputFolderCard.clicked.connect(
+            lambda: self.__onChooseFolderClicked(cfg.RmCommentsOutputFolder, self.rmCodeCommentsOutputFolderCard)
+        )
 
-    def addSubInterface(self, widget: QLabel, objectName: str, text: str, icon: Union[str, QIcon, FluentIconBase]=None):
+    def addSubInterface(
+        self,
+        widget: QLabel,
+        objectName: str,
+        text: str,
+        icon: str | QIcon | FluentIconBase = None,
+    ):
         """
         添加子界面到标签页系统
 
@@ -168,12 +194,14 @@ class ToolsInterface(ScrollArea):
             :param text:
             :param icon:
         """
+
         def remove_spacing(layout):
             for i in range(layout.count()):
                 item = layout.itemAt(i)
                 if isinstance(item, QSpacerItem):
                     layout.removeItem(item)
                     break
+
         # 优化组件布局，移除多余间距
         remove_spacing(widget.vBoxLayout)
         # 隐藏组标题，使用标签页标题
@@ -186,8 +214,8 @@ class ToolsInterface(ScrollArea):
         self.pivot.addItem(
             routeKey=objectName,
             text=text,
-            icon = icon,
-            onClick=lambda: self.stackedWidget.setCurrentWidget(widget)
+            icon=icon,
+            onClick=lambda: self.stackedWidget.setCurrentWidget(widget),
         )
 
     def onCurrentIndexChanged(self, index):
@@ -214,8 +242,8 @@ class ToolsInterface(ScrollArea):
             card: 卡片对象
         """
         from PyQt5.QtWidgets import QFileDialog
-        folder = QFileDialog.getExistingDirectory(
-            self, self.tr("Choose folder"), "./")
+
+        folder = QFileDialog.getExistingDirectory(self, self.tr("Choose folder"), "./")
         if not folder or cfg.get(config_item) == folder:
             return
         cfg.set(config_item, folder)

@@ -1,12 +1,14 @@
-from typing import Optional
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QCompleter, QLabel
+from qfluentwidgets import (
+    CheckBox,
+    InfoBar,
+    MessageBox,
+)
 
-from PyQt5.QtCore import Qt, QUrl, QSize
-from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSpinBox, QVBoxLayout, QPushButton, QToolButton, QCompleter, QCheckBox
-from PyQt5.QtGui import QPixmap, QDesktopServices, QFont
-from qfluentwidgets import (MessageBox, LineEdit, ComboBox, EditableComboBox, DateTimeEdit,
-                            BodyLabel, FluentStyleSheet, TextEdit, Slider, FluentIcon, qconfig,
-                            isDarkTheme, PrimaryPushSettingCard, InfoBar, InfoBarPosition, PushButton, SpinBox, CheckBox)
 from app.common.config import cfg
+
 
 def _cleanup_infobars(widget):
     """Safely hide/close/delete any InfoBar children of `widget`.
@@ -43,8 +45,15 @@ def setup_completer(combo_box, items):
     completer.setFilterMode(Qt.MatchContains)  # 设置匹配模式为包含（支持部分匹配）
     combo_box.setCompleter(completer)
 
+
 class MessageBoxImage(MessageBox):
-    def __init__(self, title: str, content: str, image: Optional[str | QPixmap], parent=None):
+    def __init__(
+        self,
+        title: str,
+        content: str,
+        image: str | QPixmap | None,
+        parent=None,
+    ):
         super().__init__(title, content, parent)
         if image is not None:
             self.imageLabel = QLabel(parent)
@@ -59,29 +68,27 @@ class MessageBoxImage(MessageBox):
             imageIndex = self.vBoxLayout.indexOf(self.textLayout) + 1
             self.vBoxLayout.insertWidget(imageIndex, self.imageLabel, 0, Qt.AlignCenter)
 
+
 class MessageBoxSupport(MessageBoxImage):
     def __init__(self, title: str, content: str, image: str, parent=None):
         super().__init__(title, content, image, parent)
 
-        self.yesButton.setText('下次一定')
+        self.yesButton.setText("下次一定")
         self.cancelButton.setHidden(True)
+
 
 class MessageBoxCloseWindow(MessageBox):
     """关闭窗口询问对话框"""
 
     def __init__(self, parent=None):
-        super().__init__(
-            '关闭确认',
-            '您希望如何处理程序?',
-            parent
-        )
+        super().__init__("关闭确认", "您希望如何处理程序?", parent)
 
         # 修改按钮文本
-        self.yesButton.setText('最小化到托盘')
-        self.cancelButton.setText('关闭程序')
+        self.yesButton.setText("最小化到托盘")
+        self.cancelButton.setText("关闭程序")
 
         # 添加记住选择的复选框ComboBoxSettingCard2
-        self.rememberCheckBox = CheckBox('记住我的选择,下次不再询问', self)
+        self.rememberCheckBox = CheckBox("记住我的选择,下次不再询问", self)
         self.textLayout.addWidget(self.rememberCheckBox)
 
         # 存储用户的选择
@@ -89,18 +96,18 @@ class MessageBoxCloseWindow(MessageBox):
 
     def accept(self):
         """用户选择最小化到托盘"""
-        self.action = 'minimize'
+        self.action = "minimize"
         if self.rememberCheckBox.isChecked():
-            cfg.set(cfg.close_window_action, 'minimize')
+            cfg.set(cfg.close_window_action, "minimize")
             pass
         _cleanup_infobars(self)
         super().accept()
 
     def reject(self):
         """用户选择关闭程序"""
-        self.action = 'close'
+        self.action = "close"
         if self.rememberCheckBox.isChecked():
-            cfg.set(cfg.close_window_action, 'close')
+            cfg.set(cfg.close_window_action, "close")
             pass
         _cleanup_infobars(self)
         super().reject()

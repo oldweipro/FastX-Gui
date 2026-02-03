@@ -1,13 +1,11 @@
-# coding:utf-8
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout
-
+from PyQt5.QtWidgets import QVBoxLayout, QWidget
 from qfluentwidgets import BodyLabel, CaptionLabel, setFont
 
 
 class StatisticsWidget(QWidget):
-    """ Statistics widget """
+    """Statistics widget"""
 
     def __init__(self, title: str, value: str, parent=None):
         super().__init__(parent=parent)

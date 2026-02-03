@@ -1,16 +1,17 @@
 from PyQt5.QtWidgets import QApplication
+from qfluentwidgets import Pivot, PushButton, pyqtSignal, setFont
+
 from ..common.style_sheet import StyleSheet
-from qfluentwidgets import PushButton, pyqtSignal, setFont, Pivot
 
 
 class PivotItem(PushButton):
-    """ Pivot item """
+    """Pivot item"""
 
     itemClicked = pyqtSignal(bool)
 
     def _postInit(self):
         self.isSelected = False
-        self.setProperty('isSelected', False)
+        self.setProperty("isSelected", False)
         self.clicked.connect(lambda: self.itemClicked.emit(True))
 
         StyleSheet.PIVOT.apply(self)
@@ -21,7 +22,7 @@ class PivotItem(PushButton):
             return
 
         self.isSelected = isSelected
-        self.setProperty('isSelected', isSelected)
+        self.setProperty("isSelected", isSelected)
         self.setStyle(QApplication.style())
         self.update()
 
@@ -31,7 +32,7 @@ class SettingPivot(Pivot):
         super().__init__(parent)
 
     def insertItem(self, index: int, routeKey: str, text: str, onClick=None, icon=None):
-        """ insert item
+        """insert item
 
         Parameters
         ----------

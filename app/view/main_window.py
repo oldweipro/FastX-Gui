@@ -1,36 +1,66 @@
-# coding:utf-8
 import sys
+
 from loguru import logger
-from PyQt5.QtCore import Qt, QUrl, QSize, QEventLoop, QTimer, QDateTime, QPoint
-from PyQt5.QtGui import QIcon, QDesktopServices, QFont, QColor, QPainter
-from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QSplashScreen, QLabel, QStatusBar, QFrame, \
-    QSystemTrayIcon, QAction, QDesktopWidget, QPlainTextEdit
+from PyQt5.QtCore import QDateTime, QEventLoop, QPoint, QSize, Qt, QTimer, QUrl
+from PyQt5.QtGui import QColor, QDesktopServices, QFont, QIcon, QPainter
+from PyQt5.QtWidgets import (
+    QAction,
+    QApplication,
+    QDesktopWidget,
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QPlainTextEdit,
+    QSplashScreen,
+    QStatusBar,
+    QSystemTrayIcon,
+    QVBoxLayout,
+    QWidget,
+)
 from PyQt5.uic.properties import QtCore
-from qfluentwidgets import (NavigationItemPosition, MessageBox, setTheme, Theme, MSFluentWindow, isDarkTheme,
-                            NavigationAvatarWidget, SearchLineEdit, qrouter, SubtitleLabel, setFont, SplashScreen,
-                            IndeterminateProgressBar, ProgressBar, PushButton, FluentIcon as FIF, InfoBar,
-                            InfoBarPosition, SystemTrayMenu, NavigationBarPushButton, SystemThemeListener,
-                            SplitFluentWindow)
+from qfluentwidgets import FluentIcon as FIF
+from qfluentwidgets import (
+    IndeterminateProgressBar,
+    InfoBar,
+    InfoBarPosition,
+    MessageBox,
+    MSFluentWindow,
+    NavigationAvatarWidget,
+    NavigationBarPushButton,
+    NavigationItemPosition,
+    ProgressBar,
+    PushButton,
+    SearchLineEdit,
+    SplashScreen,
+    SplitFluentWindow,
+    SubtitleLabel,
+    SystemThemeListener,
+    SystemTrayMenu,
+    Theme,
+    isDarkTheme,
+    qrouter,
+    setFont,
+    setTheme,
+)
 
-from app.view.log_interface import QTextEditLogger, LoguruInterface
-from app.view.home_interface import HomeInterface
-from app.view.setting_interface import SettingInterface
-from app.view.app_interface import AppInterface
-from app.view.func_interface import FuncInterface
-from app.view.library_interface import LibraryViewInterface
-from app.view.tool_interface import ToolsInterface
-from app.view.floating_window import LevitationWindow
-
-from app.common.icon import Icon, UnicodeIcon
-from app.common.translator import Translator
-from app.common.style_sheet import StyleSheet
-from app.common.signal_bus import signalBus
-from app.common.config import cfg
-from app.common import resource
-from app.common.setting import VERSION, APPLY_NAME
-from app.common.background_manager import get_background_manager
 from app.card.messagebox_custom import MessageBoxCloseWindow, MessageBoxSupport
-from app.components.custom_titlebar import CustomTitleBar1, CustomTitleBar
+from app.common import resource
+from app.common.background_manager import get_background_manager
+from app.common.config import cfg
+from app.common.icon import Icon, UnicodeIcon
+from app.common.setting import APPLY_NAME, VERSION
+from app.common.signal_bus import signalBus
+from app.common.style_sheet import StyleSheet
+from app.common.translator import Translator
+from app.components.custom_titlebar import CustomTitleBar, CustomTitleBar1
+from app.view.app_interface import AppInterface
+from app.view.floating_window import LevitationWindow
+from app.view.func_interface import FuncInterface
+from app.view.home_interface import HomeInterface
+from app.view.library_interface import LibraryViewInterface
+from app.view.log_interface import LoguruInterface, QTextEditLogger
+from app.view.setting_interface import SettingInterface
+from app.view.tool_interface import ToolsInterface
 
 
 class MainWindow(SplitFluentWindow):
@@ -53,6 +83,7 @@ class MainWindow(SplitFluentWindow):
     @staticmethod
     def safe_block(default=None, error_msg=""):
         """安全执行代码块的上下文管理器"""
+
         class SafeBlock:
             def __enter__(self):
                 return self
@@ -62,6 +93,7 @@ class MainWindow(SplitFluentWindow):
                     logger.critical(f"{error_msg}失败: {exc_val}" if error_msg else f"操作失败: {exc_val}")
                     return True  # 抑制异常
                 return False
+
         return SafeBlock()
 
     def _init_services(self):
@@ -79,15 +111,15 @@ class MainWindow(SplitFluentWindow):
     def _setup_log_viewer(self):
         # 先清除所有现有的日志处理器
         logger.remove()
-        
+
         # 创建LoguruInterface和QTextEditLogger
         self.loguru_interface = LoguruInterface(self)
         self.text_logger = QTextEditLogger(self.loguru_interface.log_viewer, max_lines=1000)
         # 连接信号
         self.text_logger.new_log_signal.connect(self.loguru_interface.on_new_log)
-        
+
         # 添加自定义处理器
-        def log_sink(message, format : bool=False):
+        def log_sink(message, format: bool = False):
             """将loguru消息转发到Qt界面"""
             try:
                 if format:
@@ -98,35 +130,35 @@ class MainWindow(SplitFluentWindow):
                     self.text_logger.write(message)
             except Exception:
                 pass
-        
+
         # 从配置文件中读取日志等级
         log_level = cfg.get(cfg.logLevel)
-        
+
         # 配置loguru使用我们的sink()
         self.log_handler_id = logger.add(
             log_sink,
             format="{time:YYYY/MM/DD HH:mm:ss} | {level:8} | {file}:{line} {message}",
-            level=log_level
+            level=log_level,
         )
-        
+
         # 连接日志等级配置变化信号
         cfg.logLevel.valueChanged.connect(self.on_log_level_changed)
-        
+
         # 测试日志
         logger.trace("日志系统初始化完成")
         logger.debug("调试日志测试")
         logger.info("信息日志测试")
-    
+
     def on_log_level_changed(self):
         """处理日志等级配置变化"""
         # 从配置文件中读取新的日志等级
         new_log_level = cfg.get(cfg.logLevel)
-        
+
         # 更新loguru的日志等级
         logger.remove(self.log_handler_id)
-        
+
         # 重新添加处理器
-        def log_sink(message, format : bool=False):
+        def log_sink(message, format: bool = False):
             """将loguru消息转发到Qt界面"""
             try:
                 if format:
@@ -137,13 +169,13 @@ class MainWindow(SplitFluentWindow):
                     self.text_logger.write(message)
             except Exception:
                 pass
-        
+
         self.log_handler_id = logger.add(
             log_sink,
             format="{time:YYYY/MM/DD hh:mm:ss} | {level:8} | {file}:{line} {message}",
-            level=new_log_level
+            level=new_log_level,
         )
-        
+
         # 打印日志等级变更信息
         logger.critical(f"日志等级已变更为: {new_log_level}")
 
@@ -185,8 +217,8 @@ class MainWindow(SplitFluentWindow):
             # 调整布局边距以适应标题栏高度 | SplitWindows軟件圖標和標題會占據一部分
             # self.hBoxLayout.setContentsMargins(0, 48, 0, 0)
         # 设置图标,标题
-        self.setWindowIcon(QIcon(':/app/images/png/logo1.png'))
-        self.setWindowTitle(f'{APPLY_NAME} {VERSION}')
+        self.setWindowIcon(QIcon(":/app/images/png/logo1.png"))
+        self.setWindowTitle(f"{APPLY_NAME} {VERSION}")
         # 初始化位置
         self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
         # 显示窗口
@@ -208,13 +240,14 @@ class MainWindow(SplitFluentWindow):
         with self.safe_block(default=None, error_msg=self.tr("Create Settings interface")):
             self.settingInterface = SettingInterface(self)
 
-
     def _connectSignalToSlot(self):
         signalBus.micaEnableChanged.connect(self.setMicaEffectEnabled)
         signalBus.switchToSettingGroup.connect(self.switchToSetting)
         signalBus.switchToExpandGroup.connect(self.switchToSetting)
         signalBus.showMainWindow.connect(self._on_show_main_window)  # 连接显示主窗口信号
-        self.loguru_interface.settingsButton.clicked.connect(lambda: signalBus.switchToSettingGroup.emit(self.settingInterface.appGroup))
+        self.loguru_interface.settingsButton.clicked.connect(
+            lambda: signalBus.switchToSettingGroup.emit(self.settingInterface.appGroup)
+        )
 
     def _initNavigation(self):
         # set sidebar expand width
@@ -235,56 +268,116 @@ class MainWindow(SplitFluentWindow):
         pos = NavigationItemPosition.TOP
         # add user card with custom parameters
         self.userCard = self.navigationInterface.addUserCard(
-            routeKey='userCard',
-            avatar=':/app/images/png/shoko.png',
-            title='FastXTeam/MG',
-            subtitle='wanqiang.liu@fastxteam.com',
+            routeKey="userCard",
+            avatar=":/app/images/png/shoko.png",
+            title="FastXTeam/MG",
+            subtitle="wanqiang.liu@fastxteam.com",
             onClick=self.__showMessageBox,
             position=pos,
-            aboveMenuButton=False  # place below the expand/collapse button
+            aboveMenuButton=False,  # place below the expand/collapse button
         )
-        with self.safe_block(default=None, error_msg=self.tr("Load Home interface to left route")):
-            self.addSubInterface(self.homeInterface, FIF.HOME, self.tr("Home"), pos, isTransparent=False)
+        with self.safe_block(
+            default=None,
+            error_msg=self.tr("Load Home interface to left route"),
+        ):
+            self.addSubInterface(
+                self.homeInterface,
+                FIF.HOME,
+                self.tr("Home"),
+                pos,
+                isTransparent=False,
+            )
 
         with self.safe_block(default=None, error_msg=self.tr("Load App interface to left route")):
-            self.addSubInterface(self.appInterface , FIF.APPLICATION, self.tr("App"), pos, isTransparent=False)
+            self.addSubInterface(
+                self.appInterface,
+                FIF.APPLICATION,
+                self.tr("App"),
+                pos,
+                isTransparent=False,
+            )
         self.navigationInterface.addSeparator()
 
         # 滾動工作區
         pos = NavigationItemPosition.SCROLL
-        with self.safe_block(default=None, error_msg=self.tr("Load Library interface to left route")):
-            self.addSubInterface(self.libraryInterface, FIF.BOOK_SHELF, self.tr("Library"), pos, isTransparent=False)
+        with self.safe_block(
+            default=None,
+            error_msg=self.tr("Load Library interface to left route"),
+        ):
+            self.addSubInterface(
+                self.libraryInterface,
+                FIF.BOOK_SHELF,
+                self.tr("Library"),
+                pos,
+                isTransparent=False,
+            )
 
-        with self.safe_block(default=None, error_msg=self.tr("Load Func interface to left route")):
-            self.addSubInterface(self.funcInterface, FIF.BRIGHTNESS, self.tr("FastRte"), pos, isTransparent=True)
+        with self.safe_block(
+            default=None,
+            error_msg=self.tr("Load Func interface to left route"),
+        ):
+            self.addSubInterface(
+                self.funcInterface,
+                FIF.BRIGHTNESS,
+                self.tr("FastRte"),
+                pos,
+                isTransparent=True,
+            )
 
-        with self.safe_block(default=None, error_msg=self.tr("Load Tools interface to left route")):
-            self.addSubInterface(self.toolInterface, FIF.DEVELOPER_TOOLS, self.tr("FastPackage"), pos, isTransparent=False)
+        with self.safe_block(
+            default=None,
+            error_msg=self.tr("Load Tools interface to left route"),
+        ):
+            self.addSubInterface(
+                self.toolInterface,
+                FIF.DEVELOPER_TOOLS,
+                self.tr("FastPackage"),
+                pos,
+                isTransparent=False,
+            )
 
         # 底部功能区
         pos = NavigationItemPosition.BOTTOM
         # add custom widget to bottom
         self.navigationInterface.addItem(
-            routeKey='sponsor',
+            routeKey="sponsor",
             icon=FIF.HEART,
-            text=self.tr('sponsor'),
+            text=self.tr("sponsor"),
             onClick=lambda: MessageBoxSupport(
-                '支持作者🥰',
-                '此程序为免费开源项目，如果你付了钱请立刻退款\n如果喜欢本项目，可以微信赞赏送作者一杯咖啡☕\n您的支持就是作者开发和维护项目的动力🚀',
-                ':/app/images/jpg/sponsor.jpg',
-                self
+                "支持作者🥰",
+                "此程序为免费开源项目，如果你付了钱请立刻退款\n如果喜欢本项目，可以微信赞赏送作者一杯咖啡☕\n您的支持就是作者开发和维护项目的动力🚀",
+                ":/app/images/jpg/sponsor.jpg",
+                self,
             ).exec(),
             selectable=False,
-            tooltip=self.tr('sponsor this tools'),
-            position=pos
+            tooltip=self.tr("sponsor this tools"),
+            position=pos,
         )
         with self.safe_block(default=None, error_msg=self.tr("Load Log interface to left route")):
-            self.addSubInterface(self.loguru_interface, UnicodeIcon.get_icon_by_name("ic_fluent_document_bullet_list_clock_24_regular"), self.tr("Logs"), pos, isTransparent=False)
+            self.addSubInterface(
+                self.loguru_interface,
+                UnicodeIcon.get_icon_by_name("ic_fluent_document_bullet_list_clock_24_regular"),
+                self.tr("Logs"),
+                pos,
+                isTransparent=False,
+            )
 
-        with self.safe_block(default=None, error_msg=self.tr("Load Settings interface to left route")):
-            self.addSubInterface(self.settingInterface, FIF.SETTING, self.tr('Settings'), pos, isTransparent=False)
+        with self.safe_block(
+            default=None,
+            error_msg=self.tr("Load Settings interface to left route"),
+        ):
+            self.addSubInterface(
+                self.settingInterface,
+                FIF.SETTING,
+                self.tr("Settings"),
+                pos,
+                isTransparent=False,
+            )
 
-        with self.safe_block(default=None, error_msg=self.tr("Activate Home as default selection")):
+        with self.safe_block(
+            default=None,
+            error_msg=self.tr("Activate Home as default selection"),
+        ):
             self.navigationInterface.setCurrentItem(self.homeInterface.objectName())
 
         self.splashScreen.finish()
@@ -295,12 +388,12 @@ class MainWindow(SplitFluentWindow):
 
     def __showMessageBox(self):
         w = MessageBox(
-            'User Card',
-            'This is a navigation user card that displays avatar, title and subtitle.\n\n'
-            'Placement:\n'
-            '• aboveMenuButton=True: Place above expand/collapse button\n'
-            '• aboveMenuButton=False: Place below menu button (default)',
-            self
+            "User Card",
+            "This is a navigation user card that displays avatar, title and subtitle.\n\n"
+            "Placement:\n"
+            "• aboveMenuButton=True: Place above expand/collapse button\n"
+            "• aboveMenuButton=False: Place below menu button (default)",
+            self,
         )
         w.exec_()
 
@@ -308,10 +401,10 @@ class MainWindow(SplitFluentWindow):
         """初始化悬浮窗"""
         try:
             self.floatingWindow = LevitationWindow(self)
-            
+
             # 连接浮窗可见性变更信号
             self.floatingWindow.visibilityChanged.connect(self._on_floating_window_visibility_changed)
-            
+
             # 根据配置决定是否显示浮窗（但不设置托盘菜单状态，因为此时还没创建）
             if cfg.get(cfg.startupDisplayFloatingWindow):
                 self.floatingWindow.show()
@@ -320,6 +413,7 @@ class MainWindow(SplitFluentWindow):
         except Exception as e:
             logger.error(f"浮窗初始化失败: {e}")
             import traceback
+
             traceback.print_exc()
             # 即使浮窗初始化失败，也不影响主窗口启动
             self.floatingWindow = None
@@ -327,41 +421,41 @@ class MainWindow(SplitFluentWindow):
     def _initSystemTray(self):
         """初始化系统托盘"""
         self.tray_icon = QSystemTrayIcon(self)
-        self.tray_icon.setIcon(QIcon(':/app/images/png/logo1.png'))
-        self.tray_icon.setToolTip(f'{APPLY_NAME} {VERSION}')
+        self.tray_icon.setIcon(QIcon(":/app/images/png/logo1.png"))
+        self.tray_icon.setToolTip(f"{APPLY_NAME} {VERSION}")
 
         # 创建托盘菜单
         tray_menu = SystemTrayMenu(parent=self)
         tray_menu.aboutToShow.connect(self._on_tray_menu_about_to_show)
 
         # 显示主界面
-        show_action = QAction(self.tr('Show main window'), self)
+        show_action = QAction(self.tr("Show main window"), self)
         show_action.triggered.connect(self.showNormal)
         show_action.triggered.connect(self.activateWindow)
         tray_menu.addAction(show_action)
-        
+
         # 显示/隐藏悬浮窗
-        self.floating_window_action = QAction(self.tr('Show floating window'), self)
+        self.floating_window_action = QAction(self.tr("Show floating window"), self)
         self.floating_window_action.setCheckable(True)
-        
+
         # 根据浮窗当前状态设置菜单项
-        if hasattr(self, 'floatingWindow') and self.floatingWindow is not None and self.floatingWindow.isVisible():
+        if hasattr(self, "floatingWindow") and self.floatingWindow is not None and self.floatingWindow.isVisible():
             self.floating_window_action.setChecked(True)
-            self.floating_window_action.setText(self.tr('Hide floating window'))
+            self.floating_window_action.setText(self.tr("Hide floating window"))
         else:
             self.floating_window_action.setChecked(False)
-            self.floating_window_action.setText(self.tr('Show floating window'))
-            
+            self.floating_window_action.setText(self.tr("Show floating window"))
+
         self.floating_window_action.triggered.connect(self._toggle_floating_window)
         tray_menu.addAction(self.floating_window_action)
-        
+
         tray_menu.addSeparator()
         # 打开设置界面
-        setting_action = QAction(self.tr('Settings'), self)
+        setting_action = QAction(self.tr("Settings"), self)
         setting_action.triggered.connect(self._open_settings)
         tray_menu.addAction(setting_action)
         # 退出程序
-        quit_action = QAction(self.tr('Exit'), self)
+        quit_action = QAction(self.tr("Exit"), self)
         quit_action.triggered.connect(self._quitApp)
         tray_menu.addAction(quit_action)
 
@@ -390,59 +484,59 @@ class MainWindow(SplitFluentWindow):
         try:
             self.showNormal()
             self.activateWindow()
-            if hasattr(self, 'settingInterface'):
+            if hasattr(self, "settingInterface"):
                 self.switchTo(self.settingInterface)
         except Exception:
             pass
 
     def _toggle_floating_window(self, checked):
         """切换浮窗显示状态，并同步更新配置"""
-        if not hasattr(self, 'floatingWindow') or self.floatingWindow is None:
+        if not hasattr(self, "floatingWindow") or self.floatingWindow is None:
             logger.warning("浮窗未初始化")
             return
-        
+
         # 更新配置：同步浮窗开关状态
         cfg.set(cfg.startupDisplayFloatingWindow, checked)
-        
+
         if checked:
             self.floatingWindow.show()
-            self.floating_window_action.setText(self.tr('Hide floating window'))
+            self.floating_window_action.setText(self.tr("Hide floating window"))
         else:
             self.floatingWindow.hide()
-            self.floating_window_action.setText(self.tr('Show floating window'))
-    
+            self.floating_window_action.setText(self.tr("Show floating window"))
+
     def _on_floating_window_visibility_changed(self, visible):
         """浮窗可见性变更事件处理"""
         # 同步菜单项状态（如果托盘菜单已创建）
-        if not hasattr(self, 'floating_window_action'):
+        if not hasattr(self, "floating_window_action"):
             # 托盘菜单还未创建，跳过
             return
-            
+
         self.floating_window_action.setChecked(visible)
         if visible:
-            self.floating_window_action.setText(self.tr('Hide floating window'))
+            self.floating_window_action.setText(self.tr("Hide floating window"))
         else:
-            self.floating_window_action.setText(self.tr('Show floating window'))
+            self.floating_window_action.setText(self.tr("Show floating window"))
 
     def _setQss(self):
-        """ set style sheet """
+        """set style sheet"""
         # initialize style sheet
-        self.setObjectName('mainWindow')
+        self.setObjectName("mainWindow")
         StyleSheet.MAIN_WINDOW.apply(self)
         self.setMicaEffectEnabled(cfg.get(cfg.micaEnabled))
 
     def resizeEvent(self, e):
         super().resizeEvent(e)
-        if hasattr(self, 'splashScreen'):
+        if hasattr(self, "splashScreen"):
             self.splashScreen.resize(self.size())
 
     def switchToSetting(self, settingGroup):
-        """ switch to sample """
+        """switch to sample"""
         self.stackedWidget.setCurrentWidget(self.settingInterface, False)
         # 如果settingGroup不为None，则滚动到指定的组
         if settingGroup is not None:
             self.settingInterface.scrollToGroup(settingGroup)
-    
+
     def _on_show_main_window(self):
         """显示主窗口"""
         self.showNormal()
@@ -460,7 +554,7 @@ class MainWindow(SplitFluentWindow):
             pass
 
         # 停止运行任务和主题监听
-        if hasattr(self, 'themeListener'):
+        if hasattr(self, "themeListener"):
             try:
                 # 停止主题监听器线程
                 self.themeListener.stop()
@@ -468,13 +562,13 @@ class MainWindow(SplitFluentWindow):
                 pass
 
         # 清理日志界面资源
-        if hasattr(self, 'text_logger'):
+        if hasattr(self, "text_logger"):
             try:
                 self.text_logger.close()
             except Exception:
                 pass
 
-        if hasattr(self, 'loguru_interface'):
+        if hasattr(self, "loguru_interface"):
             try:
                 self.loguru_interface.cleanup()
             except Exception:
@@ -493,20 +587,20 @@ class MainWindow(SplitFluentWindow):
         """关闭窗口时根据配置执行对应操作"""
         close_action = cfg.get(cfg.close_window_action)
 
-        if close_action == 'ask':
+        if close_action == "ask":
             # 弹出询问对话框
             dialog = MessageBoxCloseWindow(self)
             dialog.exec()
 
-            if dialog.action == 'minimize':
+            if dialog.action == "minimize":
                 # 最小化到托盘
                 e.ignore()
                 self.hide()
                 self.tray_icon.showMessage(
-                    f'{APPLY_NAME}',
-                    self.tr('Application minimized to tray'),
+                    f"{APPLY_NAME}",
+                    self.tr("Application minimized to tray"),
                     QSystemTrayIcon.Information,
-                    2000
+                    2000,
                 )
                 # 若用户选择记住，则刷新设置界面以同步显示
                 try:
@@ -514,17 +608,17 @@ class MainWindow(SplitFluentWindow):
                         pass
                 except Exception:
                     pass
-            elif dialog.action == 'close':
+            elif dialog.action == "close":
                 # 关闭程序
                 self._do_quit(e)
             else:
                 # 用户取消操作（例如点击了 X 按钮）
                 e.ignore()
-        elif close_action == 'minimize':
+        elif close_action == "minimize":
             # 直接最小化到托盘
             e.ignore()
             self.hide()
-        elif close_action == 'close':
+        elif close_action == "close":
             # 直接关闭程序
             self._do_quit(e)
         else:
@@ -532,18 +626,18 @@ class MainWindow(SplitFluentWindow):
             e.ignore()
             self.hide()
             self.tray_icon.showMessage(
-                f'{APPLY_NAME}',
-                self.tr('Application minimized to tray'),
+                f"{APPLY_NAME}",
+                self.tr("Application minimized to tray"),
                 QSystemTrayIcon.Information,
-                2000
+                2000,
             )
 
     def paintEvent(self, e):
-        """ Paint event - draw background image if enabled """
+        """Paint event - draw background image if enabled"""
         super().paintEvent(e)
 
         # Draw background image if enabled
-        if hasattr(self, 'backgroundManager') and self.backgroundManager.is_background_enabled():
+        if hasattr(self, "backgroundManager") and self.backgroundManager.is_background_enabled():
             painter = QPainter(self)
             painter.setRenderHint(QPainter.Antialiasing)
 

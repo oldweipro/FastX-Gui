@@ -1,9 +1,7 @@
-# coding: utf-8
 from PyQt5.QtCore import QObject
 
 
 class Translator(QObject):
-
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.home = self.tr("Home")
@@ -14,4 +12,4 @@ class Translator(QObject):
         self.log = self.tr("Log")
         self.rte = self.tr("Rte")
         self.settings = self.tr("Settings")
-        self.navigation = self.tr('Navigation')
+        self.navigation = self.tr("Navigation")

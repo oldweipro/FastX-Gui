@@ -1,7 +1,6 @@
-# coding: utf-8
-from datetime import datetime
-import sys
 import platform
+import sys
+from datetime import datetime
 from pathlib import Path
 
 # change DEBUG to False if you want to compile the code to exe
@@ -13,10 +12,10 @@ YEAR = 2026
 INITIAL_AUTHORING_YEAR = 2026  # 软件发布年份
 CURRENT_YEAR = datetime.now().year  # 软件当前年份
 APPLY_NAME = "FastXGui"
-CODENAME = "Q-FLUENT-WIDGETS-GUI-PLAN"            # 软件代号
+CODENAME = "Q-FLUENT-WIDGETS-GUI-PLAN"  # 软件代号
 AUTHOR = "wanqiang.liu"
 COPYRIGHT_HOLDER = "FastXTeam"
-VERSION = "v0.1.0"              # 软件当前版本
+VERSION = "v0.1.0"  # 软件当前版本
 NEXT_VERSION = "v0.1.0-beta.1"  # 软件下一个版本
 SPECIAL_VERSION = VERSION if VERSION != "v0.0.0" else NEXT_VERSION
 HELP_URL = "https://qfluentwidgets.com"
@@ -40,6 +39,8 @@ def _detect_system() -> str:
         return "linux"
     value = platform.system().lower()
     return value if value else "unknown"
+
+
 def _normalize_arch(machine: str) -> str:
     machine = (machine or "").lower()
     arch_map = {
@@ -69,18 +70,11 @@ def _normalize_arch(machine: str) -> str:
         return "x64" if sys.maxsize > 2**32 else "x86"
     return machine
 
+
 ARCH = _normalize_arch(platform.machine())
 SYSTEM = _detect_system()
-STRUCT = (
-    "exe"
-    if SYSTEM == "windows"
-    else "dmg"
-    if SYSTEM == "macos"
-    else "deb"
-    if SYSTEM == "linux"
-    else "tar"
-)
+STRUCT = "exe" if SYSTEM == "windows" else "dmg" if SYSTEM == "macos" else "deb" if SYSTEM == "linux" else "tar"
 
 
-CONFIG_FOLDER = Path('AppData').absolute()
+CONFIG_FOLDER = Path("AppData").absolute()
 CONFIG_FILE = CONFIG_FOLDER / "config.json"

@@ -4,8 +4,58 @@ version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.13"
 dependencies = [
-    "PyQt-Fluent-Widgets[full]",
     "loguru",
+    "pyqt-fluent-widgets[full]>=1.11.0",
 ]
 [tool.uv]
 required-environments = "sys_platform == 'win32' and platform_machine == 'AMD64'"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.14",
+]
+
+[tool.ruff]
+# https://docs.astral.sh/ruff/tutorial/#integrations
+# uv run ruff check
+# uv run ruff check --fix
+# uv run ruff format
+exclude = [ "{{cookiecutter.plugin_name}}", ".venv", "__pycache__", "dist", "*.egg-info", "tests", "resource.py"]
+# 选择规则集
+select = [
+    "E",   # pycodestyle 错误
+    "W",   # pycodestyle 警告
+    "F",   # Pyflakes
+    "I",   # isort (导入排序)
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+
+# 忽略的规则
+ignore = [
+    "E501",  # 行过长检查 - 因为你设置了 line-length = 200
+]
+
+# 每行最大长度
+line-length = 120
+target-version = "py313"
+
+[tool.ruff.lint]
+# 每个文件的忽略规则
+[tool.ruff.lint.per-file-ignores]
+"**/main_window.py" = [
+    "F401", # 'app.common.resource' imported but unused
+    "F403",  # 'from app.common.resource import *' used
+    "E402",  # module level import not at top of file
+    "F821",  # undefined name (可能是 Qt 资源导入后的变量)
+]
+"**/register_window.py" = [
+    "F401", # 'app.common.resource' imported but unused
+    "F403",  # 'from app.common.resource import *' used
+    "E402",  # module level import not at top of file
+    "F821",  # undefined name (可能是 Qt 资源导入后的变量)
+]
+
+
+

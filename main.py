@@ -1,21 +1,22 @@
-# coding:utf-8
 import os
 import sys
-from loguru import logger
 
-from PyQt5.QtCore import Qt, QUrl, QSize, QEventLoop, QTimer, QTranslator
-from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QSplashScreen
-from qfluentwidgets import isDarkTheme, FluentTranslator
+from PyQt5.QtCore import Qt, QTranslator
+from PyQt5.QtWidgets import QApplication
+from qfluentwidgets import FluentTranslator
+
+from app.common.config import cfg
 from app.view.main_window import MainWindow
-from app.view.register_window import RegisterWindow
-from app.common.config import cfg, Language
 
 # Using global variables to prevent the interface from being destructed
 mainWindow = None
+
+
 def showMainWindow():
     global mainWindow
     mainWindow = MainWindow()
     mainWindow.show()
+
 
 def main():
     # enable dpi scale
@@ -23,8 +24,7 @@ def main():
         os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "0"
         os.environ["QT_SCALE_FACTOR"] = str(cfg.get(cfg.dpiScale))
     else:
-        QApplication.setHighDpiScaleFactorRoundingPolicy(
-            Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+        QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
         QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
 
     # create application
@@ -47,5 +47,6 @@ def main():
     showMainWindow()
     app.exec()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

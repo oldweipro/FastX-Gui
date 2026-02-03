@@ -1,20 +1,30 @@
-# coding:utf-8
 import sys
-from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QRect
-from PyQt5.QtGui import QPixmap, QPainter, QColor, QIcon
-from PyQt5.QtWidgets import QWidget, QApplication, QHBoxLayout, QVBoxLayout
 
-from qfluentwidgets import (MSFluentTitleBar, isDarkTheme, ImageLabel, BodyLabel, LineEdit,
-                            PasswordLineEdit, PrimaryPushButton, HyperlinkButton, CheckBox, InfoBar,
-                            InfoBarPosition, setThemeColor)
+from PyQt5.QtCore import QRect, Qt, QTimer, pyqtSignal
+from PyQt5.QtGui import QColor, QIcon, QPainter, QPixmap
+from PyQt5.QtWidgets import QApplication, QHBoxLayout, QVBoxLayout, QWidget
+from qfluentwidgets import (
+    BodyLabel,
+    CheckBox,
+    HyperlinkButton,
+    ImageLabel,
+    InfoBar,
+    InfoBarPosition,
+    LineEdit,
+    MSFluentTitleBar,
+    PasswordLineEdit,
+    PrimaryPushButton,
+    isDarkTheme,
+    setThemeColor,
+)
 
 from app.common import resource
-from app.common.license_service import LicenseService
 from app.common.config import cfg
+from app.common.license_service import LicenseService
 
 
 def isWin11():
-    return sys.platform == 'win32' and sys.getwindowsversion().build >= 22000
+    return sys.platform == "win32" and sys.getwindowsversion().build >= 22000
 
 
 if isWin11():
@@ -24,28 +34,28 @@ else:
 
 
 class RegisterWindow(Window):
-    """ Register window """
+    """Register window"""
 
     loginSignal = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        setThemeColor('#28afe9')
+        setThemeColor("#28afe9")
         self.setTitleBar(MSFluentTitleBar(self))
         self.register = LicenseService()
 
-        self.imageLabel = ImageLabel(':/app/images/jpg/background.jpg', self)
-        self.iconLabel = ImageLabel(':/app/images/png/logo.png', self)
+        self.imageLabel = ImageLabel(":/app/images/jpg/background.jpg", self)
+        self.iconLabel = ImageLabel(":/app/images/png/logo.png", self)
 
-        self.emailLabel = BodyLabel(self.tr('Email'), self)
+        self.emailLabel = BodyLabel(self.tr("Email"), self)
         self.emailLineEdit = LineEdit(self)
 
-        self.activateCodeLabel = BodyLabel(self.tr('Activation Code'))
+        self.activateCodeLabel = BodyLabel(self.tr("Activation Code"))
         self.activateCodeLineEdit = PasswordLineEdit(self)
 
-        self.rememberCheckBox = CheckBox(self.tr('Remember me'), self)
+        self.rememberCheckBox = CheckBox(self.tr("Remember me"), self)
 
-        self.loginButton = PrimaryPushButton(self.tr('Login'), self)
+        self.loginButton = PrimaryPushButton(self.tr("Login"), self)
 
         self.hBoxLayout = QHBoxLayout(self)
         self.vBoxLayout = QVBoxLayout()
@@ -57,8 +67,8 @@ class RegisterWindow(Window):
         self.titleBar.setDoubleClickEnabled(False)
         self.rememberCheckBox.setChecked(cfg.get(cfg.rememberMe))
 
-        self.emailLineEdit.setPlaceholderText('example@example.com')
-        self.activateCodeLineEdit.setPlaceholderText('••••••••••••')
+        self.emailLineEdit.setPlaceholderText("example@example.com")
+        self.activateCodeLineEdit.setPlaceholderText("••••••••••••")
 
         if self.rememberCheckBox.isChecked():
             self.emailLineEdit.setText(cfg.get(cfg.email))
@@ -70,11 +80,10 @@ class RegisterWindow(Window):
         if isWin11():
             self.windowEffect.setMicaEffect(self.winId(), isDarkTheme())
         else:
-            color = QColor(25, 33, 42) if isDarkTheme(
-            ) else QColor(240, 244, 249)
+            color = QColor(25, 33, 42) if isDarkTheme() else QColor(240, 244, 249)
             self.setStyleSheet(f"RegisterWindow{{background: {color.name()}}}")
 
-        self.setWindowTitle('PyQt-Fluent-Widgets')
+        self.setWindowTitle("PyQt-Fluent-Widgets")
         self.setWindowIcon(QIcon(":/app/images/png/logo.png"))
         self.resize(1000, 650)
 
@@ -82,8 +91,10 @@ class RegisterWindow(Window):
             self.titleBar.minBtn.hide()
             self.titleBar.closeBtn.hide()
             self.setSystemTitleBarButtonVisible(True)
-            self.setWindowFlags((self.windowFlags() & ~Qt.WindowFullscreenButtonHint)
-                                & ~Qt.WindowMaximizeButtonHint | Qt.CustomizeWindowHint)
+            self.setWindowFlags(
+                (self.windowFlags() & ~Qt.WindowFullscreenButtonHint) & ~Qt.WindowMaximizeButtonHint
+                | Qt.CustomizeWindowHint
+            )
 
         self.titleBar.titleLabel.setStyleSheet("""
             QLabel{
@@ -96,7 +107,7 @@ class RegisterWindow(Window):
 
         desktop = QApplication.screens()[0].availableGeometry()
         w, h = desktop.width(), desktop.height()
-        self.move(w//2 - self.width()//2, h//2 - self.height()//2)
+        self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
 
         self.titleBar.raise_()
 
@@ -113,8 +124,7 @@ class RegisterWindow(Window):
         self.hBoxLayout.setSpacing(0)
 
         self.vBoxLayout.addStretch(1)
-        self.vBoxLayout.addWidget(
-            self.iconLabel, 0, Qt.AlignmentFlag.AlignHCenter)
+        self.vBoxLayout.addWidget(self.iconLabel, 0, Qt.AlignmentFlag.AlignHCenter)
         self.vBoxLayout.addSpacing(38)
         self.vBoxLayout.addWidget(self.emailLabel)
         self.vBoxLayout.addSpacing(11)
@@ -132,8 +142,7 @@ class RegisterWindow(Window):
 
     def __connectSignalToSlot(self):
         self.loginButton.clicked.connect(self._login)
-        self.rememberCheckBox.stateChanged.connect(
-            lambda: cfg.set(cfg.rememberMe, self.rememberCheckBox.isChecked()))
+        self.rememberCheckBox.stateChanged.connect(lambda: cfg.set(cfg.rememberMe, self.rememberCheckBox.isChecked()))
 
     def _login(self):
         code = self.activateCodeLineEdit.text().strip()
@@ -141,17 +150,17 @@ class RegisterWindow(Window):
         if not self.register.validate(code, self.emailLineEdit.text()):
             InfoBar.error(
                 self.tr("Activate failed"),
-                self.tr('Please check your activation code'),
+                self.tr("Please check your activation code"),
                 position=InfoBarPosition.TOP,
                 duration=2000,
-                parent=self.window()
+                parent=self.window(),
             )
         else:
             InfoBar.success(
                 self.tr("Success"),
-                self.tr('Activation successful'),
+                self.tr("Activation successful"),
                 position=InfoBarPosition.TOP,
-                parent=self.window()
+                parent=self.window(),
             )
 
             if cfg.get(cfg.rememberMe):
@@ -163,10 +172,10 @@ class RegisterWindow(Window):
 
     def _showMainWindow(self):
         self.close()
-        setThemeColor('#009faa')
+        setThemeColor("#009faa")
 
         self.loginSignal.emit()
 
     def systemTitleBarRect(self, size):
-        """ Returns the system title bar rect, only works for macOS """
+        """Returns the system title bar rect, only works for macOS"""
         return QRect(size.width() - 75, 0, 75, size.height())

@@ -26,6 +26,9 @@ MinimizeButton {
     qproperty-pressedBackgroundColor: rgba(0, 0, 0, 51)
 }
 
+QAction {
+
+}
 
 MaximizeButton {
     qproperty-normalColor: black;
