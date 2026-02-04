@@ -166,13 +166,22 @@ class Config(QConfig):
             ]
         ),
     )
-    logColorTrace = ColorConfigItem("Log", "LogColorTrace", "#9400D3")
-    logColorDebug = ColorConfigItem("Log", "LogColorDebug", "#00BFFF")
-    logColorInfo = ColorConfigItem("Log", "LogColorInfo", "#00FF7F")
-    logColorSuccess = ColorConfigItem("Log", "LogColorSuccess", "#32CD32")
-    logColorWarning = ColorConfigItem("Log", "LogColorWarning", "#FFD700")
-    logColorError = ColorConfigItem("Log", "LogColorError", "#FF4500")
-    logColorCritical = ColorConfigItem("Log", "LogColorCritical", "#FF1493")
+    # Light theme log colors
+    logColorTraceLight = ColorConfigItem("Log", "LogColorTraceLight", "#9400D3")
+    logColorDebugLight = ColorConfigItem("Log", "LogColorDebugLight", "#00BFFF")
+    logColorInfoLight = ColorConfigItem("Log", "LogColorInfoLight", "#00FF7F")
+    logColorSuccessLight = ColorConfigItem("Log", "LogColorSuccessLight", "#32CD32")
+    logColorWarningLight = ColorConfigItem("Log", "LogColorWarningLight", "#FFD700")
+    logColorErrorLight = ColorConfigItem("Log", "LogColorErrorLight", "#FF4500")
+    logColorCriticalLight = ColorConfigItem("Log", "LogColorCriticalLight", "#FF1493")
+    # Dark theme log colors
+    logColorTraceDark = ColorConfigItem("Log", "LogColorTraceDark", "#DDA0DD")
+    logColorDebugDark = ColorConfigItem("Log", "LogColorDebugDark", "#87CEEB")
+    logColorInfoDark = ColorConfigItem("Log", "LogColorInfoDark", "#98FB98")
+    logColorSuccessDark = ColorConfigItem("Log", "LogColorSuccessDark", "#90EE90")
+    logColorWarningDark = ColorConfigItem("Log", "LogColorWarningDark", "#FFFF00")
+    logColorErrorDark = ColorConfigItem("Log", "LogColorErrorDark", "#FF6347")
+    logColorCriticalDark = ColorConfigItem("Log", "LogColorCriticalDark", "#FF69B4")
 
     # Tools/Pub/RemoveComments
     RmCommentsInputFolder = ConfigItem(

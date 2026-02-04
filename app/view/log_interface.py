@@ -17,6 +17,7 @@ from qfluentwidgets import (
     ToolButton,
     VerticalSeparator,
     isDarkTheme,
+    qconfig,
     setTheme,
 )
 from qfluentwidgets import FluentIcon as FIF
@@ -120,20 +121,21 @@ class LogConfig:
     def get_level_color(cls, level):
         """获取级别的颜色（字符串形式）"""
         if isinstance(level, LogLevel):
+            is_dark = isDarkTheme()
             if level == LogLevel.TRACE:
-                return cfg.get(cfg.logColorTrace)
+                return cfg.get(cfg.logColorTraceDark if is_dark else cfg.logColorTraceLight)
             elif level == LogLevel.DEBUG:
-                return cfg.get(cfg.logColorDebug)
+                return cfg.get(cfg.logColorDebugDark if is_dark else cfg.logColorDebugLight)
             elif level == LogLevel.INFO:
-                return cfg.get(cfg.logColorInfo)
+                return cfg.get(cfg.logColorInfoDark if is_dark else cfg.logColorInfoLight)
             elif level == LogLevel.SUCCESS:
-                return cfg.get(cfg.logColorSuccess)
+                return cfg.get(cfg.logColorSuccessDark if is_dark else cfg.logColorSuccessLight)
             elif level == LogLevel.WARNING:
-                return cfg.get(cfg.logColorWarning)
+                return cfg.get(cfg.logColorWarningDark if is_dark else cfg.logColorWarningLight)
             elif level == LogLevel.ERROR:
-                return cfg.get(cfg.logColorError)
+                return cfg.get(cfg.logColorErrorDark if is_dark else cfg.logColorErrorLight)
             elif level == LogLevel.CRITICAL:
-                return cfg.get(cfg.logColorCritical)
+                return cfg.get(cfg.logColorCriticalDark if is_dark else cfg.logColorCriticalLight)
         return "#FFFFFF"
 
     @classmethod
@@ -229,13 +231,22 @@ class QTextEditLogger(QObject):
         self.text_edit.verticalScrollBar().valueChanged.connect(self._on_scroll_value_changed)
 
         # 监听日志配置变化
-        cfg.logColorTrace.valueChanged.connect(self.update_colors)
-        cfg.logColorDebug.valueChanged.connect(self.update_colors)
-        cfg.logColorInfo.valueChanged.connect(self.update_colors)
-        cfg.logColorSuccess.valueChanged.connect(self.update_colors)
-        cfg.logColorWarning.valueChanged.connect(self.update_colors)
-        cfg.logColorError.valueChanged.connect(self.update_colors)
-        cfg.logColorCritical.valueChanged.connect(self.update_colors)
+        cfg.logColorTraceLight.valueChanged.connect(self.update_colors)
+        cfg.logColorDebugLight.valueChanged.connect(self.update_colors)
+        cfg.logColorInfoLight.valueChanged.connect(self.update_colors)
+        cfg.logColorSuccessLight.valueChanged.connect(self.update_colors)
+        cfg.logColorWarningLight.valueChanged.connect(self.update_colors)
+        cfg.logColorErrorLight.valueChanged.connect(self.update_colors)
+        cfg.logColorCriticalLight.valueChanged.connect(self.update_colors)
+        cfg.logColorTraceDark.valueChanged.connect(self.update_colors)
+        cfg.logColorDebugDark.valueChanged.connect(self.update_colors)
+        cfg.logColorInfoDark.valueChanged.connect(self.update_colors)
+        cfg.logColorSuccessDark.valueChanged.connect(self.update_colors)
+        cfg.logColorWarningDark.valueChanged.connect(self.update_colors)
+        cfg.logColorErrorDark.valueChanged.connect(self.update_colors)
+        cfg.logColorCriticalDark.valueChanged.connect(self.update_colors)
+        # 监听主题变化
+        qconfig.themeChanged.connect(self.update_colors)
 
     def update_colors(self):
         """更新颜色配置"""
@@ -554,14 +565,24 @@ class LoguruInterface(ScrollArea):
             btn.clicked.connect(self.on_filter_clicked)
 
         # 监听日志配置变化
-        cfg.logColorTrace.valueChanged.connect(self.on_log_config_changed)
-        cfg.logColorDebug.valueChanged.connect(self.on_log_config_changed)
-        cfg.logColorInfo.valueChanged.connect(self.on_log_config_changed)
-        cfg.logColorSuccess.valueChanged.connect(self.on_log_config_changed)
-        cfg.logColorWarning.valueChanged.connect(self.on_log_config_changed)
-        cfg.logColorError.valueChanged.connect(self.on_log_config_changed)
-        cfg.logColorCritical.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorTraceLight.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorDebugLight.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorInfoLight.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorSuccessLight.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorWarningLight.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorErrorLight.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorCriticalLight.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorTraceDark.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorDebugDark.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorInfoDark.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorSuccessDark.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorWarningDark.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorErrorDark.valueChanged.connect(self.on_log_config_changed)
+        cfg.logColorCriticalDark.valueChanged.connect(self.on_log_config_changed)
         cfg.logLevel.valueChanged.connect(self.on_log_config_changed)
+
+        # 监听主题变化
+        qconfig.themeChanged.connect(self.on_log_config_changed)
 
         # 确保"所有日志"按钮默认选中
         self.all_logs_btn.setChecked(True)
@@ -679,11 +700,11 @@ class LoguruInterface(ScrollArea):
     def copy_all_logs(self):
         """复制全部日志"""
         try:
-            import PyQt5.QtWidgets as QtWidgets
+            from PySide6.QtWidgets import QApplication
 
             text = self.log_viewer.toPlainText()
             if text:
-                QtWidgets.QApplication.clipboard().setText(text)
+                QApplication.clipboard().setText(text)
         except Exception as e:
             logger.error(f"复制全部日志错误: {e}")
 
@@ -692,7 +713,7 @@ class LoguruInterface(ScrollArea):
         try:
             import datetime
 
-            import PyQt5.QtWidgets as QtWidgets
+            import PySide6.QtWidgets as QtWidgets
 
             # 获取当前时间作为文件名的一部分
             current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")

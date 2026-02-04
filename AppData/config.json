@@ -79,16 +79,23 @@
             "PingFang SC"
         ],
         "ThemeColor": "#ff009faa",
-        "ThemeMode": "Dark"
+        "ThemeMode": "Light"
     },
     "Log": {
-        "LogColorCritical": "#ffff1493",
-        "LogColorDebug": "#ffff1060",
-        "LogColorError": "#ffff4500",
-        "LogColorInfo": "#fff832ff",
-        "LogColorSuccess": "#ff32cd32",
-        "LogColorTrace": "#ffffffff",
-        "LogColorWarning": "#ffffd700",
+        "LogColorCriticalDark": "#ffff69b4",
+        "LogColorCriticalLight": "#ffff1493",
+        "LogColorDebugDark": "#ff87ceeb",
+        "LogColorDebugLight": "#ff00bfff",
+        "LogColorErrorDark": "#ffff6347",
+        "LogColorErrorLight": "#ffff4500",
+        "LogColorInfoDark": "#ff98fb98",
+        "LogColorInfoLight": "#ff00ff7f",
+        "LogColorSuccessDark": "#ff90ee90",
+        "LogColorSuccessLight": "#ff32cd32",
+        "LogColorTraceDark": "#ff66dda6",
+        "LogColorTraceLight": "#ffd33c3e",
+        "LogColorWarningDark": "#ffffff00",
+        "LogColorWarningLight": "#ffffd700",
         "LogLevel": "TRACE"
     }
 }

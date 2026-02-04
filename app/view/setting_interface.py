@@ -20,7 +20,7 @@ from qfluentwidgets import (
     SettingCardGroup,
     SwitchSettingCard,
     setTheme,
-    setThemeColor,
+    setThemeColor, isDarkTheme,
 )
 from qfluentwidgets import FluentIcon as FIF
 
@@ -281,50 +281,52 @@ class SettingInterface(ScrollArea):
             ],
             parent=self.logGroupCard,
         )
+        
+        # 创建一套颜色设置卡片，根据当前主题使用对应的配置
         self.logColorTraceCard = ColorSettingCard(
-            cfg.logColorTrace,
+            cfg.logColorTraceDark if isDarkTheme() else cfg.logColorTraceLight,
             FIF.PALETTE,
             self.tr("Trace color"),
             self.tr("Set the color for trace level logs"),
             parent=self.logGroupCard,
         )
         self.logColorDebugCard = ColorSettingCard(
-            cfg.logColorDebug,
+            cfg.logColorDebugDark if isDarkTheme() else cfg.logColorDebugLight,
             FIF.PALETTE,
             self.tr("Debug color"),
             self.tr("Set the color for debug level logs"),
             parent=self.logGroupCard,
         )
         self.logColorInfoCard = ColorSettingCard(
-            cfg.logColorInfo,
+            cfg.logColorInfoDark if isDarkTheme() else cfg.logColorInfoLight,
             FIF.PALETTE,
             self.tr("Info color"),
             self.tr("Set the color for info level logs"),
             parent=self.logGroupCard,
         )
         self.logColorSuccessCard = ColorSettingCard(
-            cfg.logColorSuccess,
+            cfg.logColorSuccessDark if isDarkTheme() else cfg.logColorSuccessLight,
             FIF.PALETTE,
             self.tr("Success color"),
             self.tr("Set the color for success level logs"),
             parent=self.logGroupCard,
         )
         self.logColorWarningCard = ColorSettingCard(
-            cfg.logColorWarning,
+            cfg.logColorWarningDark if isDarkTheme() else cfg.logColorWarningLight,
             FIF.PALETTE,
             self.tr("Warning color"),
             self.tr("Set the color for warning level logs"),
             parent=self.logGroupCard,
         )
         self.logColorErrorCard = ColorSettingCard(
-            cfg.logColorError,
+            cfg.logColorErrorDark if isDarkTheme() else cfg.logColorErrorLight,
             FIF.PALETTE,
             self.tr("Error color"),
             self.tr("Set the color for error level logs"),
             parent=self.logGroupCard,
         )
         self.logColorCriticalCard = ColorSettingCard(
-            cfg.logColorCritical,
+            cfg.logColorCriticalDark if isDarkTheme() else cfg.logColorCriticalLight,
             FIF.PALETTE,
             self.tr("Critical color"),
             self.tr("Set the color for critical level logs"),
@@ -424,6 +426,7 @@ class SettingInterface(ScrollArea):
 
         # add log setting cards
         self.logGroupCard.viewLayout.addWidget(self.logLevelCard)
+        # 添加日志颜色设置卡片
         self.logGroupCard.viewLayout.addWidget(self.logColorTraceCard)
         self.logGroupCard.viewLayout.addWidget(self.logColorDebugCard)
         self.logGroupCard.viewLayout.addWidget(self.logColorInfoCard)
@@ -575,6 +578,7 @@ class SettingInterface(ScrollArea):
 
         # personalization
         cfg.themeChanged.connect(setTheme)
+        cfg.themeChanged.connect(self.__onThemeChanged)
         self.themeColorCard.colorChanged.connect(lambda c: setThemeColor(c))
         self.micaCard.checkedChanged.connect(signalBus.micaEnableChanged)
 
@@ -585,6 +589,92 @@ class SettingInterface(ScrollArea):
         self.backgroundOpacityCard.valueChanged.connect(self.__onBackgroundOpacityChanged)
         self.backgroundBlurCard.valueChanged.connect(self.__onBackgroundBlurChanged)
         self.backgroundDisplayModeCard.comboBox.currentIndexChanged.connect(self.__onBackgroundDisplayModeChanged)
+
+    def __onThemeChanged(self):
+        """Handle theme change and update log color cards"""
+        #  如果是展開的,則收縮
+        if self.logGroupCard.isExpand:
+            self.logGroupCard.setExpand(False)
+
+        # 获取所有卡片对象
+        cards = [
+            self.logColorTraceCard,
+            self.logColorDebugCard,
+            self.logColorInfoCard,
+            self.logColorSuccessCard,
+            self.logColorWarningCard,
+            self.logColorErrorCard,
+            self.logColorCriticalCard
+        ]
+
+        # 1. 先从布局中移除
+        for card in cards:
+            self.logGroupCard.viewLayout.removeWidget(card)
+            # 2. 让Qt安全地删除对象
+            card.deleteLater()
+
+        # 创建新的颜色设置卡片
+        self.logColorTraceCard = ColorSettingCard(
+            cfg.logColorTraceDark if isDarkTheme() else cfg.logColorTraceLight,
+            FIF.PALETTE,
+            self.tr("Trace color"),
+            self.tr("Set the color for trace level logs"),
+            parent=self.logGroupCard,
+        )
+        self.logColorDebugCard = ColorSettingCard(
+            cfg.logColorDebugDark if isDarkTheme() else cfg.logColorDebugLight,
+            FIF.PALETTE,
+            self.tr("Debug color"),
+            self.tr("Set the color for debug level logs"),
+            parent=self.logGroupCard,
+        )
+        self.logColorInfoCard = ColorSettingCard(
+            cfg.logColorInfoDark if isDarkTheme() else cfg.logColorInfoLight,
+            FIF.PALETTE,
+            self.tr("Info color"),
+            self.tr("Set the color for info level logs"),
+            parent=self.logGroupCard,
+        )
+        self.logColorSuccessCard = ColorSettingCard(
+            cfg.logColorSuccessDark if isDarkTheme() else cfg.logColorSuccessLight,
+            FIF.PALETTE,
+            self.tr("Success color"),
+            self.tr("Set the color for success level logs"),
+            parent=self.logGroupCard,
+        )
+        self.logColorWarningCard = ColorSettingCard(
+            cfg.logColorWarningDark if isDarkTheme() else cfg.logColorWarningLight,
+            FIF.PALETTE,
+            self.tr("Warning color"),
+            self.tr("Set the color for warning level logs"),
+            parent=self.logGroupCard,
+        )
+        self.logColorErrorCard = ColorSettingCard(
+            cfg.logColorErrorDark if isDarkTheme() else cfg.logColorErrorLight,
+            FIF.PALETTE,
+            self.tr("Error color"),
+            self.tr("Set the color for error level logs"),
+            parent=self.logGroupCard,
+        )
+        self.logColorCriticalCard = ColorSettingCard(
+            cfg.logColorCriticalDark if isDarkTheme() else cfg.logColorCriticalLight,
+            FIF.PALETTE,
+            self.tr("Critical color"),
+            self.tr("Set the color for critical level logs"),
+            parent=self.logGroupCard,
+        )
+
+        # 添加新的卡片到布局
+        self.logGroupCard.viewLayout.addWidget(self.logColorTraceCard)
+        self.logGroupCard.viewLayout.addWidget(self.logColorDebugCard)
+        self.logGroupCard.viewLayout.addWidget(self.logColorInfoCard)
+        self.logGroupCard.viewLayout.addWidget(self.logColorSuccessCard)
+        self.logGroupCard.viewLayout.addWidget(self.logColorWarningCard)
+        self.logGroupCard.viewLayout.addWidget(self.logColorErrorCard)
+        self.logGroupCard.viewLayout.addWidget(self.logColorCriticalCard)
+
+        # 调整布局大小
+        self.logGroupCard._adjustViewSize()
 
         # application
         self.betaCard.checkedChanged.connect(self._betaEnable)
