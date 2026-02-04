@@ -5,15 +5,15 @@ Background Manager - Handles application background image, blur effects and opac
 from pathlib import Path
 
 from loguru import logger
-from PyQt5.QtCore import QObject, QSize, Qt, pyqtSignal
-from PyQt5.QtGui import QPainter, QPixmap
+from PySide6.QtCore import QObject, QSize, Qt, Signal
+from PySide6.QtGui import QPainter, QPixmap
 
 
 class BackgroundManager(QObject):
     """Background manager - Unified management of background related settings and styles"""
 
     # Signal emitted when background settings change
-    backgroundChanged = pyqtSignal()
+    backgroundChanged = Signal()
 
     def __init__(self, config_manager=None):
         super().__init__()

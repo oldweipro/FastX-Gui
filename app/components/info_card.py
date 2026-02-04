@@ -1,6 +1,6 @@
-from PyQt5.QtCore import QSize, Qt, QUrl
-from PyQt5.QtGui import QColor, QIcon
-from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
+from PySide6.QtCore import QSize, Qt, QUrl
+from PySide6.QtGui import QColor, QIcon
+from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 from qfluentwidgets import (
     BodyLabel,
     FluentIcon,

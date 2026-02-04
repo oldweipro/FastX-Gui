@@ -2,9 +2,9 @@ from collections import deque
 from enum import Enum
 
 from loguru import logger
-from PyQt5.QtCore import QObject, Qt, pyqtSignal
-from PyQt5.QtGui import QColor, QFont, QTextCharFormat, QTextCursor
-from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
+from PySide6.QtCore import QObject, Qt, Signal
+from PySide6.QtGui import QColor, QFont, QTextCharFormat, QTextCursor
+from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 from qfluentwidgets import (
     CaptionLabel,
     ComboBox,
@@ -210,8 +210,8 @@ class LogConfig:
 class QTextEditLogger(QObject):
     """线程安全的日志记录器，专为Qt应用设计（无空白行版）"""
 
-    log_signal = pyqtSignal(str, str)  # (level, message)
-    new_log_signal = pyqtSignal(str, str)  # (level, message) 用于通知LoguruInterface
+    log_signal = Signal(str, str)  # (level, message)
+    new_log_signal = Signal(str, str)  # (level, message) 用于通知LoguruInterface
 
     def __init__(self, text_edit, max_lines=1000):
         super().__init__()
@@ -401,7 +401,7 @@ class LoguruInterface(ScrollArea):
         self.log_viewer.document().setDocumentMargin(0)
         self.log_viewer.setObjectName("log_viewer")
         self.log_viewer.setReadOnly(True)
-        self.log_viewer.setFont(QFont("Consolas", 11))
+        self.log_viewer.setFont(QFont("Consolas", 12))
 
         self.title_label = StrongBodyLabel(self.view)
         self.title_label.setFont(QFont("Segoe UI", 16, QFont.Bold))

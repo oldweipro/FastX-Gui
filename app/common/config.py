@@ -1,7 +1,7 @@
 import sys
 from enum import Enum
 
-from PyQt5.QtCore import QLocale, QStandardPaths
+from PySide6.QtCore import QLocale, QStandardPaths
 from qfluentwidgets import (
     BoolValidator,
     ColorConfigItem,

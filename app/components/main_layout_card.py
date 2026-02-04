@@ -1,6 +1,6 @@
-from PyQt5.QtCore import QEvent, Qt, QUrl
-from PyQt5.QtGui import QColor, QDesktopServices, QPainter, QPen
-from PyQt5.QtWidgets import QFrame, QHBoxLayout, QVBoxLayout, QWidget
+from PySide6.QtCore import QEvent, Qt, QUrl
+from PySide6.QtGui import QColor, QDesktopServices, QPainter, QPen
+from PySide6.QtWidgets import QFrame, QHBoxLayout, QVBoxLayout, QWidget
 from qfluentwidgets import (
     BodyLabel,
     CaptionLabel,

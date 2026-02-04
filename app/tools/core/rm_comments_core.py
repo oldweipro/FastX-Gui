@@ -1,10 +1,12 @@
-import tokenize
 import io
 import os
 import re
-from pathlib import Path
-from typing import List, Dict, Optional, Callable
+import tokenize
+from collections.abc import Callable
 from dataclasses import dataclass
+from pathlib import Path
+
+from loguru import logger
 
 
 @dataclass
@@ -22,10 +24,10 @@ class PyCodeCleaner:
 
     def __init__(self,
                  input_path: str,
-                 output_path: Optional[str] = None,
-                 exclude_files: Optional[List[str]] = None,
-                 exclude_patterns: Optional[List[str]] = None,
-                 config: Optional[CleanerConfig] = None):
+                 output_path: str | None = None,
+                 exclude_files: list[str] | None = None,
+                 exclude_patterns: list[str] | None = None,
+                 config: CleanerConfig | None = None):
         """
         初始化清理器
 
@@ -53,14 +55,14 @@ class PyCodeCleaner:
         }
 
         # 回调函数
-        self.progress_callback: Optional[Callable] = None
-        self.log_callback: Optional[Callable] = None
-        self.error_callback: Optional[Callable] = None
+        self.progress_callback: Callable | None = None
+        self.log_callback: Callable | None = None
+        self.error_callback: Callable | None = None
 
     def set_callbacks(self,
-                      progress_callback: Optional[Callable] = None,
-                      log_callback: Optional[Callable] = None,
-                      error_callback: Optional[Callable] = None):
+                      progress_callback: Callable | None = None,
+                      log_callback: Callable | None = None,
+                      error_callback: Callable | None = None):
         """设置回调函数"""
         self.progress_callback = progress_callback
         self.log_callback = log_callback
@@ -182,7 +184,7 @@ class PyCodeCleaner:
             self._handle_error(e, "清理代码时出错")
             raise
 
-    def process_single_file(self, input_file: Path, output_file: Optional[Path] = None) -> bool:
+    def process_single_file(self, input_file: Path, output_file: Path | None = None) -> bool:
         """
         处理单个文件
 
@@ -197,7 +199,7 @@ class PyCodeCleaner:
             self._log(f"开始处理文件: {input_file}", "info")
 
             # 读取文件
-            with open(input_file, "r", encoding="utf-8") as f:
+            with open(input_file, encoding="utf-8") as f:
                 code = f.read()
 
             # 清理代码
@@ -225,8 +227,8 @@ class PyCodeCleaner:
 
     def process_directory(self,
                           input_dir: Path,
-                          output_dir: Optional[Path] = None,
-                          recursive: bool = False) -> Dict:
+                          output_dir: Path | None = None,
+                          recursive: bool = False) -> dict:
         """
         处理目录
 
@@ -284,7 +286,7 @@ class PyCodeCleaner:
 
         return self.stats
 
-    def process(self) -> Dict:
+    def process(self) -> dict:
         """
         主要处理入口
 
@@ -374,13 +376,13 @@ class RmCommentsCore:
 
         # 设置回调
         def log_callback(message, level):
-            print(f"[{level}] {message}")
+            logger.trace(f"[{level}] {message}")
 
         def progress_callback(current, total):
-            print(f"Progress: {current}/{total}")
+            logger.debug(f"Progress: {current}/{total}")
 
         def error_callback(error, context):
-            print(f"Error ({context}): {str(error)}")
+            logger.error(f"Error ({context}): {str(error)}")
 
         cleaner.set_callbacks(
             log_callback=log_callback,

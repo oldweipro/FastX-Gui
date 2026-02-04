@@ -1,6 +1,6 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QScroller,
@@ -10,19 +10,16 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import (
-    ExpandSettingCard,
     FluentIconBase,
-    PushSettingCard,
     ScrollArea,
     SegmentedWidget,
     SettingCardGroup,
     SwitchSettingCard,
 )
-from qfluentwidgets import FluentIcon as FIF
 
 from app.common.config import cfg
-from app.common.icon import UnicodeIcon
 from app.common.style_sheet import StyleSheet
 
 
@@ -73,7 +70,7 @@ class ToolsInterface(ScrollArea):
         self.SerialGroup = SettingCardGroup(self.tr("Serial"), self.view)
 
         self.PubGroup = SettingCardGroup(self.tr("Pub"), self.view)
-        
+
         # Import and initialize Remove Comments tool
         from app.tools.ui.rm_comments_ui import RmCommentsUI
         self.rmCommentsUI = RmCommentsUI(self)

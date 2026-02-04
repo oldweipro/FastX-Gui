@@ -1,12 +1,10 @@
 import sys
 
 from loguru import logger
-from PyQt5.QtCore import QDateTime, QEventLoop, QPoint, QSize, Qt, QTimer, QUrl
-from PyQt5.QtGui import QColor, QDesktopServices, QFont, QIcon, QPainter
-from PyQt5.QtWidgets import (
-    QAction,
+from PySide6.QtCore import QDateTime, QEventLoop, QPoint, QSize, Qt, QTimer, QUrl
+from PySide6.QtGui import QAction, QColor, QDesktopServices, QFont, QIcon, QPainter
+from PySide6.QtWidgets import (
     QApplication,
-    QDesktopWidget,
     QFrame,
     QHBoxLayout,
     QLabel,
@@ -17,7 +15,6 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from PyQt5.uic.properties import QtCore
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import (
     IndeterminateProgressBar,

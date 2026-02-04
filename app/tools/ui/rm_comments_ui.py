@@ -1,9 +1,12 @@
-from PyQt5.QtWidgets import QInputDialog, QFileDialog, QMessageBox, QHBoxLayout, QVBoxLayout
+from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QInputDialog, QMessageBox, QVBoxLayout
 from qfluentwidgets import (
     ExpandSettingCard,
+    PrimaryPushSettingCard,
     PushSettingCard,
     SwitchSettingCard,
-    FluentIcon as FIF, PrimaryPushSettingCard,
+)
+from qfluentwidgets import (
+    FluentIcon as FIF,
 )
 
 from app.common.config import cfg
@@ -265,7 +268,7 @@ class RmCommentsUI:
             )
 
             # 显示结果
-            message = self.parent.tr(f"Processing completed!\n")
+            message = self.parent.tr("Processing completed!\n")
             message += self.parent.tr(f"Total files: {stats['total_files']}\n")
             message += self.parent.tr(f"Processed: {stats['processed']}\n")
             message += self.parent.tr(f"Skipped: {stats['skipped']}\n")

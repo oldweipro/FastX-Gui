@@ -2,8 +2,8 @@ import json
 from enum import Enum
 
 from loguru import logger
-from PyQt5.QtCore import QFile, QIODevice
-from PyQt5.QtGui import QIcon
+from PySide6.QtCore import QFile, QIODevice
+from PySide6.QtGui import QIcon
 from qfluentwidgets import (
     FluentFontIconBase,
     FluentIconBase,

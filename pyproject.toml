@@ -5,7 +5,7 @@ description = "Add your description here"
 requires-python = ">=3.13"
 dependencies = [
     "loguru",
-    "pyqt-fluent-widgets[full]>=1.11.0",
+    "pyside6-fluent-widgets[full]>=1.11.0",
 ]
 [tool.uv]
 required-environments = "sys_platform == 'win32' and platform_machine == 'AMD64'"
@@ -54,6 +54,5 @@ target-version = "py313"
     "E402",  # module level import not at top of file
     "F821",  # undefined name (可能是 Qt 资源导入后的变量)
 ]
-
 
 

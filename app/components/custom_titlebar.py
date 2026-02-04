@@ -1,9 +1,9 @@
 import sys
 
 from loguru import logger
-from PyQt5.QtCore import QPoint, QSize, Qt
-from PyQt5.QtGui import QColor, QIcon
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout
+from PySide6.QtCore import QPoint, QSize, Qt
+from PySide6.QtGui import QColor, QIcon
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import (
     MSFluentTitleBar,

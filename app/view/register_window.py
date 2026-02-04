@@ -1,8 +1,8 @@
 import sys
 
-from PyQt5.QtCore import QRect, Qt, QTimer, pyqtSignal
-from PyQt5.QtGui import QColor, QIcon, QPainter, QPixmap
-from PyQt5.QtWidgets import QApplication, QHBoxLayout, QVBoxLayout, QWidget
+from PySide6.QtCore import QRect, Qt, QTimer, Signal
+from PySide6.QtGui import QColor, QIcon, QPainter, QPixmap
+from PySide6.QtWidgets import QApplication, QHBoxLayout, QVBoxLayout, QWidget
 from qfluentwidgets import (
     BodyLabel,
     CheckBox,
@@ -36,7 +36,7 @@ else:
 class RegisterWindow(Window):
     """Register window"""
 
-    loginSignal = pyqtSignal()
+    loginSignal = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)

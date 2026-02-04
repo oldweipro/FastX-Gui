@@ -1,6 +1,6 @@
-from PyQt5.QtCore import QStandardPaths, Qt, QUrl
-from PyQt5.QtGui import QDesktopServices
-from PyQt5.QtWidgets import QFileDialog, QHBoxLayout, QLabel, QWidget
+from PySide6.QtCore import QStandardPaths, Qt, QUrl
+from PySide6.QtGui import QDesktopServices
+from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QLabel, QWidget
 from qfluentwidgets import (
     ColorSettingCard,
     ComboBoxSettingCard,

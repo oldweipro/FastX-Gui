@@ -1,8 +1,8 @@
 import numpy as np
 from PIL import Image
-from PyQt5.QtCore import Qt, QTimer, QUrl
-from PyQt5.QtGui import QDesktopServices, QImage, QPainter, QPainterPath
-from PyQt5.QtWidgets import (
+from PySide6.QtCore import Qt, QTimer, QUrl
+from PySide6.QtGui import QDesktopServices, QImage, QPainter, QPainterPath
+from PySide6.QtWidgets import (
     QFileDialog,
     QGraphicsDropShadowEffect,
     QHBoxLayout,
@@ -153,7 +153,7 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
         # 立即控制浮窗显示/隐藏
         try:
             # 获取主窗口
-            from PyQt5.QtWidgets import QApplication
+            from PySide6.QtWidgets import QApplication
 
             from ..view.main_window import MainWindow
 

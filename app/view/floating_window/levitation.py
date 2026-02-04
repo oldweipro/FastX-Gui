@@ -1,11 +1,11 @@
 # 标准库导入
 from typing import Any
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
+from PySide6.QtCore import *
+from PySide6.QtGui import *
 
 # 第三方库导入
-from PyQt5.QtWidgets import *
+from PySide6.QtWidgets import *
 from qfluentwidgets import *
 from qfluentwidgets import FluentIcon as FIF
 
@@ -20,8 +20,8 @@ class LevitationWindow(QWidget):
     """
 
     # ==================== 信号定义 ====================
-    visibilityChanged = pyqtSignal(bool)
-    positionChanged = pyqtSignal(int, int)
+    visibilityChanged = Signal(bool)
+    positionChanged = Signal(int, int)
 
     # ==================== 类常量 ====================
     DEFAULT_OPACITY = 0.8
@@ -518,7 +518,7 @@ class LevitationWindow(QWidget):
                 # 先显示主窗口
                 signalBus.showMainWindow.emit()
                 # 稍等一下再切换，确保主窗口已完全显示
-                from PyQt5.QtCore import QTimer
+                from PySide6.QtCore import QTimer
 
                 QTimer.singleShot(100, lambda: self._switch_to_settings())
             except Exception as e:
@@ -1069,7 +1069,7 @@ class LevitationWindow(QWidget):
             return
 
         try:
-            from PyQt5.QtGui import QCursor
+            from PySide6.QtGui import QCursor
 
             # 获取鼠标全局位置
             mouse_pos = QCursor.pos()

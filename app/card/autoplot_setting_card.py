@@ -1,6 +1,6 @@
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
+from PySide6.QtCore import Signal
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 from qfluentwidgets import (
     CheckBox,
     ExpandSettingCard,
@@ -13,8 +13,8 @@ from qfluentwidgets import (
 class AutoPlotSettingCard(ExpandSettingCard):
     """Setting card for auto plot with switch and expandable options"""
 
-    switchChanged = pyqtSignal(bool)
-    optionsChanged = pyqtSignal(dict)
+    switchChanged = Signal(bool)
+    optionsChanged = Signal(dict)
 
     def __init__(
         self,

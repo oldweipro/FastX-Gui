@@ -44,3 +44,15 @@ TransparentToggleToolButton, ToggleToolButton {
 TransparentToggleToolButton:checked {
     background-color: rgba(255, 255, 255, 0.1);
 }
+
+QPlainTextEdit {
+    background-color: transparent;
+    color: white;
+    border: none;
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    padding: 10px;
+}
+/* 滚动条样式省略以保持代码简洁，实际运行会包含在内 */
+QPlainTextEdit QScrollBar:vertical { background: transparent; width: 8px; }
+QPlainTextEdit QScrollBar::handle:vertical { background: #555555; border-radius: 4px; }

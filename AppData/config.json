@@ -19,7 +19,7 @@
     "Background": {
         "BlurRadius": 0,
         "DisplayMode": "Keep Aspect Ratio",
-        "ImageEnabled": true,
+        "ImageEnabled": false,
         "ImagePath": "C:/Users/91974/Pictures/02 壁纸/短发美 外套 帅气 纹身4k高清壁纸3840x2160_彼岸图网.jpg",
         "Opacity": 30
     },
@@ -79,7 +79,7 @@
             "PingFang SC"
         ],
         "ThemeColor": "#ff009faa",
-        "ThemeMode": "Light"
+        "ThemeMode": "Dark"
     },
     "Log": {
         "LogColorCritical": "#ffff1493",
@@ -87,8 +87,8 @@
         "LogColorError": "#ffff4500",
         "LogColorInfo": "#fff832ff",
         "LogColorSuccess": "#ff32cd32",
-        "LogColorTrace": "#ff9400d3",
+        "LogColorTrace": "#ffffffff",
         "LogColorWarning": "#ffffd700",
-        "LogLevel": "DEBUG"
+        "LogLevel": "TRACE"
     }
 }

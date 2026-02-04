@@ -1,8 +1,8 @@
 """可组装卡片系统示例"""
 
 from loguru import logger
-from PyQt5.QtCore import Qt, QUrl
-from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
+from PySide6.QtCore import Qt, QUrl
+from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 from qfluentwidgets import (
     BodyLabel,
     CheckBox,
@@ -31,12 +31,12 @@ class CardExample(QWidget):
         self.vBoxLayout.setAlignment(Qt.AlignTop)
 
         # 移除最大宽度限制，允许自动扩展
-        from PyQt5.QtWidgets import QWIDGETSIZE_MAX
+        from PySide6.QtWidgets import QWIDGETSIZE_MAX
 
         self.setMaximumWidth(QWIDGETSIZE_MAX)
 
         # 确保Widget能自动填充父容器宽度
-        from PyQt5.QtWidgets import QSizePolicy
+        from PySide6.QtWidgets import QSizePolicy
 
         self.setSizePolicy(
             QSizePolicy.Expanding,  # 水平方向自动扩展
