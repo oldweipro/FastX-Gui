@@ -52,7 +52,7 @@
         "StickToEdgeDisplayStyle": 1,
         "StickToEdgeRecoverSeconds": 3,
         "TopmostMode": 1,
-        "StartupDisplay": true
+        "StartupDisplay": false
     },
     "Project folders": {
         "Download": "D:/Github/FastX-Gui/app/download",

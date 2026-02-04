@@ -412,7 +412,7 @@ class LoguruInterface(ScrollArea):
         self.log_viewer.document().setDocumentMargin(0)
         self.log_viewer.setObjectName("log_viewer")
         self.log_viewer.setReadOnly(True)
-        self.log_viewer.setFont(QFont("Consolas", 12))
+        self.log_viewer.setFont(QFont("Consolas", 10))
 
         self.title_label = StrongBodyLabel(self.view)
         self.title_label.setFont(QFont("Segoe UI", 16, QFont.Bold))

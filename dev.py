@@ -714,9 +714,45 @@ QMAKE_EXTRA_TARGETS += no_temp_files
 
         return str(qrc_file)
 
-    def find_pyrcc5(self):
-        """查找 pyrcc5 工具 - 优先使用系统 PATH"""
-        # 1. 首先检查系统 PATH 中的 pyrcc5
+    def find_resource_compiler(self):
+        """查找资源编译器 - 优先使用 PySide6 的 pyside6-rcc，然后尝试 PyQt5 的 pyrcc5"""
+        # 1. 首先检查系统 PATH 中的 pyside6-rcc
+        try:
+            result = subprocess.run(
+                ["pyside6-rcc", "--version"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            if result.returncode == 0:
+                self.print_success("找到系统 pyside6-rcc")
+                return "pyside6-rcc"
+        except:
+            pass
+
+        # 2. 检查 Python 脚本目录中的 pyside6-rcc
+        script_dir = Path(sys.executable).parent
+        pyside6_rcc_exe = script_dir / "pyside6-rcc.exe"
+        if pyside6_rcc_exe.exists():
+            self.print_success(f"找到 pyside6-rcc.exe: {pyside6_rcc_exe}")
+            return str(pyside6_rcc_exe)
+
+        # 3. 检查当前虚拟环境中的 pyside6-rcc
+        if hasattr(sys, "base_prefix") and sys.base_prefix != sys.prefix:
+            # 在虚拟环境中
+            venv_script_dir = Path(sys.prefix) / "Scripts"
+            if sys.platform != "win32":
+                venv_script_dir = Path(sys.prefix) / "bin"
+
+            venv_pyside6_rcc = venv_script_dir / "pyside6-rcc"
+            if sys.platform == "win32":
+                venv_pyside6_rcc = venv_script_dir / "pyside6-rcc.exe"
+
+            if venv_pyside6_rcc.exists():
+                self.print_success(f"找到虚拟环境 pyside6-rcc: {venv_pyside6_rcc}")
+                return str(venv_pyside6_rcc)
+
+        # 4. 尝试 PyQt5 的 pyrcc5 作为备选
         try:
             result = subprocess.run(
                 ["pyrcc5", "--version"],
@@ -730,20 +766,14 @@ QMAKE_EXTRA_TARGETS += no_temp_files
         except:
             pass
 
-        # 2. 检查 Python 脚本目录
-        script_dir = Path(sys.executable).parent
+        # 5. 检查 Python 脚本目录中的 pyrcc5
         pyrcc5_exe = script_dir / "pyrcc5.exe"
         if pyrcc5_exe.exists():
             self.print_success(f"找到 pyrcc5.exe: {pyrcc5_exe}")
             return str(pyrcc5_exe)
 
-        # 3. 检查当前虚拟环境
+        # 6. 检查当前虚拟环境中的 pyrcc5
         if hasattr(sys, "base_prefix") and sys.base_prefix != sys.prefix:
-            # 在虚拟环境中
-            venv_script_dir = Path(sys.prefix) / "Scripts"
-            if sys.platform != "win32":
-                venv_script_dir = Path(sys.prefix) / "bin"
-
             venv_pyrcc5 = venv_script_dir / "pyrcc5"
             if sys.platform == "win32":
                 venv_pyrcc5 = venv_script_dir / "pyrcc5.exe"
@@ -752,22 +782,11 @@ QMAKE_EXTRA_TARGETS += no_temp_files
                 self.print_success(f"找到虚拟环境 pyrcc5: {venv_pyrcc5}")
                 return str(venv_pyrcc5)
 
-        # 4. 尝试使用 PyQt5 模块方式
-        try:
-            import PyQt5
-
-            # 检查是否有 pyrcc_main
-            from PyQt5 import pyrcc_main
-
-            self.print_success("找到 PyQt5.pyrcc_main 模块")
-            return "python -m PyQt5.pyrcc_main"
-        except ImportError as e:
-            self.print_error(f"PyQt5 导入错误: {e}")
-
-        self.print_error("未找到 pyrcc5 工具")
+        self.print_error("未找到资源编译器")
         self.print_info("\n解决方案:")
-        self.print_info("1. 确保 PyQt5 已安装: pip install PyQt5")
-        self.print_info("2. 如果已安装，请检查 PATH 或使用完整路径")
+        self.print_info("1. 确保 PySide6 已安装: pip install PySide6")
+        self.print_info("2. 或确保 PyQt5 已安装: pip install PyQt5")
+        self.print_info("3. 确保资源编译器已添加到系统 PATH")
 
         return None
 
@@ -804,11 +823,11 @@ QMAKE_EXTRA_TARGETS += no_temp_files
                     self.print_error("无法处理旧文件")
                     return False
 
-        pyrcc5_path = self.find_pyrcc5()
-        if not pyrcc5_path:
+        rcc_path = self.find_resource_compiler()
+        if not rcc_path:
             return False
 
-        cmd = [pyrcc5_path, str(qrc_file), "-o", str(output_file)]
+        cmd = [rcc_path, str(qrc_file), "-o", str(output_file)]
         self.print_info(f"命令: {' '.join(cmd)}")
 
         try:
@@ -954,7 +973,7 @@ QMAKE_EXTRA_TARGETS += no_temp_files
             ("lupdate", self.find_lupdate),
             ("lrelease", self.find_lrelease),
             ("linguist", self.find_linguist),
-            ("pyrcc5", self.find_pyrcc5),
+            ("resource compiler", self.find_resource_compiler),
         ]
 
         all_found = True

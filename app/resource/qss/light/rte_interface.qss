@@ -14,7 +14,7 @@ FuncInterface, #scrollWidget {
 }
 
 #logPanel {
-    background-color: rgb(32, 32, 32);
+    background-color: white;
     border-left: 1px solid rgb(229, 229, 229);
     border-top-right-radius: 10px;
 }
