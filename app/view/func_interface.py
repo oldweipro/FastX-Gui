@@ -61,8 +61,6 @@ class CustomMessageBox(MessageBoxBase):
         self.logPanel.setObjectName("logPanel")
         self.controlPanel.setObjectName("controlPanel")
 
-        StyleSheet.RTE_INTERFACE.apply(self)
-
         self.hBoxLayout = QHBoxLayout(self.card)
         self.logLayout = QHBoxLayout(self.logPanel)
         self.panelLayout = QVBoxLayout(self.controlPanel)

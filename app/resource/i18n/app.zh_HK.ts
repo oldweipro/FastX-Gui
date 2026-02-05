@@ -6,7 +6,7 @@
     <message>
         <location filename="../../view/floating_window/levitation.py" line="540"/>
         <source>Show floating window</source>
-        <translation type="unfinished">顯示浮動窗口</translation>
+        <translation>顯示浮動窗口</translation>
     </message>
 </context>
 <context>
@@ -224,92 +224,92 @@
         <translation>選擇 SWC</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="92"/>
+        <location filename="../../view/func_interface.py" line="90"/>
         <source>Open</source>
         <translation>打開</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="95"/>
+        <location filename="../../view/func_interface.py" line="93"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="121"/>
+        <location filename="../../view/func_interface.py" line="119"/>
         <source>Create Date</source>
         <translation>創建日期</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="122"/>
+        <location filename="../../view/func_interface.py" line="120"/>
         <source>Shooting Date</source>
         <translation>拍攝日期</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="123"/>
+        <location filename="../../view/func_interface.py" line="121"/>
         <source>Modified time</source>
         <translation>修改時間</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="124"/>
+        <location filename="../../view/func_interface.py" line="122"/>
         <source>Name</source>
         <translation>名稱</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="131"/>
+        <location filename="../../view/func_interface.py" line="129"/>
         <source>Ascending</source>
         <translation>升序</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="132"/>
+        <location filename="../../view/func_interface.py" line="130"/>
         <source>Descending</source>
         <translation>降序</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="162"/>
+        <location filename="../../view/func_interface.py" line="160"/>
         <source>Add</source>
         <translation>添加</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="162"/>
+        <location filename="../../view/func_interface.py" line="160"/>
         <source>Rotate</source>
         <translation>旋轉</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="162"/>
+        <location filename="../../view/func_interface.py" line="160"/>
         <source>Zoom in</source>
         <translation>放大</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="162"/>
+        <location filename="../../view/func_interface.py" line="160"/>
         <source>Zoom out</source>
         <translation>縮小</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="171"/>
+        <location filename="../../view/func_interface.py" line="169"/>
         <source>Edit</source>
         <translation>編輯</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="171"/>
+        <location filename="../../view/func_interface.py" line="169"/>
         <source>Info</source>
         <translation>信息</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="171"/>
+        <location filename="../../view/func_interface.py" line="169"/>
         <source>Delete</source>
         <translation>刪除</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="171"/>
+        <location filename="../../view/func_interface.py" line="169"/>
         <source>Share</source>
         <translation>分享</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="181"/>
+        <location filename="../../view/func_interface.py" line="179"/>
         <source>Sort</source>
         <translation>排序</translation>
     </message>
     <message>
-        <location filename="../../view/func_interface.py" line="187"/>
+        <location filename="../../view/func_interface.py" line="185"/>
         <source>Settings</source>
         <translation>設置</translation>
     </message>
@@ -1282,181 +1282,181 @@
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="36"/>
         <source>Remove Python Code Comment</source>
-        <translation type="unfinished">移除Python代碼註釋</translation>
+        <translation>移除Python代碼註釋</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="36"/>
         <source>To apply software copyrights, need supply whole code without comments</source>
-        <translation type="unfinished">申請軟件著作權需要提供無註釋的完整代碼</translation>
+        <translation>申請軟件著作權需要提供無註釋的完整代碼</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="218"/>
         <source>Choose folder</source>
-        <translation type="unfinished">選擇文件夾</translation>
+        <translation>選擇文件夾</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="44"/>
         <source>Project Input Directory</source>
-        <translation type="unfinished">專案輸入目錄</translation>
+        <translation>專案輸入目錄</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="51"/>
         <source>Project Output Directory</source>
-        <translation type="unfinished">專案輸出目錄</translation>
+        <translation>專案輸出目錄</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="60"/>
         <source>Remove Comments</source>
-        <translation type="unfinished"></translation>
+        <translation>移除註釋</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="60"/>
         <source>Remove single line comments</source>
-        <translation type="unfinished"></translation>
+        <translation>移除單行註釋</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="67"/>
         <source>Remove Docstrings</source>
-        <translation type="unfinished"></translation>
+        <translation>移除文檔字符串</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="67"/>
         <source>Remove module, class and function docstrings</source>
-        <translation type="unfinished"></translation>
+        <translation>移除模組、類和函數的文檔字符串</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="74"/>
         <source>Remove Empty Lines</source>
-        <translation type="unfinished"></translation>
+        <translation>移除空行</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="74"/>
         <source>Remove empty lines from code</source>
-        <translation type="unfinished"></translation>
+        <translation>從代碼中移除空行</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="81"/>
         <source>Keep Triple Quotes</source>
-        <translation type="unfinished"></translation>
+        <translation>保留三引號字符串</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="81"/>
         <source>Keep triple quoted strings</source>
-        <translation type="unfinished"></translation>
+        <translation>保留三引號字符串</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="88"/>
         <source>Recursive</source>
-        <translation type="unfinished"></translation>
+        <translation>遞迴處理</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="88"/>
         <source>Process subdirectories recursively</source>
-        <translation type="unfinished"></translation>
+        <translation>遞迴處理子目錄</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="97"/>
         <source>Set suffix</source>
-        <translation type="unfinished"></translation>
+        <translation>設定後綴</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="97"/>
         <source>Output File Suffix</source>
-        <translation type="unfinished"></translation>
+        <translation>輸出文件後綴</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="106"/>
         <source>Set exclude files</source>
-        <translation type="unfinished"></translation>
+        <translation>設定排除文件</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="106"/>
         <source>Exclude Files (comma separated)</source>
-        <translation type="unfinished"></translation>
+        <translation>排除文件 (逗號分隔)</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="115"/>
         <source>Set exclude patterns</source>
-        <translation type="unfinished"></translation>
+        <translation>設定排除模式</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="115"/>
         <source>Exclude Patterns (comma separated)</source>
-        <translation type="unfinished"></translation>
+        <translation>排除模式 (逗號分隔)</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="124"/>
         <source>Execute</source>
-        <translation type="unfinished">执行</translation>
+        <translation>執行</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="124"/>
         <source>Execute Code Comment Removal</source>
-        <translation type="unfinished"></translation>
+        <translation>執行代碼註釋移除</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="124"/>
         <source>Click to start processing</source>
-        <translation type="unfinished"></translation>
+        <translation>點擊開始處理</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="197"/>
         <source>Set Output Suffix</source>
-        <translation type="unfinished"></translation>
+        <translation>設定輸出後綴</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="200"/>
         <source>Set Exclude Files</source>
-        <translation type="unfinished"></translation>
+        <translation>設定排除文件</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="203"/>
         <source>Set Exclude Patterns</source>
-        <translation type="unfinished"></translation>
+        <translation>設定排除模式</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="271"/>
         <source>Processing completed!
 </source>
-        <translation type="unfinished"></translation>
+        <translation>處理完成！</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="272"/>
         <source>Total files: {stats[&apos;total_files&apos;]}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>總文件數: {stats[&apos;total_files&apos;]}</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="273"/>
         <source>Processed: {stats[&apos;processed&apos;]}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>已處理: {stats[&apos;processed&apos;]}</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="274"/>
         <source>Skipped: {stats[&apos;skipped&apos;]}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>已跳過: {stats[&apos;skipped&apos;]}</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="275"/>
         <source>Errors: {stats[&apos;errors&apos;]}</source>
-        <translation type="unfinished"></translation>
+        <translation>錯誤: {stats[&apos;errors&apos;]}</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="277"/>
         <source>Success</source>
-        <translation type="unfinished">成功</translation>
+        <translation>成功</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="280"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>錯誤</translation>
     </message>
     <message>
         <location filename="../../tools/ui/rm_comments_ui.py" line="280"/>
         <source>Processing failed: {str(e)}</source>
-        <translation type="unfinished"></translation>
+        <translation>處理失敗: {str(e)}</translation>
     </message>
 </context>
 <context>
@@ -1464,12 +1464,12 @@
     <message>
         <location filename="../../components/config_card.py" line="168"/>
         <source>Hide floating window</source>
-        <translation type="unfinished">隱藏浮動窗口</translation>
+        <translation>隱藏浮動窗口</translation>
     </message>
     <message>
         <location filename="../../components/config_card.py" line="174"/>
         <source>Show floating window</source>
-        <translation type="unfinished">顯示浮動窗口</translation>
+        <translation>顯示浮動窗口</translation>
     </message>
 </context>
 </TS>

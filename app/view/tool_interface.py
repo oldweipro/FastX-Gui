@@ -21,6 +21,7 @@ from qfluentwidgets import (
 
 from app.common.config import cfg
 from app.common.style_sheet import StyleSheet
+from app.tools.ui.rm_comments_ui import RmCommentsUI
 
 
 class ToolsInterface(ScrollArea):
@@ -70,9 +71,6 @@ class ToolsInterface(ScrollArea):
         self.SerialGroup = SettingCardGroup(self.tr("Serial"), self.view)
 
         self.PubGroup = SettingCardGroup(self.tr("Pub"), self.view)
-
-        # Import and initialize Remove Comments tool
-        from app.tools.ui.rm_comments_ui import RmCommentsUI
         self.rmCommentsUI = RmCommentsUI(self)
 
         self.__initWidget()

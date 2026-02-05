@@ -34,6 +34,7 @@ class FastXDevTool:
         self.exclude_patterns = [
             ".venv",
             "__pycache__",
+            "*__init__.py",
             ".git",
             ".vscode",
             ".idea",
