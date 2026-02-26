@@ -1,9 +1,9 @@
-from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QInputDialog, QMessageBox, QVBoxLayout
+from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QInputDialog, QMessageBox, QVBoxLayout, QWidget
 from qfluentwidgets import (
     ExpandSettingCard,
     PrimaryPushSettingCard,
     PushSettingCard,
-    SwitchSettingCard,
+    SwitchSettingCard, ScrollArea,
 )
 from qfluentwidgets import (
     FluentIcon as FIF,
@@ -14,17 +14,18 @@ from app.common.icon import UnicodeIcon
 from app.tools.core.rm_comments_core import RmCommentsCore
 
 
-class RmCommentsUI:
+class RmCommentsUI(ScrollArea):
     """Remove Comments UI class"""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         """
         初始化
 
         Args:
             parent: 父级窗口
         """
-        self.parent = parent
+        super().__init__(parent=parent)
+        self.view = QWidget(self)
         self.core = RmCommentsCore()
         self.__initCards()
 
@@ -35,23 +36,23 @@ class RmCommentsUI:
         # 创建主卡片
         self.rmCodeCommentsGroupCard = ExpandSettingCard(
             UnicodeIcon.get_icon_by_name("ic_fluent_comment_dismiss_24_regular"),
-            self.parent.tr("Remove Python Code Comment"),
-            self.parent.tr("To apply software copyrights, need supply whole code without comments"),
-            self.parent.view,
+            self.tr("Remove Python Code Comment"),
+            self.tr("To apply software copyrights, need supply whole code without comments"),
+            self.view,
         )
 
         # 文件夹选择卡片
         self.rmCodeCommentsInputFolderCard = PushSettingCard(
-            self.parent.tr("Choose folder"),
+            self.tr("Choose folder"),
             FIF.FOLDER_ADD,
-            self.parent.tr("Project Input Directory"),
+            self.tr("Project Input Directory"),
             cfg.get(cfg.RmCommentsInputFolder),
             self.rmCodeCommentsGroupCard,
         )
         self.rmCodeCommentsOutputFolderCard = PushSettingCard(
-            self.parent.tr("Choose folder"),
+            self.tr("Choose folder"),
             FIF.FOLDER_ADD,
-            self.parent.tr("Project Output Directory"),
+            self.tr("Project Output Directory"),
             cfg.get(cfg.RmCommentsOutputFolder),
             self.rmCodeCommentsGroupCard,
         )
@@ -59,73 +60,73 @@ class RmCommentsUI:
         # RemoveComments options
         self.rmCodeCommentsRemoveCommentsCard = SwitchSettingCard(
             FIF.DOCUMENT,
-            self.parent.tr("Remove Comments"),
-            self.parent.tr("Remove single line comments"),
+            self.tr("Remove Comments"),
+            self.tr("Remove single line comments"),
             cfg.RmCommentsRemoveComments,
             self.rmCodeCommentsGroupCard,
         )
         self.rmCodeCommentsRemoveDocstringsCard = SwitchSettingCard(
             FIF.EDIT,
-            self.parent.tr("Remove Docstrings"),
-            self.parent.tr("Remove module, class and function docstrings"),
+            self.tr("Remove Docstrings"),
+            self.tr("Remove module, class and function docstrings"),
             cfg.RmCommentsRemoveDocstrings,
             self.rmCodeCommentsGroupCard,
         )
         self.rmCodeCommentsRemoveEmptyLinesCard = SwitchSettingCard(
             FIF.LAYOUT,
-            self.parent.tr("Remove Empty Lines"),
-            self.parent.tr("Remove empty lines from code"),
+            self.tr("Remove Empty Lines"),
+            self.tr("Remove empty lines from code"),
             cfg.RmCommentsRemoveEmptyLines,
             self.rmCodeCommentsGroupCard,
         )
         self.rmCodeCommentsKeepTripleQuotesCard = SwitchSettingCard(
             FIF.DOCUMENT,
-            self.parent.tr("Keep Triple Quotes"),
-            self.parent.tr("Keep triple quoted strings"),
+            self.tr("Keep Triple Quotes"),
+            self.tr("Keep triple quoted strings"),
             cfg.RmCommentsKeepTripleQuotes,
             self.rmCodeCommentsGroupCard,
         )
         self.rmCodeCommentsRecursiveCard = SwitchSettingCard(
             FIF.SYNC,
-            self.parent.tr("Recursive"),
-            self.parent.tr("Process subdirectories recursively"),
+            self.tr("Recursive"),
+            self.tr("Process subdirectories recursively"),
             cfg.RmCommentsRecursive,
             self.rmCodeCommentsGroupCard,
         )
 
         # Output suffix setting
         self.rmCodeCommentsOutputSuffixCard = PushSettingCard(
-            self.parent.tr("Set suffix"),
+            self.tr("Set suffix"),
             FIF.EDIT,
-            self.parent.tr("Output File Suffix"),
+            self.tr("Output File Suffix"),
             cfg.get(cfg.RmCommentsOutputSuffix),
             self.rmCodeCommentsGroupCard,
         )
 
         # Exclude files setting
         self.rmCodeCommentsExcludeFilesCard = PushSettingCard(
-            self.parent.tr("Set exclude files"),
+            self.tr("Set exclude files"),
             FIF.FILTER,
-            self.parent.tr("Exclude Files (comma separated)"),
+            self.tr("Exclude Files (comma separated)"),
             cfg.get(cfg.RmCommentsExcludeFiles),
             self.rmCodeCommentsGroupCard,
         )
 
         # Exclude patterns setting
         self.rmCodeCommentsExcludePatternsCard = PushSettingCard(
-            self.parent.tr("Set exclude patterns"),
+            self.tr("Set exclude patterns"),
             FIF.FILTER,
-            self.parent.tr("Exclude Patterns (comma separated)"),
+            self.tr("Exclude Patterns (comma separated)"),
             cfg.get(cfg.RmCommentsExcludePatterns),
             self.rmCodeCommentsGroupCard,
         )
 
         # Execute button
         self.rmCodeCommentsExecuteCard = PrimaryPushSettingCard(
-            self.parent.tr("Execute"),
+            self.tr("Execute"),
             FIF.PLAY,
-            self.parent.tr("Execute Code Comment Removal"),
-            self.parent.tr("Click to start processing"),
+            self.tr("Execute Code Comment Removal"),
+            self.tr("Click to start processing"),
             self.rmCodeCommentsGroupCard,
         )
 
@@ -195,13 +196,13 @@ class RmCommentsUI:
 
         # Input cards connections
         self.rmCodeCommentsOutputSuffixCard.clicked.connect(
-            lambda: self.__onSetValueClicked(cfg.RmCommentsOutputSuffix, self.rmCodeCommentsOutputSuffixCard, self.parent.tr("Set Output Suffix"))
+            lambda: self.__onSetValueClicked(cfg.RmCommentsOutputSuffix, self.rmCodeCommentsOutputSuffixCard, self.tr("Set Output Suffix"))
         )
         self.rmCodeCommentsExcludeFilesCard.clicked.connect(
-            lambda: self.__onSetValueClicked(cfg.RmCommentsExcludeFiles, self.rmCodeCommentsExcludeFilesCard, self.parent.tr("Set Exclude Files"))
+            lambda: self.__onSetValueClicked(cfg.RmCommentsExcludeFiles, self.rmCodeCommentsExcludeFilesCard, self.tr("Set Exclude Files"))
         )
         self.rmCodeCommentsExcludePatternsCard.clicked.connect(
-            lambda: self.__onSetValueClicked(cfg.RmCommentsExcludePatterns, self.rmCodeCommentsExcludePatternsCard, self.parent.tr("Set Exclude Patterns"))
+            lambda: self.__onSetValueClicked(cfg.RmCommentsExcludePatterns, self.rmCodeCommentsExcludePatternsCard, self.tr("Set Exclude Patterns"))
         )
 
         # Execute button connection
@@ -215,7 +216,7 @@ class RmCommentsUI:
             config_item: 配置项
             card: 卡片对象
         """
-        folder = QFileDialog.getExistingDirectory(self.parent, self.parent.tr("Choose folder"), "./")
+        folder = QFileDialog.getExistingDirectory(self.parent, self.tr("Choose folder"), "./")
         if not folder or cfg.get(config_item) == folder:
             return
         cfg.set(config_item, folder)
@@ -268,13 +269,13 @@ class RmCommentsUI:
             )
 
             # 显示结果
-            message = self.parent.tr("Processing completed!\n")
-            message += self.parent.tr(f"Total files: {stats['total_files']}\n")
-            message += self.parent.tr(f"Processed: {stats['processed']}\n")
-            message += self.parent.tr(f"Skipped: {stats['skipped']}\n")
-            message += self.parent.tr(f"Errors: {stats['errors']}")
+            message = self.tr("Processing completed!\n")
+            message += self.tr(f"Total files: {stats['total_files']}\n")
+            message += self.tr(f"Processed: {stats['processed']}\n")
+            message += self.tr(f"Skipped: {stats['skipped']}\n")
+            message += self.tr(f"Errors: {stats['errors']}")
 
-            QMessageBox.information(self.parent, self.parent.tr("Success"), message)
+            QMessageBox.information(self.parent, self.tr("Success"), message)
 
         except Exception as e:
-            QMessageBox.critical(self.parent, self.parent.tr("Error"), self.parent.tr(f"Processing failed: {str(e)}"))
+            QMessageBox.critical(self.parent, self.tr("Error"), self.tr(f"Processing failed: {str(e)}"))

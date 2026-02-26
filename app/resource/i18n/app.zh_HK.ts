@@ -465,6 +465,188 @@
     </message>
 </context>
 <context>
+    <name>RmCommentsUI</name>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="37"/>
+        <source>Remove Python Code Comment</source>
+        <translation>移除Python代碼註釋</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="37"/>
+        <source>To apply software copyrights, need supply whole code without comments</source>
+        <translation>申請軟件著作權需要提供無註釋的完整代碼</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="219"/>
+        <source>Choose folder</source>
+        <translation>選擇文件夾</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="45"/>
+        <source>Project Input Directory</source>
+        <translation>專案輸入目錄</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="52"/>
+        <source>Project Output Directory</source>
+        <translation>專案輸出目錄</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="61"/>
+        <source>Remove Comments</source>
+        <translation>移除註釋</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="61"/>
+        <source>Remove single line comments</source>
+        <translation>移除單行註釋</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="68"/>
+        <source>Remove Docstrings</source>
+        <translation>移除文檔字符串</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="68"/>
+        <source>Remove module, class and function docstrings</source>
+        <translation>移除模組、類和函數的文檔字符串</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="75"/>
+        <source>Remove Empty Lines</source>
+        <translation>移除空行</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="75"/>
+        <source>Remove empty lines from code</source>
+        <translation>從代碼中移除空行</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="82"/>
+        <source>Keep Triple Quotes</source>
+        <translation>保留三引號字符串</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="82"/>
+        <source>Keep triple quoted strings</source>
+        <translation>保留三引號字符串</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="89"/>
+        <source>Recursive</source>
+        <translation>遞迴處理</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="89"/>
+        <source>Process subdirectories recursively</source>
+        <translation>遞迴處理子目錄</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="98"/>
+        <source>Set suffix</source>
+        <translation>設定後綴</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="98"/>
+        <source>Output File Suffix</source>
+        <translation>輸出文件後綴</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="107"/>
+        <source>Set exclude files</source>
+        <translation>設定排除文件</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="107"/>
+        <source>Exclude Files (comma separated)</source>
+        <translation>排除文件 (逗號分隔)</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="116"/>
+        <source>Set exclude patterns</source>
+        <translation>設定排除模式</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="116"/>
+        <source>Exclude Patterns (comma separated)</source>
+        <translation>排除模式 (逗號分隔)</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="125"/>
+        <source>Execute</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="125"/>
+        <source>Execute Code Comment Removal</source>
+        <translation>執行代碼註釋移除</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="125"/>
+        <source>Click to start processing</source>
+        <translation>點擊開始處理</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="198"/>
+        <source>Set Output Suffix</source>
+        <translation>設定輸出後綴</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="201"/>
+        <source>Set Exclude Files</source>
+        <translation>設定排除文件</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="204"/>
+        <source>Set Exclude Patterns</source>
+        <translation>設定排除模式</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="272"/>
+        <source>Processing completed!
+</source>
+        <translation>處理完成！</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="273"/>
+        <source>Total files: {stats[&apos;total_files&apos;]}
+</source>
+        <translation>總文件數: {stats[&apos;total_files&apos;]}</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="274"/>
+        <source>Processed: {stats[&apos;processed&apos;]}
+</source>
+        <translation>已處理: {stats[&apos;processed&apos;]}</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="275"/>
+        <source>Skipped: {stats[&apos;skipped&apos;]}
+</source>
+        <translation>已跳過: {stats[&apos;skipped&apos;]}</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="276"/>
+        <source>Errors: {stats[&apos;errors&apos;]}</source>
+        <translation>錯誤: {stats[&apos;errors&apos;]}</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="278"/>
+        <source>Success</source>
+        <translation>成功</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="281"/>
+        <source>Error</source>
+        <translation>錯誤</translation>
+    </message>
+    <message>
+        <location filename="../../tools/ui/rm_comments_ui.py" line="281"/>
+        <source>Processing failed: {str(e)}</source>
+        <translation>處理失敗: {str(e)}</translation>
+    </message>
+</context>
+<context>
     <name>SafeBlock</name>
     <message>
         <location filename="../../view/main_window.py" line="280"/>
@@ -1179,52 +1361,52 @@
 <context>
     <name>ToolsInterface</name>
     <message>
-        <location filename="../../view/tool_interface.py" line="38"/>
+        <location filename="../../view/tool_interface.py" line="39"/>
         <source>PlatformTools</source>
         <translation>平台工具</translation>
     </message>
     <message>
-        <location filename="../../view/tool_interface.py" line="138"/>
+        <location filename="../../view/tool_interface.py" line="136"/>
         <source>Dem</source>
         <translation>演示</translation>
     </message>
     <message>
-        <location filename="../../view/tool_interface.py" line="60"/>
+        <location filename="../../view/tool_interface.py" line="61"/>
         <source>Mica effect</source>
         <translation>雲母效果</translation>
     </message>
     <message>
-        <location filename="../../view/tool_interface.py" line="60"/>
+        <location filename="../../view/tool_interface.py" line="61"/>
         <source>Apply semi transparent to windows and surfaces</source>
         <translation>窗口和表麵顯示半透明</translation>
     </message>
     <message>
-        <location filename="../../view/tool_interface.py" line="139"/>
+        <location filename="../../view/tool_interface.py" line="137"/>
         <source>Dcm</source>
         <translation>診斷通信模塊</translation>
     </message>
     <message>
-        <location filename="../../view/tool_interface.py" line="140"/>
+        <location filename="../../view/tool_interface.py" line="138"/>
         <source>E2E</source>
         <translation>端到端</translation>
     </message>
     <message>
-        <location filename="../../view/tool_interface.py" line="141"/>
+        <location filename="../../view/tool_interface.py" line="139"/>
         <source>Com</source>
         <translation>通信</translation>
     </message>
     <message>
-        <location filename="../../view/tool_interface.py" line="142"/>
+        <location filename="../../view/tool_interface.py" line="140"/>
         <source>SomeIp</source>
         <translation>SOME/IP協議</translation>
     </message>
     <message>
-        <location filename="../../view/tool_interface.py" line="143"/>
+        <location filename="../../view/tool_interface.py" line="141"/>
         <source>Serial</source>
         <translation>串口</translation>
     </message>
     <message>
-        <location filename="../../view/tool_interface.py" line="144"/>
+        <location filename="../../view/tool_interface.py" line="142"/>
         <source>Pub</source>
         <translation>發布</translation>
     </message>
@@ -1275,188 +1457,6 @@
         <location filename="../../common/translator.py" line="15"/>
         <source>Navigation</source>
         <translation>導航</translation>
-    </message>
-</context>
-<context>
-    <name>self.parent</name>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="36"/>
-        <source>Remove Python Code Comment</source>
-        <translation>移除Python代碼註釋</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="36"/>
-        <source>To apply software copyrights, need supply whole code without comments</source>
-        <translation>申請軟件著作權需要提供無註釋的完整代碼</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="218"/>
-        <source>Choose folder</source>
-        <translation>選擇文件夾</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="44"/>
-        <source>Project Input Directory</source>
-        <translation>專案輸入目錄</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="51"/>
-        <source>Project Output Directory</source>
-        <translation>專案輸出目錄</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="60"/>
-        <source>Remove Comments</source>
-        <translation>移除註釋</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="60"/>
-        <source>Remove single line comments</source>
-        <translation>移除單行註釋</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="67"/>
-        <source>Remove Docstrings</source>
-        <translation>移除文檔字符串</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="67"/>
-        <source>Remove module, class and function docstrings</source>
-        <translation>移除模組、類和函數的文檔字符串</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="74"/>
-        <source>Remove Empty Lines</source>
-        <translation>移除空行</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="74"/>
-        <source>Remove empty lines from code</source>
-        <translation>從代碼中移除空行</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="81"/>
-        <source>Keep Triple Quotes</source>
-        <translation>保留三引號字符串</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="81"/>
-        <source>Keep triple quoted strings</source>
-        <translation>保留三引號字符串</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="88"/>
-        <source>Recursive</source>
-        <translation>遞迴處理</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="88"/>
-        <source>Process subdirectories recursively</source>
-        <translation>遞迴處理子目錄</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="97"/>
-        <source>Set suffix</source>
-        <translation>設定後綴</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="97"/>
-        <source>Output File Suffix</source>
-        <translation>輸出文件後綴</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="106"/>
-        <source>Set exclude files</source>
-        <translation>設定排除文件</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="106"/>
-        <source>Exclude Files (comma separated)</source>
-        <translation>排除文件 (逗號分隔)</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="115"/>
-        <source>Set exclude patterns</source>
-        <translation>設定排除模式</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="115"/>
-        <source>Exclude Patterns (comma separated)</source>
-        <translation>排除模式 (逗號分隔)</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="124"/>
-        <source>Execute</source>
-        <translation>執行</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="124"/>
-        <source>Execute Code Comment Removal</source>
-        <translation>執行代碼註釋移除</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="124"/>
-        <source>Click to start processing</source>
-        <translation>點擊開始處理</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="197"/>
-        <source>Set Output Suffix</source>
-        <translation>設定輸出後綴</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="200"/>
-        <source>Set Exclude Files</source>
-        <translation>設定排除文件</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="203"/>
-        <source>Set Exclude Patterns</source>
-        <translation>設定排除模式</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="271"/>
-        <source>Processing completed!
-</source>
-        <translation>處理完成！</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="272"/>
-        <source>Total files: {stats[&apos;total_files&apos;]}
-</source>
-        <translation>總文件數: {stats[&apos;total_files&apos;]}</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="273"/>
-        <source>Processed: {stats[&apos;processed&apos;]}
-</source>
-        <translation>已處理: {stats[&apos;processed&apos;]}</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="274"/>
-        <source>Skipped: {stats[&apos;skipped&apos;]}
-</source>
-        <translation>已跳過: {stats[&apos;skipped&apos;]}</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="275"/>
-        <source>Errors: {stats[&apos;errors&apos;]}</source>
-        <translation>錯誤: {stats[&apos;errors&apos;]}</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="277"/>
-        <source>Success</source>
-        <translation>成功</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="280"/>
-        <source>Error</source>
-        <translation>錯誤</translation>
-    </message>
-    <message>
-        <location filename="../../tools/ui/rm_comments_ui.py" line="280"/>
-        <source>Processing failed: {str(e)}</source>
-        <translation>處理失敗: {str(e)}</translation>
     </message>
 </context>
 <context>
