@@ -72,3 +72,5 @@ coverage.xml
 *.tmp
 *.temp
 .cache/
+
+/nuitka-crash-report.xml
