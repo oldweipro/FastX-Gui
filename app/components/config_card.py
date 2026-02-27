@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image
 from PySide6.QtCore import Qt, QTimer, QUrl
-from PySide6.QtGui import QDesktopServices, QImage, QPainter, QPainterPath
+from PySide6.QtGui import QDesktopServices, QImage, QPainter, QPainterPath, QPixmap
 from PySide6.QtWidgets import (
     QFileDialog,
     QGraphicsDropShadowEffect,
@@ -40,6 +40,7 @@ from app.common.setting import (
     SPECIAL_VERSION,
     SYSTEM,
 )
+from app.common import resource
 
 
 class FloatingWindowBasicSettings(GroupHeaderCardWidget):
@@ -397,6 +398,107 @@ class BannerWidgetHomeIF2(QWidget):
         painter.setClipPath(self.path)
         painter.drawImage(self.rect(), self.banner)
 
+
+class BannerWidgetHomeIF3(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.setFixedHeight(320)
+        self.setMaximumHeight(320)
+
+        self.main_layout = QVBoxLayout(self)
+        self.galleryLabel = QLabel("", self)
+        self.galleryLabel.setStyleSheet("color: white;font-size: 30px; font-weight: 600;")
+
+        # 从 Qt 资源加载图片到 PIL Image
+        self.img = self.load_image_from_qrc(":/app/images/jpg/background2.jpg")
+        self.banner = None
+        self.path = None
+
+        # 创建阴影效果
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(20)
+        shadow.setColor(Qt.black)
+        shadow.setOffset(1.2, 1.2)
+
+        self.galleryLabel.setGraphicsEffect(shadow)
+        self.galleryLabel.setObjectName("galleryLabel")
+
+        self.main_layout.setSpacing(0)
+        self.main_layout.setContentsMargins(0, 20, 0, 0)
+        self.main_layout.addWidget(self.galleryLabel)
+        self.main_layout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+
+    def load_image_from_qrc(self, qrc_path):
+        """
+        从 Qt 资源路径加载图片到 PIL Image
+
+        Args:
+            qrc_path: Qt 资源路径，如 ":/app/images/jpg/background2.jpg"
+
+        Returns:
+            PIL.Image 对象，如果加载失败则返回 None
+        """
+        from PySide6.QtCore import QFile, QIODevice
+        import io
+
+        # 创建 QFile 对象读取资源
+        file = QFile(qrc_path)
+        if not file.open(QIODevice.ReadOnly):
+            print(f"无法打开资源: {qrc_path}")
+            return None
+
+        # 读取所有数据
+        data = file.readAll()
+        file.close()
+
+        try:
+            # 将二进制数据转换为 PIL Image
+            img = Image.open(io.BytesIO(data))
+            return img
+        except Exception as e:
+            print(f"图片加载失败: {e}")
+            return None
+
+    def paintEvent(self, e):
+        super().paintEvent(e)
+        painter = QPainter(self)
+        painter.setRenderHints(QPainter.SmoothPixmapTransform | QPainter.Antialiasing)
+
+        if not self.banner or not self.path:
+            if self.img is None:
+                return  # 图片加载失败，不绘制
+
+            image_height = self.img.width * self.height() // self.width()
+            crop_area = (
+                0,
+                0,
+                self.img.width,
+                image_height,
+            )
+            cropped_img = self.img.crop(crop_area)
+
+            # 确保图片是 RGB 模式
+            if cropped_img.mode != 'RGB':
+                cropped_img = cropped_img.convert('RGB')
+
+            img_data = np.array(cropped_img)
+            height, width, channels = img_data.shape
+            bytes_per_line = channels * width
+            self.banner = QImage(
+                img_data.data,
+                width,
+                height,
+                bytes_per_line,
+                QImage.Format_RGB888,
+            )
+
+            path = QPainterPath()
+            path.addRoundedRect(0, 0, width + 50, height + 50, 10, 10)
+            self.path = path.simplified()
+
+        if self.banner:
+            painter.setClipPath(self.path)
+            painter.drawImage(self.rect(), self.banner)
 
 class TypewriterLabelHomeIF(QLabel):
     def __init__(self, parent=None):

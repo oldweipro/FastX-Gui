@@ -5,14 +5,14 @@ from qfluentwidgets import (
 )
 
 from app.common.style_sheet import StyleSheet
-from app.components.config_card import AboutInfoHomeIf, BannerWidgetHomeIF2
+from app.components.config_card import AboutInfoHomeIf, BannerWidgetHomeIF2, BannerWidgetHomeIF3
 
 
 class HomeInterface(ScrollArea):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.view = QWidget(self)
-        self.banner = BannerWidgetHomeIF2(self.view)
+        self.banner = BannerWidgetHomeIF3(self.view)
         self.about = AboutInfoHomeIf()
         self.__initWidget()
         self.__initLayout()

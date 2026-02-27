@@ -25,5 +25,5 @@ class StyleSheet(StyleSheetBase, Enum):
         theme = qconfig.theme if theme == Theme.AUTO else theme
 
         # 使用资源路径格式，注意资源文件中没有resource目录
-        # return f":/app/qss/{theme.value.lower()}/{self.value}.qss"
-        return f"./app/resource/qss/{theme.value.lower()}/{self.value}.qss"
+        return f":/app/qss/{theme.value.lower()}/{self.value}.qss"
+        # return f"./app/resource/qss/{theme.value.lower()}/{self.value}.qss"
