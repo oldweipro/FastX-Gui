@@ -1403,12 +1403,12 @@
     <message>
         <location filename="../../view/tool_interface.py" line="141"/>
         <source>Serial</source>
-        <translation>串口</translation>
+        <translation>Serial</translation>
     </message>
     <message>
         <location filename="../../view/tool_interface.py" line="142"/>
         <source>Pub</source>
-        <translation>發布</translation>
+        <translation>Pub</translation>
     </message>
 </context>
 <context>

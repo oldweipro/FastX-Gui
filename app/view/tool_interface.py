@@ -20,7 +20,9 @@ from qfluentwidgets import (
 )
 
 from app.common.config import cfg
+from app.common.icon import UnicodeIcon
 from app.common.style_sheet import StyleSheet
+from app.tools.ui.qc_composition_ui import QcCompositionUI
 from app.tools.ui.rm_comments_ui import RmCommentsUI
 
 
@@ -40,38 +42,13 @@ class ToolsInterface(ScrollArea):
         self.platformToolsLabel.setObjectName("platformToolsLabel")
 
         self.DemGroup = SettingCardGroup(self.tr("Dem"), self.view)
-        self.micaCard1 = SwitchSettingCard(
-            FIF.TRANSPARENT,
-            self.tr("Mica effect"),
-            self.tr("Apply semi transparent to windows and surfaces"),
-            cfg.micaEnabled,
-            self.DemGroup,
-        )
-
         self.DcmGroup = SettingCardGroup(self.tr("Dcm"), self.view)
-        self.micaCard2 = SwitchSettingCard(
-            FIF.TRANSPARENT,
-            self.tr("Mica effect"),
-            self.tr("Apply semi transparent to windows and surfaces"),
-            cfg.micaEnabled,
-            self.DcmGroup,
-        )
-
         self.E2EGroup = SettingCardGroup(self.tr("E2E"), self.view)
-        self.micaCard3 = SwitchSettingCard(
-            FIF.TRANSPARENT,
-            self.tr("Mica effect"),
-            self.tr("Apply semi transparent to windows and surfaces"),
-            cfg.micaEnabled,
-            self.E2EGroup,
-        )
-
         self.ComGroup = SettingCardGroup(self.tr("Com"), self.view)
         self.SomeIpGroup = SettingCardGroup(self.tr("SomeIp"), self.view)
         self.SerialGroup = SettingCardGroup(self.tr("Serial"), self.view)
-
         self.PubGroup = SettingCardGroup(self.tr("Pub"), self.view)
-        self.rmCommentsUI = RmCommentsUI(self)
+        self.IfGroup = SettingCardGroup(self.tr("IF"), self.view)
 
         self.__initWidget()
         self.__initLayout()
@@ -125,12 +102,9 @@ class ToolsInterface(ScrollArea):
         self.Layout.addLayout(self.main_layout)
         self.main_layout.addWidget(self.stackedWidget)
 
-        self.DemGroup.addSettingCard(self.micaCard1)
-        self.DcmGroup.addSettingCard(self.micaCard2)
-        self.E2EGroup.addSettingCard(self.micaCard3)
-
         # Add Remove Comments tool card
-        self.PubGroup.addSettingCard(self.rmCommentsUI.rmCodeCommentsGroupCard)
+        self.IfGroup.addSettingCard(QcCompositionUI(parent=self.view))
+        self.PubGroup.addSettingCard(RmCommentsUI(parent=self.view))
 
         # 添加标签页
         self.addSubInterface(self.DemGroup, "TabDemInterface", self.tr("Dem"))
@@ -140,6 +114,7 @@ class ToolsInterface(ScrollArea):
         self.addSubInterface(self.SomeIpGroup, "TabSomeIpInterface", self.tr("SomeIp"))
         self.addSubInterface(self.SerialGroup, "TabSerialInterface", self.tr("Serial"))
         self.addSubInterface(self.PubGroup, "TabPubInterface", self.tr("Pub"))
+        self.addSubInterface(self.IfGroup, "TabIFInterface", self.tr("IF"))
 
     def __connectSignalToSlot(self):
         # 连接信号并初始化当前标签页
@@ -147,12 +122,9 @@ class ToolsInterface(ScrollArea):
         self.pivot.setCurrentItem(self.stackedWidget.currentWidget().objectName())
         # self.stackedWidget.setFixedHeight(self.stackedWidget.currentWidget().sizeHint().height())
 
-        # Connect signals for Remove Comments tool
-        self.rmCommentsUI.connectSignals()
-
     def addSubInterface(
         self,
-        widget: QLabel,
+        widget: QWidget,
         objectName: str,
         text: str,
         icon: str | QIcon | FluentIconBase = None,

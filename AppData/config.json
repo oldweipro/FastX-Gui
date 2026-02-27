@@ -2,9 +2,9 @@
     "ToolsPub": {
         "RmCommentsExcludeFiles": "__init__.py,config.py",
         "RmCommentsExcludePatterns": "*_test.py,test_*.py",
-        "RmCommentsInputFolder": "D:/CodeRepo/python-cli-tools_20251217/utils/00_ADC25/J6E_FaultManager",
+        "RmCommentsInputFolder": "C:/Users/91974/Downloads",
         "RmCommentsKeepTripleQuotes": true,
-        "RmCommentsOutputFolder": "D:/CodeRepo/python-cli-tools_20251217/utils/00_ADC25/J6E_FaultManager",
+        "RmCommentsOutputFolder": "C:/Users/91974/Downloads",
         "RmCommentsOutputSuffix": "_clean.py",
         "RmCommentsRecursive": true,
         "RmCommentsRemoveComments": true,

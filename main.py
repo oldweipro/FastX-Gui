@@ -5,6 +5,7 @@ from PySide6.QtCore import Qt, QTranslator
 from PySide6.QtWidgets import QApplication
 from qfluentwidgets import FluentTranslator
 
+import app.common.resource
 from app.common.config import cfg
 from app.view.main_window import MainWindow
 

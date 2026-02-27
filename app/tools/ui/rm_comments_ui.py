@@ -1,9 +1,10 @@
+from PySide6.QtGui import QIcon, QColor
 from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QInputDialog, QMessageBox, QVBoxLayout, QWidget
 from qfluentwidgets import (
     ExpandSettingCard,
     PrimaryPushSettingCard,
     PushSettingCard,
-    SwitchSettingCard, ScrollArea,
+    SwitchSettingCard, ScrollArea, FluentIconBase, MessageBox, MessageBoxBase, SubtitleLabel, LineEdit, CaptionLabel,
 )
 from qfluentwidgets import (
     FluentIcon as FIF,
@@ -14,47 +15,47 @@ from app.common.icon import UnicodeIcon
 from app.tools.core.rm_comments_core import RmCommentsCore
 
 
-class RmCommentsUI(ScrollArea):
+class RmCommentsUI(ExpandSettingCard):
     """Remove Comments UI class"""
 
-    def __init__(self, parent=None):
-        """
-        初始化
-
-        Args:
-            parent: 父级窗口
-        """
-        super().__init__(parent=parent)
-        self.view = QWidget(self)
+    def __init__(
+        self,
+        icon: str | QIcon | FluentIconBase=None,
+        title: str = None,
+        content=None,
+        parent=None,
+    ):
+        # 如果 icon 为 None，可以设置一个默认图标
+        if icon is None:
+            icon = UnicodeIcon.get_icon_by_name("ic_fluent_comment_dismiss_24_regular")
+        # 如果 title 为空字符串，设置默认标题
+        if not title:
+            title = self.tr("Remove Python Code Comment")
+        # 如果 content 为空字符串，设置默认标题
+        if content is None:
+            content = self.tr("To apply software copyrights, need supply whole code without comments")
+        super().__init__(icon, title, content, parent)
         self.core = RmCommentsCore()
         self.__initCards()
+        self.connectSignals()
 
     def __initCards(self):
         """
         初始化卡片
         """
-        # 创建主卡片
-        self.rmCodeCommentsGroupCard = ExpandSettingCard(
-            UnicodeIcon.get_icon_by_name("ic_fluent_comment_dismiss_24_regular"),
-            self.tr("Remove Python Code Comment"),
-            self.tr("To apply software copyrights, need supply whole code without comments"),
-            self.view,
-        )
 
         # 文件夹选择卡片
         self.rmCodeCommentsInputFolderCard = PushSettingCard(
             self.tr("Choose folder"),
             FIF.FOLDER_ADD,
             self.tr("Project Input Directory"),
-            cfg.get(cfg.RmCommentsInputFolder),
-            self.rmCodeCommentsGroupCard,
+            cfg.get(cfg.RmCommentsInputFolder)
         )
         self.rmCodeCommentsOutputFolderCard = PushSettingCard(
             self.tr("Choose folder"),
             FIF.FOLDER_ADD,
             self.tr("Project Output Directory"),
-            cfg.get(cfg.RmCommentsOutputFolder),
-            self.rmCodeCommentsGroupCard,
+            cfg.get(cfg.RmCommentsOutputFolder)
         )
 
         # RemoveComments options
@@ -62,36 +63,31 @@ class RmCommentsUI(ScrollArea):
             FIF.DOCUMENT,
             self.tr("Remove Comments"),
             self.tr("Remove single line comments"),
-            cfg.RmCommentsRemoveComments,
-            self.rmCodeCommentsGroupCard,
+            cfg.RmCommentsRemoveComments
         )
         self.rmCodeCommentsRemoveDocstringsCard = SwitchSettingCard(
             FIF.EDIT,
             self.tr("Remove Docstrings"),
             self.tr("Remove module, class and function docstrings"),
-            cfg.RmCommentsRemoveDocstrings,
-            self.rmCodeCommentsGroupCard,
+            cfg.RmCommentsRemoveDocstrings
         )
         self.rmCodeCommentsRemoveEmptyLinesCard = SwitchSettingCard(
             FIF.LAYOUT,
             self.tr("Remove Empty Lines"),
             self.tr("Remove empty lines from code"),
-            cfg.RmCommentsRemoveEmptyLines,
-            self.rmCodeCommentsGroupCard,
+            cfg.RmCommentsRemoveEmptyLines
         )
         self.rmCodeCommentsKeepTripleQuotesCard = SwitchSettingCard(
             FIF.DOCUMENT,
             self.tr("Keep Triple Quotes"),
             self.tr("Keep triple quoted strings"),
-            cfg.RmCommentsKeepTripleQuotes,
-            self.rmCodeCommentsGroupCard,
+            cfg.RmCommentsKeepTripleQuotes
         )
         self.rmCodeCommentsRecursiveCard = SwitchSettingCard(
             FIF.SYNC,
             self.tr("Recursive"),
             self.tr("Process subdirectories recursively"),
-            cfg.RmCommentsRecursive,
-            self.rmCodeCommentsGroupCard,
+            cfg.RmCommentsRecursive
         )
 
         # Output suffix setting
@@ -99,8 +95,7 @@ class RmCommentsUI(ScrollArea):
             self.tr("Set suffix"),
             FIF.EDIT,
             self.tr("Output File Suffix"),
-            cfg.get(cfg.RmCommentsOutputSuffix),
-            self.rmCodeCommentsGroupCard,
+            cfg.get(cfg.RmCommentsOutputSuffix)
         )
 
         # Exclude files setting
@@ -108,8 +103,7 @@ class RmCommentsUI(ScrollArea):
             self.tr("Set exclude files"),
             FIF.FILTER,
             self.tr("Exclude Files (comma separated)"),
-            cfg.get(cfg.RmCommentsExcludeFiles),
-            self.rmCodeCommentsGroupCard,
+            cfg.get(cfg.RmCommentsExcludeFiles)
         )
 
         # Exclude patterns setting
@@ -117,8 +111,7 @@ class RmCommentsUI(ScrollArea):
             self.tr("Set exclude patterns"),
             FIF.FILTER,
             self.tr("Exclude Patterns (comma separated)"),
-            cfg.get(cfg.RmCommentsExcludePatterns),
-            self.rmCodeCommentsGroupCard,
+            cfg.get(cfg.RmCommentsExcludePatterns)
         )
 
         # Execute button
@@ -126,8 +119,7 @@ class RmCommentsUI(ScrollArea):
             self.tr("Execute"),
             FIF.PLAY,
             self.tr("Execute Code Comment Removal"),
-            self.tr("Click to start processing"),
-            self.rmCodeCommentsGroupCard,
+            self.tr("Click to start processing")
         )
 
         # 添加卡片到布局
@@ -140,7 +132,8 @@ class RmCommentsUI(ScrollArea):
         self.columnLayout = QHBoxLayout()
         self.rowLeftLayout = QVBoxLayout()
         self.rowRightLayout = QVBoxLayout()
-        self.rmCodeCommentsGroupCard.viewLayout.addLayout(self.columnLayout)
+
+        self.viewLayout.addLayout(self.columnLayout)
         self.columnLayout.addLayout(self.rowLeftLayout)
         self.columnLayout.addLayout(self.rowRightLayout)
 
@@ -161,9 +154,9 @@ class RmCommentsUI(ScrollArea):
         self.rowRightLayout.addWidget(self.rmCodeCommentsExcludePatternsCard)
 
         # Add execute button
-        self.rmCodeCommentsGroupCard.viewLayout.addWidget(self.rmCodeCommentsExecuteCard)
+        self.viewLayout.addWidget(self.rmCodeCommentsExecuteCard)
 
-        self.rmCodeCommentsGroupCard._adjustViewSize()
+        self._adjustViewSize()
 
     def connectSignals(self):
         """
@@ -216,11 +209,45 @@ class RmCommentsUI(ScrollArea):
             config_item: 配置项
             card: 卡片对象
         """
-        folder = QFileDialog.getExistingDirectory(self.parent, self.tr("Choose folder"), "./")
+        folder = QFileDialog.getExistingDirectory(self, self.tr("Choose folder"), cfg.get(config_item))
         if not folder or cfg.get(config_item) == folder:
             return
         cfg.set(config_item, folder)
         card.setContent(folder)
+
+    def createInputDialog(self, title, default_value=""):
+        """
+        创建输入对话框
+        Args:
+            title: 对话框标题
+            default_value: 默认值
+        """
+        class InputDialog(MessageBoxBase):
+            def __init__(self, parent=None):
+                super().__init__(parent)
+                # 标题
+                self.titleLabel = SubtitleLabel(title, self)
+                # 输入框
+                self.lineEdit = LineEdit(self)
+                self.lineEdit.setText(default_value)
+                self.lineEdit.setPlaceholderText(self.tr("请输入..."))
+                self.lineEdit.setClearButtonEnabled(True)
+                # 添加到布局
+                self.viewLayout.addWidget(self.titleLabel)
+                self.viewLayout.addWidget(self.lineEdit)
+                # 设置按钮文本
+                self.yesButton.setText(self.tr("确定"))
+                self.cancelButton.setText(self.tr("取消"))
+                # 设置最小宽度
+                self.widget.setMinimumWidth(600)
+                # 连接信号
+                self.lineEdit.textChanged.connect(self.validate)
+            def validate(self):
+                """验证输入（可选重写）"""
+                # 这里可以添加输入验证逻辑
+                # 返回 True 表示验证通过，False 表示验证失败
+                return True
+        return InputDialog(self.window())
 
     def __onSetValueClicked(self, config_item, card, title):
         """
@@ -231,11 +258,15 @@ class RmCommentsUI(ScrollArea):
             card: 卡片对象
             title: 对话框标题
         """
+        # 获取当前值
         current_value = cfg.get(config_item)
-        value, ok = QInputDialog.getText(self.parent, title, title, text=current_value)
-        if ok and value != current_value:
-            cfg.set(config_item, value)
-            card.setContent(value)
+        # 创建自定义输入对话框
+        dialog = self.createInputDialog(title, current_value)
+        if dialog.exec():
+            new_value = dialog.lineEdit.text()
+            if new_value != current_value:
+                cfg.set(config_item, new_value)
+                card.setContent(new_value)
 
     def __onExecuteRmCommentsClicked(self):
         """
@@ -275,7 +306,12 @@ class RmCommentsUI(ScrollArea):
             message += self.tr(f"Skipped: {stats['skipped']}\n")
             message += self.tr(f"Errors: {stats['errors']}")
 
-            QMessageBox.information(self.parent, self.tr("Success"), message)
+            w = MessageBox(self.tr("Success"), message, self.window())
+            # close the message box when mask is clicked
+            w.setClosableOnMaskClicked(True)
+            # enable dragging
+            w.setDraggable(True)
+            w.exec_()
 
         except Exception as e:
-            QMessageBox.critical(self.parent, self.tr("Error"), self.tr(f"Processing failed: {str(e)}"))
+            MessageBox(self.tr("Error"), self.tr(f"Processing failed: {str(e)}"), self.window()).exec_()
