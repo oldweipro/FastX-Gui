@@ -15,7 +15,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from qfluentwidgets import FluentIcon as FIF
+from qfluentwidgets import FluentIcon as FIF, MessageBoxBase, BodyLabel, CaptionLabel
 from qfluentwidgets import (
     IndeterminateProgressBar,
     InfoBar,
@@ -59,6 +59,66 @@ from app.view.log_interface import LoguruInterface, QTextEditLogger
 from app.view.setting_interface import SettingInterface
 from app.view.tool_interface import ToolsInterface
 
+
+class SimpleUserInfoDialog(MessageBoxBase):
+    """简洁版用户信息对话框"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        # 标题
+        self.titleLabel = SubtitleLabel("用户信息(Beta)", self)
+
+        # 用户信息表格样式
+        info_text = """
+        <style>
+            .info-table { width: 100%; border-collapse: collapse; }
+            .info-table td { padding: 8px; }
+            .info-table td:first-child { 
+                font-weight: bold; 
+                color: #666;
+                width: 100px;
+            }
+            .badge {
+                background-color: #4caf50;
+                color: white;
+                padding: 4px 8px;
+                border-radius: 12px;
+                font-size: 12px;
+                display: inline-block;
+            }
+        </style>
+
+        <table class="info-table">
+            <tr><td>👤 用户</td><td><b>FastXTeam/MG</b></td></tr>
+            <tr><td>📧 邮箱</td><td>wanqiang.liu@fastxteam.com</td></tr>
+            <tr><td>💻 机器码</td><td><code>M6X9-2K4R-8H7J-3P5Q</code></td></tr>
+            <tr>
+                <td>🔑 激活</td>
+                <td>
+                    <span class="badge">✓ 已激活</span>
+                    <span style="margin-left: 10px;">永久授权 · 专业版</span>
+                </td>
+            </tr>
+            <tr><td>📅 激活日期</td><td>2024-03-15</td></tr>
+            <tr><td>⏰ 过期日期</td><td>2099-12-31 (永久)</td></tr>
+            <tr><td>📦 版本</td><td>FastX-Gui v0.1.0 (2024-03-20)</td></tr>
+        </table>
+        """
+
+        self.infoLabel = BodyLabel(info_text, self)
+        self.infoLabel.setTextFormat(Qt.RichText)
+
+        # 添加到布局
+        self.viewLayout.addWidget(self.titleLabel)
+        self.viewLayout.addSpacing(10)
+        self.viewLayout.addWidget(self.infoLabel)
+
+        # 按钮
+        self.yesButton.setText("确认")
+        self.cancelButton.setText("复制信息")
+
+        self.widget.setMinimumWidth(450)
 
 class MainWindow(SplitFluentWindow):
     def __init__(self):
@@ -384,15 +444,9 @@ class MainWindow(SplitFluentWindow):
         self.text_logger.scroll_to_bottom(force=True)
 
     def __showMessageBox(self):
-        w = MessageBox(
-            "User Card",
-            "This is a navigation user card that displays avatar, title and subtitle.\n\n"
-            "Placement:\n"
-            "• aboveMenuButton=True: Place above expand/collapse button\n"
-            "• aboveMenuButton=False: Place below menu button (default)",
-            self,
-        )
-        w.exec_()
+        """显示用户信息对话框"""
+        dialog = SimpleUserInfoDialog(self)  # 或 SimpleUserInfoDialog(self)
+        dialog.exec_()
 
     def _initFloatingWindow(self):
         """初始化悬浮窗"""
