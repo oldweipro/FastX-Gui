@@ -4,7 +4,7 @@ from qfluentwidgets import (
     ExpandSettingCard,
     PrimaryPushSettingCard,
     PushSettingCard,
-    SwitchSettingCard, ScrollArea, FluentIconBase,
+    SwitchSettingCard, ScrollArea, FluentIconBase, ComboBox,
 )
 from qfluentwidgets import (
     FluentIcon as FIF,
@@ -16,7 +16,7 @@ from app.tools.core.rm_comments_core import RmCommentsCore
 
 
 class QcCompositionUI(ExpandSettingCard):
-    """Remove Comments UI class"""
+    """QCraft Composition Arxml Adapter UI class"""
 
     def __init__(
         self,
@@ -36,7 +36,16 @@ class QcCompositionUI(ExpandSettingCard):
             content = self.tr("To Modify QCraft Composition Arxml File To FT Rules For J6")
         super().__init__(icon, title, content, parent)
         self.core = RmCommentsCore()
+        self.combox = ComboBox(self)
+        self.combox.addItems(["Option 1", "Option 2", "Option 3"])
+        # Load saved option from config
+        selected_index = cfg.get(cfg.QcCompositionSelectedOption)
+        if 0 <= selected_index < self.combox.count():
+            self.combox.setCurrentIndex(selected_index)
+        self.card.addWidget(self.combox)
         self.__initCards()
+        # Apply initial card states based on saved option
+        self.__onComboBoxChanged(selected_index)
         self.connectSignals()
 
     def __initCards(self):
@@ -45,18 +54,24 @@ class QcCompositionUI(ExpandSettingCard):
         """
 
         # 文件夹选择卡片
-        self.rmCodeCommentsInputFolderCard = PushSettingCard(
+        self.qcCompositionInputFolderCard = PushSettingCard(
             self.tr("Choose folder"),
             FIF.FOLDER_ADD,
             self.tr("Project Input Directory"),
-            cfg.get(cfg.RmCommentsInputFolder)
+            cfg.get(cfg.QcCompositionInputFolder)
+        )
+
+        self.qcCompositionSwcCoreSettingGroupCard = ExpandSettingCard(
+            FIF.SETTING,
+            self.tr('SWCs Core Setting'),
+            self.tr('Customize Software Component Core Setting')
         )
 
         # Execute button
-        self.rmCodeCommentsExecuteCard = PrimaryPushSettingCard(
+        self.qcCompositionExecuteCard = PrimaryPushSettingCard(
             self.tr("Execute"),
             FIF.PLAY,
-            self.tr("Execute Code Comment Removal"),
+            self.tr("Execute QCraft Composition Adaptation"),
             self.tr("Click to start processing")
         )
 
@@ -67,10 +82,11 @@ class QcCompositionUI(ExpandSettingCard):
         """
         添加卡片到布局
         """
-        self.viewLayout.addWidget(self.rmCodeCommentsInputFolderCard)
+        self.viewLayout.addWidget(self.qcCompositionInputFolderCard)
+        self.viewLayout.addWidget(self.qcCompositionSwcCoreSettingGroupCard)
 
         # Add execute button
-        self.viewLayout.addWidget(self.rmCodeCommentsExecuteCard)
+        self.viewLayout.addWidget(self.qcCompositionExecuteCard)
 
         self._adjustViewSize()
 
@@ -78,13 +94,16 @@ class QcCompositionUI(ExpandSettingCard):
         """
         连接信号
         """
-        # 按钮 | 去除Python代码备注,空行
-        self.rmCodeCommentsInputFolderCard.clicked.connect(
-            lambda: self.__onChooseFolderClicked(cfg.RmCommentsInputFolder, self.rmCodeCommentsInputFolderCard)
+        # 按钮 | 选择文件夹
+        self.qcCompositionInputFolderCard.clicked.connect(
+            lambda: self.__onChooseFolderClicked(cfg.QcCompositionInputFolder, self.qcCompositionInputFolderCard)
         )
 
         # Execute button connection
-        self.rmCodeCommentsExecuteCard.clicked.connect(self.__onExecuteRmCommentsClicked)
+        self.qcCompositionExecuteCard.clicked.connect(self.__onExecuteQcCompositionClicked)
+        
+        # ComboBox signal for controlling cards
+        self.combox.currentIndexChanged.connect(self.__onComboBoxChanged)
 
     def __onChooseFolderClicked(self, config_item, card):
         """
@@ -115,9 +134,9 @@ class QcCompositionUI(ExpandSettingCard):
             cfg.set(config_item, value)
             card.setContent(value)
 
-    def __onExecuteRmCommentsClicked(self):
+    def __onExecuteQcCompositionClicked(self):
         """
-        执行代码清理
+        执行QCraft Composition适配
         """
         try:
             # 显示结果
@@ -125,3 +144,34 @@ class QcCompositionUI(ExpandSettingCard):
             QMessageBox.information(self, self.tr("Success"), message)
         except Exception as e:
             QMessageBox.critical(self, self.tr("Error"), self.tr(f"Processing failed: {str(e)}"))
+    
+    def __onComboBoxChanged(self, index):
+        """
+        处理ComboBox选择变化，控制卡片的可见性和启用状态
+        
+        Args:
+            index: 选中项的索引
+        """
+        # Save selected option to config
+        cfg.set(cfg.QcCompositionSelectedOption, index)
+        
+        if index == 0:  # Option 1
+            # 显示所有卡片并启用
+            self.qcCompositionInputFolderCard.setVisible(True)
+            self.qcCompositionExecuteCard.setVisible(True)
+            self.qcCompositionInputFolderCard.setEnabled(True)
+            self.qcCompositionExecuteCard.setEnabled(True)
+        elif index == 1:  # Option 2
+            # 只显示输入文件夹卡片，禁用执行按钮
+            self.qcCompositionInputFolderCard.setVisible(True)
+            self.qcCompositionExecuteCard.setVisible(False)
+            self.qcCompositionInputFolderCard.setEnabled(True)
+        elif index == 2:  # Option 3
+            # 显示所有卡片但禁用
+            self.qcCompositionInputFolderCard.setVisible(True)
+            self.qcCompositionExecuteCard.setVisible(True)
+            self.qcCompositionInputFolderCard.setEnabled(False)
+            self.qcCompositionExecuteCard.setEnabled(False)
+        
+        # 调整布局大小
+        self._adjustViewSize()

@@ -203,6 +203,15 @@ class Config(QConfig):
     RmCommentsKeepTripleQuotes = ConfigItem("ToolsPub", "RmCommentsKeepTripleQuotes", False, BoolValidator())
     RmCommentsOutputSuffix = ConfigItem("ToolsPub", "RmCommentsOutputSuffix", "_clean.py")
     RmCommentsRecursive = ConfigItem("ToolsPub", "RmCommentsRecursive", False, BoolValidator())
+    
+    # QCraft Composition
+    QcCompositionInputFolder = ConfigItem(
+        "ToolsQc",
+        "QcCompositionInputFolder",
+        QStandardPaths.writableLocation(QStandardPaths.DownloadLocation),
+        FolderValidator(),
+    )
+    QcCompositionSelectedOption = ConfigItem("ToolsQc", "QcCompositionSelectedOption", 0)
     RmCommentsExcludeFiles = ConfigItem("ToolsPub", "RmCommentsExcludeFiles", "__init__.py,config.py")
     RmCommentsExcludePatterns = ConfigItem("ToolsPub", "RmCommentsExcludePatterns", "*_test.py,test_*.py")
 

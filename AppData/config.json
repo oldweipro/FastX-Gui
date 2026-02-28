@@ -1,4 +1,8 @@
 {
+    "ToolsQc": {
+        "QcCompositionInputFolder": "C:/Users/91974/Downloads",
+        "QcCompositionSelectedOption": 0
+    },
     "ToolsPub": {
         "RmCommentsExcludeFiles": "__init__.py,config.py",
         "RmCommentsExcludePatterns": "*_test.py,test_*.py",
