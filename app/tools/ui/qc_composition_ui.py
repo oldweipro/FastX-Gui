@@ -1,10 +1,13 @@
-from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QInputDialog, QMessageBox, QVBoxLayout, QWidget
+from PySide6.QtCore import QModelIndex
+from PySide6.QtGui import QIcon, Qt
+from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QInputDialog, QMessageBox, QVBoxLayout, QWidget, \
+    QTableWidget, QTableWidgetItem, QHeaderView, QItemDelegate, QComboBox, QStyledItemDelegate
 from qfluentwidgets import (
     ExpandSettingCard,
     PrimaryPushSettingCard,
     PushSettingCard,
-    SwitchSettingCard, ScrollArea, FluentIconBase, ComboBox,
+    SwitchSettingCard, ScrollArea, FluentIconBase, ComboBox, TableWidget, IconWidget, FluentIcon, SearchLineEdit,
+    StrongBodyLabel,
 )
 from qfluentwidgets import (
     FluentIcon as FIF,
@@ -13,6 +16,135 @@ from qfluentwidgets import (
 from app.common.config import cfg
 from app.common.icon import UnicodeIcon
 from app.tools.core.rm_comments_core import RmCommentsCore
+
+
+class CoreAssignDelegate(QStyledItemDelegate):
+    """Fluent ComboBox Delegate"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.core_options = ['Core0', 'Core1', 'Core2', 'None']
+
+    def createEditor(self, parent, option, index):
+        editor = ComboBox(parent)
+        editor.addItems(self.core_options)
+
+        # 选中立即提交（工程上更干净）
+        editor.currentIndexChanged.connect(
+            lambda: self.commitData.emit(editor)
+        )
+
+        return editor
+
+    def setEditorData(self, editor, index):
+        value = index.model().data(index, Qt.EditRole)
+        if value in self.core_options:
+            editor.setCurrentText(value)
+        else:
+            editor.setCurrentIndex(0)  # Default to Core0
+
+    def setModelData(self, editor, model, index):
+        model.setData(index, editor.currentText(), Qt.EditRole)
+
+    def updateEditorGeometry(self, editor, option, index):
+        """Update editor geometry to match cell"""
+        editor.setGeometry(option.rect)
+
+    def paint(self, painter, option, index):
+        """Paint the cell normally when not editing"""
+        # Let the parent class handle the painting when not editing
+        super().paint(painter, option, index)
+
+    def sizeHint(self, option, index):
+        """Return appropriate size hint"""
+        return super().sizeHint(option, index)
+
+
+class TableFrame(TableWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.verticalHeader().hide()
+        self.setBorderRadius(8)
+        self.setBorderVisible(True)
+        self.setWordWrap(False)
+
+        self.headInfos = [
+            self.tr('Swc Name'),
+            self.tr('Core Assign'),
+            self.tr('P-Ports'),
+            self.tr('R-Ports'),
+            self.tr('Runnables'),
+            self.tr('Events')
+        ]
+        
+        # Load data from cfg
+        self.swcsInfos = self._loadFromConfig()
+        
+        self.setColumnCount(len(self.headInfos))
+        self.setRowCount(len(self.swcsInfos))
+        self.setMinimumHeight(300)
+        self.setHorizontalHeaderLabels(self.headInfos)
+        
+        # Set up table
+        for i, swcInfo in enumerate(self.swcsInfos):
+            for j in range(len(self.headInfos)):
+                item = QTableWidgetItem(swcInfo[j])
+                item.setTextAlignment(Qt.AlignCenter)
+                self.setItem(i, j, item)
+        
+        # Set delegate for Core Assign column (index 1)
+        self.coreDelegate = CoreAssignDelegate(self)
+        self.setItemDelegateForColumn(1, self.coreDelegate)
+        
+        # 核心：列宽自适应父窗口
+        header = self.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+
+        # 可选：Header 文本对齐
+        header.setDefaultAlignment(Qt.AlignCenter)
+        
+        # Connect cell change signal
+        self.itemChanged.connect(self._onItemChanged)
+    
+    def _loadFromConfig(self):
+        """
+        Load table data from configuration
+        """
+        try:
+            data = cfg.get(cfg.QcCompositionTableData)
+            if data:
+                return data
+        except:
+            pass
+        # Default data if no config
+        return [['ExampleSwc', 'Core0', '0', '0', '2', '2']]
+    
+    def _saveToConfig(self):
+        """
+        Save table data to configuration
+        """
+        data = []
+        for i in range(self.rowCount()):
+            row = []
+            for j in range(self.columnCount()):
+                item = self.item(i, j)
+                row.append(item.text() if item else '')
+            data.append(row)
+        cfg.set(cfg.QcCompositionTableData, data)
+    
+    def _onItemChanged(self, item):
+        """
+        Handle item change and save to config
+        """
+        self._saveToConfig()
+
+        # 可选：让最后一列自动填满剩余空间（如果不想所有列均分）
+        # header.setStretchLastSection(True)
+
+        # 可选：通过内容主导宽度
+        # self.setFixedSize(625, 440)
+        # self.resizeColumnsToContents()
 
 
 class QcCompositionUI(ExpandSettingCard):
@@ -61,12 +193,6 @@ class QcCompositionUI(ExpandSettingCard):
             cfg.get(cfg.QcCompositionInputFolder)
         )
 
-        self.qcCompositionSwcCoreSettingGroupCard = ExpandSettingCard(
-            FIF.SETTING,
-            self.tr('SWCs Core Setting'),
-            self.tr('Customize Software Component Core Setting')
-        )
-
         # Execute button
         self.qcCompositionExecuteCard = PrimaryPushSettingCard(
             self.tr("Execute"),
@@ -83,9 +209,7 @@ class QcCompositionUI(ExpandSettingCard):
         添加卡片到布局
         """
         self.viewLayout.addWidget(self.qcCompositionInputFolderCard)
-        self.viewLayout.addWidget(self.qcCompositionSwcCoreSettingGroupCard)
-
-        # Add execute button
+        self.viewLayout.addWidget(TableFrame(self))
         self.viewLayout.addWidget(self.qcCompositionExecuteCard)
 
         self._adjustViewSize()

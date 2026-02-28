@@ -212,6 +212,8 @@ class Config(QConfig):
         FolderValidator(),
     )
     QcCompositionSelectedOption = ConfigItem("ToolsQc", "QcCompositionSelectedOption", 0)
+    QcCompositionCoreSettings = ConfigItem("ToolsQc", "QcCompositionCoreSettings", {})
+    QcCompositionTableData = ConfigItem("ToolsQc", "QcCompositionTableData", [])
     RmCommentsExcludeFiles = ConfigItem("ToolsPub", "RmCommentsExcludeFiles", "__init__.py,config.py")
     RmCommentsExcludePatterns = ConfigItem("ToolsPub", "RmCommentsExcludePatterns", "*_test.py,test_*.py")
 

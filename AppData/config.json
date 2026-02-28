@@ -1,7 +1,18 @@
 {
     "ToolsQc": {
+        "QcCompositionCoreSettings": {},
         "QcCompositionInputFolder": "C:/Users/91974/Downloads",
-        "QcCompositionSelectedOption": 0
+        "QcCompositionSelectedOption": 0,
+        "QcCompositionTableData": [
+            [
+                "ExampleSwc",
+                "Core1",
+                "0",
+                "0",
+                "2",
+                "2"
+            ]
+        ]
     },
     "ToolsPub": {
         "RmCommentsExcludeFiles": "__init__.py,config.py",
@@ -30,7 +41,7 @@
     "Application": {
         "beta": false,
         "close_window_action": "ask",
-        "WindowSizeMode": "fixed"
+        "WindowSizeMode": "auto"
     },
     "Material": {
         "AcrylicBlurRadius": 40
