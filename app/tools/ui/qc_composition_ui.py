@@ -1,13 +1,14 @@
-from PySide6.QtCore import QModelIndex
+from PySide6.QtCore import QModelIndex, QPoint
 from PySide6.QtGui import QIcon, Qt
 from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QInputDialog, QMessageBox, QVBoxLayout, QWidget, \
-    QTableWidget, QTableWidgetItem, QHeaderView, QItemDelegate, QComboBox, QStyledItemDelegate
+    QTableWidget, QTableWidgetItem, QHeaderView, QItemDelegate, QComboBox, QStyledItemDelegate, QMenu, QLineEdit, \
+    QAbstractItemView
 from qfluentwidgets import (
     ExpandSettingCard,
     PrimaryPushSettingCard,
     PushSettingCard,
     SwitchSettingCard, ScrollArea, FluentIconBase, ComboBox, TableWidget, IconWidget, FluentIcon, SearchLineEdit,
-    StrongBodyLabel,
+    StrongBodyLabel, Dialog, LineEdit, PrimaryPushButton, PushButton, MessageBoxBase, BodyLabel, SpinBox, SubtitleLabel
 )
 from qfluentwidgets import (
     FluentIcon as FIF,
@@ -64,10 +65,22 @@ class TableFrame(TableWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        # 核心控制：禁用单元格直接编辑 , 否则双击会进入默认编辑器
+        self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+
         self.verticalHeader().hide()
         self.setBorderRadius(8)
         self.setBorderVisible(True)
         self.setWordWrap(False)
+
+        self.columnMeta = [
+            {"type": "text"},  # Swc Name
+            {"type": "combo", "options": ["Core0", "Core1", "Core2", "None"]},
+            {"type": "int"},
+            {"type": "int"},
+            {"type": "int"},
+            {"type": "int"}
+        ]
 
         self.headInfos = [
             self.tr('Swc Name'),
@@ -93,9 +106,9 @@ class TableFrame(TableWidget):
                 item.setTextAlignment(Qt.AlignCenter)
                 self.setItem(i, j, item)
         
-        # Set delegate for Core Assign column (index 1)
-        self.coreDelegate = CoreAssignDelegate(self)
-        self.setItemDelegateForColumn(1, self.coreDelegate)
+        # # Set delegate for Core Assign column (index 1)
+        # self.coreDelegate = CoreAssignDelegate(self)
+        # self.setItemDelegateForColumn(1, self.coreDelegate)
         
         # 核心：列宽自适应父窗口
         header = self.horizontalHeader()
@@ -106,6 +119,9 @@ class TableFrame(TableWidget):
         
         # Connect cell change signal
         self.itemChanged.connect(self._onItemChanged)
+        
+        # Enable double-click edit
+        self.doubleClicked.connect(self._onDoubleClicked)
     
     def _loadFromConfig(self):
         """
@@ -138,6 +154,97 @@ class TableFrame(TableWidget):
         Handle item change and save to config
         """
         self._saveToConfig()
+
+    def createEditorDialog(self, headers, row_data, column_meta):
+        class TableEditDialog(MessageBoxBase):
+            def __init__(self, headers, row_data, column_meta, parent=None):
+                super().__init__(parent)
+                # 标题
+                self.titleLabel = SubtitleLabel("用户信息(Beta)", self)
+                self.setFixedWidth(600)
+                self._widgets = []
+                # ===== 内容区域 =====
+                contentWidget = QWidget()
+                mainLayout = QVBoxLayout(contentWidget)
+                mainLayout.addWidget(self.titleLabel)
+                mainLayout.setSpacing(12)
+                mainLayout.setContentsMargins(10, 10, 10, 10)
+
+                for i, title in enumerate(headers):
+                    meta = column_meta[i]
+                    value = row_data[i]
+
+                    rowLayout = QHBoxLayout()
+                    rowLayout.setSpacing(10)
+
+                    label = BodyLabel(title)
+                    label.setFixedWidth(120)
+                    label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+
+                    # === 根据类型创建控件 ===
+                    if meta["type"] == "combo":
+                        widget = ComboBox()
+                        widget.addItems(meta["options"])
+                        if value in meta["options"]:
+                            widget.setCurrentText(value)
+
+                    elif meta["type"] == "int":
+                        widget = SpinBox()
+                        widget.setRange(0, 9999)
+                        widget.setValue(int(value))
+
+                    else:
+                        widget = LineEdit()
+                        widget.setText(value)
+
+                    widget.setMinimumWidth(250)
+
+                    rowLayout.addWidget(label)
+                    rowLayout.addWidget(widget, 1)  # 拉伸
+
+                    mainLayout.addLayout(rowLayout)
+                    self._widgets.append(widget)
+
+                self.viewLayout.addWidget(contentWidget)
+
+                self.yesButton.setText("Save")
+                self.cancelButton.setText("Cancel")
+
+            def get_data(self):
+                data = []
+                for w in self._widgets:
+                    if isinstance(w, ComboBox):
+                        data.append(w.currentText())
+                    elif isinstance(w, SpinBox):
+                        data.append(str(w.value()))
+                    else:
+                        data.append(w.text())
+                return data
+        return TableEditDialog(headers, row_data, column_meta, self.window())
+
+    def _onDoubleClicked(self, index):
+        row = index.row()
+
+        self.row_data = [
+            self.item(row, col).text() if self.item(row, col) else ""
+            for col in range(self.columnCount())
+        ]
+
+        dialog = self.createEditorDialog(
+            self.headInfos,
+            self.row_data,
+            self.columnMeta
+        )
+
+        if dialog.exec():
+            new_data = dialog.get_data()
+
+            self.blockSignals(True)
+            for col, value in enumerate(new_data):
+                self.item(row, col).setText(value)
+            self.blockSignals(False)
+
+            self._saveToConfig()
 
         # 可选：让最后一列自动填满剩余空间（如果不想所有列均分）
         # header.setStretchLastSection(True)
@@ -193,6 +300,9 @@ class QcCompositionUI(ExpandSettingCard):
             cfg.get(cfg.QcCompositionInputFolder)
         )
 
+        # 表格卡片配置
+        self.tabCard = TableFrame(self)
+
         # Execute button
         self.qcCompositionExecuteCard = PrimaryPushSettingCard(
             self.tr("Execute"),
@@ -209,7 +319,7 @@ class QcCompositionUI(ExpandSettingCard):
         添加卡片到布局
         """
         self.viewLayout.addWidget(self.qcCompositionInputFolderCard)
-        self.viewLayout.addWidget(TableFrame(self))
+        self.viewLayout.addWidget(self.tabCard)
         self.viewLayout.addWidget(self.qcCompositionExecuteCard)
 
         self._adjustViewSize()
