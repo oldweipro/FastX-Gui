@@ -6,7 +6,7 @@
         "QcCompositionTableData": [
             [
                 "ExampleSwc",
-                "Core1",
+                "Core0",
                 "0",
                 "0",
                 "2",
@@ -31,17 +31,20 @@
         "Email": "",
         "RememberMe": true
     },
+    "Application": {
+        "autoHide": true,
+        "AutoHideOnStartup": false,
+        "autoRun": true,
+        "beta": false,
+        "close_window_action": "ask",
+        "WindowSizeMode": "auto"
+    },
     "Background": {
         "BlurRadius": 0,
         "DisplayMode": "Keep Aspect Ratio",
         "ImageEnabled": false,
         "ImagePath": "C:/Users/91974/Pictures/02 壁纸/短发美 外套 帅气 纹身4k高清壁纸3840x2160_彼岸图网.jpg",
         "Opacity": 30
-    },
-    "Application": {
-        "beta": false,
-        "close_window_action": "ask",
-        "WindowSizeMode": "auto"
     },
     "Material": {
         "AcrylicBlurRadius": 40

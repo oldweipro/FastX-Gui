@@ -12,10 +12,14 @@ from app.view.main_window import MainWindow
 mainWindow = None
 
 
-def showMainWindow():
+def showMainWindow(hide=False):
     global mainWindow
     mainWindow = MainWindow()
+    # Always show the window first to ensure it's properly initialized
     mainWindow.show()
+    # Hide it if needed
+    if hide:
+        mainWindow.hide()
 
 
 def main():
@@ -39,11 +43,19 @@ def main():
     app.installTranslator(translator)
     app.installTranslator(galleryTranslator)
 
+    # Check if application was started with "startup" argument
+    hide_window = False
+    if len(sys.argv) > 1 and sys.argv[1] == "startup":
+        # Check if autoHide is enabled
+        if cfg.get(cfg.autoHide):
+            hide_window = True
+
     # create main window
     # w = RegisterWindow()
     # w.loginSignal.connect(showMainWindow)
     # w.show()
-    showMainWindow()
+    showMainWindow(hide=hide_window)
+
     app.exec()
 
 

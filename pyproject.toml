@@ -7,6 +7,7 @@ dependencies = [
     "loguru",
     "nuitka>=4.0.1",
     "ordered-set>=4.1.0",
+    "plyer>=2.1.0",
     "pyside6-fluent-widgets[full]>=1.11.1",
     "setuptools>=82.0.0",
 ]

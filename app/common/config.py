@@ -127,6 +127,10 @@ class Config(QConfig):
         OptionsValidator(["fixed", "auto"]),
         restart=True,
     )
+    autoRun = ConfigItem("Application", "autoRun", False, BoolValidator())
+    autoHide = ConfigItem("Application", "autoHide", False, BoolValidator())
+    autoHideOnStartup = ConfigItem("Application", "AutoHideOnStartup", False, BoolValidator())
+
     # Settings/software update
     checkUpdateAtStartUp = ConfigItem("software update", "CheckUpdateAtStartUp", True, BoolValidator())
     # Settings/Beta

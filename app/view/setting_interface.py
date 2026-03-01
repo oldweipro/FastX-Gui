@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+
+
 from PySide6.QtCore import QStandardPaths, Qt, QUrl
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QLabel, QWidget
@@ -27,13 +31,14 @@ from qfluentwidgets import FluentIcon as FIF
 from app.common.background_manager import get_background_manager
 from app.common.config import cfg, isWin11
 from app.common.icon import UnicodeIcon
+from app.common.notification import show_notification, NotificationType, NotificationConfig
 from app.common.setting import (
     AUTHOR,
     COPYRIGHT_HOLDER,
     FEEDBACK_URL,
     HELP_URL,
     VERSION,
-    YEAR,
+    YEAR, APPLY_NAME,
 )
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
@@ -231,6 +236,14 @@ class SettingInterface(ScrollArea):
 
         # Application
         self.appGroup = SettingCardGroup(self.tr("Application settings"), self.view)
+        # TODO: 不能够正常工作,需要解决
+        self.StartupCard = SwitchSettingCard(
+            UnicodeIcon.get_icon_by_name("ic_fluent_bug_prohibited_20_regular"),
+            self.tr("Auto StartUp Settings(Beta)"),
+            self.tr("Automatically start up the application"),
+            configItem=cfg.autoRun,
+            parent=self.appGroup,
+        )
         self.betaCard = SwitchSettingCard(
             UnicodeIcon.get_icon_by_name("ic_fluent_bug_prohibited_20_regular"),
             self.tr("Beta experimental features"),
@@ -437,6 +450,7 @@ class SettingInterface(ScrollArea):
 
         self.materialGroup.addSettingCard(self.blurRadiusCard)
 
+        self.appGroup.addSettingCard(self.StartupCard)
         self.appGroup.addSettingCard(self.betaCard)
         self.appGroup.addSettingCard(self.closeWindowActionCard)
         self.appGroup.addSettingCard(self.windowSizeModeCard)
@@ -590,6 +604,8 @@ class SettingInterface(ScrollArea):
         self.backgroundBlurCard.valueChanged.connect(self.__onBackgroundBlurChanged)
         self.backgroundDisplayModeCard.comboBox.currentIndexChanged.connect(self.__onBackgroundDisplayModeChanged)
 
+        self.StartupCard.checkedChanged.connect(self.__on_autostart_changed)
+
     def __onThemeChanged(self):
         """Handle theme change and update log color cards"""
         #  如果是展開的,則收縮
@@ -684,3 +700,100 @@ class SettingInterface(ScrollArea):
 
         # about
         self.feedbackCard.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))
+
+    def set_autostart(self, enabled: bool) -> bool:
+        """设置开机自启动
+
+        Args:
+            enabled: 是否启用自启动
+
+        Returns:
+            bool: 设置是否成功
+        """
+        try:
+            if sys.platform == "win32":
+                return self._set_windows_autostart(enabled)
+            elif sys.platform.startswith("linux"):
+                return self._set_linux_autostart(enabled)
+            else:
+                return False
+        except Exception as e:
+            # logger.exception(f"设置开机自启动失败: {e}")
+            return False
+
+    def _set_windows_autostart(self, enabled: bool) -> bool:
+        """设置Windows开机自启动"""
+        try:
+            import winreg
+        except Exception as e:
+            # logger.warning(f"无法加载 winreg: {e}")
+            return False
+
+        key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
+        try:
+            key = winreg.OpenKey(
+                winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_SET_VALUE
+            )
+        except FileNotFoundError:
+            key = winreg.CreateKey(winreg.HKEY_CURRENT_USER, key_path)
+
+        if enabled:
+            if getattr(sys, "frozen", False):
+                cmd = f'"{sys.executable}"'
+            else:
+                root = Path(__file__).resolve().parents[2]
+                main_py = root / "main.py"
+                cmd = f'"{sys.executable}" "{str(main_py)}"'
+            winreg.SetValueEx(key, APPLY_NAME, 0, winreg.REG_SZ, cmd)
+        else:
+            try:
+                winreg.DeleteValue(key, APPLY_NAME)
+            except FileNotFoundError:
+                pass
+
+        winreg.CloseKey(key)
+        return True
+
+    def _set_linux_autostart(self, enabled: bool) -> bool:
+        """设置Linux开机自启动"""
+        autostart_dir = Path.home() / ".config" / "autostart"
+        autostart_dir.mkdir(parents=True, exist_ok=True)
+        desktop = autostart_dir / f"{APPLY_NAME}.desktop"
+
+        if enabled:
+            if getattr(sys, "frozen", False):
+                exec_cmd = f'"{sys.executable}"'
+            else:
+                root = Path(__file__).resolve().parents[2]
+                main_py = root / "main.py"
+                exec_cmd = f'{sys.executable} "{str(main_py)}"'
+            content = f"[Desktop Entry]\nType=Application\nName={APPLY_NAME}\nExec={exec_cmd}\nX-GNOME-Autostart-enabled=true\n"
+            desktop.write_text(content, encoding="utf-8")
+        else:
+            if desktop.exists():
+                desktop.unlink()
+
+        return True
+
+    def __on_autostart_changed(self, checked):
+        cfg.set(cfg.autoRun, checked)
+        ok = self.set_autostart(checked)
+        if ok:
+            if checked:
+                show_notification(
+                    NotificationType.SUCCESS,
+                    NotificationConfig(title=self.tr("auto start up"),content=self.tr("enable")),
+                    parent=self.window(),
+                )
+            else:
+                show_notification(
+                    NotificationType.INFO,
+                    NotificationConfig(title=self.tr("auto start up"),content=self.tr("disable")),
+                    parent=self.window(),
+                )
+        else:
+            show_notification(
+                NotificationType.ERROR,
+                NotificationConfig(title=self.tr("auto start up"), content=self.tr("failure")),
+                parent=self.window(),
+            )
