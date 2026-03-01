@@ -1,9 +1,9 @@
 import sys
 from pathlib import Path
-
+from typing import Union
 
 from PySide6.QtCore import QStandardPaths, Qt, QUrl
-from PySide6.QtGui import QDesktopServices
+from PySide6.QtGui import QDesktopServices, QIcon
 from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QLabel, QWidget
 from qfluentwidgets import (
     ColorSettingCard,
@@ -24,7 +24,7 @@ from qfluentwidgets import (
     SettingCardGroup,
     SwitchSettingCard,
     setTheme,
-    setThemeColor, isDarkTheme,
+    setThemeColor, isDarkTheme, FluentIconBase, HyperlinkButton,
 )
 from qfluentwidgets import FluentIcon as FIF
 
@@ -80,6 +80,75 @@ class BackgroundImageCard(SettingCard):
         else:
             self.setContent(self.tr("Choose a custom background image file"))
             self.clearButton.setEnabled(False)
+
+class HelpSettingCard(HyperlinkCard):
+    """
+    Help setting card (self-contained, no external dependency)
+    """
+
+    def __init__(
+        self,
+        url,
+        text,
+        icon: Union[str, QIcon, FluentIconBase],
+        title,
+        content=None,
+        parent=None,
+    ):
+        super().__init__(url, text, icon, title, content, parent)
+        self.installPath = self._getInstallPath()
+        self.dataPath = self._getDataPath()
+
+        self.installButton = HyperlinkButton(
+            "",
+            self.tr("Installation folder"),
+            self,
+            FIF.FOLDER,
+        )
+        self.installButton.setToolTip(self.tr("Open installation folder"))
+        self.installButton.clicked.connect(lambda: self._openFolder(self.installPath))
+
+        self.dataButton = HyperlinkButton(
+            "",
+            self.tr("Data folder"),
+            self,
+            FIF.FOLDER,
+        )
+        self.dataButton.setToolTip(self.tr("Open data folder"))
+        self.dataButton.clicked.connect(lambda: self._openFolder(self.dataPath))
+
+        index = self.hBoxLayout.indexOf(self.linkButton)
+        self.hBoxLayout.insertWidget(index, self.installButton, 0, Qt.AlignRight)
+        self.hBoxLayout.insertWidget(index+1, self.dataButton, 0, Qt.AlignRight)
+        self.hBoxLayout.addSpacing(16)
+
+    @staticmethod
+    def _getInstallPath() -> Path:
+        """
+        Return executable folder (works for dev and frozen)
+        """
+        if getattr(sys, "frozen", False):
+            return Path(sys.executable).resolve().parent
+        else:
+            return Path(sys.argv[0]).resolve().parent
+
+    @staticmethod
+    def _getDataPath() -> Path:
+        """
+        Return application data folder
+        """
+        if sys.platform == "win32":
+            return Path.home() / "AppData" / "Roaming" / "FastXGui"
+        else:
+            return Path.home() / ".fastxgui"
+
+    @staticmethod
+    def _openFolder(path: Path):
+        if not path.exists():
+            path.mkdir(parents=True, exist_ok=True)
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(path)))
+
+
 
 
 class SettingInterface(ScrollArea):
@@ -358,7 +427,7 @@ class SettingInterface(ScrollArea):
 
         # About
         self.aboutGroup = SettingCardGroup(self.tr("About"), self.view)
-        self.helpCard = HyperlinkCard(
+        self.helpCard = HelpSettingCard(
             HELP_URL,
             self.tr("Open help page"),
             FIF.HELP,
