@@ -4,12 +4,17 @@ version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.13"
 dependencies = [
+    "aenum>=3.1.16",
     "loguru",
     "nuitka>=4.0.1",
     "ordered-set>=4.1.0",
     "plyer>=2.1.0",
     "pyside6-fluent-widgets[full]>=1.11.1",
+    "qtpy>=2.4.3",
+    "requests>=2.32.5",
+    "send2trash>=2.1.0",
     "setuptools>=82.0.0",
+    "zbtoollib>=2.0.8.1",
 ]
 [tool.uv]
 required-environments = "sys_platform == 'win32' and platform_machine == 'AMD64'"

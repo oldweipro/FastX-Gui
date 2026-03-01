@@ -15,7 +15,8 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from qfluentwidgets import FluentIcon as FIF, MessageBoxBase, BodyLabel, CaptionLabel
+from qfluentwidgets import FluentIcon as FIF, MessageBoxBase, BodyLabel, CaptionLabel, TransparentToolButton, \
+    FlyoutAnimationType, Flyout
 from qfluentwidgets import (
     IndeterminateProgressBar,
     InfoBar,
@@ -52,6 +53,7 @@ from app.common.translator import Translator
 from app.components.custom_titlebar import CustomTitleBar, CustomTitleBar1
 from app.view.app_interface import AppInterface
 from app.view.floating_window import LevitationWindow
+from app.view.floating_window.process_center import ProgressCenter
 from app.view.func_interface import FuncInterface
 from app.view.home_interface import HomeInterface
 from app.view.library_interface import LibraryViewInterface
@@ -241,6 +243,14 @@ class MainWindow(SplitFluentWindow):
         self.splashScreen = SplashScreen(self.windowIcon(), self)
         self.splashScreen.setIconSize(QSize(106, 106))
         self.splashScreen.raise_()
+
+        # 任务中心
+        self.progressCenterFlyout = None
+        self.progressCenter = ProgressCenter(self)
+        self.progressCenterButton = TransparentToolButton(UnicodeIcon.get_icon_by_name('ic_fluent_apps_list_32_regular'), self)
+        self.progressCenterButton.setFixedSize(46, 32)
+        self.progressCenterButton.clicked.connect(lambda: self.showProgressCenter(FlyoutAnimationType.DROP_DOWN))
+        self.titleBar.hBoxLayout.insertWidget(self.titleBar.hBoxLayout.indexOf(self.titleBar.minBtn), self.progressCenterButton, 0, Qt.AlignRight)
 
         # 桌面可用区域
         desktop = QApplication.primaryScreen().availableGeometry()
@@ -745,3 +755,24 @@ class MainWindow(SplitFluentWindow):
                 y = max(0, (window_size.height() - pixmap_size.height()) // 2)
 
             painter.drawPixmap(x, y, background_pixmap)
+
+    def showProgressCenter(self, aniType=FlyoutAnimationType.DROP_DOWN):
+        if self.progressCenterFlyout is None:
+            self.progressCenterFlyout = Flyout.make(
+                self.progressCenter,
+                self.progressCenterButton,
+                self,
+                aniType=aniType,
+                isDeleteOnClose=False,
+            )
+        else:
+            self.progressCenterFlyout.close()
+            # 注：使用deleteLater会导致ToolTip被删除，进而报错，并且此处有内存泄露
+            del self.progressCenterFlyout
+            self.progressCenterFlyout = Flyout.make(
+                self.progressCenter,
+                self.progressCenterButton,
+                self,
+                aniType=aniType,
+                isDeleteOnClose=False,
+            )
