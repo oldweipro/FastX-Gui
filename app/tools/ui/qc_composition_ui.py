@@ -160,57 +160,49 @@ class TableFrame(TableWidget):
             def __init__(self, headers, row_data, column_meta, parent=None):
                 super().__init__(parent)
                 # 标题
-                self.titleLabel = SubtitleLabel("用户信息(Beta)", self)
-                self.setFixedWidth(600)
-                self._widgets = []
-                # ===== 内容区域 =====
-                contentWidget = QWidget()
-                mainLayout = QVBoxLayout(contentWidget)
-                mainLayout.addWidget(self.titleLabel)
-                mainLayout.setSpacing(12)
-                mainLayout.setContentsMargins(10, 10, 10, 10)
+                self.titleLabel = SubtitleLabel(self.tr("编辑条目"), self)
+                self.viewLayout.addWidget(self.titleLabel)
 
+                self._widgets = []
+                # 创建每一行
                 for i, title in enumerate(headers):
                     meta = column_meta[i]
                     value = row_data[i]
 
-                    rowLayout = QHBoxLayout()
-                    rowLayout.setSpacing(10)
+                    row_layout = QHBoxLayout()
+                    row_layout.setSpacing(10)
 
                     label = BodyLabel(title)
                     label.setFixedWidth(120)
-                    label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+                    label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                    row_layout.addWidget(label)
 
-                    # === 根据类型创建控件 ===
+                    # 根据类型创建控件
                     if meta["type"] == "combo":
                         widget = ComboBox()
                         widget.addItems(meta["options"])
                         if value in meta["options"]:
                             widget.setCurrentText(value)
-
                     elif meta["type"] == "int":
                         widget = SpinBox()
                         widget.setRange(0, 9999)
                         widget.setValue(int(value))
-
                     else:
                         widget = LineEdit()
                         widget.setText(value)
 
                     widget.setMinimumWidth(250)
-
-                    rowLayout.addWidget(label)
-                    rowLayout.addWidget(widget, 1)  # 拉伸
-
-                    mainLayout.addLayout(rowLayout)
+                    row_layout.addWidget(widget)
                     self._widgets.append(widget)
 
-                self.viewLayout.addWidget(contentWidget)
+                    self.viewLayout.addLayout(row_layout)
 
-                self.yesButton.setText("Save")
-                self.cancelButton.setText("Cancel")
+                self.yesButton.setText(self.tr("Save"))
+                self.cancelButton.setText(self.tr("Cancel"))
+                self.widget.setMinimumWidth(600)  # 设置对话框最小宽度
 
             def get_data(self):
+                """获取编辑后的数据"""
                 data = []
                 for w in self._widgets:
                     if isinstance(w, ComboBox):
@@ -220,6 +212,8 @@ class TableFrame(TableWidget):
                     else:
                         data.append(w.text())
                 return data
+
+        # 创建对话框实例，父窗口为主窗口
         return TableEditDialog(headers, row_data, column_meta, self.window())
 
     def _onDoubleClicked(self, index):
