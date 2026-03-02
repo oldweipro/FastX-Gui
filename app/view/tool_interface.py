@@ -2,7 +2,6 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QHBoxLayout,
-    QLabel,
     QScroller,
     QScrollerProperties,
     QSpacerItem,
@@ -22,6 +21,7 @@ from qfluentwidgets import (
 from app.common.config import cfg
 from app.common.icon import UnicodeIcon
 from app.common.style_sheet import StyleSheet
+from app.components.main_layout_card import ToolBar
 from app.tools.ui.qc_composition_ui import QcCompositionUI
 from app.tools.ui.rm_comments_ui import RmCommentsUI
 
@@ -38,8 +38,13 @@ class ToolsInterface(ScrollArea):
         """
         super().__init__(parent)
         self.view = QWidget(self)
-        self.platformToolsLabel = QLabel(self.tr("PlatformTools"), self)
-        self.platformToolsLabel.setObjectName("platformToolsLabel")
+        self.headCard = ToolBar(
+            title=self.tr("PlatformTools"),
+            subtitle="qfluentwidgets.components.navigation",
+            parent=self.view,
+        )
+        self.headCard.vBoxLayout.setContentsMargins(0,0,0,0)
+        self.headCard.setFixedHeight(100)
 
         self.DemGroup = SettingCardGroup(self.tr("Dem"), self.view)
         self.DcmGroup = SettingCardGroup(self.tr("Dcm"), self.view)
@@ -60,7 +65,7 @@ class ToolsInterface(ScrollArea):
         # 创建视图容器
         self.view.setObjectName("view")
         # 设置滚动区域属性  | 顶部留出空间给头部卡片 （顺时针-左上右下）
-        self.setViewportMargins(0, 146, 0, 0)
+        self.setViewportMargins(0, 48, 0, 0)
         self.setWidget(self.view)
         # 允许widget调整大小
         self.setWidgetResizable(True)
@@ -86,20 +91,21 @@ class ToolsInterface(ScrollArea):
         scroller.setScrollerProperties(scroller_props)
 
     def __initLayout(self):
-        self.pivot = SegmentedWidget(self)
-        self.stackedWidget = QStackedWidget(self)
+        self.pivot = SegmentedWidget(self.view)
+        self.stackedWidget = QStackedWidget(self.view)
+
         self.Layout = QHBoxLayout(self.view)
-        self.Layout.setContentsMargins(36, 0, 36, 0)
-        self.platformToolsLabel.move(36, 48)
-        self.pivot.move(40, 98)
+        self.Layout.setContentsMargins(0, 0, 0, 0)
 
         self.main_layout = QVBoxLayout()
         self.main_layout.setObjectName("mainLayout")
-        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.setContentsMargins(36, 0, 36, 0)
         self.main_layout.setSpacing(20)
         self.main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         self.Layout.addLayout(self.main_layout)
+        self.main_layout.addWidget(self.headCard)
+        self.main_layout.addWidget(self.pivot)
         self.main_layout.addWidget(self.stackedWidget)
 
         # Add Remove Comments tool card
