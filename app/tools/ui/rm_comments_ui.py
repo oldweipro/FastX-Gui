@@ -49,13 +49,13 @@ class RmCommentsUI(ExpandSettingCard):
             self.tr("Choose folder"),
             FIF.FOLDER_ADD,
             self.tr("Project Input Directory"),
-            cfg.get(cfg.RmCommentsInputFolder)
+            cfg.get(cfg.rmCommentsInputFolder)
         )
         self.rmCodeCommentsOutputFolderCard = PushSettingCard(
             self.tr("Choose folder"),
             FIF.FOLDER_ADD,
             self.tr("Project Output Directory"),
-            cfg.get(cfg.RmCommentsOutputFolder)
+            cfg.get(cfg.rmCommentsOutputFolder)
         )
 
         # RemoveComments options
@@ -63,31 +63,31 @@ class RmCommentsUI(ExpandSettingCard):
             FIF.DOCUMENT,
             self.tr("Remove Comments"),
             self.tr("Remove single line comments"),
-            cfg.RmCommentsRemoveComments
+            cfg.rmCommentsRemoveComments
         )
         self.rmCodeCommentsRemoveDocstringsCard = SwitchSettingCard(
             FIF.EDIT,
             self.tr("Remove Docstrings"),
             self.tr("Remove module, class and function docstrings"),
-            cfg.RmCommentsRemoveDocstrings
+            cfg.rmCommentsRemoveDocstrings
         )
         self.rmCodeCommentsRemoveEmptyLinesCard = SwitchSettingCard(
             FIF.LAYOUT,
             self.tr("Remove Empty Lines"),
             self.tr("Remove empty lines from code"),
-            cfg.RmCommentsRemoveEmptyLines
+            cfg.rmCommentsRemoveEmptyLines
         )
         self.rmCodeCommentsKeepTripleQuotesCard = SwitchSettingCard(
             FIF.DOCUMENT,
             self.tr("Keep Triple Quotes"),
             self.tr("Keep triple quoted strings"),
-            cfg.RmCommentsKeepTripleQuotes
+            cfg.rmCommentsKeepTripleQuotes
         )
         self.rmCodeCommentsRecursiveCard = SwitchSettingCard(
             FIF.SYNC,
             self.tr("Recursive"),
             self.tr("Process subdirectories recursively"),
-            cfg.RmCommentsRecursive
+            cfg.rmCommentsRecursive
         )
 
         # Output suffix setting
@@ -95,7 +95,7 @@ class RmCommentsUI(ExpandSettingCard):
             self.tr("Set suffix"),
             FIF.EDIT,
             self.tr("Output File Suffix"),
-            cfg.get(cfg.RmCommentsOutputSuffix)
+            cfg.get(cfg.rmCommentsOutputSuffix)
         )
 
         # Exclude files setting
@@ -103,7 +103,7 @@ class RmCommentsUI(ExpandSettingCard):
             self.tr("Set exclude files"),
             FIF.FILTER,
             self.tr("Exclude Files (comma separated)"),
-            cfg.get(cfg.RmCommentsExcludeFiles)
+            cfg.get(cfg.rmCommentsExcludeFiles)
         )
 
         # Exclude patterns setting
@@ -111,7 +111,7 @@ class RmCommentsUI(ExpandSettingCard):
             self.tr("Set exclude patterns"),
             FIF.FILTER,
             self.tr("Exclude Patterns (comma separated)"),
-            cfg.get(cfg.RmCommentsExcludePatterns)
+            cfg.get(cfg.rmCommentsExcludePatterns)
         )
 
         # Execute button
@@ -164,38 +164,38 @@ class RmCommentsUI(ExpandSettingCard):
         """
         # 按钮 | 去除Python代码备注,空行
         self.rmCodeCommentsInputFolderCard.clicked.connect(
-            lambda: self.__onChooseFolderClicked(cfg.RmCommentsInputFolder, self.rmCodeCommentsInputFolderCard)
+            lambda: self.__onChooseFolderClicked(cfg.rmCommentsInputFolder, self.rmCodeCommentsInputFolderCard)
         )
         self.rmCodeCommentsOutputFolderCard.clicked.connect(
-            lambda: self.__onChooseFolderClicked(cfg.RmCommentsOutputFolder, self.rmCodeCommentsOutputFolderCard)
+            lambda: self.__onChooseFolderClicked(cfg.rmCommentsOutputFolder, self.rmCodeCommentsOutputFolderCard)
         )
 
         # RemoveComments options connections
         self.rmCodeCommentsRemoveCommentsCard.checkedChanged.connect(
-            lambda checked: cfg.set(cfg.RmCommentsRemoveComments, checked)
+            lambda checked: cfg.set(cfg.rmCommentsRemoveComments, checked)
         )
         self.rmCodeCommentsRemoveDocstringsCard.checkedChanged.connect(
-            lambda checked: cfg.set(cfg.RmCommentsRemoveDocstrings, checked)
+            lambda checked: cfg.set(cfg.rmCommentsRemoveDocstrings, checked)
         )
         self.rmCodeCommentsRemoveEmptyLinesCard.checkedChanged.connect(
-            lambda checked: cfg.set(cfg.RmCommentsRemoveEmptyLines, checked)
+            lambda checked: cfg.set(cfg.rmCommentsRemoveEmptyLines, checked)
         )
         self.rmCodeCommentsKeepTripleQuotesCard.checkedChanged.connect(
-            lambda checked: cfg.set(cfg.RmCommentsKeepTripleQuotes, checked)
+            lambda checked: cfg.set(cfg.rmCommentsKeepTripleQuotes, checked)
         )
         self.rmCodeCommentsRecursiveCard.checkedChanged.connect(
-            lambda checked: cfg.set(cfg.RmCommentsRecursive, checked)
+            lambda checked: cfg.set(cfg.rmCommentsRecursive, checked)
         )
 
         # Input cards connections
         self.rmCodeCommentsOutputSuffixCard.clicked.connect(
-            lambda: self.__onSetValueClicked(cfg.RmCommentsOutputSuffix, self.rmCodeCommentsOutputSuffixCard, self.tr("Set Output Suffix"))
+            lambda: self.__onSetValueClicked(cfg.rmCommentsOutputSuffix, self.rmCodeCommentsOutputSuffixCard, self.tr("Set Output Suffix"))
         )
         self.rmCodeCommentsExcludeFilesCard.clicked.connect(
-            lambda: self.__onSetValueClicked(cfg.RmCommentsExcludeFiles, self.rmCodeCommentsExcludeFilesCard, self.tr("Set Exclude Files"))
+            lambda: self.__onSetValueClicked(cfg.rmCommentsExcludeFiles, self.rmCodeCommentsExcludeFilesCard, self.tr("Set Exclude Files"))
         )
         self.rmCodeCommentsExcludePatternsCard.clicked.connect(
-            lambda: self.__onSetValueClicked(cfg.RmCommentsExcludePatterns, self.rmCodeCommentsExcludePatternsCard, self.tr("Set Exclude Patterns"))
+            lambda: self.__onSetValueClicked(cfg.rmCommentsExcludePatterns, self.rmCodeCommentsExcludePatternsCard, self.tr("Set Exclude Patterns"))
         )
 
         # Execute button connection
@@ -274,16 +274,16 @@ class RmCommentsUI(ExpandSettingCard):
         """
         try:
             # 获取配置
-            input_path = cfg.get(cfg.RmCommentsInputFolder)
-            output_path = cfg.get(cfg.RmCommentsOutputFolder)
-            remove_comments = cfg.get(cfg.RmCommentsRemoveComments)
-            remove_docstrings = cfg.get(cfg.RmCommentsRemoveDocstrings)
-            remove_empty_lines = cfg.get(cfg.RmCommentsRemoveEmptyLines)
-            keep_triple_quotes = cfg.get(cfg.RmCommentsKeepTripleQuotes)
-            output_suffix = cfg.get(cfg.RmCommentsOutputSuffix)
-            recursive = cfg.get(cfg.RmCommentsRecursive)
-            exclude_files = [f.strip() for f in cfg.get(cfg.RmCommentsExcludeFiles).split(',') if f.strip()]
-            exclude_patterns = [p.strip() for p in cfg.get(cfg.RmCommentsExcludePatterns).split(',') if p.strip()]
+            input_path = cfg.get(cfg.rmCommentsInputFolder)
+            output_path = cfg.get(cfg.rmCommentsOutputFolder)
+            remove_comments = cfg.get(cfg.rmCommentsRemoveComments)
+            remove_docstrings = cfg.get(cfg.rmCommentsRemoveDocstrings)
+            remove_empty_lines = cfg.get(cfg.rmCommentsRemoveEmptyLines)
+            keep_triple_quotes = cfg.get(cfg.rmCommentsKeepTripleQuotes)
+            output_suffix = cfg.get(cfg.rmCommentsOutputSuffix)
+            recursive = cfg.get(cfg.rmCommentsRecursive)
+            exclude_files = [f.strip() for f in cfg.get(cfg.rmCommentsExcludeFiles).split(',') if f.strip()]
+            exclude_patterns = [p.strip() for p in cfg.get(cfg.rmCommentsExcludePatterns).split(',') if p.strip()]
 
             # 执行清理
             stats = self.core.execute(

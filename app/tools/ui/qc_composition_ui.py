@@ -128,7 +128,7 @@ class TableFrame(TableWidget):
         Load table data from configuration
         """
         try:
-            data = cfg.get(cfg.QcCompositionTableData)
+            data = cfg.get(cfg.qcCompositionTableData)
             if data:
                 return data
         except:
@@ -147,7 +147,7 @@ class TableFrame(TableWidget):
                 item = self.item(i, j)
                 row.append(item.text() if item else '')
             data.append(row)
-        cfg.set(cfg.QcCompositionTableData, data)
+        cfg.set(cfg.qcCompositionTableData, data)
     
     def _onItemChanged(self, item):
         """
@@ -272,7 +272,7 @@ class QcCompositionUI(ExpandSettingCard):
         self.combox = ComboBox(self)
         self.combox.addItems(["Option 1", "Option 2", "Option 3"])
         # Load saved option from config
-        selected_index = cfg.get(cfg.QcCompositionSelectedOption)
+        selected_index = cfg.get(cfg.qcCompositionSelectedOption)
         if 0 <= selected_index < self.combox.count():
             self.combox.setCurrentIndex(selected_index)
         self.card.addWidget(self.combox)
@@ -291,7 +291,7 @@ class QcCompositionUI(ExpandSettingCard):
             self.tr("Choose folder"),
             FIF.FOLDER_ADD,
             self.tr("Project Input Directory"),
-            cfg.get(cfg.QcCompositionInputFolder)
+            cfg.get(cfg.qcCompositionInputFolder)
         )
 
         # 文件选择卡片
@@ -299,7 +299,7 @@ class QcCompositionUI(ExpandSettingCard):
             self.tr("Choose file"),
             FIF.HEART,
             self.tr("Input File"),
-            cfg.get(cfg.QcCompositionInputFile)
+            cfg.get(cfg.qcCompositionInputFile)
         )
 
         # 表格卡片配置
@@ -333,12 +333,12 @@ class QcCompositionUI(ExpandSettingCard):
         """
         # 按钮 | 选择文件夹
         self.qcCompositionInputFolderCard.clicked.connect(
-            lambda: self.__onChooseFolderClicked(cfg.QcCompositionInputFolder, self.qcCompositionInputFolderCard)
+            lambda: self.__onChooseFolderClicked(cfg.qcCompositionInputFolder, self.qcCompositionInputFolderCard)
         )
 
         # 按钮 | 选择文件
         self.qcCompositionInputFileCard.clicked.connect(
-            lambda: self.__onChooseFileClicked(cfg.QcCompositionInputFile, self.qcCompositionInputFileCard)
+            lambda: self.__onChooseFileClicked(cfg.qcCompositionInputFile, self.qcCompositionInputFileCard)
         )
 
         # Execute button connection
@@ -409,7 +409,7 @@ class QcCompositionUI(ExpandSettingCard):
             index: 选中项的索引
         """
         # Save selected option to config
-        cfg.set(cfg.QcCompositionSelectedOption, index)
+        cfg.set(cfg.qcCompositionSelectedOption, index)
         
         if index == 0:  # Option 1
             # 显示所有卡片并启用

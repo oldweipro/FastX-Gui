@@ -43,7 +43,7 @@ class FastDemToolUI(ExpandSettingCard):
         self.combox = ComboBox(self)
         self.combox.addItems(["Option 1", "Option 2", "Option 3"])
         # Load saved option from config
-        selected_index = cfg.get(cfg.FastDemSelectedOption)
+        selected_index = cfg.get(cfg.fastDemSelectedOption)
         if 0 <= selected_index < self.combox.count():
             self.combox.setCurrentIndex(selected_index)
         self.card.addWidget(self.combox)
@@ -62,7 +62,7 @@ class FastDemToolUI(ExpandSettingCard):
             self.tr("Choose folder"),
             FIF.FOLDER_ADD,
             self.tr("FastDem Input Directory"),
-            cfg.get(cfg.FastDemInputFolder)
+            cfg.get(cfg.fastDemInputFolder)
         )
 
         # 文件选择卡片
@@ -70,7 +70,7 @@ class FastDemToolUI(ExpandSettingCard):
             self.tr("Choose file"),
             FIF.HEART,
             self.tr("Input File"),
-            cfg.get(cfg.FastDemInputFile)
+            cfg.get(cfg.fastDemInputFile)
         )
 
         # Execute button
@@ -100,12 +100,12 @@ class FastDemToolUI(ExpandSettingCard):
         """
         # 按钮 | 选择文件夹
         self.fastDemInputFolderCard.clicked.connect(
-            lambda: self.__onChooseFolderClicked(cfg.FastDemInputFolder, self.fastDemInputFolderCard)
+            lambda: self.__onChooseFolderClicked(cfg.fastDemInputFolder, self.fastDemInputFolderCard)
         )
 
         # 按钮 | 选择文件
         self.fastDemInputFileCard.clicked.connect(
-            lambda: self.__onChooseFileClicked(cfg.FastDemInputFile, self.fastDemInputFileCard)
+            lambda: self.__onChooseFileClicked(cfg.fastDemInputFile, self.fastDemInputFileCard)
         )
 
         # Execute button connection
@@ -176,7 +176,7 @@ class FastDemToolUI(ExpandSettingCard):
             index: 选中项的索引
         """
         # Save selected option to config
-        cfg.set(cfg.FastDemSelectedOption, index)
+        cfg.set(cfg.fastDemSelectedOption, index)
 
         if index == 0:  # Option 1
             # 显示所有卡片并启用

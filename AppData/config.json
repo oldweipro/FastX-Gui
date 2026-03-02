@@ -1,54 +1,15 @@
 {
-    "ToolsDem": {
-        "FastDemInputFile": "D:/Github/FastX-Gui/nuitka-build.py",
-        "FastDemInputFolder": "C:/Users/91974/Downloads",
-        "FastDemSelectedOption": 0
-    },
-    "ToolsE2E": {
-        "FastE2EDirection": "Tx",
-        "FastE2EInputFile": "",
-        "FastE2EInputFolder": "C:/Users/91974/Downloads",
-        "FastE2ESelectedOption": 0
-    },
-    "ToolsQc": {
-        "QcCompositionCoreSettings": {},
-        "QcCompositionInputFile": "",
-        "QcCompositionInputFolder": "C:/Users/91974/Downloads",
-        "QcCompositionSelectedOption": 0,
-        "QcCompositionTableData": [
-            [
-                "ExampleSwc",
-                "Core0",
-                "0",
-                "0",
-                "2",
-                "2"
-            ]
-        ]
-    },
-    "ToolsPub": {
-        "RmCommentsExcludeFiles": "__init__.py,config.py",
-        "RmCommentsExcludePatterns": "*_test.py,test_*.py",
-        "RmCommentsInputFolder": "C:/Users/91974/Downloads",
-        "RmCommentsKeepTripleQuotes": true,
-        "RmCommentsOutputFolder": "C:/Users/91974/Downloads",
-        "RmCommentsOutputSuffix": "_clean.py",
-        "RmCommentsRecursive": true,
-        "RmCommentsRemoveComments": true,
-        "RmCommentsRemoveDocstrings": true,
-        "RmCommentsRemoveEmptyLines": true
-    },
     "Register": {
         "ActivationCode": "",
         "Email": "",
         "RememberMe": true
     },
     "Application": {
-        "autoHide": true,
+        "AutoHide": false,
         "AutoHideOnStartup": false,
-        "autoRun": true,
-        "beta": false,
-        "close_window_action": "ask",
+        "AutoRun": false,
+        "Beta": false,
+        "CloseWindowAction": "ask",
         "WindowSizeMode": "auto"
     },
     "Background": {
@@ -61,11 +22,11 @@
     "Material": {
         "AcrylicBlurRadius": 40
     },
-    "software update": {
+    "Update": {
         "CheckUpdateAtStartUp": true
     },
     "Beta": {
-        "debug_card": false
+        "DebugCard": false
     },
     "FloatingWindow": {
         "DoNotStealFocus": false,
@@ -84,23 +45,45 @@
         "TopmostMode": 1,
         "StartupDisplay": false
     },
-    "Project folders": {
-        "Download": "D:/Github/FastX-Gui/app/download",
-        "LocalProject": [
-            "C:/Users/91974/Music/AZMusicDownload"
-        ]
+    "Project": {
+        "DownloadFolder": "D:/Github/FastX-Gui/app/download",
+        "Folders": []
     },
-    "personalization": {
+    "Personalization": {
         "DpiScale": "Auto",
-        "Language": "zh_CN",
+        "Language": "Auto",
         "MicaEnabled": true
     },
+    "Tools": {
+        "FastDemInputFile": "",
+        "FastDemInputFolder": "C:/Users/91974/Downloads/zbProgram",
+        "FastDemSelectedOption": 0,
+        "FastE2EDirection": "Tx",
+        "FastE2EInputFile": "",
+        "FastE2EInputFolder": "C:/Users/91974/Downloads",
+        "FastE2ESelectedOption": 0,
+        "QcCompositionCoreSettings": {},
+        "QcCompositionInputFile": "",
+        "QcCompositionInputFolder": "C:/Users/91974/Downloads",
+        "QcCompositionSelectedOption": 0,
+        "QcCompositionTableData": [],
+        "RmCommentsExcludeFiles": "__init__.py,config.py",
+        "RmCommentsExcludePatterns": "*_test.py,test_*.py",
+        "RmCommentsInputFolder": "C:/Users/91974/Downloads",
+        "RmCommentsKeepTripleQuotes": false,
+        "RmCommentsOutputFolder": "C:/Users/91974/Downloads",
+        "RmCommentsOutputSuffix": "_clean.py",
+        "RmCommentsRecursive": false,
+        "RmCommentsRemoveComments": true,
+        "RmCommentsRemoveDocstrings": true,
+        "RmCommentsRemoveEmptyLines": true
+    },
     "FastRte": {
-        "FastRteDataTypeFile": "",
-        "FastRteInterfaceFile": "",
-        "FastRteMappingTableFile": "D:/Github/FastX-Gui/main.py",
-        "FastRteOutputFolder": "C:/Users/91974/Downloads",
-        "FastRteToolsEngine": "L2 Func"
+        "DataTypeFile": "",
+        "InterfaceFile": "",
+        "MappingTableFile": "",
+        "OutputFolder": "C:/Users/91974/Downloads",
+        "ToolsEngine": "L2 Func"
     },
     "QFluentWidgets": {
         "FontFamilies": [
@@ -112,20 +95,20 @@
         "ThemeMode": "Light"
     },
     "Log": {
-        "LogColorCriticalDark": "#ffff69b4",
-        "LogColorCriticalLight": "#ffff1493",
-        "LogColorDebugDark": "#ff87ceeb",
-        "LogColorDebugLight": "#ff00bfff",
-        "LogColorErrorDark": "#ffff6347",
-        "LogColorErrorLight": "#ffff4500",
-        "LogColorInfoDark": "#ff98fb98",
-        "LogColorInfoLight": "#ff00ff7f",
-        "LogColorSuccessDark": "#ff90ee90",
-        "LogColorSuccessLight": "#ff32cd32",
-        "LogColorTraceDark": "#ff66dda6",
-        "LogColorTraceLight": "#ffd33c3e",
-        "LogColorWarningDark": "#ffffff00",
-        "LogColorWarningLight": "#ffffd700",
-        "LogLevel": "TRACE"
+        "ColorCriticalDark": "#ffff69b4",
+        "ColorCriticalLight": "#ffff1493",
+        "ColorDebugDark": "#ff87ceeb",
+        "ColorDebugLight": "#ff00bfff",
+        "ColorErrorDark": "#ffff6347",
+        "ColorErrorLight": "#ffff4500",
+        "ColorInfoDark": "#ff98fb98",
+        "ColorInfoLight": "#ff00ff7f",
+        "ColorSuccessDark": "#ff90ee90",
+        "ColorSuccessLight": "#ff32cd32",
+        "ColorTraceDark": "#ffdda0dd",
+        "ColorTraceLight": "#ff9400d3",
+        "ColorWarningDark": "#ffffff00",
+        "ColorWarningLight": "#ffffd700",
+        "Level": "DEBUG"
     }
 }

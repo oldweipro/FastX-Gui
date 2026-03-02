@@ -44,7 +44,7 @@ class FastE2EToolUI(ExpandSettingCard):
         self.combox = ComboBox(self)
         self.combox.addItems(["Option 1", "Option 2", "Option 3"])
         # Load saved option from config
-        selected_index = cfg.get(cfg.FastE2ESelectedOption)
+        selected_index = cfg.get(cfg.fastE2ESelectedOption)
         if 0 <= selected_index < self.combox.count():
             self.combox.setCurrentIndex(selected_index)
         self.card.addWidget(self.combox)
@@ -63,7 +63,7 @@ class FastE2EToolUI(ExpandSettingCard):
             self.tr("Choose folder"),
             FIF.FOLDER_ADD,
             self.tr("FastE2E Input Directory"),
-            cfg.get(cfg.FastE2EInputFolder)
+            cfg.get(cfg.fastE2EInputFolder)
         )
 
         # 文件选择卡片
@@ -71,12 +71,12 @@ class FastE2EToolUI(ExpandSettingCard):
             self.tr("Choose file"),
             FIF.HEART,
             self.tr("Input File"),
-            cfg.get(cfg.FastE2EInputFile)
+            cfg.get(cfg.fastE2EInputFile)
         )
 
         # 方向切换组合框 (Tx/Rx)
         self.directionCard = ComboBoxSettingCard(
-            cfg.FastE2EDirection,
+            cfg.fastE2EDirection,
             UnicodeIcon.get_icon_by_name("ic_fluent_resize_large_24_regular"),
             self.tr("Direction"),
             self.tr("Select the direction for E2E processing"),
@@ -111,12 +111,12 @@ class FastE2EToolUI(ExpandSettingCard):
         """
         # 按钮 | 选择文件夹
         self.fastE2EInputFolderCard.clicked.connect(
-            lambda: self.__onChooseFolderClicked(cfg.FastE2EInputFolder, self.fastE2EInputFolderCard)
+            lambda: self.__onChooseFolderClicked(cfg.fastE2EInputFolder, self.fastE2EInputFolderCard)
         )
 
         # 按钮 | 选择文件
         self.fastE2EInputFileCard.clicked.connect(
-            lambda: self.__onChooseFileClicked(cfg.FastE2EInputFile, self.fastE2EInputFileCard)
+            lambda: self.__onChooseFileClicked(cfg.fastE2EInputFile, self.fastE2EInputFileCard)
         )
 
         # Execute button connection
@@ -187,7 +187,7 @@ class FastE2EToolUI(ExpandSettingCard):
             index: 选中项的索引
         """
         # Save selected option to config
-        cfg.set(cfg.FastE2ESelectedOption, index)
+        cfg.set(cfg.fastE2ESelectedOption, index)
 
         if index == 0:  # Option 1
             # 显示所有卡片并启用

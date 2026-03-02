@@ -95,19 +95,18 @@ def isWin11():
 
 class Config(QConfig):
     # 注册相关配置
-    # register
     rememberMe = ConfigItem("Register", "RememberMe", True, BoolValidator())
     email = ConfigItem("Register", "Email", "")
     activationCode = ConfigItem("Register", "ActivationCode", "")
 
     # 项目文件夹配置
-    projectFolders = ConfigItem("Project folders", "LocalProject", [], FolderListValidator())
-    downloadFolder = ConfigItem("Project folders", "Download", "app/download", FolderValidator())
+    projectFolders = ConfigItem("Project", "Folders", [], FolderListValidator())
+    downloadFolder = ConfigItem("Project", "DownloadFolder", "app/download", FolderValidator())
 
     # 个性化设置
-    micaEnabled = ConfigItem("personalization", "MicaEnabled", isWin11(), BoolValidator())
-    dpiScale = OptionsConfigItem("personalization", "DpiScale", "Auto", OptionsValidator([1, 1.25, 1.5, 1.75, 2, "Auto"]), restart=True)
-    language = OptionsConfigItem("personalization", "Language", Language.AUTO, OptionsValidator(Language), LanguageSerializer(), restart=True)
+    micaEnabled = ConfigItem("Personalization", "MicaEnabled", isWin11(), BoolValidator())
+    dpiScale = OptionsConfigItem("Personalization", "DpiScale", "Auto", OptionsValidator([1, 1.25, 1.5, 1.75, 2, "Auto"]), restart=True)
+    language = OptionsConfigItem("Personalization", "Language", Language.AUTO, OptionsValidator(Language), LanguageSerializer(), restart=True)
 
     # 背景设置
     backgroundImageEnabled = ConfigItem("Background", "ImageEnabled", False, BoolValidator())
@@ -120,73 +119,73 @@ class Config(QConfig):
     blurRadius = RangeConfigItem("Material", "AcrylicBlurRadius", 15, RangeValidator(0, 40))
 
     # 应用设置
-    beta = ConfigItem("Application", "beta", False, BoolValidator())
-    close_window_action = OptionsConfigItem("Application", "close_window_action", "ask", OptionsValidator(["ask", "minimize", "close"]), restart=True)
+    beta = ConfigItem("Application", "Beta", False, BoolValidator())
+    closeWindowAction = OptionsConfigItem("Application", "CloseWindowAction", "ask", OptionsValidator(["ask", "minimize", "close"]), restart=True)
     windowSizeMode = OptionsConfigItem("Application", "WindowSizeMode", "fixed", OptionsValidator(["fixed", "auto"]), restart=True)
-    autoRun = ConfigItem("Application", "autoRun", False, BoolValidator())
-    autoHide = ConfigItem("Application", "autoHide", False, BoolValidator())
+    autoRun = ConfigItem("Application", "AutoRun", False, BoolValidator())
+    autoHide = ConfigItem("Application", "AutoHide", False, BoolValidator())
     autoHideOnStartup = ConfigItem("Application", "AutoHideOnStartup", False, BoolValidator())
 
     # 软件更新设置
-    checkUpdateAtStartUp = ConfigItem("software update", "CheckUpdateAtStartUp", True, BoolValidator())
+    checkUpdateAtStartUp = ConfigItem("Update", "CheckUpdateAtStartUp", True, BoolValidator())
 
     # 测试版设置
-    debug_card = ConfigItem("Beta", "debug_card", False, BoolValidator(), restart=True)
+    debugCard = ConfigItem("Beta", "DebugCard", False, BoolValidator(), restart=True)
 
     # FastRte 相关配置
-    fastRteToolsEngine = OptionsConfigItem("FastRte", "FastRteToolsEngine", "L2 Func", OptionsValidator(["L2 Func", "Ipc Com", "Srp Com"]))
-    fastRteOutputFolder = ConfigItem("FastRte", "FastRteOutputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
-    fastRteMappingTableFile = ConfigItem("FastRte", "FastRteMappingTableFile", "", FileValidator())
-    fastRteDataTypeFile = ConfigItem("FastRte", "FastRteDataTypeFile", "", FileValidator())
-    fastRteInterfaceFile = ConfigItem("FastRte", "FastRteInterfaceFile", "", FileValidator())
+    fastRteToolsEngine = OptionsConfigItem("FastRte", "ToolsEngine", "L2 Func", OptionsValidator(["L2 Func", "Ipc Com", "Srp Com"]))
+    fastRteOutputFolder = ConfigItem("FastRte", "OutputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
+    fastRteMappingTableFile = ConfigItem("FastRte", "MappingTableFile", "", FileValidator())
+    fastRteDataTypeFile = ConfigItem("FastRte", "DataTypeFile", "", FileValidator())
+    fastRteInterfaceFile = ConfigItem("FastRte", "InterfaceFile", "", FileValidator())
 
     # 日志设置
-    logLevel = OptionsConfigItem("Log", "LogLevel", "DEBUG", OptionsValidator(["TRACE", "DEBUG", "INFO", "SUCCESS", "WARNING", "ERROR", "CRITICAL"]))
-    logColorTraceLight = ColorConfigItem("Log", "LogColorTraceLight", "#9400D3")
-    logColorDebugLight = ColorConfigItem("Log", "LogColorDebugLight", "#00BFFF")
-    logColorInfoLight = ColorConfigItem("Log", "LogColorInfoLight", "#00FF7F")
-    logColorSuccessLight = ColorConfigItem("Log", "LogColorSuccessLight", "#32CD32")
-    logColorWarningLight = ColorConfigItem("Log", "LogColorWarningLight", "#FFD700")
-    logColorErrorLight = ColorConfigItem("Log", "LogColorErrorLight", "#FF4500")
-    logColorCriticalLight = ColorConfigItem("Log", "LogColorCriticalLight", "#FF1493")
-    logColorTraceDark = ColorConfigItem("Log", "LogColorTraceDark", "#DDA0DD")
-    logColorDebugDark = ColorConfigItem("Log", "LogColorDebugDark", "#87CEEB")
-    logColorInfoDark = ColorConfigItem("Log", "LogColorInfoDark", "#98FB98")
-    logColorSuccessDark = ColorConfigItem("Log", "LogColorSuccessDark", "#90EE90")
-    logColorWarningDark = ColorConfigItem("Log", "LogColorWarningDark", "#FFFF00")
-    logColorErrorDark = ColorConfigItem("Log", "LogColorErrorDark", "#FF6347")
-    logColorCriticalDark = ColorConfigItem("Log", "LogColorCriticalDark", "#FF69B4")
+    logLevel = OptionsConfigItem("Log", "Level", "DEBUG", OptionsValidator(["TRACE", "DEBUG", "INFO", "SUCCESS", "WARNING", "ERROR", "CRITICAL"]))
+    logColorTraceLight = ColorConfigItem("Log", "ColorTraceLight", "#9400D3")
+    logColorDebugLight = ColorConfigItem("Log", "ColorDebugLight", "#00BFFF")
+    logColorInfoLight = ColorConfigItem("Log", "ColorInfoLight", "#00FF7F")
+    logColorSuccessLight = ColorConfigItem("Log", "ColorSuccessLight", "#32CD32")
+    logColorWarningLight = ColorConfigItem("Log", "ColorWarningLight", "#FFD700")
+    logColorErrorLight = ColorConfigItem("Log", "ColorErrorLight", "#FF4500")
+    logColorCriticalLight = ColorConfigItem("Log", "ColorCriticalLight", "#FF1493")
+    logColorTraceDark = ColorConfigItem("Log", "ColorTraceDark", "#DDA0DD")
+    logColorDebugDark = ColorConfigItem("Log", "ColorDebugDark", "#87CEEB")
+    logColorInfoDark = ColorConfigItem("Log", "ColorInfoDark", "#98FB98")
+    logColorSuccessDark = ColorConfigItem("Log", "ColorSuccessDark", "#90EE90")
+    logColorWarningDark = ColorConfigItem("Log", "ColorWarningDark", "#FFFF00")
+    logColorErrorDark = ColorConfigItem("Log", "ColorErrorDark", "#FF6347")
+    logColorCriticalDark = ColorConfigItem("Log", "ColorCriticalDark", "#FF69B4")
 
     # 工具相关配置
     # RemoveComments 工具配置
-    RmCommentsInputFolder = ConfigItem("ToolsPub", "RmCommentsInputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
-    RmCommentsOutputFolder = ConfigItem("ToolsPub", "RmCommentsOutputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
-    RmCommentsRemoveComments = ConfigItem("ToolsPub", "RmCommentsRemoveComments", True, BoolValidator())
-    RmCommentsRemoveDocstrings = ConfigItem("ToolsPub", "RmCommentsRemoveDocstrings", True, BoolValidator())
-    RmCommentsRemoveEmptyLines = ConfigItem("ToolsPub", "RmCommentsRemoveEmptyLines", True, BoolValidator())
-    RmCommentsKeepTripleQuotes = ConfigItem("ToolsPub", "RmCommentsKeepTripleQuotes", False, BoolValidator())
-    RmCommentsOutputSuffix = ConfigItem("ToolsPub", "RmCommentsOutputSuffix", "_clean.py")
-    RmCommentsRecursive = ConfigItem("ToolsPub", "RmCommentsRecursive", False, BoolValidator())
-    RmCommentsExcludeFiles = ConfigItem("ToolsPub", "RmCommentsExcludeFiles", "__init__.py,config.py")
-    RmCommentsExcludePatterns = ConfigItem("ToolsPub", "RmCommentsExcludePatterns", "*_test.py,test_*.py")
+    rmCommentsInputFolder = ConfigItem("Tools", "RmCommentsInputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
+    rmCommentsOutputFolder = ConfigItem("Tools", "RmCommentsOutputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
+    rmCommentsRemoveComments = ConfigItem("Tools", "RmCommentsRemoveComments", True, BoolValidator())
+    rmCommentsRemoveDocstrings = ConfigItem("Tools", "RmCommentsRemoveDocstrings", True, BoolValidator())
+    rmCommentsRemoveEmptyLines = ConfigItem("Tools", "RmCommentsRemoveEmptyLines", True, BoolValidator())
+    rmCommentsKeepTripleQuotes = ConfigItem("Tools", "RmCommentsKeepTripleQuotes", False, BoolValidator())
+    rmCommentsOutputSuffix = ConfigItem("Tools", "RmCommentsOutputSuffix", "_clean.py")
+    rmCommentsRecursive = ConfigItem("Tools", "RmCommentsRecursive", False, BoolValidator())
+    rmCommentsExcludeFiles = ConfigItem("Tools", "RmCommentsExcludeFiles", "__init__.py,config.py")
+    rmCommentsExcludePatterns = ConfigItem("Tools", "RmCommentsExcludePatterns", "*_test.py,test_*.py")
 
     # QCraft Composition 工具配置
-    QcCompositionInputFolder = ConfigItem("ToolsQc", "QcCompositionInputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
-    QcCompositionInputFile = ConfigItem("ToolsQc", "QcCompositionInputFile", "", FileValidator())
-    QcCompositionSelectedOption = ConfigItem("ToolsQc", "QcCompositionSelectedOption", 0)
-    QcCompositionCoreSettings = ConfigItem("ToolsQc", "QcCompositionCoreSettings", {})
-    QcCompositionTableData = ConfigItem("ToolsQc", "QcCompositionTableData", [])
+    qcCompositionInputFolder = ConfigItem("Tools", "QcCompositionInputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
+    qcCompositionInputFile = ConfigItem("Tools", "QcCompositionInputFile", "", FileValidator())
+    qcCompositionSelectedOption = ConfigItem("Tools", "QcCompositionSelectedOption", 0)
+    qcCompositionCoreSettings = ConfigItem("Tools", "QcCompositionCoreSettings", {})
+    qcCompositionTableData = ConfigItem("Tools", "QcCompositionTableData", [])
 
     # FastDem 工具配置
-    FastDemInputFolder = ConfigItem("ToolsDem", "FastDemInputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
-    FastDemInputFile = ConfigItem("ToolsDem", "FastDemInputFile", "", FileValidator())
-    FastDemSelectedOption = ConfigItem("ToolsDem", "FastDemSelectedOption", 0)
+    fastDemInputFolder = ConfigItem("Tools", "FastDemInputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
+    fastDemInputFile = ConfigItem("Tools", "FastDemInputFile", "", FileValidator())
+    fastDemSelectedOption = ConfigItem("Tools", "FastDemSelectedOption", 0)
 
     # FastE2E 工具配置
-    FastE2EInputFolder = ConfigItem("ToolsE2E", "FastE2EInputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
-    FastE2EInputFile = ConfigItem("ToolsE2E", "FastE2EInputFile", "", FileValidator())
-    FastE2ESelectedOption = ConfigItem("ToolsE2E", "FastE2ESelectedOption", 0)
-    FastE2EDirection = OptionsConfigItem("ToolsE2E", "FastE2EDirection", "Tx", OptionsValidator(["Tx", "Rx"]))
+    fastE2EInputFolder = ConfigItem("Tools", "FastE2EInputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
+    fastE2EInputFile = ConfigItem("Tools", "FastE2EInputFile", "", FileValidator())
+    fastE2ESelectedOption = ConfigItem("Tools", "FastE2ESelectedOption", 0)
+    fastE2EDirection = OptionsConfigItem("Tools", "FastE2EDirection", "Tx", OptionsValidator(["Tx", "Rx"]))
 
     # 浮窗配置
     # 基础设置

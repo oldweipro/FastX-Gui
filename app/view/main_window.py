@@ -646,7 +646,7 @@ class MainWindow(SplitFluentWindow):
 
     def closeEvent(self, e):
         """关闭窗口时根据配置执行对应操作"""
-        close_action = cfg.get(cfg.close_window_action)
+        close_action = cfg.get(cfg.closeWindowAction)
 
         if close_action == "ask":
             # 弹出询问对话框

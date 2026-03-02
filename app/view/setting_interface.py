@@ -321,7 +321,7 @@ class SettingInterface(ScrollArea):
             parent=self.appGroup,
         )
         self.closeWindowActionCard = ComboBoxSettingCard(
-            cfg.close_window_action,
+            cfg.closeWindowAction,
             FIF.MINIMIZE,
             self.tr("when close windows"),
             self.tr(
@@ -548,7 +548,7 @@ class SettingInterface(ScrollArea):
             self.tr(
                 "The global exception capture will be disabled, and there will be outputs in the commandline.(Code Running Only)"
             ),
-            configItem=cfg.debug_card,
+            configItem=cfg.debugCard,
             parent=self.BetaGroup,
         )
 
