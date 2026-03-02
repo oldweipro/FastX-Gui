@@ -24,6 +24,8 @@ from app.common.style_sheet import StyleSheet
 from app.components.main_layout_card import ToolBar
 from app.tools.ui.qc_composition_ui import QcCompositionUI
 from app.tools.ui.rm_comments_ui import RmCommentsUI
+from app.tools.ui.FastDem_ui import FastDemToolUI
+from app.tools.ui.FastE2E_ui import FastE2EToolUI
 
 
 class ToolsInterface(ScrollArea):
@@ -111,6 +113,8 @@ class ToolsInterface(ScrollArea):
         # Add Remove Comments tool card
         self.IfGroup.addSettingCard(QcCompositionUI(parent=self.view))
         self.PubGroup.addSettingCard(RmCommentsUI(parent=self.view))
+        self.DemGroup.addSettingCard(FastDemToolUI(parent=self.view))
+        self.E2EGroup.addSettingCard(FastE2EToolUI(parent=self.view))
 
         # 添加标签页
         self.addSubInterface(self.DemGroup, "TabDemInterface", self.tr("Dem"))

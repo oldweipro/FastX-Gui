@@ -294,6 +294,14 @@ class QcCompositionUI(ExpandSettingCard):
             cfg.get(cfg.QcCompositionInputFolder)
         )
 
+        # 文件选择卡片
+        self.qcCompositionInputFileCard = PushSettingCard(
+            self.tr("Choose file"),
+            FIF.HEART,
+            self.tr("Input File"),
+            cfg.get(cfg.QcCompositionInputFile)
+        )
+
         # 表格卡片配置
         self.tabCard = TableFrame(self)
 
@@ -313,6 +321,7 @@ class QcCompositionUI(ExpandSettingCard):
         添加卡片到布局
         """
         self.viewLayout.addWidget(self.qcCompositionInputFolderCard)
+        self.viewLayout.addWidget(self.qcCompositionInputFileCard)
         self.viewLayout.addWidget(self.tabCard)
         self.viewLayout.addWidget(self.qcCompositionExecuteCard)
 
@@ -325,6 +334,11 @@ class QcCompositionUI(ExpandSettingCard):
         # 按钮 | 选择文件夹
         self.qcCompositionInputFolderCard.clicked.connect(
             lambda: self.__onChooseFolderClicked(cfg.QcCompositionInputFolder, self.qcCompositionInputFolderCard)
+        )
+
+        # 按钮 | 选择文件
+        self.qcCompositionInputFileCard.clicked.connect(
+            lambda: self.__onChooseFileClicked(cfg.QcCompositionInputFile, self.qcCompositionInputFileCard)
         )
 
         # Execute button connection
@@ -346,6 +360,20 @@ class QcCompositionUI(ExpandSettingCard):
             return
         cfg.set(config_item, folder)
         card.setContent(folder)
+
+    def __onChooseFileClicked(self, config_item, card):
+        """
+        通用文件选择方法
+
+        Args:
+            config_item: 配置项
+            card: 卡片对象
+        """
+        file, _ = QFileDialog.getOpenFileName(self, self.tr("Choose file"), cfg.get(config_item), "Excel Files (*.xlsx);;ARXML Files (*.arxml);;All Files (*)")
+        if not file or cfg.get(config_item) == file:
+            return
+        cfg.set(config_item, file)
+        card.setContent(file)
 
     def __onSetValueClicked(self, config_item, card, title):
         """
@@ -386,19 +414,25 @@ class QcCompositionUI(ExpandSettingCard):
         if index == 0:  # Option 1
             # 显示所有卡片并启用
             self.qcCompositionInputFolderCard.setVisible(True)
+            self.qcCompositionInputFileCard.setVisible(True)
             self.qcCompositionExecuteCard.setVisible(True)
             self.qcCompositionInputFolderCard.setEnabled(True)
+            self.qcCompositionInputFileCard.setEnabled(True)
             self.qcCompositionExecuteCard.setEnabled(True)
         elif index == 1:  # Option 2
             # 只显示输入文件夹卡片，禁用执行按钮
             self.qcCompositionInputFolderCard.setVisible(True)
+            self.qcCompositionInputFileCard.setVisible(True)
             self.qcCompositionExecuteCard.setVisible(False)
             self.qcCompositionInputFolderCard.setEnabled(True)
+            self.qcCompositionInputFileCard.setEnabled(True)
         elif index == 2:  # Option 3
             # 显示所有卡片但禁用
             self.qcCompositionInputFolderCard.setVisible(True)
+            self.qcCompositionInputFileCard.setVisible(True)
             self.qcCompositionExecuteCard.setVisible(True)
             self.qcCompositionInputFolderCard.setEnabled(False)
+            self.qcCompositionInputFileCard.setEnabled(False)
             self.qcCompositionExecuteCard.setEnabled(False)
         
         # 调整布局大小

@@ -1,6 +1,18 @@
 {
+    "ToolsDem": {
+        "FastDemInputFile": "D:/Github/FastX-Gui/nuitka-build.py",
+        "FastDemInputFolder": "C:/Users/91974/Downloads",
+        "FastDemSelectedOption": 0
+    },
+    "ToolsE2E": {
+        "FastE2EDirection": "Tx",
+        "FastE2EInputFile": "",
+        "FastE2EInputFolder": "C:/Users/91974/Downloads",
+        "FastE2ESelectedOption": 0
+    },
     "ToolsQc": {
         "QcCompositionCoreSettings": {},
+        "QcCompositionInputFile": "",
         "QcCompositionInputFolder": "C:/Users/91974/Downloads",
         "QcCompositionSelectedOption": 0,
         "QcCompositionTableData": [
@@ -84,9 +96,9 @@
         "MicaEnabled": true
     },
     "FastRte": {
-        "FastRteDataTypeFolder": "",
-        "FastRteInterfaceFolder": "",
-        "FastRteMappingTableFolder": "",
+        "FastRteDataTypeFile": "",
+        "FastRteInterfaceFile": "",
+        "FastRteMappingTableFile": "D:/Github/FastX-Gui/main.py",
         "FastRteOutputFolder": "C:/Users/91974/Downloads",
         "FastRteToolsEngine": "L2 Func"
     },

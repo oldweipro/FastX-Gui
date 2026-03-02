@@ -240,19 +240,19 @@ class BasicConfigCard(GroupHeaderCardWidget):
         self.chooseMappingTableGroup = self.addGroup(
             icon=UnicodeIcon.get_icon_by_name("ic_fluent_document_table_24_regular"),
             title=self.tr("Mapping Table Path"),
-            content=cfg.get(cfg.fastRteMappingTableFolder),
+            content=cfg.get(cfg.fastRteMappingTableFile),
             widget=self.chooseMappingTableButton,
         )
         self.chooseDataTypGroup = self.addGroup(
             icon=UnicodeIcon.get_icon_by_name("ic_fluent_document_contract_16_regular"),
             title=self.tr("DataType Arxml Path"),
-            content=cfg.get(cfg.fastRteDataTypeFolder),
+            content=cfg.get(cfg.fastRteDataTypeFile),
             widget=self.chooseDataTypeButton,
         )
         self.chooseInterfaceGroup = self.addGroup(
             icon=UnicodeIcon.get_icon_by_name("ic_fluent_document_contract_16_regular"),
             title=self.tr("Interface Arxml Path"),
-            content=cfg.get(cfg.fastRteInterfaceFolder),
+            content=cfg.get(cfg.fastRteInterfaceFile),
             widget=self.chooseInterfaceButton,
         )
         self.outputFolderGroup = self.addGroup(
@@ -275,23 +275,23 @@ class BasicConfigCard(GroupHeaderCardWidget):
 
     def _onChooseMappingTableButtonClicked(self):
         path, _ = QFileDialog.getOpenFileName(self, self.tr("Choose"))
-        if not path or cfg.get(cfg.fastRteMappingTableFolder) == path:
+        if not path or cfg.get(cfg.fastRteMappingTableFile) == path:
             return
-        cfg.set(cfg.fastRteMappingTableFolder, path)
+        cfg.set(cfg.fastRteMappingTableFile, path)
         self.chooseMappingTableGroup.setContent(path)
 
     def _onChooseDataTypeButtonClicked(self):
         path, _ = QFileDialog.getOpenFileName(self, self.tr("Choose"))
-        if not path or cfg.get(cfg.fastRteDataTypeFolder) == path:
+        if not path or cfg.get(cfg.fastRteDataTypeFile) == path:
             return
-        cfg.set(cfg.fastRteDataTypeFolder, path)
+        cfg.set(cfg.fastRteDataTypeFile, path)
         self.chooseDataTypGroup.setContent(path)
 
     def _onChooseInterfaceButtonClicked(self):
         path, _ = QFileDialog.getOpenFileName(self, self.tr("Choose"))
-        if not path or cfg.get(cfg.fastRteInterfaceFolder) == path:
+        if not path or cfg.get(cfg.fastRteInterfaceFile) == path:
             return
-        cfg.set(cfg.fastRteInterfaceFolder, path)
+        cfg.set(cfg.fastRteInterfaceFile, path)
         self.chooseInterfaceGroup.setContent(path)
 
     def _chooseOutputFolder(self):

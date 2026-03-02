@@ -7,6 +7,7 @@ from qfluentwidgets import FluentTranslator
 
 from app.common.config import cfg
 from app.view.main_window import MainWindow
+from app.view.register_window import RegisterWindow
 
 # Using global variables to prevent the interface from being destructed
 mainWindow = None
