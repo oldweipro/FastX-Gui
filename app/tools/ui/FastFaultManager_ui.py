@@ -15,7 +15,7 @@ from qfluentwidgets import (
 )
 
 from app.common.config import cfg
-from app.common.icon import UnicodeIcon
+from app.common.icon import UnicodeIcon, Icon
 from app.tools.core.rm_comments_core import RmCommentsCore
 
 
@@ -31,7 +31,7 @@ class FastFaultManagerToolUI(ExpandSettingCard):
     ):
         # 如果 icon 为 None，可以设置一个默认图标
         if icon is None:
-            icon = UnicodeIcon.get_icon_by_name("ic_fluent_channel_dismiss_24_regular")
+            icon = Icon.FIM
         # 如果 title 为空字符串，设置默认标题
         if not title:
             title = self.tr("FastFaultManager Tool")

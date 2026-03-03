@@ -285,7 +285,7 @@ class Icon(FluentIconBase, Enum):
     SDB_SIMPLE = "SDB_Simple"
 
     def path(self, theme=Theme.AUTO):
-        return f":/app/resource/images/icons/{self.value}_{getIconColor(theme)}.svg"
+        return f":/app/images/icons/{self.value}_{getIconColor(theme)}.svg"
 
 
 class Ico(FluentIconBase, Enum):
