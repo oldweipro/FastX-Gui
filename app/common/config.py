@@ -197,6 +197,16 @@ class Config(QConfig):
     fastFaultManagerOutputFolder = ConfigItem("Tools", "FastFaultManagerOutputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
     fastFaultManagerSelectedOption = ConfigItem("Tools", "FastFaultManagerSelectedOption", 0)
 
+    # ComGroupMapping 工具配置
+    comGroupMappingInputFile = ConfigItem("Tools", "ComGroupMappingInputFile", "", FileValidator())
+    comGroupMappingOutputFolder = ConfigItem("Tools", "ComGroupMappingOutputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
+    comGroupMappingSelectedOption = ConfigItem("Tools", "ComGroupMappingSelectedOption", 0)
+
+    # FastSomeIp 工具配置
+    fastSomeIpInputFile = ConfigItem("Tools", "FastSomeIpInputFile", "", FileValidator())
+    fastSomeIpOutputFolder = ConfigItem("Tools", "FastSomeIpOutputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
+    fastSomeIpSelectedOption = ConfigItem("Tools", "FastSomeIpSelectedOption", 0)
+
     # 浮窗配置
     # 基础设置
     startupDisplayFloatingWindow = ConfigItem("FloatingWindow", "StartupDisplay", True, BoolValidator())

@@ -25,6 +25,42 @@
     "Update": {
         "CheckUpdateAtStartUp": true
     },
+    "Tools": {
+        "ComGroupMappingInputFile": "",
+        "ComGroupMappingOutputFolder": "C:/Users/91974/Downloads/ps2023",
+        "ComGroupMappingSelectedOption": 0,
+        "FastCCPInputFile": "",
+        "FastCCPOutputFolder": "C:/Users/91974/Downloads",
+        "FastCCPSelectedOption": 0,
+        "FastDemInputFile": "",
+        "FastDemOutputFolder": "C:/Users/91974/Downloads",
+        "FastDemSelectedOption": 0,
+        "FastE2EDirection": "Tx",
+        "FastE2EInputFile": "",
+        "FastE2EOutputFolder": "C:/Users/91974/Downloads",
+        "FastE2ESelectedOption": 0,
+        "FastFaultManagerInputFile": "",
+        "FastFaultManagerOutputFolder": "C:/Users/91974/Downloads",
+        "FastFaultManagerSelectedOption": 0,
+        "FastSomeIpInputFile": "",
+        "FastSomeIpOutputFolder": "C:/Users/91974/Downloads",
+        "FastSomeIpSelectedOption": 0,
+        "QcCompositionCoreSettings": {},
+        "QcCompositionInputFile": "",
+        "QcCompositionOutputFolder": "C:/Users/91974/Downloads",
+        "QcCompositionSelectedOption": 0,
+        "QcCompositionTableData": [],
+        "RmCommentsExcludeFiles": "__init__.py,config.py",
+        "RmCommentsExcludePatterns": "*_test.py,test_*.py",
+        "RmCommentsInputFolder": "C:/Users/91974/Downloads",
+        "RmCommentsKeepTripleQuotes": false,
+        "RmCommentsOutputFolder": "C:/Users/91974/Downloads",
+        "RmCommentsOutputSuffix": "_clean.py",
+        "RmCommentsRecursive": false,
+        "RmCommentsRemoveComments": true,
+        "RmCommentsRemoveDocstrings": true,
+        "RmCommentsRemoveEmptyLines": true
+    },
     "Beta": {
         "DebugCard": false
     },
@@ -54,36 +90,6 @@
         "Language": "Auto",
         "MicaEnabled": true
     },
-    "Tools": {
-        "FastCCPInputFile": "",
-        "FastCCPOutputFolder": "C:/Users/91974/Downloads",
-        "FastCCPSelectedOption": 0,
-        "FastDemInputFile": "",
-        "FastDemOutputFolder": "C:/Users/91974/Downloads",
-        "FastDemSelectedOption": 0,
-        "FastE2EDirection": "Tx",
-        "FastE2EInputFile": "",
-        "FastE2EOutputFolder": "C:/Users/91974/Downloads",
-        "FastE2ESelectedOption": 0,
-        "FastFaultManagerInputFile": "",
-        "FastFaultManagerOutputFolder": "C:/Users/91974/Downloads",
-        "FastFaultManagerSelectedOption": 0,
-        "QcCompositionCoreSettings": {},
-        "QcCompositionInputFile": "",
-        "QcCompositionOutputFolder": "C:/Users/91974/Downloads",
-        "QcCompositionSelectedOption": 0,
-        "QcCompositionTableData": [],
-        "RmCommentsExcludeFiles": "__init__.py,config.py",
-        "RmCommentsExcludePatterns": "*_test.py,test_*.py",
-        "RmCommentsInputFolder": "C:/Users/91974/Downloads",
-        "RmCommentsKeepTripleQuotes": false,
-        "RmCommentsOutputFolder": "C:/Users/91974/Downloads",
-        "RmCommentsOutputSuffix": "_clean.py",
-        "RmCommentsRecursive": false,
-        "RmCommentsRemoveComments": true,
-        "RmCommentsRemoveDocstrings": true,
-        "RmCommentsRemoveEmptyLines": true
-    },
     "FastRte": {
         "DataTypeFile": "",
         "InterfaceFile": "",
@@ -98,7 +104,7 @@
             "PingFang SC"
         ],
         "ThemeColor": "#ff009faa",
-        "ThemeMode": "Dark"
+        "ThemeMode": "Light"
     },
     "Log": {
         "ColorCriticalDark": "#ffff69b4",

@@ -28,6 +28,8 @@ from app.tools.ui.FastDem_ui import FastDemToolUI
 from app.tools.ui.FastE2E_ui import FastE2EToolUI
 from app.tools.ui.FastCCP_ui import FastCCPToolUI
 from app.tools.ui.FastFaultManager_ui import FastFaultManagerToolUI
+from app.tools.ui.ComGroupMapping_ui import ComGroupMappingToolUI
+from app.tools.ui.FastSomeIp_ui import FastSomeIpToolUI
 
 
 class ToolsInterface(ScrollArea):
@@ -50,16 +52,10 @@ class ToolsInterface(ScrollArea):
         self.headCard.vBoxLayout.setContentsMargins(0,0,0,0)
         self.headCard.setFixedHeight(100)
 
-        self.DemGroup = SettingCardGroup(self.tr("Dem"), self.view)
-        self.DcmGroup = SettingCardGroup(self.tr("Dcm"), self.view)
-        self.E2EGroup = SettingCardGroup(self.tr("E2E"), self.view)
-        self.ComGroup = SettingCardGroup(self.tr("Com"), self.view)
-        self.SomeIpGroup = SettingCardGroup(self.tr("SomeIp"), self.view)
+        self.DiagnosticGroup = SettingCardGroup(self.tr("Diagnostic"), self.view)
+        self.CommunicationGroup = SettingCardGroup(self.tr("Communication"), self.view)
         self.SerialGroup = SettingCardGroup(self.tr("Serial"), self.view)
-        self.PubGroup = SettingCardGroup(self.tr("Pub"), self.view)
-        self.IfGroup = SettingCardGroup(self.tr("IF"), self.view)
-        self.CCPGroup = SettingCardGroup(self.tr("CCP"), self.view)
-        self.FaultManagerGroup = SettingCardGroup(self.tr("FaultManager"), self.view)
+        self.UtilitiesGroup = SettingCardGroup(self.tr("Utilities"), self.view)
 
         self.__initWidget()
         self.__initLayout()
@@ -115,24 +111,20 @@ class ToolsInterface(ScrollArea):
         self.main_layout.addWidget(self.stackedWidget)
 
         # Add Remove Comments tool card
-        self.IfGroup.addSettingCard(QcCompositionUI(parent=self.view))
-        self.PubGroup.addSettingCard(RmCommentsUI(parent=self.view))
-        self.DemGroup.addSettingCard(FastDemToolUI(parent=self.view))
-        self.E2EGroup.addSettingCard(FastE2EToolUI(parent=self.view))
-        self.DemGroup.addSettingCard(FastFaultManagerToolUI(parent=self.view))
-        self.ComGroup.addSettingCard(FastCCPToolUI(parent=self.view))
+        self.UtilitiesGroup.addSettingCard(RmCommentsUI(parent=self.view))
+        self.DiagnosticGroup.addSettingCard(FastDemToolUI(parent=self.view))
+        self.DiagnosticGroup.addSettingCard(FastFaultManagerToolUI(parent=self.view))
+        self.CommunicationGroup.addSettingCard(QcCompositionUI(parent=self.view))
+        self.CommunicationGroup.addSettingCard(FastE2EToolUI(parent=self.view))
+        self.CommunicationGroup.addSettingCard(FastCCPToolUI(parent=self.view))
+        self.CommunicationGroup.addSettingCard(ComGroupMappingToolUI(parent=self.view))
+        self.CommunicationGroup.addSettingCard(FastSomeIpToolUI(parent=self.view))
 
         # 添加标签页
-        self.addSubInterface(self.DemGroup, "TabDemInterface", self.tr("Dem"))
-        self.addSubInterface(self.DcmGroup, "TabDcmInterface", self.tr("Dcm"))
-        self.addSubInterface(self.E2EGroup, "TabE2EInterface", self.tr("E2E"))
-        self.addSubInterface(self.ComGroup, "TabComInterface", self.tr("Com"))
-        self.addSubInterface(self.SomeIpGroup, "TabSomeIpInterface", self.tr("SomeIp"))
+        self.addSubInterface(self.DiagnosticGroup, "TabDiagnosticInterface", self.tr("Diagnostic"))
+        self.addSubInterface(self.CommunicationGroup, "TabCommunicationInterface", self.tr("Communication"))
         self.addSubInterface(self.SerialGroup, "TabSerialInterface", self.tr("Serial"))
-        self.addSubInterface(self.PubGroup, "TabPubInterface", self.tr("Pub"))
-        self.addSubInterface(self.IfGroup, "TabIFInterface", self.tr("IF"))
-        self.addSubInterface(self.CCPGroup, "TabCCPInterface", self.tr("CCP"))
-        self.addSubInterface(self.FaultManagerGroup, "TabFaultManagerInterface", self.tr("FaultManager"))
+        self.addSubInterface(self.UtilitiesGroup, "TabUtilitiesInterface", self.tr("Utilities"))
 
     def __connectSignalToSlot(self):
         # 连接信号并初始化当前标签页
