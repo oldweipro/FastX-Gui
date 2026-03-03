@@ -678,3 +678,75 @@ def threadPoolDecorator(thread_pool:ThreadPoolExecutor):
             thread_pool.submit(func, *args)
         return warpper
     return warpFunction
+
+
+def downloadTemplate(template_name, save_path=None):
+    """
+    下载模板文件
+    :param template_name: 模板文件名
+    :param save_path: 保存路径，默认为桌面
+    :return: 保存成功的路径
+    """
+    try:
+        from PySide6.QtWidgets import QFileDialog, QMessageBox
+        import os
+        
+        # 构建模板文件路径 - 使用多种方式尝试
+        paths_to_try = []
+        
+        # 方式1: 相对路径（从当前文件开始）
+        current_dir = os.path.dirname(__file__)
+        template_path1 = os.path.join(current_dir, "..", "resource", "templates", template_name)
+        template_path1 = os.path.abspath(template_path1)
+        paths_to_try.append(template_path1)
+        
+        # 方式2: 相对路径（从项目根目录开始）
+        template_path2 = os.path.join("app", "resource", "templates", template_name)
+        template_path2 = os.path.abspath(template_path2)
+        paths_to_try.append(template_path2)
+        
+        # 方式3: 绝对路径（直接指定）
+        template_path3 = "d:\\Github\\FastX-Gui\\app\\resource\\templates\\" + template_name
+        paths_to_try.append(template_path3)
+        
+        # 尝试所有路径
+        template_path = None
+        for path in paths_to_try:
+            if os.path.exists(path):
+                template_path = path
+                print(f"找到模板文件: {path}")
+                break
+        
+        if not template_path:
+            print(f"所有路径都不存在:")
+            for path in paths_to_try:
+                print(f"  - {path}")
+            return False
+        
+        # 读取文件内容
+        with open(template_path, 'rb') as f:
+            content = f.read()
+        print(f"成功读取模板文件，大小: {len(content)} 字节")
+        
+        # 如果没有指定保存路径，使用文件对话框选择
+        if not save_path:
+            save_path, _ = QFileDialog.getSaveFileName(
+                None, "保存模板", 
+                os.path.join(DESKTOP_PATH, template_name), 
+                f"Excel文件 (*.xlsx);;所有文件 (*.*)"
+            )
+            if not save_path:
+                return False
+        
+        # 确保保存目录存在
+        createDir(getFileDir(save_path))
+        
+        # 写入文件
+        with open(save_path, 'wb') as f:
+            f.write(content)
+        
+        logging.info(f"模板文件 {template_name} 下载成功，保存到: {save_path}")
+        return save_path
+    except Exception as e:
+        logging.error(f"下载模板文件失败: {str(e)}")
+        return False

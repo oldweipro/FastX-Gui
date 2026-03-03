@@ -17,6 +17,7 @@ from qfluentwidgets import (
 
 from app.common.config import cfg
 from app.common.icon import UnicodeIcon
+from app.common.utils import downloadTemplate
 from app.tools.core.rm_comments_core import RmCommentsCore
 
 
@@ -83,6 +84,14 @@ class FastE2EToolUI(ExpandSettingCard):
             texts=[self.tr("Tx"), self.tr("Rx")]
         )
 
+        # 下载模板按钮
+        self.downloadTemplateCard = PushSettingCard(
+            self.tr("Download Template"),
+            FIF.DOWNLOAD,
+            self.tr("Download Excel Template"),
+            self.tr("Click to download the Excel template for E2E processing")
+        )
+
         # Execute button
         self.fastE2EExecuteCard = PrimaryPushSettingCard(
             self.tr("Execute"),
@@ -101,6 +110,7 @@ class FastE2EToolUI(ExpandSettingCard):
         self.viewLayout.addWidget(self.fastE2EInputFileCard)
         self.viewLayout.addWidget(self.fastE2EOutputFolderCard)
         self.viewLayout.addWidget(self.directionCard)
+        self.viewLayout.addWidget(self.downloadTemplateCard)
         self.viewLayout.addWidget(self.fastE2EExecuteCard)
 
         self._adjustViewSize()
@@ -121,6 +131,9 @@ class FastE2EToolUI(ExpandSettingCard):
 
         # Execute button connection
         self.fastE2EExecuteCard.clicked.connect(self.__onExecuteFastE2EClicked)
+
+        # 下载模板按钮连接
+        self.downloadTemplateCard.clicked.connect(self.__onDownloadTemplateClicked)
 
         # ComboBox signal for controlling cards
         self.combox.currentIndexChanged.connect(self.__onComboBoxChanged)
@@ -178,6 +191,28 @@ class FastE2EToolUI(ExpandSettingCard):
             QMessageBox.information(self, self.tr("Success"), message)
         except Exception as e:
             QMessageBox.critical(self, self.tr("Error"), self.tr(f"Processing failed: {str(e)}"))
+
+    def __onDownloadTemplateClicked(self):
+        """
+        下载模板文件
+        """
+        try:
+            from PySide6.QtWidgets import QMessageBox
+            
+            # 下载模板
+            template_name = "E2E_Template.xlsx"
+            save_path = downloadTemplate(template_name)
+            
+            if save_path:
+                # 显示成功消息
+                message = self.tr(f"Template downloaded successfully!\nSaved to: {save_path}")
+                QMessageBox.information(self, self.tr("Success"), message)
+            else:
+                # 显示取消或失败消息
+                message = self.tr("Template download cancelled or failed.")
+                QMessageBox.warning(self, self.tr("Warning"), message)
+        except Exception as e:
+            QMessageBox.critical(self, self.tr("Error"), self.tr(f"Failed to download template: {str(e)}"))
 
     def __onComboBoxChanged(self, index):
         """
