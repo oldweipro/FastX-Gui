@@ -20,6 +20,7 @@ from qfluentwidgets import (
 )
 
 from app.common.icon import Icon
+# 移除对 Icon 类的依赖
 from app.model import (
     DocumentModel,
     FieldModel,
@@ -28,7 +29,7 @@ from app.model import (
     ProjectModel,
     TemplateModel,
 )
-from app.resource import resource_rc
+
 from app.table_model import (
     DocumentTableModel,
     FieldTableModel,
@@ -89,10 +90,11 @@ class EnhancedTabelWidget(QWidget):
             QSizePolicy.Expanding, QSizePolicy.Fixed
         )
 
-        self.toolButton_first_page.setIcon(Icon.FIRST_PAGE.path())
-        self.toolButton_last_page.setIcon(Icon.LAST_PAGE.path())
-        self.toolButton_next_page.setIcon(Icon.NEXT_PAGE.path())
-        self.toolButton_final_page.setIcon(Icon.FINAL_PAGE.path())
+        # 设置按钮文本
+        self.toolButton_first_page.setIcon(Icon.GO_START)
+        self.toolButton_last_page.setIcon(Icon.LEFT)
+        self.toolButton_next_page.setIcon(Icon.RIGHT)
+        self.toolButton_final_page.setIcon(Icon.GO_END)
 
         self.spinBox_Page.setMinimumWidth(50)
 
@@ -136,6 +138,7 @@ class EnhancedTabelWidget(QWidget):
 
         # 连接搜索控件信号
         self.searchLineEdit.searchButton.clicked.connect(self._search)
+        self.searchLineEdit.clearButton.clicked.connect(self._search)
         self.searchLineEdit.returnPressed.connect(self._search)
 
         # 安装事件过滤器以处理点击空白区域清除选中
@@ -248,41 +251,58 @@ class EnhancedTabelWidget(QWidget):
         self.update_page_info()
 
     def _item_matches_search(self, item, search_text: str) -> bool:
-        """检查项目是否匹配搜索文本"""
-        # 获取对象的所有属性值
+        """检查项目是否匹配搜索文本（优化版，避免 Pydantic 警告）"""
+        search_lower = search_text.lower()
+
+        # 如果是 Pydantic 模型，直接使用 model_dump 获取字段字典
+        if hasattr(item, "model_dump") and callable(item.model_dump):
+            try:
+                data = item.model_dump()
+            except Exception:
+                data = {}
+            # 递归检查字典中的所有字符串值
+            return self._dict_contains_text(data, search_lower)
+
+        # 对于普通对象，遍历其非私有、非可调用的属性
         for attr_name in dir(item):
-            # 跳过私有属性和方法
-            if not attr_name.startswith("_") and not callable(
-                getattr(item, attr_name)
-            ):
+            if attr_name.startswith("_"):
+                continue
+            # 显式跳过 Pydantic 类属性（避免警告）
+            if attr_name in ("model_computed_fields", "model_fields", "model_config"):
+                continue
+            try:
                 attr_value = getattr(item, attr_name)
-                # 如果属性值包含搜索文本，返回True
-                if (
-                    isinstance(attr_value, str)
-                    and search_text.lower() in attr_value.lower()
-                ):
+                if callable(attr_value):
+                    continue
+            except Exception:
+                continue
+
+            if self._value_contains_text(attr_value, search_lower):
+                return True
+        return False
+
+    def _value_contains_text(self, value, search_lower: str) -> bool:
+        """递归检查值是否包含搜索文本"""
+        if isinstance(value, str):
+            return search_lower in value.lower()
+        elif isinstance(value, dict):
+            return self._dict_contains_text(value, search_lower)
+        elif isinstance(value, (list, tuple, set)):
+            for v in value:
+                if self._value_contains_text(v, search_lower):
                     return True
-                # 如果属性是字典，检查字典的键和值
-                elif isinstance(attr_value, dict):
-                    for key, value in attr_value.items():
-                        if (
-                            isinstance(key, str)
-                            and search_text.lower() in key.lower()
-                        ):
-                            return True
-                        if (
-                            isinstance(value, str)
-                            and search_text.lower() in value.lower()
-                        ):
-                            return True
-                # 处理列表类型
-                elif isinstance(attr_value, list):
-                    for value in attr_value:
-                        if (
-                            isinstance(value, str)
-                            and search_text.lower() in value.lower()
-                        ):
-                            return True
+        elif isinstance(value, (int, float, bool)):
+            # 将数字等转换为字符串再检查
+            return search_lower in str(value).lower()
+        return False
+
+    def _dict_contains_text(self, d: dict, search_lower: str) -> bool:
+        """递归检查字典中所有键和值是否包含搜索文本"""
+        for key, val in d.items():
+            if isinstance(key, str) and search_lower in key.lower():
+                return True
+            if self._value_contains_text(val, search_lower):
+                return True
         return False
 
     def set_column(
@@ -351,7 +371,7 @@ class EnhancedTabelWidget(QWidget):
 
 
 if __name__ == "__main__":
-
+    import app.common.resource
     # 生成测试数据
     documents = []
     for i in range(1, 101):

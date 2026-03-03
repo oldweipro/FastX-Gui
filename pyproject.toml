@@ -9,6 +9,7 @@ dependencies = [
     "nuitka>=4.0.2",
     "ordered-set>=4.1.0",
     "plyer>=2.1.0",
+    "pydantic>=2.12.5",
     "pyside6-fluent-widgets[full]>=1.11.1",
     "qtpy>=2.4.3",
     "requests>=2.32.5",
