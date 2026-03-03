@@ -260,7 +260,7 @@ class QcCompositionUI(ExpandSettingCard):
     ):
         # 如果 icon 为 None，可以设置一个默认图标
         if icon is None:
-            icon = UnicodeIcon.get_icon_by_name("ic_fluent_comment_dismiss_24_regular")
+            icon = UnicodeIcon.get_icon_by_name("ic_fluent_channel_share_48_regular")
         # 如果 title 为空字符串，设置默认标题
         if not title:
             title = self.tr("QCraft Composition Arxml Adapter")
@@ -287,17 +287,17 @@ class QcCompositionUI(ExpandSettingCard):
         """
 
         # 文件夹选择卡片
-        self.qcCompositionInputFolderCard = PushSettingCard(
+        self.qcCompositionOutputFolderCard = PushSettingCard(
             self.tr("Choose folder"),
             FIF.FOLDER_ADD,
-            self.tr("Project Input Directory"),
-            cfg.get(cfg.qcCompositionInputFolder)
+            self.tr("Project Output Directory"),
+            cfg.get(cfg.qcCompositionOutputFolder)
         )
 
         # 文件选择卡片
         self.qcCompositionInputFileCard = PushSettingCard(
             self.tr("Choose file"),
-            FIF.HEART,
+            UnicodeIcon.get_icon_by_name('ic_fluent_document_table_truck_24_regular'),
             self.tr("Input File"),
             cfg.get(cfg.qcCompositionInputFile)
         )
@@ -320,8 +320,8 @@ class QcCompositionUI(ExpandSettingCard):
         """
         添加卡片到布局
         """
-        self.viewLayout.addWidget(self.qcCompositionInputFolderCard)
         self.viewLayout.addWidget(self.qcCompositionInputFileCard)
+        self.viewLayout.addWidget(self.qcCompositionOutputFolderCard)
         self.viewLayout.addWidget(self.tabCard)
         self.viewLayout.addWidget(self.qcCompositionExecuteCard)
 
@@ -332,8 +332,8 @@ class QcCompositionUI(ExpandSettingCard):
         连接信号
         """
         # 按钮 | 选择文件夹
-        self.qcCompositionInputFolderCard.clicked.connect(
-            lambda: self.__onChooseFolderClicked(cfg.qcCompositionInputFolder, self.qcCompositionInputFolderCard)
+        self.qcCompositionOutputFolderCard.clicked.connect(
+            lambda: self.__onChooseFolderClicked(cfg.qcCompositionOutputFolder, self.qcCompositionOutputFolderCard)
         )
 
         # 按钮 | 选择文件
@@ -413,25 +413,25 @@ class QcCompositionUI(ExpandSettingCard):
         
         if index == 0:  # Option 1
             # 显示所有卡片并启用
-            self.qcCompositionInputFolderCard.setVisible(True)
             self.qcCompositionInputFileCard.setVisible(True)
+            self.qcCompositionOutputFolderCard.setVisible(True)
             self.qcCompositionExecuteCard.setVisible(True)
-            self.qcCompositionInputFolderCard.setEnabled(True)
+            self.qcCompositionOutputFolderCard.setEnabled(True)
             self.qcCompositionInputFileCard.setEnabled(True)
             self.qcCompositionExecuteCard.setEnabled(True)
         elif index == 1:  # Option 2
             # 只显示输入文件夹卡片，禁用执行按钮
-            self.qcCompositionInputFolderCard.setVisible(True)
             self.qcCompositionInputFileCard.setVisible(True)
+            self.qcCompositionOutputFolderCard.setVisible(True)
             self.qcCompositionExecuteCard.setVisible(False)
-            self.qcCompositionInputFolderCard.setEnabled(True)
+            self.qcCompositionOutputFolderCard.setEnabled(True)
             self.qcCompositionInputFileCard.setEnabled(True)
         elif index == 2:  # Option 3
             # 显示所有卡片但禁用
-            self.qcCompositionInputFolderCard.setVisible(True)
             self.qcCompositionInputFileCard.setVisible(True)
+            self.qcCompositionOutputFolderCard.setVisible(True)
             self.qcCompositionExecuteCard.setVisible(True)
-            self.qcCompositionInputFolderCard.setEnabled(False)
+            self.qcCompositionOutputFolderCard.setEnabled(False)
             self.qcCompositionInputFileCard.setEnabled(False)
             self.qcCompositionExecuteCard.setEnabled(False)
         

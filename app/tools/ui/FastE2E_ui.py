@@ -32,7 +32,7 @@ class FastE2EToolUI(ExpandSettingCard):
     ):
         # 如果 icon 为 None，可以设置一个默认图标
         if icon is None:
-            icon = UnicodeIcon.get_icon_by_name("ic_fluent_comment_dismiss_24_regular")
+            icon = UnicodeIcon.get_icon_by_name("ic_fluent_shifts_availability_24_regular")
         # 如果 title 为空字符串，设置默认标题
         if not title:
             title = self.tr("FastE2E Tool")
@@ -59,17 +59,17 @@ class FastE2EToolUI(ExpandSettingCard):
         """
 
         # 文件夹选择卡片
-        self.fastE2EInputFolderCard = PushSettingCard(
+        self.fastE2EOutputFolderCard = PushSettingCard(
             self.tr("Choose folder"),
             FIF.FOLDER_ADD,
-            self.tr("FastE2E Input Directory"),
-            cfg.get(cfg.fastE2EInputFolder)
+            self.tr("FastE2E Output Directory"),
+            cfg.get(cfg.fastE2EOutputFolder)
         )
 
         # 文件选择卡片
         self.fastE2EInputFileCard = PushSettingCard(
             self.tr("Choose file"),
-            FIF.HEART,
+            UnicodeIcon.get_icon_by_name('ic_fluent_document_table_truck_24_regular'),
             self.tr("Input File"),
             cfg.get(cfg.fastE2EInputFile)
         )
@@ -77,7 +77,7 @@ class FastE2EToolUI(ExpandSettingCard):
         # 方向切换组合框 (Tx/Rx)
         self.directionCard = ComboBoxSettingCard(
             cfg.fastE2EDirection,
-            UnicodeIcon.get_icon_by_name("ic_fluent_resize_large_24_regular"),
+            UnicodeIcon.get_icon_by_name("ic_fluent_text_paragraph_24_regular"),
             self.tr("Direction"),
             self.tr("Select the direction for E2E processing"),
             texts=[self.tr("Tx"), self.tr("Rx")]
@@ -98,8 +98,8 @@ class FastE2EToolUI(ExpandSettingCard):
         """
         添加卡片到布局
         """
-        self.viewLayout.addWidget(self.fastE2EInputFolderCard)
         self.viewLayout.addWidget(self.fastE2EInputFileCard)
+        self.viewLayout.addWidget(self.fastE2EOutputFolderCard)
         self.viewLayout.addWidget(self.directionCard)
         self.viewLayout.addWidget(self.fastE2EExecuteCard)
 
@@ -110,8 +110,8 @@ class FastE2EToolUI(ExpandSettingCard):
         连接信号
         """
         # 按钮 | 选择文件夹
-        self.fastE2EInputFolderCard.clicked.connect(
-            lambda: self.__onChooseFolderClicked(cfg.fastE2EInputFolder, self.fastE2EInputFolderCard)
+        self.fastE2EOutputFolderCard.clicked.connect(
+            lambda: self.__onChooseFolderClicked(cfg.fastE2EOutputFolder, self.fastE2EOutputFolderCard)
         )
 
         # 按钮 | 选择文件
@@ -191,30 +191,30 @@ class FastE2EToolUI(ExpandSettingCard):
 
         if index == 0:  # Option 1
             # 显示所有卡片并启用
-            self.fastE2EInputFolderCard.setVisible(True)
+            self.fastE2EOutputFolderCard.setVisible(True)
             self.fastE2EInputFileCard.setVisible(True)
             self.directionCard.setVisible(True)
             self.fastE2EExecuteCard.setVisible(True)
-            self.fastE2EInputFolderCard.setEnabled(True)
+            self.fastE2EOutputFolderCard.setEnabled(True)
             self.fastE2EInputFileCard.setEnabled(True)
             self.directionCard.setEnabled(True)
             self.fastE2EExecuteCard.setEnabled(True)
         elif index == 1:  # Option 2
             # 只显示输入文件夹卡片，禁用执行按钮
-            self.fastE2EInputFolderCard.setVisible(True)
+            self.fastE2EOutputFolderCard.setVisible(True)
             self.fastE2EInputFileCard.setVisible(True)
             self.directionCard.setVisible(True)
             self.fastE2EExecuteCard.setVisible(False)
-            self.fastE2EInputFolderCard.setEnabled(True)
+            self.fastE2EOutputFolderCard.setEnabled(True)
             self.fastE2EInputFileCard.setEnabled(True)
             self.directionCard.setEnabled(True)
         elif index == 2:  # Option 3
             # 显示所有卡片但禁用
-            self.fastE2EInputFolderCard.setVisible(True)
+            self.fastE2EOutputFolderCard.setVisible(True)
             self.fastE2EInputFileCard.setVisible(True)
             self.directionCard.setVisible(True)
             self.fastE2EExecuteCard.setVisible(True)
-            self.fastE2EInputFolderCard.setEnabled(False)
+            self.fastE2EOutputFolderCard.setEnabled(False)
             self.fastE2EInputFileCard.setEnabled(False)
             self.directionCard.setEnabled(False)
             self.fastE2EExecuteCard.setEnabled(False)

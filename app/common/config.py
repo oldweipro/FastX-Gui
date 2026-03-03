@@ -170,20 +170,20 @@ class Config(QConfig):
     rmCommentsExcludePatterns = ConfigItem("Tools", "RmCommentsExcludePatterns", "*_test.py,test_*.py")
 
     # QCraft Composition 工具配置
-    qcCompositionInputFolder = ConfigItem("Tools", "QcCompositionInputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
     qcCompositionInputFile = ConfigItem("Tools", "QcCompositionInputFile", "", FileValidator())
+    qcCompositionOutputFolder = ConfigItem("Tools", "QcCompositionOutputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
     qcCompositionSelectedOption = ConfigItem("Tools", "QcCompositionSelectedOption", 0)
     qcCompositionCoreSettings = ConfigItem("Tools", "QcCompositionCoreSettings", {})
     qcCompositionTableData = ConfigItem("Tools", "QcCompositionTableData", [])
 
     # FastDem 工具配置
-    fastDemInputFolder = ConfigItem("Tools", "FastDemInputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
     fastDemInputFile = ConfigItem("Tools", "FastDemInputFile", "", FileValidator())
+    fastDemOutputFolder = ConfigItem("Tools", "FastDemOutputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
     fastDemSelectedOption = ConfigItem("Tools", "FastDemSelectedOption", 0)
 
     # FastE2E 工具配置
-    fastE2EInputFolder = ConfigItem("Tools", "FastE2EInputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
     fastE2EInputFile = ConfigItem("Tools", "FastE2EInputFile", "", FileValidator())
+    fastE2EOutputFolder = ConfigItem("Tools", "FastE2EOutputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
     fastE2ESelectedOption = ConfigItem("Tools", "FastE2ESelectedOption", 0)
     fastE2EDirection = OptionsConfigItem("Tools", "FastE2EDirection", "Tx", OptionsValidator(["Tx", "Rx"]))
 

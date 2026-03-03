@@ -31,7 +31,7 @@ class FastDemToolUI(ExpandSettingCard):
     ):
         # 如果 icon 为 None，可以设置一个默认图标
         if icon is None:
-            icon = UnicodeIcon.get_icon_by_name("ic_fluent_comment_dismiss_24_regular")
+            icon = UnicodeIcon.get_icon_by_name("ic_fluent_channel_dismiss_24_regular")
         # 如果 title 为空字符串，设置默认标题
         if not title:
             title = self.tr("FastDem Tool")
@@ -58,17 +58,17 @@ class FastDemToolUI(ExpandSettingCard):
         """
 
         # 文件夹选择卡片
-        self.fastDemInputFolderCard = PushSettingCard(
+        self.fastDemOutputFolderCard = PushSettingCard(
             self.tr("Choose folder"),
             FIF.FOLDER_ADD,
-            self.tr("FastDem Input Directory"),
-            cfg.get(cfg.fastDemInputFolder)
+            self.tr("FastDem Output Directory"),
+            cfg.get(cfg.fastDemOutputFolder)
         )
 
         # 文件选择卡片
         self.fastDemInputFileCard = PushSettingCard(
             self.tr("Choose file"),
-            FIF.HEART,
+            UnicodeIcon.get_icon_by_name('ic_fluent_document_table_truck_24_regular'),
             self.tr("Input File"),
             cfg.get(cfg.fastDemInputFile)
         )
@@ -88,8 +88,8 @@ class FastDemToolUI(ExpandSettingCard):
         """
         添加卡片到布局
         """
-        self.viewLayout.addWidget(self.fastDemInputFolderCard)
         self.viewLayout.addWidget(self.fastDemInputFileCard)
+        self.viewLayout.addWidget(self.fastDemOutputFolderCard)
         self.viewLayout.addWidget(self.fastDemExecuteCard)
 
         self._adjustViewSize()
@@ -99,8 +99,8 @@ class FastDemToolUI(ExpandSettingCard):
         连接信号
         """
         # 按钮 | 选择文件夹
-        self.fastDemInputFolderCard.clicked.connect(
-            lambda: self.__onChooseFolderClicked(cfg.fastDemInputFolder, self.fastDemInputFolderCard)
+        self.fastDemOutputFolderCard.clicked.connect(
+            lambda: self.__onChooseFolderClicked(cfg.fastDemOutputFolder, self.fastDemOutputFolderCard)
         )
 
         # 按钮 | 选择文件
@@ -180,25 +180,25 @@ class FastDemToolUI(ExpandSettingCard):
 
         if index == 0:  # Option 1
             # 显示所有卡片并启用
-            self.fastDemInputFolderCard.setVisible(True)
+            self.fastDemOutputFolderCard.setVisible(True)
             self.fastDemInputFileCard.setVisible(True)
             self.fastDemExecuteCard.setVisible(True)
-            self.fastDemInputFolderCard.setEnabled(True)
+            self.fastDemOutputFolderCard.setEnabled(True)
             self.fastDemInputFileCard.setEnabled(True)
             self.fastDemExecuteCard.setEnabled(True)
         elif index == 1:  # Option 2
             # 只显示输入文件夹卡片，禁用执行按钮
-            self.fastDemInputFolderCard.setVisible(True)
+            self.fastDemOutputFolderCard.setVisible(True)
             self.fastDemInputFileCard.setVisible(True)
             self.fastDemExecuteCard.setVisible(False)
-            self.fastDemInputFolderCard.setEnabled(True)
+            self.fastDemOutputFolderCard.setEnabled(True)
             self.fastDemInputFileCard.setEnabled(True)
         elif index == 2:  # Option 3
             # 显示所有卡片但禁用
-            self.fastDemInputFolderCard.setVisible(True)
+            self.fastDemOutputFolderCard.setVisible(True)
             self.fastDemInputFileCard.setVisible(True)
             self.fastDemExecuteCard.setVisible(True)
-            self.fastDemInputFolderCard.setEnabled(False)
+            self.fastDemOutputFolderCard.setEnabled(False)
             self.fastDemInputFileCard.setEnabled(False)
             self.fastDemExecuteCard.setEnabled(False)
 
