@@ -55,6 +55,9 @@
         "MicaEnabled": true
     },
     "Tools": {
+        "FastCCPInputFile": "",
+        "FastCCPOutputFolder": "C:/Users/91974/Downloads",
+        "FastCCPSelectedOption": 0,
         "FastDemInputFile": "",
         "FastDemOutputFolder": "C:/Users/91974/Downloads",
         "FastDemSelectedOption": 0,
@@ -62,6 +65,9 @@
         "FastE2EInputFile": "",
         "FastE2EOutputFolder": "C:/Users/91974/Downloads",
         "FastE2ESelectedOption": 0,
+        "FastFaultManagerInputFile": "",
+        "FastFaultManagerOutputFolder": "C:/Users/91974/Downloads",
+        "FastFaultManagerSelectedOption": 0,
         "QcCompositionCoreSettings": {},
         "QcCompositionInputFile": "",
         "QcCompositionOutputFolder": "C:/Users/91974/Downloads",
@@ -92,7 +98,7 @@
             "PingFang SC"
         ],
         "ThemeColor": "#ff009faa",
-        "ThemeMode": "Light"
+        "ThemeMode": "Dark"
     },
     "Log": {
         "ColorCriticalDark": "#ffff69b4",

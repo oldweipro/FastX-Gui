@@ -26,6 +26,8 @@ from app.tools.ui.qc_composition_ui import QcCompositionUI
 from app.tools.ui.rm_comments_ui import RmCommentsUI
 from app.tools.ui.FastDem_ui import FastDemToolUI
 from app.tools.ui.FastE2E_ui import FastE2EToolUI
+from app.tools.ui.FastCCP_ui import FastCCPToolUI
+from app.tools.ui.FastFaultManager_ui import FastFaultManagerToolUI
 
 
 class ToolsInterface(ScrollArea):
@@ -56,6 +58,8 @@ class ToolsInterface(ScrollArea):
         self.SerialGroup = SettingCardGroup(self.tr("Serial"), self.view)
         self.PubGroup = SettingCardGroup(self.tr("Pub"), self.view)
         self.IfGroup = SettingCardGroup(self.tr("IF"), self.view)
+        self.CCPGroup = SettingCardGroup(self.tr("CCP"), self.view)
+        self.FaultManagerGroup = SettingCardGroup(self.tr("FaultManager"), self.view)
 
         self.__initWidget()
         self.__initLayout()
@@ -115,6 +119,8 @@ class ToolsInterface(ScrollArea):
         self.PubGroup.addSettingCard(RmCommentsUI(parent=self.view))
         self.DemGroup.addSettingCard(FastDemToolUI(parent=self.view))
         self.E2EGroup.addSettingCard(FastE2EToolUI(parent=self.view))
+        self.DemGroup.addSettingCard(FastFaultManagerToolUI(parent=self.view))
+        self.ComGroup.addSettingCard(FastCCPToolUI(parent=self.view))
 
         # 添加标签页
         self.addSubInterface(self.DemGroup, "TabDemInterface", self.tr("Dem"))
@@ -125,6 +131,8 @@ class ToolsInterface(ScrollArea):
         self.addSubInterface(self.SerialGroup, "TabSerialInterface", self.tr("Serial"))
         self.addSubInterface(self.PubGroup, "TabPubInterface", self.tr("Pub"))
         self.addSubInterface(self.IfGroup, "TabIFInterface", self.tr("IF"))
+        self.addSubInterface(self.CCPGroup, "TabCCPInterface", self.tr("CCP"))
+        self.addSubInterface(self.FaultManagerGroup, "TabFaultManagerInterface", self.tr("FaultManager"))
 
     def __connectSignalToSlot(self):
         # 连接信号并初始化当前标签页

@@ -187,6 +187,16 @@ class Config(QConfig):
     fastE2ESelectedOption = ConfigItem("Tools", "FastE2ESelectedOption", 0)
     fastE2EDirection = OptionsConfigItem("Tools", "FastE2EDirection", "Tx", OptionsValidator(["Tx", "Rx"]))
 
+    # FastCCP 工具配置
+    fastCCPInputFile = ConfigItem("Tools", "FastCCPInputFile", "", FileValidator())
+    fastCCPOutputFolder = ConfigItem("Tools", "FastCCPOutputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
+    fastCCPSelectedOption = ConfigItem("Tools", "FastCCPSelectedOption", 0)
+
+    # FastFaultManager 工具配置
+    fastFaultManagerInputFile = ConfigItem("Tools", "FastFaultManagerInputFile", "", FileValidator())
+    fastFaultManagerOutputFolder = ConfigItem("Tools", "FastFaultManagerOutputFolder", QStandardPaths.writableLocation(QStandardPaths.DownloadLocation), FolderValidator())
+    fastFaultManagerSelectedOption = ConfigItem("Tools", "FastFaultManagerSelectedOption", 0)
+
     # 浮窗配置
     # 基础设置
     startupDisplayFloatingWindow = ConfigItem("FloatingWindow", "StartupDisplay", True, BoolValidator())
