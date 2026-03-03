@@ -13,11 +13,11 @@
         "WindowSizeMode": "auto"
     },
     "Background": {
-        "BlurRadius": 0,
+        "BlurRadius": 21,
         "DisplayMode": "Keep Aspect Ratio",
-        "ImageEnabled": false,
-        "ImagePath": "C:/Users/91974/Pictures/02 壁纸/短发美 外套 帅气 纹身4k高清壁纸3840x2160_彼岸图网.jpg",
-        "Opacity": 30
+        "ImageEnabled": true,
+        "ImagePath": "C:/Users/91974/Pictures/02 壁纸/朋克狐耳女孩4k壁纸3840x2160_彼岸图网.jpg",
+        "Opacity": 41
     },
     "Material": {
         "AcrylicBlurRadius": 40
@@ -26,27 +26,27 @@
         "CheckUpdateAtStartUp": true
     },
     "Tools": {
-        "ComGroupMappingInputFile": "",
+        "ComGroupMappingInputFile": "C:/Users/91974/Downloads/E2E_Template.xlsx",
         "ComGroupMappingOutputFolder": "C:/Users/91974/Downloads/ps2023",
         "ComGroupMappingSelectedOption": 0,
-        "FastCCPInputFile": "",
+        "FastCCPInputFile": "C:/Users/91974/Downloads/E2E_Template.xlsx",
         "FastCCPOutputFolder": "C:/Users/91974/Downloads",
         "FastCCPSelectedOption": 0,
-        "FastDemInputFile": "",
+        "FastDemInputFile": "C:/Users/91974/Downloads/E2E_Template.xlsx",
         "FastDemOutputFolder": "C:/Users/91974/Downloads",
         "FastDemSelectedOption": 0,
         "FastE2EDirection": "Tx",
-        "FastE2EInputFile": "",
+        "FastE2EInputFile": "C:/Users/91974/Downloads/E2E_Template.xlsx",
         "FastE2EOutputFolder": "C:/Users/91974/Downloads",
         "FastE2ESelectedOption": 0,
-        "FastFaultManagerInputFile": "",
+        "FastFaultManagerInputFile": "C:/Users/91974/Downloads/E2E_Template.xlsx",
         "FastFaultManagerOutputFolder": "C:/Users/91974/Downloads",
         "FastFaultManagerSelectedOption": 0,
-        "FastSomeIpInputFile": "",
+        "FastSomeIpInputFile": "C:/Users/91974/Downloads/E2E_Template.xlsx",
         "FastSomeIpOutputFolder": "C:/Users/91974/Downloads",
         "FastSomeIpSelectedOption": 0,
         "QcCompositionCoreSettings": {},
-        "QcCompositionInputFile": "",
+        "QcCompositionInputFile": "C:/Users/91974/Downloads/E2E_Template.xlsx",
         "QcCompositionOutputFolder": "C:/Users/91974/Downloads",
         "QcCompositionSelectedOption": 0,
         "QcCompositionTableData": [],
@@ -82,7 +82,7 @@
         "StartupDisplay": false
     },
     "Project": {
-        "DownloadFolder": "D:/Github/FastX-Gui/app/download",
+        "DownloadFolder": "C:/Users/91974/Downloads",
         "Folders": []
     },
     "Personalization": {
