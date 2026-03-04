@@ -6,8 +6,10 @@ requires-python = ">=3.13"
 dependencies = [
     "aenum>=3.1.16",
     "loguru",
-    "nuitka>=4.0.2",
+    "nuitka>=4.0.1",
+    "openpyxl>=3.1.5",
     "ordered-set>=4.1.0",
+    "pandas>=3.0.1",
     "plyer>=2.1.0",
     "pydantic>=2.12.5",
     "pyside6-fluent-widgets[full]>=1.11.1",

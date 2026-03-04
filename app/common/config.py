@@ -101,7 +101,7 @@ class Config(QConfig):
 
     # 项目文件夹配置
     projectFolders = ConfigItem("Project", "Folders", [], FolderListValidator())
-    downloadFolder = ConfigItem("Project", "DownloadFolder", "app/download", FolderValidator())
+    downloadFolder = ConfigItem("Project", "DownloadFolder", "", FolderValidator())
 
     # 个性化设置
     micaEnabled = ConfigItem("Personalization", "MicaEnabled", isWin11(), BoolValidator())
