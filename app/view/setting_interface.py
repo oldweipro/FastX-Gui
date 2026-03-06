@@ -308,7 +308,6 @@ class SettingInterface(ScrollArea):
 
         # Application
         self.appGroup = SettingCardGroup(self.tr("Application settings"), self.view)
-        # TODO: 不能够正常工作,需要解决
         self.StartupCard = SwitchSettingCard(
             UnicodeIcon.get_icon_by_name("ic_fluent_bug_prohibited_20_regular"),
             self.tr("Auto StartUp Settings(Beta)"),
@@ -878,34 +877,36 @@ class SettingInterface(ScrollArea):
         """设置Windows开机自启动"""
         try:
             import winreg
-        except Exception as e:
-            # logger.warning(f"无法加载 winreg: {e}")
+        except Exception:
             return False
 
         key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
         try:
-            key = winreg.OpenKey(
-                winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_SET_VALUE
-            )
-        except FileNotFoundError:
-            key = winreg.CreateKey(winreg.HKEY_CURRENT_USER, key_path)
-
-        if enabled:
-            if getattr(sys, "frozen", False):
-                cmd = f'"{sys.executable}"'
-            else:
-                root = Path(__file__).resolve().parents[2]
-                main_py = root / "main.py"
-                cmd = f'"{sys.executable}" "{str(main_py)}"'
-            winreg.SetValueEx(key, APPLY_NAME, 0, winreg.REG_SZ, cmd)
-        else:
+            # KEY_SET_VALUE 已包含写权限，OpenKey 失败时用 CreateKey 兜底
             try:
-                winreg.DeleteValue(key, APPLY_NAME)
-            except FileNotFoundError:
-                pass
+                key = winreg.OpenKey(
+                    winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_SET_VALUE
+                )
+            except OSError:
+                key = winreg.CreateKey(winreg.HKEY_CURRENT_USER, key_path)
 
-        winreg.CloseKey(key)
-        return True
+            with key:
+                if enabled:
+                    if getattr(sys, "frozen", False):
+                        cmd = f'"{sys.executable}"'
+                    else:
+                        root = Path(__file__).resolve().parents[2]
+                        main_py = root / "main.py"
+                        cmd = f'"{sys.executable}" "{str(main_py)}"'
+                    winreg.SetValueEx(key, APPLY_NAME, 0, winreg.REG_SZ, cmd)
+                else:
+                    try:
+                        winreg.DeleteValue(key, APPLY_NAME)
+                    except OSError:
+                        pass  # 键值不存在时忽略
+            return True
+        except Exception:
+            return False
 
     def _set_linux_autostart(self, enabled: bool) -> bool:
         """设置Linux开机自启动"""
@@ -920,7 +921,14 @@ class SettingInterface(ScrollArea):
                 root = Path(__file__).resolve().parents[2]
                 main_py = root / "main.py"
                 exec_cmd = f'{sys.executable} "{str(main_py)}"'
-            content = f"[Desktop Entry]\nType=Application\nName={APPLY_NAME}\nExec={exec_cmd}\nX-GNOME-Autostart-enabled=true\n"
+            content = (
+                f"[Desktop Entry]\n"
+                f"Type=Application\n"
+                f"Name={APPLY_NAME}\n"
+                f"Exec={exec_cmd}\n"
+                f"Icon=application-x-executable\n"
+                f"X-GNOME-Autostart-enabled=true\n"
+            )
             desktop.write_text(content, encoding="utf-8")
         else:
             if desktop.exists():
