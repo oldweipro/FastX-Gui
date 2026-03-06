@@ -14,6 +14,7 @@ from qfluentwidgets import (
     FolderListSettingCard,
     HyperlinkCard,
     InfoBar,
+    InfoBarPosition,
     OptionsSettingCard,
     PrimaryPushSettingCard,
     PushButton,
@@ -37,11 +38,13 @@ from app.common.setting import (
     COPYRIGHT_HOLDER,
     FEEDBACK_URL,
     HELP_URL,
+    RELEASE_URL,
     VERSION,
     YEAR, APPLY_NAME,
 )
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
+from app.common.update_checker import UpdateChecker, UpdateResult
 from app.components.config_card import FloatingWindowBasicSettings
 
 
@@ -675,6 +678,16 @@ class SettingInterface(ScrollArea):
 
         self.StartupCard.checkedChanged.connect(self.__on_autostart_changed)
 
+        # application
+        self.betaCard.checkedChanged.connect(self._betaEnable)
+
+        # check update
+        self.aboutCard.clicked.connect(signalBus.checkUpdateSig)
+        self.initUpdateChecker()
+
+        # about
+        self.feedbackCard.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))
+
     def __onThemeChanged(self):
         """Handle theme change and update log color cards"""
         #  如果是展開的,則收縮
@@ -761,14 +774,85 @@ class SettingInterface(ScrollArea):
         # 调整布局大小
         self.logGroupCard._adjustViewSize()
 
-        # application
-        self.betaCard.checkedChanged.connect(self._betaEnable)
+    # ------------------------------------------------------------------ #
+    #  更新检查
+    # ------------------------------------------------------------------ #
+    def initUpdateChecker(self):
+        """初始化更新检查器（由外部在合适时机调用）"""
+        self._updateChecker = UpdateChecker(self)
+        self._updateChecker.checking.connect(self._onUpdateChecking)
+        self._updateChecker.result_ready.connect(self._onUpdateResult)
+        signalBus.checkUpdateSig.connect(self._updateChecker.check)
 
-        # check update
-        self.aboutCard.clicked.connect(signalBus.checkUpdateSig)
+    def checkUpdateOnStartup(self):
+        """启动时静默检查（由 MainWindow 在初始化后调用）"""
+        if cfg.get(cfg.checkUpdateAtStartUp):
+            if not hasattr(self, "_updateChecker"):
+                self.initUpdateChecker()
+            self._updateChecker.check()
 
-        # about
-        self.feedbackCard.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))
+    def _onUpdateChecking(self):
+        """检查开始：按钮进入加载态"""
+        self.aboutCard.button.setEnabled(False)
+        self.aboutCard.button.setText(self.tr("Checking..."))
+
+    def _onUpdateResult(self, result: UpdateResult):
+        """检查完成：恢复按钮并展示结果"""
+        self.aboutCard.button.setEnabled(True)
+        self.aboutCard.button.setText(self.tr("Check update"))
+
+        parent = self.window()
+
+        if result.error and not result.no_release:
+            # 网络错误 / 未知错误
+            show_notification(
+                NotificationType.ERROR,
+                NotificationConfig(
+                    title=self.tr("Check update"),
+                    content=result.error,
+                    duration=5000,
+                    position=InfoBarPosition.TOP_RIGHT,
+                ),
+                parent=parent,
+            )
+        elif result.no_release:
+            # 仓库尚未发布任何 Release
+            show_notification(
+                NotificationType.INFO,
+                NotificationConfig(
+                    title=self.tr("Check update"),
+                    content=self.tr("Currently a development version, no release available."),
+                    duration=4000,
+                    position=InfoBarPosition.TOP_RIGHT,
+                ),
+                parent=parent,
+            )
+        elif result.is_latest:
+            # 已是最新版本
+            show_notification(
+                NotificationType.SUCCESS,
+                NotificationConfig(
+                    title=self.tr("Check update"),
+                    content=self.tr("Already the latest version: ") + result.current_version,
+                    duration=3000,
+                    position=InfoBarPosition.TOP_RIGHT,
+                ),
+                parent=parent,
+            )
+        elif result.has_update:
+            # 发现新版本
+            InfoBar.info(
+                title=self.tr("New version available"),
+                content=f"{result.current_version}  →  {result.latest_version}",
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.TOP_RIGHT,
+                duration=-1,
+                parent=parent,
+            )
+            # 额外打开 Release 页面
+            if result.release_url:
+                QDesktopServices.openUrl(QUrl(result.release_url))
 
     def set_autostart(self, enabled: bool) -> bool:
         """设置开机自启动

@@ -315,6 +315,8 @@ class MainWindow(SplitFluentWindow):
         self.loguru_interface.settingsButton.clicked.connect(
             lambda: signalBus.switchToSettingGroup.emit(self.settingInterface.appGroup)
         )
+        # 启动时检查更新（由设置界面的 checkUpdateAtStartUp 配置项控制）
+        self.settingInterface.checkUpdateOnStartup()
 
     def _initNavigation(self):
         # set sidebar expand width

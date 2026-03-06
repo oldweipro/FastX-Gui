@@ -1058,6 +1058,11 @@
     </message>
     <message>
         <location filename="../../view/setting_interface.py" line="445"/>
+        <source>Checking...</source>
+        <translation>检查更新中...</translation>
+    </message>
+    <message>
+        <location filename="../../view/setting_interface.py" line="445"/>
         <source>Version</source>
         <translation>当前版本</translation>
     </message>
