@@ -14,6 +14,7 @@
 """
 
 import argparse
+import os
 import re
 import sys
 from pathlib import Path
@@ -59,13 +60,30 @@ def update_pyproject_toml(file_path: Path, new_version: str) -> bool:
         return False
 
     content = file_path.read_text(encoding="utf-8")
-    # 匹配 version = "x.y.z" 格式
-    pattern = r'^version\s*=\s*"[^"]*"'
-    new_content = re.sub(pattern, f'version = "{new_version}"', content, count=1, flags=re.MULTILINE)
+    print(f"DEBUG: pyproject.toml content preview: {content[:200]!r}")
 
-    if new_content == content:
+    # 匹配 version = "x.y.z" 格式（更宽松的正则，不依赖行首锚点）
+    pattern = r'(\n|^)version\s*=\s*"[^"]*"'
+    match = re.search(pattern, content)
+
+    if not match:
         print("Warning: No version found in pyproject.toml")
+        # 尝试备用匹配方式
+        pattern2 = r'version\s*=\s*"[^"]*"'
+        match2 = re.search(pattern2, content)
+        if match2:
+            print(f"DEBUG: Found with alternate pattern: {match2.group()!r}")
+            new_content = content.replace(match2.group(), f'version = "{new_version}"', 1)
+            file_path.write_text(new_content, encoding="utf-8")
+            print(f"Updated pyproject.toml: version = \"{new_version}\"")
+            return True
         return False
+
+    # 替换匹配到的内容
+    matched_text = match.group()
+    # 保留换行符（如果有）
+    prefix = match.group(1) if match.group(1) else ""
+    new_content = content.replace(matched_text, f'{prefix}version = "{new_version}"', 1)
 
     file_path.write_text(new_content, encoding="utf-8")
     print(f"Updated pyproject.toml: version = \"{new_version}\"")
@@ -79,15 +97,31 @@ def update_setting_py(file_path: Path, new_version: str) -> bool:
         return False
 
     content = file_path.read_text(encoding="utf-8")
-    # 匹配 VERSION = "vx.y.z" 或 VERSION = "x.y.z" 格式
-    pattern = r'^VERSION\s*=\s*"[^"]*"'
-    # 保持带 v 前缀
-    version_with_v = f"v{new_version}" if not new_version.startswith("v") else new_version
-    new_content = re.sub(pattern, f'VERSION = "{version_with_v}"', content, count=1, flags=re.MULTILINE)
+    print(f"DEBUG: setting.py content preview (lines 15-25): {content.split(chr(10))[15:25]!r}")
 
-    if new_content == content:
+    # 匹配 VERSION = "vx.y.z" 或 VERSION = "x.y.z" 格式（更宽松的正则）
+    pattern = r'(\n|^)VERSION\s*=\s*"[^"]*"'
+    match = re.search(pattern, content)
+
+    if not match:
         print("Warning: No VERSION found in setting.py")
+        # 尝试备用匹配方式
+        pattern2 = r'VERSION\s*=\s*"[^"]*"'
+        match2 = re.search(pattern2, content)
+        if match2:
+            print(f"DEBUG: Found with alternate pattern: {match2.group()!r}")
+            version_with_v = f"v{new_version}" if not new_version.startswith("v") else new_version
+            new_content = content.replace(match2.group(), f'VERSION = "{version_with_v}"', 1)
+            file_path.write_text(new_content, encoding="utf-8")
+            print(f"Updated setting.py: VERSION = \"{version_with_v}\"")
+            return True
         return False
+
+    # 替换匹配到的内容
+    matched_text = match.group()
+    prefix = match.group(1) if match.group(1) else ""
+    version_with_v = f"v{new_version}" if not new_version.startswith("v") else new_version
+    new_content = content.replace(matched_text, f'{prefix}VERSION = "{version_with_v}"', 1)
 
     file_path.write_text(new_content, encoding="utf-8")
     print(f"Updated setting.py: VERSION = \"{version_with_v}\"")
@@ -97,10 +131,11 @@ def update_setting_py(file_path: Path, new_version: str) -> bool:
 def get_current_version(pyproject_path: Path) -> str:
     """从 pyproject.toml 获取当前版本"""
     content = pyproject_path.read_text(encoding="utf-8")
-    match = re.search(r'^version\s*=\s*"([^"]*)"', content, re.MULTILINE)
+    # 使用更宽松的匹配方式
+    match = re.search(r'version\s*=\s*"([^"]+)"', content)
     if match:
         return match.group(1)
-    raise ValueError("Cannot find version in pyproject.toml")
+    raise ValueError(f"Cannot find version in pyproject.toml. Content preview: {content[:300]!r}")
 
 
 def main():
@@ -150,9 +185,16 @@ def main():
 
     if success:
         print(f"\n✓ Version successfully bumped to {new_version}")
-        # 输出版本号供 GitHub Actions 使用
-        print(f"::set-output name=version::{new_version}")
-        print(f"::set-output name=version_with_v::v{new_version}")
+        # 输出版本号供 GitHub Actions 使用（使用 GITHUB_OUTPUT 环境变量）
+        github_output = os.environ.get("GITHUB_OUTPUT")
+        if github_output:
+            with open(github_output, "a", encoding="utf-8") as f:
+                f.write(f"version={new_version}\n")
+                f.write(f"version_with_v=v{new_version}\n")
+        else:
+            # 兼容旧方式
+            print(f"::set-output name=version::{new_version}")
+            print(f"::set-output name=version_with_v::v{new_version}")
     else:
         print("\n✗ Failed to bump version")
         sys.exit(1)
