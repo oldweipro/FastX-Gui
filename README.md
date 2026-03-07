@@ -1,63 +1,100 @@
 # FastX-Gui
 
-FastX-Gui是一个基于PyQt5和PyQt-Fluent-Widgets开发的图形用户界面应用程序，提供了现代化、美观的用户界面和丰富的功能。
+[![GitHub release](https://img.shields.io/github/v/release/fastxteam/FastX-Gui?include_prereleases)](https://github.com/fastxteam/FastX-Gui/releases)
+[![GitHub license](https://img.shields.io/github/license/fastxteam/FastX-Gui)](LICENSE.txt)
+[![Python](https://img.shields.io/badge/Python-3.13+-blue.svg)](https://www.python.org/downloads/)
+
+FastX-Gui 是一个基于 PySide6 和 PyQt-Fluent-Widgets 开发的图形用户界面应用程序，提供现代化、美观的用户界面和丰富的功能。
 
 ![](./app/resource/images/png/app.png)
 
-## 需求徵集
-1. 懸浮窗功能  誰能把這個移植過來（https://github.com/SECTL/SecRandom）
-2. 檢測更新功能
-3. 插件系統
+## ✨ 功能特性
 
-暫時就上面這些，先做這三件事,項目先不專注於具體業務，只做一些通用的功能,後續各自業務自行繼承，最好等插件系統完善後
+- 🎨 **现代化 UI** - 基于 Fluent Design System 的美观界面
+- 🌐 **国际化支持** - 支持中文简体、中文繁体等多语言
+- 🔧 **工具集** - 集成多种实用工具
+- 📦 **一键打包** - 使用 Nuitka 编译为独立可执行文件
+- 🔄 **自动更新检测** - 支持检测最新版本
 
+## 📋 系统要求
 
+- Windows 10/11 (x64)
+- Python 3.13+
 
-## 系统要求
+## 🚀 快速开始
 
-- Python 3.10+
-- PyQt5
-- PyQt-Fluent-Widgets
+### 下载安装
 
-## 安装
+从 [Releases](https://github.com/fastxteam/FastX-Gui/releases/latest) 页面下载最新版本的可执行文件，无需安装 Python 环境。
+
+### 从源码运行
 
 1. 克隆项目仓库：
    ```bash
-   git clone https://github.com/yourusername/FastX-Gui.git
+   git clone https://github.com/fastxteam/FastX-Gui.git
    cd FastX-Gui
    ```
 
-2. 创建虚拟环境并激活：
+2. 安装 [uv](https://docs.astral.sh/uv/)（推荐）或使用 pip：
    ```bash
-   python -m venv .venv
-   .venv\Scripts\activate  # Windows
+   # 使用 uv
+   uv sync
+   
+   # 或使用 pip
+   pip install -e .
    ```
 
-3. 安装依赖：
+3. 更新资源文件并运行：
    ```bash
-   # 安装PyQt-Fluent-Widgets (基础版)
-   pip install "PyQt-Fluent-Widgets[full]" -i https://pypi.org/simple/
+   # 更新资源文件
+   python dev.py all
+   
+   # 运行应用
+   uv run python main.py
    ```
 
-## 运行
+## 🔨 构建
 
-### 更新資源文件
+使用 Nuitka 构建可执行文件：
+
 ```bash
-python dev.py all
+uv run nuitka `
+  --standalone `
+  --assume-yes-for-downloads `
+  --msvc=latest `
+  --windows-icon-from-ico=./app/resource/images/ico/logo-m.ico `
+  --enable-plugins=pyside6 `
+  --onefile `
+  --output-dir=./dist `
+  ./main.py
 ```
 
-### 生产模式
-```bash
-python main.py
-```
+## 📦 发布流程
 
-## 技术依赖
+项目使用 GitHub Actions 自动化发布：
 
-- **PyQt5**: 跨平台GUI框架
-- **PyQt-Fluent-Widgets**: 基于Fluent Design System的现代化UI组件库
-  - 项目地址: https://github.com/zhiyiYo/PyQt-Fluent-Widgets.git
+### 自动发布
+在 commit message 中添加关键词触发发布：
+- `[release]` 或 `[release-patch]` - 发布补丁版本
+- `[release-minor]` - 发布次版本
+- `[release-major]` - 发布主版本
 
-## License
+### 手动发布
+在 GitHub Actions 页面手动触发 workflow，选择版本类型。
+
+## 🛠️ 技术栈
+
+- **PySide6** - Qt 官方 Python 绑定
+- **PyQt-Fluent-Widgets** - 基于 Fluent Design System 的现代化 UI 组件库
+- **Nuitka** - Python 到 C++ 编译器
+- **SQLAlchemy** - 数据库 ORM
+- **uv** - 快速 Python 包管理器
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 📄 许可证
 
 ### 本项目许可证
 本项目代码遵循 **GNU General Public License v3.0 (GPLv3)**。
@@ -68,31 +105,27 @@ python main.py
 - **许可证选择**:
   - GNU General Public License v3.0
   - [商业许可证](https://qfluentwidgets.com/price) (可闭源使用)
-- **作者声明**: 
-  > "PyQt-Fluent-Widgets is licensed under GPLv3 for non-commercial project. For commercial use, please purchase a commercial license."
 - **项目地址**: https://github.com/zhiyiYo/PyQt-Fluent-Widgets
 - **作者**: zhiyiYo (Zhengzhi Huang)
 
-#### 2. PyQt5
-- **许可证选择**:
-  - GNU General Public License v3.0
-  - [商业许可证](https://www.riverbankcomputing.com/commercial) (可闭源使用)
-- **版权**: Copyright © Riverbank Computing Limited
+#### 2. PySide6
+- **许可证**: LGPL v3
+- **版权**: The Qt Company Ltd
 
 ### 许可证组合说明
 
 #### 情况1：使用 GPLv3 版本组件
-如果你使用 GPLv3 版本的 PyQt5 和 PyQt-Fluent-Widgets：
+如果你使用 GPLv3 版本的 PyQt-Fluent-Widgets：
 - ✅ 可以免费使用、修改本项目
 - ✅ 可以用于商业目的
 - ❌ 但分发时必须开源所有代码（GPLv3 要求）
 
-#### 情况2：使用商业许可证版本、
-如果你购买了两个组件的商业许可证：
+#### 情况2：使用商业许可证版本
+如果你购买了 PyQt-Fluent-Widgets 的商业许可证：
 - ✅ 可以闭源使用本项目
 - ✅ 可以商业分发
 - ⚠️ 需遵守商业许可证条款
 
 ### 版权声明
 
-Copyright (C) 2026 wanqiang.liu/FastXTeam
+Copyright (C) 2026 wanqiang.liu / FastXTeam
