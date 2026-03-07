@@ -13,5 +13,10 @@ class SignalBus(QObject):
     micaEnableChanged = Signal(bool)
     showMainWindow = Signal()  # 显示主窗口信号
 
+    # ── AppInterface signals ──
+    dataChanged = Signal()         # After any CRUD, triggers tree refresh
+    workspaceSelected = Signal(str)  # workspace_id
+    projectSelected = Signal(str)    # project_id
+
 
 signalBus = SignalBus()

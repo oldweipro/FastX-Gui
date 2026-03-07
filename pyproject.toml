@@ -21,6 +21,7 @@ dependencies = [
     "spire>=0.4.2",
     "spire-doc>=14.1.6",
     "zbtoollib>=2.0.8.1",
+    "sqlalchemy>=2.0.0",
 ]
 [tool.uv]
 required-environments = "sys_platform == 'win32' and platform_machine == 'AMD64'"

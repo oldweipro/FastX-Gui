@@ -6,3 +6,24 @@ ScrollArea {
     border: none;
     background-color: transparent;
 }
+
+/* Tree panel */
+TreePanel {
+    background-color: transparent;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+TreePanel TreeWidget {
+    background-color: transparent;
+    border: none;
+}
+
+/* Content panel */
+ContentPanel {
+    background-color: transparent;
+}
+
+ContentPanel CommandBar {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}

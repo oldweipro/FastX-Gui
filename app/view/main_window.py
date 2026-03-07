@@ -15,13 +15,16 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from qfluentwidgets import FluentIcon as FIF, MessageBoxBase, BodyLabel, CaptionLabel, TransparentToolButton, \
-    FlyoutAnimationType, Flyout
 from qfluentwidgets import (
+    BodyLabel,
+    CaptionLabel,
+    Flyout,
+    FlyoutAnimationType,
     IndeterminateProgressBar,
     InfoBar,
     InfoBarPosition,
     MessageBox,
+    MessageBoxBase,
     MSFluentWindow,
     NavigationAvatarWidget,
     NavigationBarPushButton,
@@ -35,10 +38,14 @@ from qfluentwidgets import (
     SystemThemeListener,
     SystemTrayMenu,
     Theme,
+    TransparentToolButton,
     isDarkTheme,
     qrouter,
     setFont,
     setTheme,
+)
+from qfluentwidgets import (
+    FluentIcon as FIF,
 )
 
 from app.card.messagebox_custom import MessageBoxCloseWindow, MessageBoxSupport
@@ -76,8 +83,8 @@ class SimpleUserInfoDialog(MessageBoxBase):
         <style>
             .info-table { width: 100%; border-collapse: collapse; }
             .info-table td { padding: 8px; }
-            .info-table td:first-child { 
-                font-weight: bold; 
+            .info-table td:first-child {
+                font-weight: bold;
                 color: #666;
                 width: 100px;
             }
@@ -156,6 +163,9 @@ class MainWindow(SplitFluentWindow):
         return SafeBlock()
 
     def _init_services(self):
+        # 初始化数据库
+        from app.database import init_db
+        init_db()
         # 創建主題監聽器
         self.themeListener = SystemThemeListener(self)
         # 初始化背景圖片管理器
