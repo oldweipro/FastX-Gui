@@ -25,12 +25,12 @@ from qfluentwidgets import (
     SettingCardGroup,
     SwitchSettingCard,
     setTheme,
-    setThemeColor, isDarkTheme, FluentIconBase, HyperlinkButton,
+    setThemeColor, isDarkTheme, FluentIconBase, HyperlinkButton, GroupHeaderCardWidget, SwitchButton, ComboBox, SpinBox,
 )
 from qfluentwidgets import FluentIcon as FIF
 
 from app.common.background_manager import get_background_manager
-from app.common.config import cfg, isWin11
+from app.common.config import cfg, isWin11, TopmostMode
 from app.common.icon import UnicodeIcon
 from app.common.notification import show_notification, NotificationType, NotificationConfig
 from app.common.setting import (
@@ -45,7 +45,6 @@ from app.common.setting import (
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
 from app.common.update_checker import UpdateChecker, UpdateResult
-from app.components.config_card import FloatingWindowBasicSettings
 
 
 class BackgroundImageCard(SettingCard):
@@ -151,7 +150,139 @@ class HelpSettingCard(HyperlinkCard):
             path.mkdir(parents=True, exist_ok=True)
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(path)))
 
+class FloatingWindowBasicSettings(GroupHeaderCardWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setTitle(self.tr("basic_settings"))
+        self.setBorderRadius(8)
 
+        # 创建控件
+        self._create_controls()
+
+    def _create_controls(self):
+        """创建所有控件"""
+
+        # 启动时显示浮窗 → 改为浮窗开关
+        self.startup_switch = SwitchButton()
+        self.startup_switch.setChecked(cfg.startupDisplayFloatingWindow.value)
+        self.startup_switch.checkedChanged.connect(self._on_floating_window_switch_changed)
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_view_desktop_24_regular"),
+            "浮窗开关",
+            "控制浮窗的开启与关闭（开启后程序启动时自动显示）",
+            self.startup_switch,
+        )
+
+        # 监听配置变化，同步开关状态
+        cfg.startupDisplayFloatingWindow.valueChanged.connect(self._sync_switch_state)
+
+        # 浮窗透明度
+        self.opacity_spinbox = SpinBox()
+        self.opacity_spinbox.setRange(0, 100)
+        self.opacity_spinbox.setSuffix("%")
+        self.opacity_spinbox.setValue(cfg.floatingWindowOpacity.value)
+        self.opacity_spinbox.valueChanged.connect(lambda v: setattr(cfg.floatingWindowOpacity, "value", v))
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_brightness_high_20_regular"),
+            "浮窗透明度",
+            "调整浮窗透明度",
+            self.opacity_spinbox,
+        )
+
+        # 置顶模式
+        self.topmost_combo = ComboBox()
+        self.topmost_combo.addItems(["关闭置顶", "置顶", "UIA置顶"])
+        self.topmost_combo.setCurrentIndex(cfg.floatingWindowTopmostMode.value.value)
+        self.topmost_combo.currentIndexChanged.connect(self._on_topmost_changed)
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_note_pin_20_regular"),
+            "置顶模式",
+            "选择浮窗置顶方式（UIA置顶需以管理员运行）",
+            self.topmost_combo,
+        )
+
+        # 浮窗可拖动
+        self.draggable_switch = SwitchButton()
+        self.draggable_switch.setChecked(cfg.floatingWindowDraggable.value)
+        self.draggable_switch.checkedChanged.connect(lambda v: setattr(cfg.floatingWindowDraggable, "value", v))
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_drag_24_regular"),
+            "浮窗可拖动",
+            "控制浮窗是否可被拖动",
+            self.draggable_switch,
+        )
+
+        # 长按拖动时间
+        self.long_press_spinbox = SpinBox()
+        self.long_press_spinbox.setRange(50, 3000)
+        self.long_press_spinbox.setSingleStep(100)
+        self.long_press_spinbox.setSuffix("ms")
+        self.long_press_spinbox.setValue(cfg.floatingWindowLongPressDuration.value)
+        self.long_press_spinbox.valueChanged.connect(lambda v: setattr(cfg.floatingWindowLongPressDuration, "value", v))
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_hand_draw_32_regular"),
+            "长按时间",
+            "设置浮窗长按时间（毫秒）",
+            self.long_press_spinbox,
+        )
+
+        # 无焦点模式
+        self.focus_switch = SwitchButton()
+        self.focus_switch.setChecked(cfg.doNotStealFocus.value)
+        self.focus_switch.checkedChanged.connect(lambda v: setattr(cfg.doNotStealFocus, "value", v))
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_group_dismiss_24_regular"),
+            "无焦点模式",
+            "通知窗口显示时不抢占焦点，保持原有顶层软件焦点",
+            self.focus_switch,
+        )
+
+    def _on_topmost_changed(self, index):
+        """置顶模式改变处理"""
+        mode_map = {
+            0: TopmostMode.DISABLED,
+            1: TopmostMode.NORMAL,
+            2: TopmostMode.UIA,
+        }
+        cfg.floatingWindowTopmostMode.value = mode_map[index]
+
+    def _sync_switch_state(self, value):
+        """同步开关状态（当配置被其他地方修改时）"""
+        # 使用 blockSignals 避免触发循环事件
+        self.startup_switch.blockSignals(True)
+        self.startup_switch.setChecked(value)
+        self.startup_switch.blockSignals(False)
+
+    def _on_floating_window_switch_changed(self, checked):
+        """浮窗开关改变处理"""
+        # 更新配置（使用 cfg.set 确保立即保存）
+        cfg.set(cfg.startupDisplayFloatingWindow, checked)
+
+        # 立即控制浮窗显示/隐藏
+        try:
+            # 获取主窗口
+            from PySide6.QtWidgets import QApplication
+
+            from ..view.main_window import MainWindow
+
+            for widget in QApplication.topLevelWidgets():
+                if isinstance(widget, MainWindow):
+                    if hasattr(widget, "floatingWindow") and widget.floatingWindow:
+                        if checked:
+                            widget.floatingWindow.show()
+                            # 同步更新托盘菜单
+                            if hasattr(widget, "floating_window_action"):
+                                widget.floating_window_action.setChecked(True)
+                                widget.floating_window_action.setText(widget.tr("Hide floating window"))
+                        else:
+                            widget.floatingWindow.hide()
+                            # 同步更新托盘菜单
+                            if hasattr(widget, "floating_window_action"):
+                                widget.floating_window_action.setChecked(False)
+                                widget.floating_window_action.setText(widget.tr("Show floating window"))
+                    break
+        except Exception as e:
+            print(f"控制浮窗显示失败: {e}")
 
 
 class SettingInterface(ScrollArea):

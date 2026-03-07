@@ -3,22 +3,22 @@ from typing import Any, List
 
 from PySide6.QtCore import QModelIndex, Qt
 
-from app.model.template_model import TemplateModel
-from app.table_model.base_table_model import BaseTableModel
+from ..model.font_model import FontModel
+from .base_table_model import BaseTableModel
 
 
-class TemplateTableModel(BaseTableModel):
-    """模板表格模型"""
+class FontTableModel(BaseTableModel):
+    """字体表格模型"""
 
     def __init__(
         self,
-        data: List[TemplateModel] = None,
+        data: List[FontModel] = None,
         parent=None,
         page_size: int = 10,
     ):
         """
-        初始化TemplateModel表格模型
-        :param data: TemplateModel列表
+        初始化FontModel表格模型
+        :param data: FontModel列表
         :param parent: 父对象
         :param page_size: 每页显示的记录数
         """
@@ -30,7 +30,7 @@ class TemplateTableModel(BaseTableModel):
         :param parent: 父索引
         :return: 列数
         """
-        return 7  # 序号, template_number, template_category, template_name, template_description, created_at, updated_at
+        return 10  # 序号, font_style_name, font_family, font_size, font_color, font_bold, font_italic, font_underline, created_at, updated_at
 
     def data(self, index: QModelIndex, role: int = Qt.DisplayRole) -> Any:
         """
@@ -44,7 +44,7 @@ class TemplateTableModel(BaseTableModel):
 
         # 获取当前页的数据
         start_index = (self._current_page - 1) * self._page_size
-        item: TemplateModel = self._data[start_index + index.row()]
+        item: FontModel = self._data[start_index + index.row()]
 
         if role == Qt.DisplayRole:
             if index.column() == 0:
@@ -52,16 +52,22 @@ class TemplateTableModel(BaseTableModel):
                 start_index = (self._current_page - 1) * self._page_size
                 return start_index + index.row() + 1
             elif index.column() == 1:
-                return item.template_number
+                return item.font_style_name
             elif index.column() == 2:
-                return item.template_category
+                return item.font_family
             elif index.column() == 3:
-                return item.template_name
+                return item.font_size
             elif index.column() == 4:
-                return item.template_description
+                return item.font_color
             elif index.column() == 5:
-                return item.created_at
+                return "是" if item.font_bold else "否"
             elif index.column() == 6:
+                return "是" if item.font_italic else "否"
+            elif index.column() == 7:
+                return "是" if item.font_underline else "否"
+            elif index.column() == 8:
+                return item.created_at
+            elif index.column() == 9:
                 return item.updated_at
         elif role == Qt.TextAlignmentRole:
             # 居中对齐所有内容
@@ -76,16 +82,19 @@ class TemplateTableModel(BaseTableModel):
         """
         return [
             "序号",
-            "模板编号",
-            "模板分类",
-            "模板名称",
-            "模板描述",
+            "样式名称",
+            "字体名称",
+            "字体大小",
+            "字体颜色",
+            "加粗",
+            "斜体",
+            "下划线",
             "创建时间",
             "更新时间",
         ]
 
     def _sort_data(self):
         """
-        对模板数据进行排序
+        对字体数据进行排序
         """
-        self._data.sort(key=lambda x: x.template_number)
+        self._data.sort(key=lambda x: x.font_id if x.font_id else 0)

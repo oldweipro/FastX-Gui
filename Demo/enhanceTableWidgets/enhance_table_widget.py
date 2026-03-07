@@ -21,7 +21,7 @@ from qfluentwidgets import (
 
 from app.common.icon import Icon
 # 移除对 Icon 类的依赖
-from app.model import (
+from model import (
     DocumentModel,
     FieldModel,
     FieldFillMode,
@@ -30,7 +30,7 @@ from app.model import (
     TemplateModel,
 )
 
-from app.table_model import (
+from table_model import (
     DocumentTableModel,
     FieldTableModel,
     FontTableModel,

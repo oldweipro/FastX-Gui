@@ -3,22 +3,19 @@ from typing import Any, List
 
 from PySide6.QtCore import QModelIndex, Qt
 
-from app.model.font_model import FontModel
-from app.table_model.base_table_model import BaseTableModel
+from ..model.project_model import ProjectModel
+from .base_table_model import BaseTableModel
 
 
-class FontTableModel(BaseTableModel):
-    """字体表格模型"""
+class ProjectTableModel(BaseTableModel):
+    """项目表格模型"""
 
     def __init__(
-        self,
-        data: List[FontModel] = None,
-        parent=None,
-        page_size: int = 10,
+        self, data: List[ProjectModel] = None, parent=None, page_size: int = 10
     ):
         """
-        初始化FontModel表格模型
-        :param data: FontModel列表
+        初始化ProjectModel表格模型
+        :param data: ProjectModel列表
         :param parent: 父对象
         :param page_size: 每页显示的记录数
         """
@@ -30,7 +27,7 @@ class FontTableModel(BaseTableModel):
         :param parent: 父索引
         :return: 列数
         """
-        return 10  # 序号, font_style_name, font_family, font_size, font_color, font_bold, font_italic, font_underline, created_at, updated_at
+        return 7  # 序号, project_number, project_name, project_description, prepared_by, created_at, updated_at
 
     def data(self, index: QModelIndex, role: int = Qt.DisplayRole) -> Any:
         """
@@ -44,7 +41,7 @@ class FontTableModel(BaseTableModel):
 
         # 获取当前页的数据
         start_index = (self._current_page - 1) * self._page_size
-        item: FontModel = self._data[start_index + index.row()]
+        item: ProjectModel = self._data[start_index + index.row()]
 
         if role == Qt.DisplayRole:
             if index.column() == 0:
@@ -52,22 +49,16 @@ class FontTableModel(BaseTableModel):
                 start_index = (self._current_page - 1) * self._page_size
                 return start_index + index.row() + 1
             elif index.column() == 1:
-                return item.font_style_name
+                return item.project_number
             elif index.column() == 2:
-                return item.font_family
+                return item.project_name
             elif index.column() == 3:
-                return item.font_size
+                return item.project_description
             elif index.column() == 4:
-                return item.font_color
+                return item.prepared_by
             elif index.column() == 5:
-                return "是" if item.font_bold else "否"
-            elif index.column() == 6:
-                return "是" if item.font_italic else "否"
-            elif index.column() == 7:
-                return "是" if item.font_underline else "否"
-            elif index.column() == 8:
                 return item.created_at
-            elif index.column() == 9:
+            elif index.column() == 6:
                 return item.updated_at
         elif role == Qt.TextAlignmentRole:
             # 居中对齐所有内容
@@ -82,19 +73,16 @@ class FontTableModel(BaseTableModel):
         """
         return [
             "序号",
-            "样式名称",
-            "字体名称",
-            "字体大小",
-            "字体颜色",
-            "加粗",
-            "斜体",
-            "下划线",
+            "项目编号",
+            "项目名称",
+            "项目描述",
+            "编制人",
             "创建时间",
             "更新时间",
         ]
 
     def _sort_data(self):
         """
-        对字体数据进行排序
+        对项目数据进行排序
         """
-        self._data.sort(key=lambda x: x.font_id if x.font_id else 0)
+        self._data.sort(key=lambda x: x.project_number)

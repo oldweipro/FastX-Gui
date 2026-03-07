@@ -4,8 +4,8 @@ from typing import Any, List
 from PySide6.QtCore import QModelIndex, Qt
 from PySide6.QtGui import QColor, QFont
 
-from app.model import FieldModel, FontModel
-from app.table_model import BaseTableModel
+from ..model import FieldModel, FontModel
+from .base_table_model import BaseTableModel
 
 
 class FieldTableModel(BaseTableModel):

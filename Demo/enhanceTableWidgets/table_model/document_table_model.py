@@ -3,19 +3,22 @@ from typing import Any, List
 
 from PySide6.QtCore import QModelIndex, Qt
 
-from app.model.project_model import ProjectModel
-from app.table_model.base_table_model import BaseTableModel
+from ..model.document_model import DocumentModel
+from .base_table_model import BaseTableModel
 
 
-class ProjectTableModel(BaseTableModel):
-    """项目表格模型"""
+class DocumentTableModel(BaseTableModel):
+    """文档表格模型"""
 
     def __init__(
-        self, data: List[ProjectModel] = None, parent=None, page_size: int = 10
+        self,
+        data: List[DocumentModel] = None,
+        parent=None,
+        page_size: int = 10,
     ):
         """
-        初始化ProjectModel表格模型
-        :param data: ProjectModel列表
+        初始化DocumentModel表格模型
+        :param data: DocumentModel列表
         :param parent: 父对象
         :param page_size: 每页显示的记录数
         """
@@ -27,7 +30,7 @@ class ProjectTableModel(BaseTableModel):
         :param parent: 父索引
         :return: 列数
         """
-        return 7  # 序号, project_number, project_name, project_description, prepared_by, created_at, updated_at
+        return 7  # 序号 document_number, document_name, document_description, document_tags, created_at, updated_at
 
     def data(self, index: QModelIndex, role: int = Qt.DisplayRole) -> Any:
         """
@@ -41,7 +44,7 @@ class ProjectTableModel(BaseTableModel):
 
         # 获取当前页的数据
         start_index = (self._current_page - 1) * self._page_size
-        item: ProjectModel = self._data[start_index + index.row()]
+        item: DocumentModel = self._data[start_index + index.row()]
 
         if role == Qt.DisplayRole:
             if index.column() == 0:
@@ -49,13 +52,13 @@ class ProjectTableModel(BaseTableModel):
                 start_index = (self._current_page - 1) * self._page_size
                 return start_index + index.row() + 1
             elif index.column() == 1:
-                return item.project_number
+                return item.document_number
             elif index.column() == 2:
-                return item.project_name
+                return item.document_name
             elif index.column() == 3:
-                return item.project_description
+                return item.document_description
             elif index.column() == 4:
-                return item.prepared_by
+                return item.document_tags
             elif index.column() == 5:
                 return item.created_at
             elif index.column() == 6:
@@ -73,16 +76,16 @@ class ProjectTableModel(BaseTableModel):
         """
         return [
             "序号",
-            "项目编号",
-            "项目名称",
-            "项目描述",
-            "编制人",
+            "文档编号",
+            "文档名称",
+            "文档描述",
+            "文档标签",
             "创建时间",
             "更新时间",
         ]
 
     def _sort_data(self):
         """
-        对项目数据进行排序
+        对文档数据进行排序
         """
-        self._data.sort(key=lambda x: x.project_number)
+        self._data.sort(key=lambda x: x.document_number)
