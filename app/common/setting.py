@@ -15,7 +15,7 @@ APPLY_NAME = "FastXGui"
 CODENAME = "Q-FLUENT-WIDGETS-GUI-PLAN"  # 软件代号
 AUTHOR = "wanqiang.liu"
 COPYRIGHT_HOLDER = "FastXTeam"
-VERSION = "v0.1.0"  # 软件当前版本
+VERSION = "v0.1.1"  # 软件当前版本
 NEXT_VERSION = "v0.1.0-beta.1"  # 软件下一个版本
 SPECIAL_VERSION = VERSION if VERSION != "v0.0.0" else NEXT_VERSION
 HELP_URL = "https://qfluentwidgets.com"
