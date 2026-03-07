@@ -48,7 +48,7 @@ from qfluentwidgets import (
     FluentIcon as FIF,
 )
 
-from app.card.messagebox_custom import MessageBoxCloseWindow, MessageBoxSupport
+from app.components.messagebox_custom import MessageBoxCloseWindow, MessageBoxSupport
 from app.common import resource
 from app.common.background_manager import get_background_manager
 from app.common.config import cfg

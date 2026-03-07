@@ -147,17 +147,15 @@ jobs:
           git commit -m "chore: bump version to ${{ steps.bump.outputs.version_with_v }}"
           git push
 
-      - name: Create tag
+      - name: Create and push tag
         run: |
           git tag -a ${{ steps.bump.outputs.version_with_v }} -m "Release ${{ steps.bump.outputs.version_with_v }}"
           git push origin ${{ steps.bump.outputs.version_with_v }}
 
-  build-windows:
+  # 当 tag push 触发时运行构建和发布
+  build-and-release:
     runs-on: windows-latest
-    needs: [bump-version]
-    if: |
-      always() && 
-      (needs.bump-version.result == 'success' && needs.bump-version.outputs.should_release == 'true' || startsWith(github.ref, 'refs/tags/'))
+    if: startsWith(github.ref, 'refs/tags/')
     outputs:
       version: ${{ steps.version.outputs.version }}
       artifact_name: ${{ steps.build.outputs.artifact_name }}
@@ -227,89 +225,6 @@ jobs:
           path: dist/${{ steps.build.outputs.artifact_name }}
           retention-days: 30
 
-  build-windows-tag:
-    runs-on: windows-latest
-    needs: [manual-bump-version]
-    if: github.event_name == 'workflow_dispatch'
-    outputs:
-      version: ${{ steps.version.outputs.version }}
-      artifact_name: ${{ steps.build.outputs.artifact_name }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
-        with:
-          enable-cache: true
-
-      - name: Install dependencies
-        run: |
-          uv sync --no-dev
-
-      - name: Get version
-        id: version
-        run: |
-          $version = (Select-String -Path "pyproject.toml" -Pattern '^version = "([^"]*)"' | ForEach-Object { $_.Matches.Groups[1].Value })
-          echo "version=$version" >> $env:GITHUB_OUTPUT
-          echo "Version: $version"
-
-      - name: Build with Nuitka
-        id: build
-        run: |
-          $version = "${{ steps.version.outputs.version }}"
-          $artifact_name = "FastX-Gui-v$version-windows-x64.exe"
-          
-          uv run nuitka `
-            --standalone `
-            --assume-yes-for-downloads `
-            --msvc=latest `
-            --windows-icon-from-ico=./app/resource/images/ico/logo-m.ico `
-            --nofollow-import-to=scipy,colorthief `
-            --enable-plugins=pyside6 `
-            --include-qt-plugins=sensible,styles `
-            --show-progress `
-            --windows-console-mode=attach `
-            --onefile `
-            --quiet `
-            --jobs=12 `
-            --lto=no `
-            --remove-output `
-            --clean-cache=all `
-            --show-memory `
-            --windows-uac-admin `
-            --windows-company-name=fastxteam `
-            --windows-file-description=FastX-Gui `
-            --windows-product-version=$version `
-            --windows-file-version=$version `
-            --output-filename=$artifact_name `
-            --output-dir=./dist `
-            ./main.py
-          
-          echo "artifact_name=$artifact_name" >> $env:GITHUB_OUTPUT
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: FastX-Gui-windows
-          path: dist/${{ steps.build.outputs.artifact_name }}
-          retention-days: 30
-
-  release:
-    runs-on: ubuntu-latest
-    needs: [build-windows]
-    if: needs.build-windows.result == 'success'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
@@ -318,8 +233,10 @@ jobs:
 
       - name: Generate changelog
         id: changelog
+        shell: bash
         run: |
-          VERSION="${{ needs.build-windows.outputs.version }}"
+          VERSION="${{ steps.version.outputs.version }}"
+          git fetch --tags
           PREV_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
           
           echo "## 🚀 FastX-Gui v$VERSION" > release_notes.md
@@ -348,70 +265,12 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ needs.build-windows.outputs.version }}
-          name: FastX-Gui v${{ needs.build-windows.outputs.version }}
+          tag_name: v${{ steps.version.outputs.version }}
+          name: FastX-Gui v${{ steps.version.outputs.version }}
           body_path: release_notes.md
           draft: false
           prerelease: false
           files: |
-            ./dist/${{ needs.build-windows.outputs.artifact_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  release-manual:
-    runs-on: ubuntu-latest
-    needs: [build-windows-tag]
-    if: needs.build-windows-tag.result == 'success'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: FastX-Gui-windows
-          path: ./dist
-
-      - name: Generate changelog
-        id: changelog
-        run: |
-          VERSION="${{ needs.build-windows-tag.outputs.version }}"
-          PREV_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
-          
-          echo "## 🚀 FastX-Gui v$VERSION" > release_notes.md
-          echo "" >> release_notes.md
-          echo "### 📝 Changes" >> release_notes.md
-          echo "" >> release_notes.md
-          
-          if [ -n "$PREV_TAG" ]; then
-            echo "Commits since $PREV_TAG:" >> release_notes.md
-            echo "" >> release_notes.md
-            git log $PREV_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges >> release_notes.md
-          else
-            git log --pretty=format:"- %s (%h)" --no-merges -20 >> release_notes.md
-          fi
-          
-          echo "" >> release_notes.md
-          echo "" >> release_notes.md
-          echo "### 📦 Download" >> release_notes.md
-          echo "" >> release_notes.md
-          echo "- **Windows x64**: \`FastX-Gui-v$VERSION-windows-x64.exe\`" >> release_notes.md
-          echo "" >> release_notes.md
-          echo "### ⚙️ System Requirements" >> release_notes.md
-          echo "- Windows 10/11 (x64)" >> release_notes.md
-          echo "- No Python installation required" >> release_notes.md
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ needs.build-windows-tag.outputs.version }}
-          name: FastX-Gui v${{ needs.build-windows-tag.outputs.version }}
-          body_path: release_notes.md
-          draft: false
-          prerelease: false
-          files: |
-            ./dist/${{ needs.build-windows-tag.outputs.artifact_name }}
+            ./dist/${{ steps.build.outputs.artifact_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
