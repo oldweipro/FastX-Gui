@@ -6,7 +6,7 @@ from qfluentwidgets import ComboBox, LineEdit, MessageBoxBase, SubtitleLabel
 class ItemCreateDialog(MessageBoxBase):
     """Dialog for creating a new item with title and template selection."""
 
-    def __init__(self, templates: list[dict], parent=None):
+    def __init__(self, templates: list[dict], parent=None, default_template_id: str = ""):
         super().__init__(parent)
         self.titleLabel = SubtitleLabel("New Item", self)
         self.nameEdit = LineEdit(self)
@@ -14,6 +14,11 @@ class ItemCreateDialog(MessageBoxBase):
         self.templateCombo = ComboBox(self)
         for t in templates:
             self.templateCombo.addItem(t["name"], userData=t["id"])
+
+        if default_template_id:
+            idx = self.templateCombo.findData(default_template_id)
+            if idx >= 0:
+                self.templateCombo.setCurrentIndex(idx)
 
         self.viewLayout.addWidget(self.titleLabel)
         self.viewLayout.addWidget(self.nameEdit)

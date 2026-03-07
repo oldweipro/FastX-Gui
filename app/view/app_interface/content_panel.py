@@ -12,8 +12,10 @@ from qfluentwidgets import (
 )
 
 from app.view.app_interface.panels.item_editor_panel import ItemEditorPanel
+from app.view.app_interface.panels.item_group_panel import ItemGroupPanel
 from app.view.app_interface.panels.item_list_panel import ItemListPanel
 from app.view.app_interface.panels.project_panel import ProjectPanel
+from app.view.app_interface.panels.snapshot_detail_panel import SnapshotDetailPanel
 from app.view.app_interface.panels.snapshot_panel import SnapshotPanel
 from app.view.app_interface.panels.template_editor_panel import TemplateEditorPanel
 from app.view.app_interface.panels.template_list_panel import TemplateListPanel
@@ -58,21 +60,26 @@ class ContentPanel(QWidget):
         self.template_editor_panel = TemplateEditorPanel(self)
         self.item_list_panel = ItemListPanel(self)
         self.item_editor_panel = ItemEditorPanel(self)
+        self.item_group_panel = ItemGroupPanel(self)
         self.snapshot_panel = SnapshotPanel(self)
+        self.snapshot_detail_panel = SnapshotDetailPanel(self)
 
         # Add to stack
-        self.stack.addWidget(self.welcome_panel)       # 0
-        self.stack.addWidget(self.workspace_panel)      # 1
-        self.stack.addWidget(self.project_panel)        # 2
-        self.stack.addWidget(self.template_list_panel)  # 3
-        self.stack.addWidget(self.template_editor_panel)  # 4
-        self.stack.addWidget(self.item_list_panel)      # 5
-        self.stack.addWidget(self.item_editor_panel)    # 6
-        self.stack.addWidget(self.snapshot_panel)       # 7
+        self.stack.addWidget(self.welcome_panel)            # 0
+        self.stack.addWidget(self.workspace_panel)           # 1
+        self.stack.addWidget(self.project_panel)             # 2
+        self.stack.addWidget(self.template_list_panel)       # 3
+        self.stack.addWidget(self.template_editor_panel)     # 4
+        self.stack.addWidget(self.item_list_panel)           # 5
+        self.stack.addWidget(self.item_editor_panel)         # 6
+        self.stack.addWidget(self.item_group_panel)          # 7
+        self.stack.addWidget(self.snapshot_panel)             # 8
+        self.stack.addWidget(self.snapshot_detail_panel)      # 9
 
         # Connect sub-panel navigation signals
         self.template_list_panel.editTemplateRequested.connect(self._open_template_editor)
         self.item_list_panel.editItemRequested.connect(self._open_item_editor)
+        self.item_group_panel.editItemRequested.connect(self._open_item_editor)
 
         self.stack.setCurrentWidget(self.welcome_panel)
 
@@ -93,14 +100,30 @@ class ContentPanel(QWidget):
             self.template_list_panel.load_templates(node_id)
             self.stack.setCurrentWidget(self.template_list_panel)
             self._setup_command_bar_templates(node_id)
+        elif node_type == "template":
+            project_id = extra.get("project_id", "")
+            self._open_template_editor(node_id, project_id)
         elif node_type == "item_list":
             self.item_list_panel.load_items(node_id)
             self.stack.setCurrentWidget(self.item_list_panel)
             self._setup_command_bar_items(node_id)
+        elif node_type == "item_group":
+            project_id = extra.get("project_id", "")
+            self.item_group_panel.load_group(node_id, project_id)
+            self.stack.setCurrentWidget(self.item_group_panel)
+            self._setup_command_bar_item_group(node_id, project_id)
+        elif node_type == "item":
+            project_id = extra.get("project_id", "")
+            self._open_item_editor(node_id, project_id)
         elif node_type == "snapshot_list":
             self.snapshot_panel.load_snapshots(node_id)
             self.stack.setCurrentWidget(self.snapshot_panel)
             self._setup_command_bar_snapshots(node_id)
+        elif node_type == "snapshot":
+            project_id = extra.get("project_id", "")
+            self.snapshot_detail_panel.load_snapshot(node_id)
+            self.stack.setCurrentWidget(self.snapshot_detail_panel)
+            self._setup_command_bar_snapshot_detail(project_id)
         else:
             self.stack.setCurrentWidget(self.welcome_panel)
             self._clear_and_add([])
@@ -166,6 +189,22 @@ class ContentPanel(QWidget):
         ]
         self._clear_and_add(actions)
 
+    def _setup_command_bar_item_group(self, template_id: str, project_id: str):
+        actions = [
+            Action(FIF.ADD, "New Item", triggered=lambda: self.item_group_panel.on_new_item()),
+            Action(FIF.DELETE, "Delete", triggered=lambda: self.item_group_panel.on_delete_item()),
+            Action(FIF.RETURN, "Back to Items", triggered=lambda: self._back_to_item_list(project_id)),
+        ]
+        self._clear_and_add(actions)
+
+    def _setup_command_bar_snapshot_detail(self, project_id: str):
+        actions = [
+            Action(FIF.SYNC, "Restore", triggered=lambda: self.snapshot_detail_panel.on_restore_snapshot()),
+            Action(FIF.SHARE, "Export", triggered=lambda: self.snapshot_detail_panel.on_export_snapshot()),
+            Action(FIF.RETURN, "Back to Snapshots", triggered=lambda: self._back_to_snapshot_list(project_id)),
+        ]
+        self._clear_and_add(actions)
+
     def _setup_command_bar_template_editor(self, proj_id: str):
         actions = [
             Action(FIF.ADD, "Add Field", triggered=lambda: self.template_editor_panel.on_add_field()),
@@ -194,3 +233,8 @@ class ContentPanel(QWidget):
         self.item_list_panel.load_items(project_id)
         self.stack.setCurrentWidget(self.item_list_panel)
         self._setup_command_bar_items(project_id)
+
+    def _back_to_snapshot_list(self, project_id: str):
+        self.snapshot_panel.load_snapshots(project_id)
+        self.stack.setCurrentWidget(self.snapshot_panel)
+        self._setup_command_bar_snapshots(project_id)

@@ -177,6 +177,9 @@ class FieldRepository(_BaseRepository):
         )
 
     def create(self, template_id: str, **attrs) -> Field:
+        # Strip keys that clash with the explicit parameter or auto-generated PK
+        attrs.pop("template_id", None)
+        attrs.pop("id", None)
         # Serialize options list to JSON string
         if "options" in attrs and isinstance(attrs["options"], list):
             attrs["options"] = json.dumps(attrs["options"], ensure_ascii=False)

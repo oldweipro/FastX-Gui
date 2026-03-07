@@ -51,8 +51,9 @@ class TemplateService:
             tmpl = uow.templates.create(project_id=project_id, name=name, description=description)
             if fields:
                 for idx, fd in enumerate(fields):
-                    fd["sort_order"] = idx
-                    uow.fields.create(template_id=tmpl.id, **fd)
+                    clean = {k: v for k, v in fd.items() if k not in ("id", "template_id")}
+                    clean["sort_order"] = idx
+                    uow.fields.create(template_id=tmpl.id, **clean)
             uow.commit()
             logger.info(f"[TemplateService] Created template: {tmpl.name} ({tmpl.id})")
             return {"id": tmpl.id, "name": tmpl.name, "description": tmpl.description}
@@ -73,8 +74,9 @@ class TemplateService:
                 for f in existing:
                     uow.fields.delete(f.id)
                 for idx, fd in enumerate(fields_data):
-                    fd["sort_order"] = idx
-                    uow.fields.create(template_id=tmpl_id, **fd)
+                    clean = {k: v for k, v in fd.items() if k not in ("id", "template_id")}
+                    clean["sort_order"] = idx
+                    uow.fields.create(template_id=tmpl_id, **clean)
             uow.commit()
             logger.info(f"[TemplateService] Updated template: {tmpl.name} ({tmpl.id})")
             return {"id": tmpl.id, "name": tmpl.name, "description": tmpl.description}
