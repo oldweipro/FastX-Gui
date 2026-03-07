@@ -1,0 +1,408 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      custom_version:
+        description: 'Custom version (optional, e.g., 1.2.3)'
+        required: false
+        type: string
+
+env:
+  PYTHON_VERSION: '3.13'
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/')
+    outputs:
+      version: ${{ steps.bump.outputs.version }}
+      version_with_v: ${{ steps.bump.outputs.version_with_v }}
+      should_release: ${{ steps.bump.outputs.should_release }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Check for version bump trigger
+        id: check_trigger
+        run: |
+          # 检查 commit message 是否包含版本触发关键词
+          LAST_MSG=$(git log -1 --pretty=%B)
+          echo "Last commit message: $LAST_MSG"
+          
+          SHOULD_BUMP="false"
+          BUMP_TYPE="patch"
+          
+          if [[ "$LAST_MSG" == *"[release-major]"* ]]; then
+            SHOULD_BUMP="true"
+            BUMP_TYPE="major"
+          elif [[ "$LAST_MSG" == *"[release-minor]"* ]]; then
+            SHOULD_BUMP="true"
+            BUMP_TYPE="minor"
+          elif [[ "$LAST_MSG" == *"[release-patch]"* ]]; then
+            SHOULD_BUMP="true"
+            BUMP_TYPE="patch"
+          elif [[ "$LAST_MSG" == *"[release]"* ]]; then
+            SHOULD_BUMP="true"
+            BUMP_TYPE="patch"
+          fi
+          
+          echo "should_bump=$SHOULD_BUMP" >> $GITHUB_OUTPUT
+          echo "bump_type=$BUMP_TYPE" >> $GITHUB_OUTPUT
+
+      - name: Bump version
+        id: bump
+        if: steps.check_trigger.outputs.should_bump == 'true'
+        run: |
+          python scripts/bump_version.py ${{ steps.check_trigger.outputs.bump_type }}
+          
+          # 读取新版本
+          VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version_with_v=v$VERSION" >> $GITHUB_OUTPUT
+          echo "should_release=true" >> $GITHUB_OUTPUT
+
+      - name: Commit version bump
+        if: steps.check_trigger.outputs.should_bump == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add pyproject.toml app/common/setting.py
+          git commit -m "chore: bump version to ${{ steps.bump.outputs.version_with_v }}"
+          git push
+
+      - name: Create tag
+        if: steps.check_trigger.outputs.should_bump == 'true'
+        run: |
+          git tag -a ${{ steps.bump.outputs.version_with_v }} -m "Release ${{ steps.bump.outputs.version_with_v }}"
+          git push origin ${{ steps.bump.outputs.version_with_v }}
+
+  manual-bump-version:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    outputs:
+      version: ${{ steps.bump.outputs.version }}
+      version_with_v: ${{ steps.bump.outputs.version_with_v }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Bump version
+        id: bump
+        run: |
+          if [ -n "${{ inputs.custom_version }}" ]; then
+            python scripts/bump_version.py --version ${{ inputs.custom_version }}
+          else
+            python scripts/bump_version.py ${{ inputs.bump_type }}
+          fi
+          
+          VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version_with_v=v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Commit version bump
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add pyproject.toml app/common/setting.py
+          git commit -m "chore: bump version to ${{ steps.bump.outputs.version_with_v }}"
+          git push
+
+      - name: Create tag
+        run: |
+          git tag -a ${{ steps.bump.outputs.version_with_v }} -m "Release ${{ steps.bump.outputs.version_with_v }}"
+          git push origin ${{ steps.bump.outputs.version_with_v }}
+
+  build-windows:
+    runs-on: windows-latest
+    needs: [bump-version]
+    if: |
+      always() && 
+      (needs.bump-version.outputs.should_release == 'true' || startsWith(github.ref, 'refs/tags/'))
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      artifact_name: ${{ steps.build.outputs.artifact_name }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: |
+          uv sync --no-dev
+
+      - name: Get version
+        id: version
+        run: |
+          $version = (Select-String -Path "pyproject.toml" -Pattern '^version = "([^"]*)"' | ForEach-Object { $_.Matches.Groups[1].Value })
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+          echo "Version: $version"
+
+      - name: Build with Nuitka
+        id: build
+        run: |
+          $version = "${{ steps.version.outputs.version }}"
+          $artifact_name = "FastX-Gui-v$version-windows-x64.exe"
+          
+          uv run nuitka `
+            --standalone `
+            --assume-yes-for-downloads `
+            --msvc=latest `
+            --windows-icon-from-ico=./app/resource/images/ico/logo-m.ico `
+            --nofollow-import-to=scipy,colorthief `
+            --enable-plugins=pyside6 `
+            --include-qt-plugins=sensible,styles `
+            --show-progress `
+            --windows-console-mode=attach `
+            --onefile `
+            --quiet `
+            --jobs=12 `
+            --lto=no `
+            --remove-output `
+            --clean-cache=all `
+            --show-memory `
+            --windows-uac-admin `
+            --windows-company-name=fastxteam `
+            --windows-file-description=FastX-Gui `
+            --windows-product-version=$version `
+            --windows-file-version=$version `
+            --output-filename=$artifact_name `
+            --output-dir=./dist `
+            ./main.py
+          
+          echo "artifact_name=$artifact_name" >> $env:GITHUB_OUTPUT
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FastX-Gui-windows
+          path: dist/${{ steps.build.outputs.artifact_name }}
+          retention-days: 30
+
+  build-windows-tag:
+    runs-on: windows-latest
+    needs: [manual-bump-version]
+    if: github.event_name == 'workflow_dispatch'
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      artifact_name: ${{ steps.build.outputs.artifact_name }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: |
+          uv sync --no-dev
+
+      - name: Get version
+        id: version
+        run: |
+          $version = (Select-String -Path "pyproject.toml" -Pattern '^version = "([^"]*)"' | ForEach-Object { $_.Matches.Groups[1].Value })
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+          echo "Version: $version"
+
+      - name: Build with Nuitka
+        id: build
+        run: |
+          $version = "${{ steps.version.outputs.version }}"
+          $artifact_name = "FastX-Gui-v$version-windows-x64.exe"
+          
+          uv run nuitka `
+            --standalone `
+            --assume-yes-for-downloads `
+            --msvc=latest `
+            --windows-icon-from-ico=./app/resource/images/ico/logo-m.ico `
+            --nofollow-import-to=scipy,colorthief `
+            --enable-plugins=pyside6 `
+            --include-qt-plugins=sensible,styles `
+            --show-progress `
+            --windows-console-mode=attach `
+            --onefile `
+            --quiet `
+            --jobs=12 `
+            --lto=no `
+            --remove-output `
+            --clean-cache=all `
+            --show-memory `
+            --windows-uac-admin `
+            --windows-company-name=fastxteam `
+            --windows-file-description=FastX-Gui `
+            --windows-product-version=$version `
+            --windows-file-version=$version `
+            --output-filename=$artifact_name `
+            --output-dir=./dist `
+            ./main.py
+          
+          echo "artifact_name=$artifact_name" >> $env:GITHUB_OUTPUT
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FastX-Gui-windows
+          path: dist/${{ steps.build.outputs.artifact_name }}
+          retention-days: 30
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [build-windows]
+    if: always() && needs.build-windows.result == 'success'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: FastX-Gui-windows
+          path: ./dist
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          VERSION="${{ needs.build-windows.outputs.version }}"
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+          
+          echo "## 🚀 FastX-Gui v$VERSION" > release_notes.md
+          echo "" >> release_notes.md
+          echo "### 📝 Changes" >> release_notes.md
+          echo "" >> release_notes.md
+          
+          if [ -n "$PREV_TAG" ]; then
+            echo "Commits since $PREV_TAG:" >> release_notes.md
+            echo "" >> release_notes.md
+            git log $PREV_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges >> release_notes.md
+          else
+            git log --pretty=format:"- %s (%h)" --no-merges -20 >> release_notes.md
+          fi
+          
+          echo "" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "### 📦 Download" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "- **Windows x64**: \`FastX-Gui-v$VERSION-windows-x64.exe\`" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "### ⚙️ System Requirements" >> release_notes.md
+          echo "- Windows 10/11 (x64)" >> release_notes.md
+          echo "- No Python installation required" >> release_notes.md
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.build-windows.outputs.version }}
+          name: FastX-Gui v${{ needs.build-windows.outputs.version }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          files: |
+            ./dist/${{ needs.build-windows.outputs.artifact_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-manual:
+    runs-on: ubuntu-latest
+    needs: [build-windows-tag]
+    if: always() && needs.build-windows-tag.result == 'success'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: FastX-Gui-windows
+          path: ./dist
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          VERSION="${{ needs.build-windows-tag.outputs.version }}"
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+          
+          echo "## 🚀 FastX-Gui v$VERSION" > release_notes.md
+          echo "" >> release_notes.md
+          echo "### 📝 Changes" >> release_notes.md
+          echo "" >> release_notes.md
+          
+          if [ -n "$PREV_TAG" ]; then
+            echo "Commits since $PREV_TAG:" >> release_notes.md
+            echo "" >> release_notes.md
+            git log $PREV_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges >> release_notes.md
+          else
+            git log --pretty=format:"- %s (%h)" --no-merges -20 >> release_notes.md
+          fi
+          
+          echo "" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "### 📦 Download" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "- **Windows x64**: \`FastX-Gui-v$VERSION-windows-x64.exe\`" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "### ⚙️ System Requirements" >> release_notes.md
+          echo "- Windows 10/11 (x64)" >> release_notes.md
+          echo "- No Python installation required" >> release_notes.md
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.build-windows-tag.outputs.version }}
+          name: FastX-Gui v${{ needs.build-windows-tag.outputs.version }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          files: |
+            ./dist/${{ needs.build-windows-tag.outputs.artifact_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
