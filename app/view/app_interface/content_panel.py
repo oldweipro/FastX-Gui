@@ -168,6 +168,11 @@ class ContentPanel(QWidget):
 
     def _setup_command_bar_template_editor(self, proj_id: str):
         actions = [
+            Action(FIF.ADD, "Add Field", triggered=lambda: self.template_editor_panel.on_add_field()),
+            Action(FIF.EDIT, "Edit Field", triggered=lambda: self.template_editor_panel.on_edit_field()),
+            Action(FIF.DELETE, "Remove Field", triggered=lambda: self.template_editor_panel.on_remove_field()),
+            Action(FIF.UP, "Move Up", triggered=lambda: self.template_editor_panel.on_move_up()),
+            Action(FIF.DOWN, "Move Down", triggered=lambda: self.template_editor_panel.on_move_down()),
             Action(FIF.SAVE, "Save", triggered=lambda: self.template_editor_panel.on_save()),
             Action(FIF.RETURN, "Back to List", triggered=lambda: self._back_to_template_list(proj_id)),
         ]

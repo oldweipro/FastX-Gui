@@ -13,7 +13,7 @@ class ItemCreateDialog(MessageBoxBase):
         self.nameEdit.setPlaceholderText("Item title")
         self.templateCombo = ComboBox(self)
         for t in templates:
-            self.templateCombo.addItem(t["name"], t["id"])
+            self.templateCombo.addItem(t["name"], userData=t["id"])
 
         self.viewLayout.addWidget(self.titleLabel)
         self.viewLayout.addWidget(self.nameEdit)

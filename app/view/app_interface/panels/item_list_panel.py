@@ -62,9 +62,9 @@ class ItemListPanel(QWidget):
 
         self.template_filter.blockSignals(True)
         self.template_filter.clear()
-        self.template_filter.addItem("All Templates", "")
+        self.template_filter.addItem("All Templates", userData="")
         for t in templates:
-            self.template_filter.addItem(t["name"], t["id"])
+            self.template_filter.addItem(t["name"], userData=t["id"])
         self.template_filter.blockSignals(False)
 
         self._reload_items()

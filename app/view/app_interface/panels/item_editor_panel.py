@@ -1,6 +1,5 @@
 """Item editor panel — dynamic form for editing an item's field values."""
 
-
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QFormLayout,
@@ -22,6 +21,49 @@ from qfluentwidgets import (
 
 from app.common.signal_bus import signalBus
 from app.service import item_service, template_service
+
+
+class _MultiSelectWidget(QWidget):
+    """A vertical list of check-boxes for multi-select fields.
+
+    Each check-box carries a *label* (displayed) and a *value* (stored).
+    Values are persisted as a comma-separated string.
+    """
+
+    def __init__(self, options: list[tuple[str, str]], parent=None):
+        """*options* is a list of ``(label, value)`` tuples."""
+        super().__init__(parent)
+        self._checkboxes: list[tuple[CheckBox, str]] = []
+
+        scroll = QScrollArea(self)
+        scroll.setWidgetResizable(True)
+        scroll.setMaximumHeight(200)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+        inner = QWidget()
+        inner_layout = QVBoxLayout(inner)
+        inner_layout.setContentsMargins(4, 4, 4, 4)
+        inner_layout.setSpacing(4)
+        for label, value in options:
+            cb = CheckBox(label, inner)
+            inner_layout.addWidget(cb)
+            self._checkboxes.append((cb, value))
+        inner_layout.addStretch()
+        scroll.setWidget(inner)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(scroll)
+
+    def get_value(self) -> str:
+        """Return comma-separated string of checked values."""
+        return ",".join(val for cb, val in self._checkboxes if cb.isChecked())
+
+    def set_value(self, csv: str):
+        """Check boxes whose value appears in *csv* (comma-separated)."""
+        selected = {v.strip() for v in csv.split(",") if v.strip()} if csv else set()
+        for cb, val in self._checkboxes:
+            cb.setChecked(val in selected)
 
 
 class ItemEditorPanel(QWidget):
@@ -93,6 +135,7 @@ class ItemEditorPanel(QWidget):
 
     def _create_field_widget(self, field_def: dict, value) -> QWidget:
         ft = field_def.get("field_type", "text")
+        multi = field_def.get("multi_select", False)
 
         if ft == "text":
             w = LineEdit(self)
@@ -108,8 +151,13 @@ class ItemEditorPanel(QWidget):
             w.setChecked(bool(value))
             return w
         elif ft == "select":
-            w = ComboBox(self)
             options = field_def.get("options", [])
+            if multi and options:
+                pairs = [(opt, opt) for opt in options]
+                w = _MultiSelectWidget(pairs, self)
+                w.set_value(str(value) if value else "")
+                return w
+            w = ComboBox(self)
             w.addItems(options)
             if value and value in options:
                 w.setCurrentText(str(value))
@@ -125,13 +173,18 @@ class ItemEditorPanel(QWidget):
             w.setText(str(value) if value else "")
             return w
         elif ft == "template_item":
-            w = ComboBox(self)
-            # Load items from the referenced template
             ref_id = field_def.get("ref_tmpl_id")
+            ref_items = []
             if ref_id:
                 ref_items = item_service.list_items(self._project_id, template_id=ref_id)
-                for ri in ref_items:
-                    w.addItem(ri["title"], ri["id"])
+            if multi and ref_items:
+                pairs = [(ri["title"], ri["id"]) for ri in ref_items]
+                w = _MultiSelectWidget(pairs, self)
+                w.set_value(str(value) if value else "")
+                return w
+            w = ComboBox(self)
+            for ri in ref_items:
+                w.addItem(ri["title"], userData=ri["id"])
             if value:
                 idx = w.findData(value)
                 if idx >= 0:
@@ -149,19 +202,24 @@ class ItemEditorPanel(QWidget):
             widget = self._field_widgets.get(name)
             if widget is None:
                 continue
-            ft = fd.get("field_type", "text")
-            if ft == "checkbox":
+            if isinstance(widget, _MultiSelectWidget):
+                values[name] = widget.get_value()
+            elif isinstance(widget, CheckBox):
                 values[name] = widget.isChecked()
-            elif ft == "number":
+            elif isinstance(widget, SpinBox):
                 values[name] = widget.value()
-            elif ft == "textarea":
+            elif isinstance(widget, TextEdit):
                 values[name] = widget.toPlainText()
-            elif ft == "select":
-                values[name] = widget.currentText()
-            elif ft == "template_item":
-                values[name] = widget.currentData() or ""
-            else:
+            elif isinstance(widget, ComboBox):
+                ft = fd.get("field_type", "text")
+                if ft == "template_item":
+                    values[name] = widget.currentData() or ""
+                else:
+                    values[name] = widget.currentText()
+            elif isinstance(widget, LineEdit):
                 values[name] = widget.text()
+            else:
+                values[name] = ""
         return values
 
     def on_save(self):

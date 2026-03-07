@@ -1,23 +1,18 @@
 """Template editor panel — edit template name, description, and manage fields."""
 
-import json
-
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
-    QComboBox,
     QHBoxLayout,
     QHeaderView,
+    QTableWidgetItem,
     QVBoxLayout,
     QWidget,
 )
 from qfluentwidgets import (
     BodyLabel,
-    CheckBox,
     InfoBar,
     InfoBarPosition,
     LineEdit,
-    PrimaryPushButton,
-    PushButton,
     StrongBodyLabel,
     TableWidget,
 )
@@ -29,7 +24,12 @@ FIELD_TYPES = ["text", "number", "checkbox", "select", "date", "textarea", "temp
 
 
 class TemplateEditorPanel(QWidget):
-    """Inline editor for a template and its fields."""
+    """Editor for a template and its fields.
+
+    The fields table is read-only; all editing is done through the
+    :class:`FieldEditDialog` opened via double-click or the CommandBar
+    *Edit Field* action.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -63,30 +63,19 @@ class TemplateEditorPanel(QWidget):
         layout.addWidget(StrongBodyLabel("Fields", self))
 
         self.field_table = TableWidget(self)
-        self.field_table.setColumnCount(5)
-        self.field_table.setHorizontalHeaderLabels(["Name", "Type", "Label", "Required", "Options"])
+        self.field_table.setColumnCount(7)
+        self.field_table.setHorizontalHeaderLabels(
+            ["Name", "Type", "Label", "Required", "Default", "Ref Template", "Multi-Select"]
+        )
         self.field_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.field_table.verticalHeader().setVisible(False)
         self.field_table.setSelectionBehavior(TableWidget.SelectRows)
+        self.field_table.setSelectionMode(TableWidget.SingleSelection)
+        self.field_table.setEditTriggers(TableWidget.NoEditTriggers)
+        self.field_table.doubleClicked.connect(self._on_double_click)
         layout.addWidget(self.field_table, 1)
 
-        # Field buttons
-        btn_row = QHBoxLayout()
-        self.btn_add_field = PrimaryPushButton("Add Field", self)
-        self.btn_remove_field = PushButton("Remove Field", self)
-        self.btn_move_up = PushButton("Move Up", self)
-        self.btn_move_down = PushButton("Move Down", self)
-        btn_row.addWidget(self.btn_add_field)
-        btn_row.addWidget(self.btn_remove_field)
-        btn_row.addWidget(self.btn_move_up)
-        btn_row.addWidget(self.btn_move_down)
-        btn_row.addStretch()
-        layout.addLayout(btn_row)
-
-        self.btn_add_field.clicked.connect(self._add_field_row)
-        self.btn_remove_field.clicked.connect(self._remove_field_row)
-        self.btn_move_up.clicked.connect(self._move_up)
-        self.btn_move_down.clicked.connect(self._move_down)
+    # ── Data loading ─────────────────────────────────────────────
 
     def load_template(self, template_id: str, project_id: str):
         self._template_id = template_id
@@ -102,94 +91,111 @@ class TemplateEditorPanel(QWidget):
         self._rebuild_field_table()
 
     def _rebuild_field_table(self):
+        """Repopulate the read-only table from ``self._fields``."""
+        # Build a template-name lookup for ref_tmpl_id display
+        tmpl_names: dict[str, str] = {}
+        if any(f.get("ref_tmpl_id") for f in self._fields):
+            for t in template_service.list_templates(self._project_id):
+                tmpl_names[t["id"]] = t["name"]
+
         self.field_table.setRowCount(0)
         self.field_table.setRowCount(len(self._fields))
         for i, f in enumerate(self._fields):
-            self.field_table.setItem(i, 0, _item(f.get("name", "")))
-            # Type combo
-            combo = QComboBox(self)
-            combo.addItems(FIELD_TYPES)
-            idx = FIELD_TYPES.index(f.get("field_type", "text")) if f.get("field_type", "text") in FIELD_TYPES else 0
-            combo.setCurrentIndex(idx)
-            self.field_table.setCellWidget(i, 1, combo)
-            self.field_table.setItem(i, 2, _item(f.get("label", "")))
-            # Required checkbox
-            cb = CheckBox(self)
-            cb.setChecked(f.get("required", False))
-            self.field_table.setCellWidget(i, 3, cb)
-            # Options as text
-            opts = f.get("options", [])
-            self.field_table.setItem(i, 4, _item(json.dumps(opts, ensure_ascii=False) if opts else ""))
+            self.field_table.setItem(i, 0, _ro_item(f.get("name", "")))
+            self.field_table.setItem(i, 1, _ro_item(f.get("field_type", "text")))
+            self.field_table.setItem(i, 2, _ro_item(f.get("label", "")))
+            self.field_table.setItem(i, 3, _ro_item("\u2713" if f.get("required") else ""))
+            self.field_table.setItem(i, 4, _ro_item(f.get("default_val", "") or ""))
+            ref_id = f.get("ref_tmpl_id")
+            self.field_table.setItem(i, 5, _ro_item(tmpl_names.get(ref_id, "") if ref_id else ""))
+            self.field_table.setItem(i, 6, _ro_item("\u2713" if f.get("multi_select") else ""))
 
-    def _add_field_row(self):
-        self._fields.append({"name": "", "field_type": "text", "label": "", "required": False, "options": []})
-        self._rebuild_field_table()
+    # ── Double-click → edit dialog ───────────────────────────────
 
-    def _remove_field_row(self):
+    def _on_double_click(self, index):
+        row = index.row()
+        if 0 <= row < len(self._fields):
+            self._open_edit_dialog(row)
+
+    def _open_edit_dialog(self, row: int):
+        from app.view.app_interface.dialogs.field_edit_dialog import FieldEditDialog
+
+        dlg = FieldEditDialog(
+            self._fields[row], self._project_id, self._template_id, self.window()
+        )
+        if dlg.exec():
+            data = dlg.get_data()
+            if data:
+                self._fields[row] = data
+                self._rebuild_field_table()
+
+    # ── Public actions (called from CommandBar) ──────────────────
+
+    def on_add_field(self):
+        from app.view.app_interface.dialogs.field_edit_dialog import FieldEditDialog
+
+        dlg = FieldEditDialog(None, self._project_id, self._template_id, self.window())
+        if dlg.exec():
+            data = dlg.get_data()
+            if data:
+                self._fields.append(data)
+                self._rebuild_field_table()
+
+    def on_edit_field(self):
         row = self.field_table.currentRow()
         if 0 <= row < len(self._fields):
-            self._collect_fields_from_table()
+            self._open_edit_dialog(row)
+        else:
+            InfoBar.warning(
+                "Warning", "Select a field first", parent=self, position=InfoBarPosition.TOP
+            )
+
+    def on_remove_field(self):
+        row = self.field_table.currentRow()
+        if 0 <= row < len(self._fields):
             self._fields.pop(row)
             self._rebuild_field_table()
+        else:
+            InfoBar.warning(
+                "Warning", "Select a field first", parent=self, position=InfoBarPosition.TOP
+            )
 
-    def _move_up(self):
+    def on_move_up(self):
         row = self.field_table.currentRow()
         if row > 0:
-            self._collect_fields_from_table()
             self._fields[row - 1], self._fields[row] = self._fields[row], self._fields[row - 1]
             self._rebuild_field_table()
             self.field_table.selectRow(row - 1)
 
-    def _move_down(self):
+    def on_move_down(self):
         row = self.field_table.currentRow()
         if 0 <= row < len(self._fields) - 1:
-            self._collect_fields_from_table()
             self._fields[row], self._fields[row + 1] = self._fields[row + 1], self._fields[row]
             self._rebuild_field_table()
             self.field_table.selectRow(row + 1)
 
-    def _collect_fields_from_table(self):
-        """Read current field data from the table widgets."""
-        fields = []
-        for i in range(self.field_table.rowCount()):
-            name_item = self.field_table.item(i, 0)
-            combo = self.field_table.cellWidget(i, 1)
-            label_item = self.field_table.item(i, 2)
-            cb = self.field_table.cellWidget(i, 3)
-            opts_item = self.field_table.item(i, 4)
-
-            opts_text = opts_item.text() if opts_item else ""
-            try:
-                opts = json.loads(opts_text) if opts_text else []
-            except (json.JSONDecodeError, TypeError):
-                opts = [s.strip() for s in opts_text.split(",") if s.strip()] if opts_text else []
-
-            fields.append({
-                "name": name_item.text() if name_item else "",
-                "field_type": combo.currentText() if combo else "text",
-                "label": label_item.text() if label_item else "",
-                "required": cb.isChecked() if cb else False,
-                "options": opts,
-            })
-        self._fields = fields
+    # ── Save ─────────────────────────────────────────────────────
 
     def on_save(self):
-        self._collect_fields_from_table()
         name = self.name_edit.text().strip()
         desc = self.desc_edit.text().strip()
         if not name:
-            InfoBar.warning("Warning", "Template name cannot be empty", parent=self, position=InfoBarPosition.TOP)
+            InfoBar.warning(
+                "Warning", "Template name cannot be empty", parent=self, position=InfoBarPosition.TOP
+            )
             return
         try:
-            template_service.update_template(self._template_id, name=name, description=desc, fields=self._fields)
+            template_service.update_template(
+                self._template_id, name=name, description=desc, fields=self._fields
+            )
             signalBus.dataChanged.emit()
             InfoBar.success("Saved", "Template updated", parent=self, position=InfoBarPosition.TOP)
         except Exception as e:
             InfoBar.error("Error", str(e), parent=self, position=InfoBarPosition.TOP)
 
 
-def _item(text: str):
-    from PySide6.QtWidgets import QTableWidgetItem
+def _ro_item(text: str) -> QTableWidgetItem:
+    """Create a read-only table item."""
     item = QTableWidgetItem(text)
-    item.setFlags(item.flags() | Qt.ItemIsEditable)
+    item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
     return item
