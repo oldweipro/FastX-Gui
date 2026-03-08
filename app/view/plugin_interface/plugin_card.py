@@ -13,7 +13,6 @@ from qfluentwidgets import (
     IconWidget, ProgressRing, FluentIconBase, isDarkTheme,
     TransparentToolButton, themeColor
 )
-
 from app.plugins.plugin_base import PluginInfo, PluginCategory
 from app.common.icon import Icon, UnicodeIcon
 
@@ -22,9 +21,11 @@ class PluginCard(QWidget):
     """插件卡片组件 - 自绘圆角，布局更清晰"""
 
     # 信号定义
-    openPluginRequested = Signal(str)
-    settingsRequested = Signal(str)
-    uninstallRequested = Signal(str)
+    openPluginRequested   = Signal(str)
+    settingsRequested     = Signal(str)
+    uninstallRequested    = Signal(str)
+    docsRequested         = Signal(str)
+    releaseNotesRequested = Signal(str)
 
     _RADIUS = 16  # 圆角半径
 
@@ -83,11 +84,11 @@ class PluginCard(QWidget):
         meta_row.addWidget(self.version_label)
 
         dot = CaptionLabel("·", self)
-        dot.setStyleSheet("color: #bbb; font-size: 11px;")
+        dot.setStyleSheet("font-size: 11px;")
         meta_row.addWidget(dot)
 
         self.category_label = CaptionLabel(self._get_category_text(), self)
-        self.category_label.setStyleSheet("color: #888; font-size: 11px;")
+        self.category_label.setStyleSheet("font-size: 11px;")
         meta_row.addWidget(self.category_label)
         meta_row.addStretch(1)
         right_col.addLayout(meta_row)
@@ -96,7 +97,7 @@ class PluginCard(QWidget):
         self.desc_label = BodyLabel(self.plugin_info.description, self)
         self.desc_label.setWordWrap(True)
         self.desc_label.setMaximumHeight(36)
-        self.desc_label.setStyleSheet("font-size: 11px; color: #777;")
+        self.desc_label.setStyleSheet("font-size: 11px;")
         right_col.addWidget(self.desc_label)
 
         body.addLayout(right_col, 1)
@@ -109,7 +110,7 @@ class PluginCard(QWidget):
         footer.setContentsMargins(0, 0, 0, 0)
 
         self.author_label = CaptionLabel(f"👤 {self.plugin_info.author}", self)
-        self.author_label.setStyleSheet("color: #999; font-size: 11px;")
+        self.author_label.setStyleSheet("font-size: 11px;")
         footer.addWidget(self.author_label)
         footer.addStretch(1)
 
@@ -132,16 +133,31 @@ class PluginCard(QWidget):
         self.settings_btn.setToolTip("插件设置")
         footer.addWidget(self.settings_btn)
 
-        # 卸载按钮：内置插件不显示
-        if not getattr(self.plugin_info, 'builtin', False):
-            self.uninstall_btn = TransparentToolButton(
-                UnicodeIcon.get_icon_by_name("ic_fluent_delete_24_regular"), self
-            )
-            self.uninstall_btn.setFixedSize(30, 30)
-            self.uninstall_btn.setToolTip("卸载插件")
-            footer.addWidget(self.uninstall_btn)
-        else:
-            self.uninstall_btn = None  # 内置插件无卸载按钮
+        # 文档按钮
+        self.docs_btn = TransparentToolButton(
+            UnicodeIcon.get_icon_by_name("ic_fluent_book_open_24_regular"), self
+        )
+        self.docs_btn.setFixedSize(30, 30)
+        self.docs_btn.setToolTip("查看文档")
+        footer.addWidget(self.docs_btn)
+
+        # Release Notes 按钮
+        self.release_notes_btn = TransparentToolButton(
+            UnicodeIcon.get_icon_by_name("ic_fluent_history_24_regular"), self
+        )
+        self.release_notes_btn.setFixedSize(30, 30)
+        self.release_notes_btn.setToolTip("Release Notes")
+        footer.addWidget(self.release_notes_btn)
+
+        # 卸载按钮：内置插件置灰不可用
+        self.uninstall_btn = TransparentToolButton(
+            UnicodeIcon.get_icon_by_name("ic_fluent_delete_24_regular"), self
+        )
+        self.uninstall_btn.setFixedSize(30, 30)
+        is_builtin = getattr(self.plugin_info, 'builtin', False)
+        self.uninstall_btn.setEnabled(not is_builtin)
+        self.uninstall_btn.setToolTip("内置插件不可卸载" if is_builtin else "卸载插件")
+        footer.addWidget(self.uninstall_btn)
 
         outer.addLayout(footer)
 
@@ -162,17 +178,20 @@ class PluginCard(QWidget):
 
         # 背景色
         if dark:
-            bg = QColor(40, 40, 40, 210) if not self._hovered else QColor(50, 50, 55, 230)
+            bg = QColor(45, 45, 48, 200) if not self._hovered else QColor(58, 58, 62, 220)
         else:
-            bg = QColor(255, 255, 255, 230) if not self._hovered else QColor(248, 252, 255, 255)
+            bg = QColor(255, 255, 255, 220) if not self._hovered else QColor(246, 250, 255, 255)
         painter.fillPath(path, bg)
 
         # 边框
-        if self._hovered or self._is_enabled:
+        if self._hovered:
             tc = themeColor()
-            border_color = QColor(tc.red(), tc.green(), tc.blue(), 160 if self._hovered else 90)
+            border_color = QColor(tc.red(), tc.green(), tc.blue(), 180)
+        elif self._is_enabled:
+            tc = themeColor()
+            border_color = QColor(tc.red(), tc.green(), tc.blue(), 60)
         else:
-            border_color = QColor(180, 180, 180, 80) if not dark else QColor(80, 80, 80, 100)
+            border_color = QColor(100, 100, 100, 80) if dark else QColor(200, 200, 200, 100)
 
         painter.setPen(border_color)
         painter.drawPath(path)
@@ -196,7 +215,10 @@ class PluginCard(QWidget):
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
             child = self.childAt(event.pos())
-            btns = [b for b in [self.settings_btn, self.open_btn, self.uninstall_btn, self.status_ring] if b is not None]
+            btns = [
+                self.settings_btn, self.open_btn, self.uninstall_btn,
+                self.docs_btn, self.release_notes_btn, self.status_ring
+            ]
             if child not in btns and not any(b.isAncestorOf(child) for b in btns if child):
                 self.openPluginRequested.emit(self.plugin_info.name)
         super().mousePressEvent(event)
@@ -212,8 +234,9 @@ class PluginCard(QWidget):
     def _setup_connections(self):
         self.open_btn.clicked.connect(lambda: self.openPluginRequested.emit(self.plugin_info.name))
         self.settings_btn.clicked.connect(lambda: self.settingsRequested.emit(self.plugin_info.name))
-        if self.uninstall_btn is not None:
-            self.uninstall_btn.clicked.connect(lambda: self.uninstallRequested.emit(self.plugin_info.name))
+        self.uninstall_btn.clicked.connect(lambda: self.uninstallRequested.emit(self.plugin_info.name))
+        self.docs_btn.clicked.connect(lambda: self.docsRequested.emit(self.plugin_info.name))
+        self.release_notes_btn.clicked.connect(lambda: self.releaseNotesRequested.emit(self.plugin_info.name))
 
     # ------------------------------------------------------------------ #
     #  辅助方法
@@ -232,11 +255,11 @@ class PluginCard(QWidget):
 
     def _get_category_text(self) -> str:
         texts = {
-            PluginCategory.DIAGNOSTIC: "诊断工具",
+            PluginCategory.DIAGNOSTIC:    "诊断工具",
             PluginCategory.COMMUNICATION: "通信工具",
-            PluginCategory.SERIAL: "串口工具",
-            PluginCategory.UTILITIES: "实用工具",
-            PluginCategory.CUSTOM: "自定义",
+            PluginCategory.SERIAL:        "串口工具",
+            PluginCategory.UTILITIES:     "实用工具",
+            PluginCategory.CUSTOM:        "自定义",
         }
         return texts.get(self.plugin_info.category, "未知")
 
@@ -249,7 +272,10 @@ class PluginCard(QWidget):
         self.status_ring.setVisible(loading)
         self.settings_btn.setEnabled(not loading)
         self.open_btn.setEnabled(not loading)
-        if self.uninstall_btn is not None:
+        self.docs_btn.setEnabled(not loading)
+        self.release_notes_btn.setEnabled(not loading)
+        # 内置插件卸载按钮始终保持禁用
+        if not getattr(self.plugin_info, 'builtin', False):
             self.uninstall_btn.setEnabled(not loading)
 
     def is_enabled(self) -> bool:

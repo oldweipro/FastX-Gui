@@ -1,4 +1,4 @@
-ToolInterface, #view {
+PluginInterface, #view {
     border: none;
     background-color: transparent;
 }
@@ -8,27 +8,17 @@ ScrollArea {
     background-color: transparent;
 }
 
-/* 左侧面板 */
+/* 左侧面板 - 透明背景 */
 #left_panel {
-    background-color: rgba(32, 32, 32, 0.6);
-    border-right: 1px solid rgba(80, 80, 80, 0.3);
+    background-color: transparent;
+    border-right: 1px solid rgba(70, 70, 75, 0.4);
 }
 
 /* 分割器 */
 QSplitter::handle {
-    background-color: rgba(80, 80, 80, 0.3);
+    background-color: rgba(70, 70, 75, 0.4);
 }
 
 QSplitter::handle:horizontal {
     width: 1px;
 }
-
-
-/* 标签 */
-QLabel#platformToolsLabel {
-    font: 33px 'Microsoft YaHei';
-    font-weight: 300;
-    background-color: transparent;
-    color: white;
-}
-

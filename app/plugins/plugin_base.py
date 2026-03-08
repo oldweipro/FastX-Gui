@@ -294,6 +294,26 @@ class PluginBase(ABC):
         """
         return None
 
+    def get_release_notes_url(self) -> Optional[str]:
+        """
+        [可选实现] 返回插件 Release Notes 页面 URL
+
+        Returns:
+            str: Release Notes 链接；None 表示无 Release Notes
+        """
+        return None
+
+    def get_release_notes(self) -> Optional[str]:
+        """
+        [可选实现] 返回插件 Release Notes 文本内容（Markdown 格式）
+
+        优先级低于 get_release_notes_url()。若两者均不为 None，框架优先打开 URL。
+
+        Returns:
+            str: Release Notes 文本；None 表示无内容
+        """
+        return None
+
     def get_doc_widget(self, parent: Optional[QWidget] = None) -> Optional[QWidget]:
         """
         [可选实现] 返回内嵌文档面板

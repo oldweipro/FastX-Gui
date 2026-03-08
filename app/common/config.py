@@ -236,6 +236,8 @@ class Config(QConfig):
     # 插件状态配置
     # 存储插件启用状态，格式: {"plugin_name": true/false, ...}
     pluginEnabledStates = ConfigItem("Plugins", "EnabledStates", {})
+    # 存储插件列表排列顺序，格式: ["plugin_name_1", "plugin_name_2", ...]
+    pluginOrder = ConfigItem("Plugins", "Order", [])
 
 
 cfg = Config()

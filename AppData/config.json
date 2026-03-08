@@ -104,7 +104,7 @@
             "PingFang SC"
         ],
         "ThemeColor": "#ff009faa",
-        "ThemeMode": "Light"
+        "ThemeMode": "Dark"
     },
     "Log": {
         "ColorCriticalDark": "#ffff69b4",
@@ -125,7 +125,24 @@
     },
     "Plugins": {
         "EnabledStates": {
-            "CCP Tool": true
-        }
+            "CCP Tool": false,
+            "ComGroupMapping": false,
+            "FastFaultManager": false,
+            "QcComposition": false,
+            "FastSomeIp": false,
+            "FastDem": false,
+            "RmComments": false,
+            "FastE2E": false
+        },
+        "Order": [
+            "CCP Tool",
+            "FastDem",
+            "ComGroupMapping",
+            "FastSomeIp",
+            "QcComposition",
+            "RmComments",
+            "FastFaultManager",
+            "FastE2E"
+        ]
     }
 }
