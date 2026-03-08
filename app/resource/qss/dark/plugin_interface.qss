@@ -8,6 +8,37 @@ ScrollArea {
     background-color: transparent;
 }
 
+/* 插件管理页面背景 */
+#plugin_manager_page {
+    background-color: transparent;
+}
+
+/* TabBar 样式 */
+TabBar {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(70, 70, 75, 0.4);
+}
+
+/* TabBar 标签项 */
+TabBar > QToolButton {
+    color: #a0a0a5;
+    background-color: transparent;
+    border: none;
+    padding: 8px 16px;
+    font-size: 13px;
+}
+
+TabBar > QToolButton:hover {
+    color: #d0d0d5;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+TabBar > QToolButton:checked,
+TabBar > QToolButton:pressed {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
 /* 左侧面板 - 透明背景 */
 #left_panel {
     background-color: transparent;
@@ -105,25 +136,4 @@ ComboBox:hover {
 
 ComboBox:pressed {
     background-color: rgba(40, 40, 43, 0.8);
-}
-
-/* 统计标签 */
-#left_stats,
-CaptionLabel#stats_label {
-    color: #b0b0b5;
-}
-
-/* 按钮提示文字 */
-TransparentToolButton {
-    color: #ffffff;
-}
-
-/* 分类标签 */
-CaptionLabel#category_label {
-    color: #c0c0c5;
-}
-
-/* 作者标签 */
-CaptionLabel#author_label {
-    color: #a0a0a5;
 }

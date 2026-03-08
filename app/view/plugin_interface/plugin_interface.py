@@ -150,6 +150,7 @@ class PluginInterface(ScrollArea):
         self.main_layout.addWidget(self.tab_stack)
 
         self.plugin_manager_page = QWidget()
+        self.plugin_manager_page.setObjectName("plugin_manager_page")
         self._setup_plugin_manager_page()
         self.tab_stack.addWidget(self.plugin_manager_page)
 

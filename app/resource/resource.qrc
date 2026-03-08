@@ -100,9 +100,10 @@
         <file>images/controls/Viewbox.png</file>
         <file>images/controls/WebView.png</file>
         <file>images/controls/XamlUICommand.png</file>
-        <file>images/fluentIcon/app_store.svg</file>
-        <file>images/fluentIcon/ic_fluent_app_store_24_filled.svg</file>
-        <file>images/fluentIcon/ic_fluent_app_store_24_regular.svg</file>
+        <file>images/fluentIcon/app_store_black.svg</file>
+        <file>images/fluentIcon/app_store_white.svg</file>
+        <file>images/fluentIcon/ic_fluent_app_store_24_filled_black.svg</file>
+        <file>images/fluentIcon/ic_fluent_app_store_24_filled_white.svg</file>
         <file>images/ico/M3U8DL.ico</file>
         <file>images/ico/logo-m.ico</file>
         <file>images/ico/logo.ico</file>

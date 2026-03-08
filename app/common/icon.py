@@ -161,11 +161,10 @@ class UnicodeIcon:
 class FIcon(FluentIconBase, Enum):
     # 基础图标
     APP_FILLED = "ic_fluent_app_store_24_filled"
-    APP_OUTLINE = "ic_fluent_app_store_24_regular"
     APP_STORE = "app_store"
 
     def path(self, theme=Theme.AUTO):
-        return f":/app/images/fluentIcon/{self.value}.svg"
+        return f":/app/images/fluentIcon/{self.value}_{getIconColor(theme)}.svg"
         # return f"./app/resource/images/fluentIcon/{theme.value.lower()}/{self.value}.svg"
 
 
