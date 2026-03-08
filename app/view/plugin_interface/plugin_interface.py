@@ -481,11 +481,14 @@ class PluginInterface(ScrollArea):
             print(f"[PluginInterface] 错误：获取插件主界面失败: {e}")
             return
 
-        # 创建Tab页容器
+        # 创建Tab页容器，内容从顶部开始渲染
         tab_page = QWidget()
         tab_layout = QVBoxLayout(tab_page)
         tab_layout.setContentsMargins(0, 0, 0, 0)
+        tab_layout.setSpacing(0)
+        tab_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         tab_layout.addWidget(plugin_widget)
+        tab_layout.addStretch(1)
 
         # 添加到Tab栈
         self.tab_stack.addWidget(tab_page)
