@@ -1,6 +1,7 @@
 """
 插件列表卡片组件
 用于左侧插件列表，控制插件的显示/隐藏状态，支持拖拽排序
+样式由 QSS 文件控制，不在代码中使用 if/else
 """
 
 from typing import Optional
@@ -8,8 +9,7 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout
 from qfluentwidgets import (
     CardWidget, CaptionLabel, StrongBodyLabel,
-    SwitchButton, FluentIcon as FIF, IconWidget, FluentIconBase,
-    TransparentToolButton, isDarkTheme
+    SwitchButton, FluentIcon as FIF, IconWidget, FluentIconBase
 )
 
 from app.plugins.plugin_base import PluginInfo, PluginCategory
@@ -17,13 +17,11 @@ from app.plugins.plugin_base import PluginInfo, PluginCategory
 
 class PluginListCard(CardWidget):
     """
-    插件列表卡片 - 紧凑卡片，控制插件显示/隐藏。
-    内置插件：开关正常可用；卸载按钮置灰不可点击。
-    非内置插件：开关正常可用；卸载按钮可点击。
+    插件列表卡片 - 紧凑卡片，仅控制插件显示/隐藏。
+    样式不随开关状态变化，保持一致的视觉层次。
     """
 
-    toggled = Signal(str, bool)       # 插件名, 新显示状态
-    uninstallRequested = Signal(str)  # 卸载请求
+    toggled = Signal(str, bool)  # 插件名, 新显示状态
 
     def __init__(self, plugin_info: PluginInfo, parent: Optional[QWidget] = None):
         super().__init__(parent)
@@ -32,14 +30,14 @@ class PluginListCard(CardWidget):
 
         self._init_ui()
         self._setup_connections()
+        # 样式由 QSS 文件控制，不需要在代码中设置
 
     def _init_ui(self):
         self.setFixedHeight(56)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
-        self._update_style()
 
         self.layout = QHBoxLayout(self)
-        self.layout.setContentsMargins(12, 8, 8, 8)
+        self.layout.setContentsMargins(12, 8, 12, 8)
         self.layout.setSpacing(10)
 
         # 拖拽手柄图标（提示用户可拖拽）
@@ -59,6 +57,7 @@ class PluginListCard(CardWidget):
         info_layout.setContentsMargins(0, 0, 0, 0)
 
         self.name_label = StrongBodyLabel(self.plugin_info.name, self)
+        self.name_label.setObjectName("name_label")
         self.name_label.setStyleSheet("font-size: 12px;")
         info_layout.addWidget(self.name_label)
 
@@ -67,7 +66,8 @@ class PluginListCard(CardWidget):
         meta_layout.setContentsMargins(0, 0, 0, 0)
 
         self.version_label = CaptionLabel(f"v{self.plugin_info.version}", self)
-        self.version_label.setStyleSheet("color: #0078d4; font-size: 10px;")
+        self.version_label.setObjectName("version_label")
+        self.version_label.setStyleSheet("font-size: 10px;")
         meta_layout.addWidget(self.version_label)
 
         sep = CaptionLabel("·", self)
@@ -75,19 +75,12 @@ class PluginListCard(CardWidget):
         meta_layout.addWidget(sep)
 
         self.category_label = CaptionLabel(self._get_category_text(), self)
+        self.category_label.setObjectName("category_label")
         self.category_label.setStyleSheet("font-size: 10px;")
         meta_layout.addWidget(self.category_label)
-        meta_layout.addStretch(1)
         info_layout.addLayout(meta_layout)
 
         self.layout.addLayout(info_layout, 1)
-
-        # 卸载按钮（内置插件置灰）
-        self.uninstall_btn = TransparentToolButton(FIF.DELETE, self)
-        self.uninstall_btn.setFixedSize(24, 24)
-        self.uninstall_btn.setToolTip("卸载插件" if not self.plugin_info.builtin else "内置插件不可卸载")
-        self.uninstall_btn.setEnabled(not self.plugin_info.builtin)
-        self.layout.addWidget(self.uninstall_btn)
 
         # 显示/隐藏开关（所有插件均可操作）
         self.enable_switch = SwitchButton(self)
@@ -99,57 +92,16 @@ class PluginListCard(CardWidget):
 
     def _setup_connections(self):
         self.enable_switch.checkedChanged.connect(self._on_switch_changed)
-        self.uninstall_btn.clicked.connect(
-            lambda: self.uninstallRequested.emit(self.plugin_info.name)
-        )
 
     def _on_switch_changed(self, checked: bool):
         self._is_enabled = checked
         self.plugin_info.enabled = checked
         self._update_tooltip()
-        self._update_style()
         self.toggled.emit(self.plugin_info.name, checked)
+        # 样式由 QSS 控制，不随开关状态变化
 
     def _update_tooltip(self):
         self.enable_switch.setToolTip("点击隐藏插件" if self._is_enabled else "点击显示插件")
-
-    def _update_style(self):
-        dark = isDarkTheme()
-        if dark:
-            if self._is_enabled:
-                style = """
-                    PluginListCard {
-                        background-color: rgba(45, 45, 50, 0.7);
-                        border: 1px solid rgba(0, 120, 212, 0.25);
-                        border-radius: 8px;
-                    }
-                """
-            else:
-                style = """
-                    PluginListCard {
-                        background-color: rgba(28, 28, 30, 0.5);
-                        border: 1px solid rgba(70, 70, 75, 0.4);
-                        border-radius: 8px;
-                    }
-                """
-        else:
-            if self._is_enabled:
-                style = """
-                    PluginListCard {
-                        background-color: rgba(240, 248, 255, 0.85);
-                        border: 1px solid rgba(0, 120, 212, 0.25);
-                        border-radius: 8px;
-                    }
-                """
-            else:
-                style = """
-                    PluginListCard {
-                        background-color: rgba(245, 245, 248, 0.6);
-                        border: 1px solid rgba(200, 200, 205, 0.5);
-                        border-radius: 8px;
-                    }
-                """
-        self.setStyleSheet(style)
 
     def _get_icon(self):
         if self.plugin_info.icon_path:
@@ -174,11 +126,19 @@ class PluginListCard(CardWidget):
         }.get(self.plugin_info.category, "未知")
 
     def set_enabled_state(self, enabled: bool):
+        """设置启用状态（外部调用）"""
         self._is_enabled = enabled
         self.plugin_info.enabled = enabled
         self.enable_switch.setChecked(enabled)
         self._update_tooltip()
-        self._update_style()
+        # 样式由 QSS 控制，不随开关状态变化
 
     def is_enabled(self) -> bool:
         return self._is_enabled
+
+    def refresh_style(self):
+        """强制刷新样式（用于主题切换时）
+        
+        样式由 QSS 文件控制，此方法仅触发重绘
+        """
+        self.update()

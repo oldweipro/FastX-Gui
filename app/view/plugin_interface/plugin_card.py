@@ -10,8 +10,8 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QSizePolicy
 from qfluentwidgets import (
     BodyLabel, CaptionLabel, StrongBodyLabel,
     FluentIcon as FIF,
-    IconWidget, ProgressRing, FluentIconBase, isDarkTheme,
-    TransparentToolButton, themeColor
+    IconWidget, ProgressRing, FluentIconBase,
+    TransparentToolButton, themeColor, qconfig, Theme
 )
 from app.plugins.plugin_base import PluginInfo, PluginCategory
 from app.common.icon import Icon, UnicodeIcon
@@ -70,6 +70,7 @@ class PluginCard(QWidget):
 
         # 插件名称
         self.name_label = StrongBodyLabel(self.plugin_info.name, self)
+        self.name_label.setObjectName("name_label")
         self.name_label.setStyleSheet("font-size: 13px; font-weight: 600;")
         self.name_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         right_col.addWidget(self.name_label)
@@ -80,7 +81,8 @@ class PluginCard(QWidget):
         meta_row.setContentsMargins(0, 0, 0, 0)
 
         self.version_label = CaptionLabel(f"v{self.plugin_info.version}", self)
-        self.version_label.setStyleSheet("color: #0078d4; font-size: 11px;")
+        self.version_label.setObjectName("version_label")
+        self.version_label.setStyleSheet("font-size: 11px;")
         meta_row.addWidget(self.version_label)
 
         dot = CaptionLabel("·", self)
@@ -88,6 +90,7 @@ class PluginCard(QWidget):
         meta_row.addWidget(dot)
 
         self.category_label = CaptionLabel(self._get_category_text(), self)
+        self.category_label.setObjectName("category_label")
         self.category_label.setStyleSheet("font-size: 11px;")
         meta_row.addWidget(self.category_label)
         meta_row.addStretch(1)
@@ -95,6 +98,7 @@ class PluginCard(QWidget):
 
         # 描述（紧跟版本行下方，右侧列内）
         self.desc_label = BodyLabel(self.plugin_info.description, self)
+        self.desc_label.setObjectName("desc_label")
         self.desc_label.setWordWrap(True)
         self.desc_label.setMaximumHeight(36)
         self.desc_label.setStyleSheet("font-size: 11px;")
@@ -110,6 +114,7 @@ class PluginCard(QWidget):
         footer.setContentsMargins(0, 0, 0, 0)
 
         self.author_label = CaptionLabel(f"👤 {self.plugin_info.author}", self)
+        self.author_label.setObjectName("author_label")
         self.author_label.setStyleSheet("font-size: 11px;")
         footer.addWidget(self.author_label)
         footer.addStretch(1)
@@ -174,24 +179,28 @@ class PluginCard(QWidget):
         path = QPainterPath()
         path.addRoundedRect(rect, r, r)
 
-        dark = isDarkTheme()
+        # 使用 qconfig.theme 获取当前主题，比 isDarkTheme() 更可靠
+        dark = qconfig.theme == Theme.DARK
 
-        # 背景色
+        # 背景色 - 与底色更渐进，保持柔和层次
         if dark:
-            bg = QColor(45, 45, 48, 200) if not self._hovered else QColor(58, 58, 62, 220)
+            # 暗色主题：与背景更融合的深灰色
+            bg = QColor(45, 45, 48, 180) if not self._hovered else QColor(52, 52, 56, 200)
         else:
-            bg = QColor(255, 255, 255, 220) if not self._hovered else QColor(246, 250, 255, 255)
+            # 亮色主题：白色背景，hover时稍微蓝一点
+            bg = QColor(252, 252, 254, 230) if not self._hovered else QColor(248, 250, 255, 250)
         painter.fillPath(path, bg)
 
-        # 边框
+        # 边框 - 使用与背景相近的颜色，保持柔和层次
         if self._hovered:
             tc = themeColor()
-            border_color = QColor(tc.red(), tc.green(), tc.blue(), 180)
-        elif self._is_enabled:
-            tc = themeColor()
-            border_color = QColor(tc.red(), tc.green(), tc.blue(), 60)
+            border_color = QColor(tc.red(), tc.green(), tc.blue(), 140)
         else:
-            border_color = QColor(100, 100, 100, 80) if dark else QColor(200, 200, 200, 100)
+            # 边框与背景色相近，形成柔和层次
+            if dark:
+                border_color = QColor(60, 60, 64, 80)  # 与底色更渐进的深灰边框
+            else:
+                border_color = QColor(210, 210, 215, 120)  # 浅灰色边框
 
         painter.setPen(border_color)
         painter.drawPath(path)
@@ -280,3 +289,7 @@ class PluginCard(QWidget):
 
     def is_enabled(self) -> bool:
         return self._is_enabled
+
+    def refresh_style(self):
+        """强制刷新样式（用于主题切换时）"""
+        self.update()

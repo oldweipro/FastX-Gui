@@ -125,14 +125,14 @@
     },
     "Plugins": {
         "EnabledStates": {
-            "CCP Tool": false,
-            "ComGroupMapping": false,
-            "FastFaultManager": false,
-            "QcComposition": false,
-            "FastSomeIp": false,
-            "FastDem": false,
-            "RmComments": false,
-            "FastE2E": false
+            "CCP Tool": true,
+            "ComGroupMapping": true,
+            "FastFaultManager": true,
+            "QcComposition": true,
+            "FastSomeIp": true,
+            "FastDem": true,
+            "RmComments": true,
+            "FastE2E": true
         },
         "Order": [
             "CCP Tool",

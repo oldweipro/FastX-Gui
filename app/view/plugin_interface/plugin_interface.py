@@ -34,6 +34,8 @@ from qfluentwidgets import (
 
 from app.common.config import cfg
 from app.common.style_sheet import StyleSheet
+from app.common.signal_bus import signalBus
+from qfluentwidgets import qconfig
 
 # 导入插件系统
 from app.plugins import PluginManager, PluginCategory
@@ -101,6 +103,9 @@ class PluginInterface(ScrollArea):
         self.__initLayout()
         self._load_plugins()
         self.__connectSignalToSlot()
+
+        # 监听主题变化，刷新所有卡片样式
+        qconfig.themeChanged.connect(self._on_theme_changed)
 
     def __initWidget(self):
         self.setObjectName("pluginInterface")
@@ -183,6 +188,7 @@ class PluginInterface(ScrollArea):
 
         # 可拖拽排序的列表
         self.list_widget = _DraggableListWidget(self.left_panel)
+        self.list_widget.setSpacing(4)  # 增大卡片间距
         self.left_layout.addWidget(self.list_widget)
 
         # ========== 右侧面板 ==========
@@ -207,12 +213,7 @@ class PluginInterface(ScrollArea):
         self.toolbar_layout.addWidget(self.search_box)
 
         self.category_combo = ComboBox(self.right_panel)
-        self.category_combo.addItem("全部分类", "all")
-        self.category_combo.addItem("诊断工具", "diagnostic")
-        self.category_combo.addItem("通信工具", "communication")
-        self.category_combo.addItem("串口工具", "serial")
-        self.category_combo.addItem("实用工具", "utilities")
-        self.category_combo.addItem("自定义",   "custom")
+        self._refresh_category_combo()  # 动态生成分类选项
         self.category_combo.setFixedWidth(150)
         self.toolbar_layout.addWidget(self.category_combo)
 
@@ -327,7 +328,6 @@ class PluginInterface(ScrollArea):
             self.list_widget.setItemWidget(item, list_card)
 
             list_card.toggled.connect(self._on_plugin_toggled)
-            list_card.uninstallRequested.connect(self._uninstall_plugin)
 
             # 只有启用的插件才创建右侧卡片
             if plugin_info.enabled:
@@ -337,6 +337,7 @@ class PluginInterface(ScrollArea):
 
         self._connect_card_signals()
         self._update_stats()
+        self._refresh_category_combo()  # 加载完插件后刷新分类选项
 
     def _connect_card_signals(self):
         for name, card in self.plugin_cards.items():
@@ -375,7 +376,20 @@ class PluginInterface(ScrollArea):
     # ------------------------------------------------------------------
     # 顺序持久化
     # ------------------------------------------------------------------
+    def _on_theme_changed(self):
+        """主题切换时刷新所有卡片样式"""
+        # 重新应用 QSS 样式
+        StyleSheet.PLUGIN_INTERFACE.apply(self)
+        
+        # 刷新右侧 PluginCard（自绘样式需要手动更新）
+        for card in self.plugin_cards.values():
+            card.refresh_style()
+        # 刷新左侧 PluginListCard
+        for card in self.plugin_list_cards.values():
+            card.refresh_style()
+
     def _on_order_changed(self, order: List[str]):
+        """顺序变化时持久化"""
         cfg.set(cfg.pluginOrder, order)
 
     # ------------------------------------------------------------------
@@ -413,16 +427,43 @@ class PluginInterface(ScrollArea):
         self._current_search = text
         self._apply_filter()
 
+    def _refresh_category_combo(self):
+        """动态刷新分类下拉框 - 根据实际加载的插件分类生成"""
+        self.category_combo.clear()
+        self.category_combo.addItem("全部分类", "all")
+        
+        # 收集所有实际使用的分类
+        categories = set()
+        for plugin_name in self.plugin_manager.get_all_loaded_plugins():
+            plugin_info = self.plugin_manager.get_plugin_info(plugin_name)
+            if plugin_info:
+                categories.add(plugin_info.category)
+        
+        # 按定义的顺序添加分类（使用字符串值作为data）
+        category_order = [
+            (PluginCategory.DIAGNOSTIC, "diagnostic", "诊断工具"),
+            (PluginCategory.COMMUNICATION, "communication", "通信工具"),
+            (PluginCategory.SERIAL, "serial", "串口工具"),
+            (PluginCategory.UTILITIES, "utilities", "实用工具"),
+            (PluginCategory.CUSTOM, "custom", "自定义"),
+        ]
+        
+        for cat, value, name in category_order:
+            if cat in categories:
+                self.category_combo.addItem(name, value)
+
     def _on_category_changed(self, index: int):
+        """分类改变时更新筛选"""
         category_map = {
-            "all":          None,
-            "diagnostic":   PluginCategory.DIAGNOSTIC,
-            "communication":PluginCategory.COMMUNICATION,
-            "serial":       PluginCategory.SERIAL,
-            "utilities":    PluginCategory.UTILITIES,
-            "custom":       PluginCategory.CUSTOM,
+            "all": None,
+            "diagnostic": PluginCategory.DIAGNOSTIC,
+            "communication": PluginCategory.COMMUNICATION,
+            "serial": PluginCategory.SERIAL,
+            "utilities": PluginCategory.UTILITIES,
+            "custom": PluginCategory.CUSTOM,
         }
-        self._current_category = category_map.get(self.category_combo.itemData(index))
+        data = self.category_combo.itemData(index)
+        self._current_category = category_map.get(data)
         self._apply_filter()
 
     def _on_refresh(self):

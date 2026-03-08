@@ -22,3 +22,17 @@ QSplitter::handle {
 QSplitter::handle:horizontal {
     width: 1px;
 }
+
+/* 插件列表卡片 - 亮色主题 */
+PluginListCard {
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(220, 220, 225, 0.6);
+    border-radius: 8px;
+}
+
+PluginListCard:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(200, 200, 210, 0.8);
+}
+
+/* 插件卡片 - 亮色主题（自绘样式，QSS仅作参考） */
