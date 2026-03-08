@@ -226,7 +226,7 @@ class PluginDetailDialog(MessageBoxBase):
 
         self.right_layout.addWidget(actions_card)
 
-        # 设置卡片
+        # 设置卡片 - 调用插件自定义设置界面
         settings_card = CardWidget(self.right_widget)
         settings_layout = QVBoxLayout(settings_card)
         settings_layout.setContentsMargins(16, 12, 16, 12)
@@ -237,32 +237,34 @@ class PluginDetailDialog(MessageBoxBase):
         settings_layout.addWidget(settings_title)
 
         if self.plugin_instance:
-            plugin_config = self.plugin_instance.get_config()
-            if plugin_config:
-                for key, value in plugin_config.items():
-                    row_layout = QHBoxLayout()
-                    row_layout.setSpacing(8)
-
-                    key_label = CaptionLabel(key, settings_card)
-                    row_layout.addWidget(key_label)
-
-                    row_layout.addStretch(1)
-
-                    if isinstance(value, bool):
-                        switch = SwitchButton(settings_card)
-                        switch.setChecked(value)
-                        switch.setFixedHeight(24)
-                        row_layout.addWidget(switch)
-                    else:
-                        value_label = CaptionLabel(str(value) if value else "未设置", settings_card)
-                        value_label.setStyleSheet("color: #666;")
-                        row_layout.addWidget(value_label)
-
-                    settings_layout.addLayout(row_layout)
+            settings_widget = self.plugin_instance.get_settings_widget(settings_card)
+            if settings_widget is not None:
+                # 插件提供了自定义设置界面
+                settings_layout.addWidget(settings_widget)
             else:
-                no_config = CaptionLabel("暂无配置项", settings_card)
-                no_config.setStyleSheet("color: #888; font-style: italic;")
-                settings_layout.addWidget(no_config)
+                # 回落到展示 raw config dict
+                plugin_config = self.plugin_instance.get_config()
+                if plugin_config:
+                    for key, value in plugin_config.items():
+                        row_layout = QHBoxLayout()
+                        row_layout.setSpacing(8)
+                        key_label = CaptionLabel(key, settings_card)
+                        row_layout.addWidget(key_label)
+                        row_layout.addStretch(1)
+                        if isinstance(value, bool):
+                            switch = SwitchButton(settings_card)
+                            switch.setChecked(value)
+                            switch.setFixedHeight(24)
+                            row_layout.addWidget(switch)
+                        else:
+                            value_label = CaptionLabel(str(value) if value else "未设置", settings_card)
+                            value_label.setStyleSheet("color: #666;")
+                            row_layout.addWidget(value_label)
+                        settings_layout.addLayout(row_layout)
+                else:
+                    no_config = CaptionLabel("暂无配置项", settings_card)
+                    no_config.setStyleSheet("color: #888; font-style: italic;")
+                    settings_layout.addWidget(no_config)
         else:
             no_instance = CaptionLabel("插件实例未加载", settings_card)
             no_instance.setStyleSheet("color: #888; font-style: italic;")
@@ -270,23 +272,25 @@ class PluginDetailDialog(MessageBoxBase):
 
         self.right_layout.addWidget(settings_card)
 
-        # 危险操作
-        danger_card = CardWidget(self.right_widget)
-        danger_layout = QVBoxLayout(danger_card)
-        danger_layout.setContentsMargins(16, 12, 16, 12)
-        danger_layout.setSpacing(8)
+        # 危险操作（仅非内置插件显示）
+        is_builtin = getattr(self.plugin_info, 'builtin', False)
+        if not is_builtin:
+            danger_card = CardWidget(self.right_widget)
+            danger_layout = QVBoxLayout(danger_card)
+            danger_layout.setContentsMargins(16, 12, 16, 12)
+            danger_layout.setSpacing(8)
 
-        danger_title = SubtitleLabel("危险操作", self)
-        danger_title.setStyleSheet("font-weight: bold; font-size: 14px; color: #d13438;")
-        danger_layout.addWidget(danger_title)
+            danger_title = SubtitleLabel("危险操作", self)
+            danger_title.setStyleSheet("font-weight: bold; font-size: 14px; color: #d13438;")
+            danger_layout.addWidget(danger_title)
 
-        uninstall_btn = PushButton(FIF.DELETE, "卸载插件", danger_card)
-        uninstall_btn.setFixedHeight(32)
-        uninstall_btn.setStyleSheet("color: #d13438;")
-        uninstall_btn.clicked.connect(self._on_uninstall)
-        danger_layout.addWidget(uninstall_btn)
+            uninstall_btn = PushButton(FIF.DELETE, "卸载插件", danger_card)
+            uninstall_btn.setFixedHeight(32)
+            uninstall_btn.setStyleSheet("color: #d13438;")
+            uninstall_btn.clicked.connect(self._on_uninstall)
+            danger_layout.addWidget(uninstall_btn)
 
-        self.right_layout.addWidget(danger_card)
+            self.right_layout.addWidget(danger_card)
 
     def _setup_connections(self):
         """设置信号连接"""

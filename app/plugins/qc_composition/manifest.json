@@ -1,0 +1,10 @@
+{
+    "name": "qc_composition",
+    "version": "1.0.0",
+    "description": "QC 组合信号处理工具",
+    "author": "FastXTeam",
+    "category": "communication",
+    "dependencies": [],
+    "enabled": true,
+    "builtin": true
+}

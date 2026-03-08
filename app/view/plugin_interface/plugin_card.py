@@ -132,12 +132,16 @@ class PluginCard(QWidget):
         self.settings_btn.setToolTip("插件设置")
         footer.addWidget(self.settings_btn)
 
-        self.uninstall_btn = TransparentToolButton(
-            UnicodeIcon.get_icon_by_name("ic_fluent_delete_24_regular"), self
-        )
-        self.uninstall_btn.setFixedSize(30, 30)
-        self.uninstall_btn.setToolTip("卸载插件")
-        footer.addWidget(self.uninstall_btn)
+        # 卸载按钮：内置插件不显示
+        if not getattr(self.plugin_info, 'builtin', False):
+            self.uninstall_btn = TransparentToolButton(
+                UnicodeIcon.get_icon_by_name("ic_fluent_delete_24_regular"), self
+            )
+            self.uninstall_btn.setFixedSize(30, 30)
+            self.uninstall_btn.setToolTip("卸载插件")
+            footer.addWidget(self.uninstall_btn)
+        else:
+            self.uninstall_btn = None  # 内置插件无卸载按钮
 
         outer.addLayout(footer)
 
@@ -192,7 +196,7 @@ class PluginCard(QWidget):
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
             child = self.childAt(event.pos())
-            btns = [self.settings_btn, self.open_btn, self.uninstall_btn, self.status_ring]
+            btns = [b for b in [self.settings_btn, self.open_btn, self.uninstall_btn, self.status_ring] if b is not None]
             if child not in btns and not any(b.isAncestorOf(child) for b in btns if child):
                 self.openPluginRequested.emit(self.plugin_info.name)
         super().mousePressEvent(event)
@@ -208,7 +212,8 @@ class PluginCard(QWidget):
     def _setup_connections(self):
         self.open_btn.clicked.connect(lambda: self.openPluginRequested.emit(self.plugin_info.name))
         self.settings_btn.clicked.connect(lambda: self.settingsRequested.emit(self.plugin_info.name))
-        self.uninstall_btn.clicked.connect(lambda: self.uninstallRequested.emit(self.plugin_info.name))
+        if self.uninstall_btn is not None:
+            self.uninstall_btn.clicked.connect(lambda: self.uninstallRequested.emit(self.plugin_info.name))
 
     # ------------------------------------------------------------------ #
     #  辅助方法
@@ -223,7 +228,7 @@ class PluginCard(QWidget):
                     return self.plugin_info.icon_path
             except Exception:
                 pass
-        return FIF.PLUGIN
+        return FIF.APPLICATION
 
     def _get_category_text(self) -> str:
         texts = {
@@ -244,7 +249,8 @@ class PluginCard(QWidget):
         self.status_ring.setVisible(loading)
         self.settings_btn.setEnabled(not loading)
         self.open_btn.setEnabled(not loading)
-        self.uninstall_btn.setEnabled(not loading)
+        if self.uninstall_btn is not None:
+            self.uninstall_btn.setEnabled(not loading)
 
     def is_enabled(self) -> bool:
         return self._is_enabled

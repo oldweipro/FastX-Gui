@@ -1,0 +1,10 @@
+{
+    "name": "fast_dem",
+    "version": "1.0.0",
+    "description": "DEM 诊断文件处理工具",
+    "author": "FastXTeam",
+    "category": "diagnostic",
+    "dependencies": [],
+    "enabled": true,
+    "builtin": true
+}

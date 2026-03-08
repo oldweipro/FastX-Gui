@@ -85,6 +85,17 @@ class PluginListCard(CardWidget):
         self.enable_switch.setOffText("隐藏")
         self._update_tooltip()
         self.layout.addWidget(self.enable_switch)
+
+        # 内置插件：开关禁用、显示“内置”徽章
+        if getattr(self.plugin_info, 'builtin', False):
+            self.enable_switch.setEnabled(False)
+            self.enable_switch.setToolTip("内置插件不可禁用")
+            badge = CaptionLabel("内置", self)
+            badge.setStyleSheet(
+                "color: #fff; background-color: #0078d4;"
+                "border-radius: 4px; padding: 1px 5px; font-size: 10px;"
+            )
+            self.layout.addWidget(badge)
     
     def _setup_connections(self):
         """设置信号连接"""
@@ -155,7 +166,7 @@ class PluginListCard(CardWidget):
                     return self.plugin_info.icon_path
             except Exception:
                 pass
-        return FIF.PLUGIN
+        return FIF.APPLICATION
     
     def _get_category_text(self) -> str:
         """获取分类显示文本"""

@@ -1,0 +1,40 @@
+"""FastDem 插件 — 包装 tools/ui/FastDem_ui.py"""
+from typing import Any, Dict, Optional
+from PySide6.QtWidgets import QWidget
+from app.plugins.plugin_base import PluginBase, PluginInfo, PluginCategory
+
+
+class FastDemPlugin(PluginBase):
+    @classmethod
+    def get_plugin_info(cls) -> PluginInfo:
+        return PluginInfo(
+            name="FastDem",
+            version="1.0.0",
+            description="DEM 诊断文件处理工具，支持 DEM 文件解析与生成",
+            author="FastXTeam",
+            category=PluginCategory.DIAGNOSTIC,
+            icon_path="E2E",
+            builtin=True,
+        )
+
+    def __init__(self):
+        super().__init__()
+        self._config: Dict[str, Any] = {}
+
+    def initialize(self) -> bool:
+        self._is_initialized = True
+        return True
+
+    def get_main_widget(self, parent: Optional[QWidget] = None) -> QWidget:
+        from app.tools.ui.FastDem_ui import FastDemToolUI
+        w = FastDemToolUI(parent=parent)
+        return w
+
+    def cleanup(self):
+        pass
+
+    def get_config(self) -> Dict[str, Any]:
+        return self._config.copy()
+
+    def set_config(self, config: Dict[str, Any]):
+        self._config.update(config)

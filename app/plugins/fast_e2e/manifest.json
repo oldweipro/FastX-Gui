@@ -1,0 +1,10 @@
+{
+    "name": "fast_e2e",
+    "version": "1.0.0",
+    "description": "E2E 通信端到端校验工具",
+    "author": "FastXTeam",
+    "category": "communication",
+    "dependencies": [],
+    "enabled": true,
+    "builtin": true
+}

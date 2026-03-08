@@ -1,0 +1,10 @@
+{
+    "name": "fast_fault_manager",
+    "version": "1.0.0",
+    "description": "故障码管理工具，支持 DTC 创建、编辑与导出",
+    "author": "FastXTeam",
+    "category": "diagnostic",
+    "dependencies": [],
+    "enabled": true,
+    "builtin": true
+}
