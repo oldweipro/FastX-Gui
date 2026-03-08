@@ -233,6 +233,10 @@ class Config(QConfig):
     floatingWindowPosX = ConfigItem("FloatingWindow", "PosX", 100)
     floatingWindowPosY = ConfigItem("FloatingWindow", "PosY", 100)
 
+    # 插件状态配置
+    # 存储插件启用状态，格式: {"plugin_name": true/false, ...}
+    pluginEnabledStates = ConfigItem("Plugins", "EnabledStates", {})
+
 
 cfg = Config()
 cfg.themeMode.value = Theme.AUTO

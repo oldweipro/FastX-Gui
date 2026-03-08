@@ -158,6 +158,16 @@ class UnicodeIcon:
             logger.error(f"加载图标{icon_name}出错: {e}")
             return cls._get_default_icon(icon_name)
 
+class FIcon(FluentIconBase, Enum):
+    # 基础图标
+    APP_FILLED = "ic_fluent_app_store_24_filled"
+    APP_OUTLINE = "ic_fluent_app_store_24_regular"
+    APP_STORE = "app_store"
+
+    def path(self, theme=Theme.AUTO):
+        return f":/app/images/fluentIcon/{self.value}.svg"
+        # return f"./app/resource/images/fluentIcon/{theme.value.lower()}/{self.value}.svg"
+
 
 class Icon(FluentIconBase, Enum):
     # 基础图标

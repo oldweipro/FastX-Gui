@@ -15,7 +15,7 @@
     "Background": {
         "BlurRadius": 21,
         "DisplayMode": "Keep Aspect Ratio",
-        "ImageEnabled": true,
+        "ImageEnabled": false,
         "ImagePath": "C:/Users/91974/Pictures/02 壁纸/朋克狐耳女孩4k壁纸3840x2160_彼岸图网.jpg",
         "Opacity": 41
     },
@@ -29,8 +29,8 @@
         "ComGroupMappingInputFile": "C:/Users/91974/Downloads/E2E_Template.xlsx",
         "ComGroupMappingOutputFolder": "C:/Users/91974/Downloads/ps2023",
         "ComGroupMappingSelectedOption": 0,
-        "FastCCPInputFile": "C:/Users/91974/Downloads/E2E_Template.xlsx",
-        "FastCCPOutputFolder": "C:/Users/91974/Downloads",
+        "FastCCPInputFile": "",
+        "FastCCPOutputFolder": "D:/Github/FastX-Gui",
         "FastCCPSelectedOption": 0,
         "FastDemInputFile": "C:/Users/91974/Downloads/E2E_Template.xlsx",
         "FastDemOutputFolder": "C:/Users/91974/Downloads",
@@ -122,5 +122,10 @@
         "ColorWarningDark": "#ffffff00",
         "ColorWarningLight": "#ffffd700",
         "Level": "DEBUG"
+    },
+    "Plugins": {
+        "EnabledStates": {
+            "CCP Tool": true
+        }
     }
 }

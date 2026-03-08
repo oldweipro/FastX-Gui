@@ -8,7 +8,6 @@ ScrollArea {
     border: none;
 }
 
-
 /* 标签 */
 QLabel#platformToolsLabel {
     font: 33px 'Microsoft YaHei';

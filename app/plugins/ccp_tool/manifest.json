@@ -1,0 +1,10 @@
+{
+    "name": "ccp_tool",
+    "version": "1.0.0",
+    "description": "CCP协议诊断和分析工具",
+    "author": "FastXTeam",
+    "category": "diagnostic",
+    "icon": "icons/ccp_icon.png",
+    "dependencies": [],
+    "enabled": true
+}

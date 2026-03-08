@@ -100,6 +100,9 @@
         <file>images/controls/Viewbox.png</file>
         <file>images/controls/WebView.png</file>
         <file>images/controls/XamlUICommand.png</file>
+        <file>images/fluentIcon/app_store.svg</file>
+        <file>images/fluentIcon/ic_fluent_app_store_24_filled.svg</file>
+        <file>images/fluentIcon/ic_fluent_app_store_24_regular.svg</file>
         <file>images/ico/M3U8DL.ico</file>
         <file>images/ico/logo-m.ico</file>
         <file>images/ico/logo.ico</file>
@@ -402,6 +405,7 @@
         <file>qss/dark/log_interface.qss</file>
         <file>qss/dark/main_window.qss</file>
         <file>qss/dark/pivot.qss</file>
+        <file>qss/dark/plugin_interface.qss</file>
         <file>qss/dark/rte_interface.qss</file>
         <file>qss/dark/sample_card.qss</file>
         <file>qss/dark/setting_interface.qss</file>
@@ -416,6 +420,7 @@
         <file>qss/light/log_interface.qss</file>
         <file>qss/light/main_window.qss</file>
         <file>qss/light/pivot.qss</file>
+        <file>qss/light/plugin_interface.qss</file>
         <file>qss/light/rte_interface.qss</file>
         <file>qss/light/sample_card.qss</file>
         <file>qss/light/setting_interface.qss</file>

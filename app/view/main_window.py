@@ -52,7 +52,7 @@ from app.components.messagebox_custom import MessageBoxCloseWindow, MessageBoxSu
 from app.common import resource
 from app.common.background_manager import get_background_manager
 from app.common.config import cfg
-from app.common.icon import Icon, UnicodeIcon
+from app.common.icon import Icon, UnicodeIcon, FIcon
 from app.common.setting import APPLY_NAME, VERSION
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
@@ -67,6 +67,7 @@ from app.view.library_interface import LibraryViewInterface
 from app.view.log_interface import LoguruInterface, QTextEditLogger
 from app.view.setting_interface import SettingInterface
 from app.view.tool_interface import ToolsInterface
+from app.view.plugin_interface import PluginInterface
 
 
 class SimpleUserInfoDialog(MessageBoxBase):
@@ -310,8 +311,11 @@ class MainWindow(SplitFluentWindow):
             self.appInterface = AppInterface(self)
         with self.safe_block(default=None, error_msg=self.tr("Create Func interface")):
             self.funcInterface = FuncInterface(self)
-        # with self.safe_block(default=None, error_msg=self.tr("Create Tools interface")):
-        self.toolInterface = ToolsInterface(self)
+        with self.safe_block(default=None, error_msg=self.tr("Create Tools interface")):
+            self.toolInterface = ToolsInterface(self)
+        # 插件管理界面
+        # with self.safe_block(default=None, error_msg=self.tr("Create Plugin interface")):
+        self.pluginInterface = PluginInterface(self)
         with self.safe_block(default=None, error_msg=self.tr("Create Library interface")):
             self.libraryInterface = LibraryViewInterface(self)
         with self.safe_block(default=None, error_msg=self.tr("Create Settings interface")):
@@ -414,6 +418,19 @@ class MainWindow(SplitFluentWindow):
                 pos,
                 isTransparent=False,
             )
+
+        # 插件管理
+        # with self.safe_block(
+        #     default=None,
+        #     error_msg=self.tr("Load Plugin interface to left route"),
+        # ):
+        self.addSubInterface(
+            self.pluginInterface,
+            FIcon.APP_STORE,
+            self.tr("Plugins"),
+            pos,
+            isTransparent=False,
+        )
 
         # 底部功能区
         pos = NavigationItemPosition.BOTTOM
@@ -631,6 +648,37 @@ class MainWindow(SplitFluentWindow):
             try:
                 # 停止主题监听器线程
                 self.themeListener.stop()
+            except Exception:
+                pass
+
+        # 清理浮窗资源
+        if hasattr(self, "floatingWindow"):
+            try:
+                fw = self.floatingWindow
+                # 停止所有定时器
+                if hasattr(fw, "_edge_detect_timer"):
+                    fw._edge_detect_timer.stop()
+                if hasattr(fw, "_retract_timer"):
+                    fw._retract_timer.stop()
+                if hasattr(fw, "_drag_timer"):
+                    fw._drag_timer.stop()
+                fw.close()
+            except Exception:
+                pass
+
+        # 清理背景管理器缓存
+        if hasattr(self, "backgroundManager"):
+            try:
+                self.backgroundManager.clear_cache()
+            except Exception:
+                pass
+
+        # 清理 progressCenterFlyout
+        if hasattr(self, "progressCenterFlyout") and self.progressCenterFlyout:
+            try:
+                self.progressCenterFlyout.close()
+                self.progressCenterFlyout.deleteLater()
+                self.progressCenterFlyout = None
             except Exception:
                 pass
 

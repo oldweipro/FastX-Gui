@@ -1,0 +1,34 @@
+ToolInterface, #view {
+    border: none;
+    background-color: transparent;
+}
+
+ScrollArea {
+    border: none;
+    background-color: transparent;
+}
+
+/* 左侧面板 */
+#left_panel {
+    background-color: rgba(32, 32, 32, 0.6);
+    border-right: 1px solid rgba(80, 80, 80, 0.3);
+}
+
+/* 分割器 */
+QSplitter::handle {
+    background-color: rgba(80, 80, 80, 0.3);
+}
+
+QSplitter::handle:horizontal {
+    width: 1px;
+}
+
+
+/* 标签 */
+QLabel#platformToolsLabel {
+    font: 33px 'Microsoft YaHei';
+    font-weight: 300;
+    background-color: transparent;
+    color: white;
+}
+

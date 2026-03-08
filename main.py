@@ -57,7 +57,14 @@ def main():
     # w.show()
     showMainWindow(hide=hide_window)
 
-    app.exec()
+    result = app.exec()
+
+    # Cleanup Qt resources before exit
+    from app.common import resource
+    if hasattr(resource, 'qCleanupResources'):
+        resource.qCleanupResources()
+
+    return result
 
 
 if __name__ == "__main__":

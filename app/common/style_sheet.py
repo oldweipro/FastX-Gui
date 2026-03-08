@@ -16,6 +16,7 @@ class StyleSheet(StyleSheetBase, Enum):
     VIEW_INTERFACE = "view_interface"
     RTE_INTERFACE = "rte_interface"
     TOOLS_INTERFACE = "tools_interface"
+    PLUGIN_INTERFACE = "plugin_interface"
     LOG_INTERFACE = "log_interface"
     SETTING_INTERFACE = "setting_interface"
     GALLERY_INTERFACE = "gallery_interface"
@@ -25,5 +26,5 @@ class StyleSheet(StyleSheetBase, Enum):
         theme = qconfig.theme if theme == Theme.AUTO else theme
 
         # 使用资源路径格式，注意资源文件中没有resource目录
-        return f":/app/qss/{theme.value.lower()}/{self.value}.qss"
-        # return f"./app/resource/qss/{theme.value.lower()}/{self.value}.qss"
+        # return f":/app/qss/{theme.value.lower()}/{self.value}.qss"
+        return f"./app/resource/qss/{theme.value.lower()}/{self.value}.qss"
