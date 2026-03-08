@@ -191,16 +191,19 @@ class PluginCard(QWidget):
             bg = QColor(252, 252, 254, 230) if not self._hovered else QColor(248, 250, 255, 250)
         painter.fillPath(path, bg)
 
-        # 边框 - 使用与背景相近的颜色，保持柔和层次
+        # 边框 - 使用主题色系，保持柔和层次
         if self._hovered:
             tc = themeColor()
-            border_color = QColor(tc.red(), tc.green(), tc.blue(), 140)
+            border_color = QColor(tc.red(), tc.green(), tc.blue(), 160)
         else:
-            # 边框与背景色相近，形成柔和层次
+            # 边框使用主题色的柔和版本
+            tc = themeColor()
             if dark:
-                border_color = QColor(60, 60, 64, 80)  # 与底色更渐进的深灰边框
+                # 暗色主题：主题色的暗色柔和版本
+                border_color = QColor(tc.red(), tc.green(), tc.blue(), 30)
             else:
-                border_color = QColor(210, 210, 215, 120)  # 浅灰色边框
+                # 亮色主题：主题色的亮色柔和版本
+                border_color = QColor(tc.red(), tc.green(), tc.blue(), 40)
 
         painter.setPen(border_color)
         painter.drawPath(path)

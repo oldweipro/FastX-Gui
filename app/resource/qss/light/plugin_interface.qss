@@ -14,6 +14,19 @@ ScrollArea {
     border-right: 1px solid rgba(200, 200, 205, 0.4);
 }
 
+/* 插件列表标题 */
+#left_title {
+    color: #1a1a1a;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* 插件列表统计 */
+#left_stats {
+    color: #666666;
+    font-size: 12px;
+}
+
 /* 分割器 */
 QSplitter::handle {
     background-color: rgba(200, 200, 205, 0.4);
@@ -35,4 +48,61 @@ PluginListCard:hover {
     border: 1px solid rgba(200, 200, 210, 0.8);
 }
 
-/* 插件卡片 - 亮色主题（自绘样式，QSS仅作参考） */
+/* 插件列表卡片 - 字体颜色 */
+PluginListCard StrongBodyLabel,
+PluginListCard CaptionLabel {
+    color: #1a1a1a;
+}
+
+/* 插件卡片 - 字体颜色 */
+PluginCard StrongBodyLabel,
+PluginCard BodyLabel,
+PluginCard CaptionLabel {
+    color: #1a1a1a;
+}
+
+/* 插件卡片内版本号颜色 */
+PluginCard CaptionLabel#version_label {
+    color: #0078d4;
+}
+
+/* 插件卡片内分类颜色 */
+PluginCard CaptionLabel#category_label {
+    color: #555555;
+}
+
+/* 插件卡片内描述颜色 */
+PluginCard BodyLabel#desc_label {
+    color: #333333;
+}
+
+/* 插件卡片内作者颜色 */
+PluginCard CaptionLabel#author_label {
+    color: #666666;
+}
+
+/* 工具栏搜索框 */
+SearchLineEdit {
+    color: #1a1a1a;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(200, 200, 205, 0.6);
+}
+
+SearchLineEdit:focus {
+    border: 1px solid rgba(0, 120, 212, 0.5);
+}
+
+/* ComboBox */
+ComboBox {
+    color: #1a1a1a;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(200, 200, 205, 0.6);
+}
+
+ComboBox:hover {
+    background-color: rgba(245, 245, 247, 0.9);
+}
+
+ComboBox:pressed {
+    background-color: rgba(235, 235, 238, 1.0);
+}

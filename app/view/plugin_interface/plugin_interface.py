@@ -179,11 +179,12 @@ class PluginInterface(ScrollArea):
         self.left_layout.setSpacing(8)
 
         self.left_title = StrongBodyLabel("插件列表", self.left_panel)
+        self.left_title.setObjectName("left_title")
         self.left_title.setStyleSheet("font-size: 14px; font-weight: bold;")
         self.left_layout.addWidget(self.left_title)
 
         self.left_stats = CaptionLabel("共 0 个插件", self.left_panel)
-        self.left_stats.setStyleSheet("color: #888;")
+        self.left_stats.setObjectName("left_stats")
         self.left_layout.addWidget(self.left_stats)
 
         # 可拖拽排序的列表

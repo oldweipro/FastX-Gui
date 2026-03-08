@@ -14,6 +14,19 @@ ScrollArea {
     border-right: 1px solid rgba(70, 70, 75, 0.4);
 }
 
+/* 插件列表标题 */
+#left_title {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* 插件列表统计 */
+#left_stats {
+    color: #a0a0a5;
+    font-size: 12px;
+}
+
 /* 分割器 */
 QSplitter::handle {
     background-color: rgba(70, 70, 75, 0.4);
@@ -23,16 +36,16 @@ QSplitter::handle:horizontal {
     width: 1px;
 }
 
-/* 插件列表卡片 - 暗色主题（与底色更渐进） */
+/* 插件列表卡片 - 暗色主题（与底色更渐进融合） */
 PluginListCard {
-    background-color: rgba(55, 55, 59, 0.5);
-    border: 1px solid rgba(75, 75, 80, 0.4);
+    background-color: rgba(50, 50, 54, 0.4);
+    border: 1px solid rgba(70, 70, 75, 0.3);
     border-radius: 8px;
 }
 
 PluginListCard:hover {
-    background-color: rgba(62, 62, 66, 0.7);
-    border: 1px solid rgba(90, 90, 95, 0.6);
+    background-color: rgba(58, 58, 62, 0.6);
+    border: 1px solid rgba(85, 85, 90, 0.5);
 }
 
 /* 插件列表卡片 - 字体颜色 */
@@ -51,6 +64,21 @@ PluginCard CaptionLabel {
 /* 插件卡片内版本号颜色 */
 PluginCard CaptionLabel#version_label {
     color: #4fc3f7;
+}
+
+/* 插件卡片内分类颜色 */
+PluginCard CaptionLabel#category_label {
+    color: #c0c0c5;
+}
+
+/* 插件卡片内描述颜色 */
+PluginCard BodyLabel#desc_label {
+    color: #d0d0d5;
+}
+
+/* 插件卡片内作者颜色 */
+PluginCard CaptionLabel#author_label {
+    color: #a0a0a5;
 }
 
 /* 工具栏搜索框 */
