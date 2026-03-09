@@ -41,8 +41,14 @@ TabBar > QToolButton:pressed {
 
 /* 左侧面板 - 透明背景 */
 #left_panel {
-    background-color: transparent;
+    background-color: #FAFBFD;
+    border: 1px solid rgba(200, 200, 205, 0.4);
     border-right: 1px solid rgba(200, 200, 205, 0.4);
+    border-radius: 10px;
+    /* 内边距 */
+    padding: 10px;
+    /* 外边距 */
+    margin: 4px;
 }
 
 /* 插件列表标题 */
@@ -136,4 +142,17 @@ ComboBox:hover {
 
 ComboBox:pressed {
     background-color: rgba(235, 235, 238, 1.0);
+}
+
+
+/* 左侧面板 - 透明背景 */
+#right_panel {
+    background-color: #FAFBFD;
+    border: 1px solid rgba(200, 200, 205, 0.4);
+    border-right: 1px solid rgba(200, 200, 205, 0.4);
+    border-radius: 10px;
+    /* 内边距 */
+    padding: 10px;
+    /* 外边距 */
+    margin: 4px;
 }

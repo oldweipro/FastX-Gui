@@ -195,6 +195,10 @@ class PluginCard(QWidget):
         if self._hovered:
             tc = themeColor()
             border_color = QColor(tc.red(), tc.green(), tc.blue(), 160)
+            # hover时边框加粗到2px
+            from PySide6.QtGui import QPen
+            pen = QPen(border_color, 2)
+            painter.setPen(pen)
         else:
             # 边框使用主题色的柔和版本
             tc = themeColor()
@@ -204,8 +208,8 @@ class PluginCard(QWidget):
             else:
                 # 亮色主题：主题色的亮色柔和版本
                 border_color = QColor(tc.red(), tc.green(), tc.blue(), 40)
+            painter.setPen(border_color)
 
-        painter.setPen(border_color)
         painter.drawPath(path)
 
     # ------------------------------------------------------------------ #

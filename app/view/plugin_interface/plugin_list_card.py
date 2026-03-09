@@ -53,7 +53,7 @@ class PluginListCard(CardWidget):
 
         # 插件信息列
         info_layout = QVBoxLayout()
-        info_layout.setSpacing(2)
+        info_layout.setSpacing(6)
         info_layout.setContentsMargins(0, 0, 0, 0)
 
         self.name_label = StrongBodyLabel(self.plugin_info.name, self)
