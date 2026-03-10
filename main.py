@@ -51,11 +51,10 @@ def main():
         if cfg.get(cfg.autoHide):
             hide_window = True
 
-    # create main window
-    # w = RegisterWindow()
-    # w.loginSignal.connect(showMainWindow)
-    # w.show()
-    showMainWindow(hide=hide_window)
+    # 每次启动都显示注册页面验证邮箱和激活码
+    w = RegisterWindow()
+    w.loginSignal.connect(lambda: showMainWindow(hide=hide_window))
+    w.show()
 
     result = app.exec()
 

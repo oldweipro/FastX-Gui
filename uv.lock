@@ -142,6 +142,7 @@ dependencies = [
     { name = "spire" },
     { name = "spire-doc" },
     { name = "sqlalchemy" },
+    { name = "wmi" },
     { name = "zbtoollib" },
 ]
 
@@ -169,6 +170,7 @@ requires-dist = [
     { name = "spire", specifier = ">=0.4.2" },
     { name = "spire-doc", specifier = ">=14.1.6" },
     { name = "sqlalchemy", specifier = ">=2.0.0" },
+    { name = "wmi", specifier = ">=1.5.1" },
     { name = "zbtoollib", specifier = ">=2.0.8.1" },
 ]
 
@@ -3559,6 +3561,18 @@ name = "winshell"
 version = "0.6"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/91/3f/d23d248029a49042d278af9c86b53bc90845e3739a0d7493e00cbac0e4cd/winshell-0.6.zip", hash = "sha256:16812fcd6a43391d6c0b707b4d67e809e52286a739683a91623baa0804ea0d41", size = 10070, upload-time = "2012-03-25T19:34:03.282Z" }
+
+[[package]]
+name = "wmi"
+version = "1.5.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pywin32" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d4/66/6364deb0a03415f96c66803d8c4379f808f2401da3bdb183348487b10510/WMI-1.5.1.tar.gz", hash = "sha256:b6a6be5711b1b6c8d55bda7a8befd75c48c12b770b9d227d31c1737dbf0d40a6", size = 26254, upload-time = "2020-04-28T08:22:58.096Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ee/b9/a80d1ed4d115dac8e2ac08d16af046a77ab58e3d186e22395bf2add24090/WMI-1.5.1-py2.py3-none-any.whl", hash = "sha256:1d6b085e5c445141c475476000b661f60fff1aaa19f76bf82b7abb92e0ff4942", size = 28912, upload-time = "2020-04-28T08:22:56.055Z" },
+]
 
 [[package]]
 name = "zbtoollib"

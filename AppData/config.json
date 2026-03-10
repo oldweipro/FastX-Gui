@@ -1,7 +1,7 @@
 {
     "Register": {
-        "ActivationCode": "",
-        "Email": "",
+        "ActivationCode": "eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkZYRyJ9.eyJlbWFpbCI6ICI5MTk3NDA1NzRAcXEuY29tIiwgIm1hY2hpbmVfY29kZSI6ICJCRDI5OENBRTVDNjNENDg1MUY1NUY3OUU2MkE1MUFERCIsICJzYWx0IjogIjRiYWFkY2JlNDk0Yzc5NjgiLCAic3RhcnRfZGF0ZSI6ICIyMDI2LTAzLTExIiwgImR1cmF0aW9uX2RheXMiOiAzNjUsICJ0aW1lc3RhbXAiOiAiMjAyNi0wMy0xMVQwMTo1OTo1NC4zOTgyNDMiLCAidmVyc2lvbiI6ICIxLjAifQ.AMNPCjSgQ-mBxVR6yztpiIc1P8LDa_hZ2wSDLM4MgjA",
+        "Email": "919740574@qq.com",
         "RememberMe": true
     },
     "Application": {
@@ -103,7 +103,7 @@
             "Microsoft YaHei",
             "PingFang SC"
         ],
-        "ThemeColor": "#ff009faa",
+        "ThemeColor": "#ff28afe9",
         "ThemeMode": "Light"
     },
     "Log": {

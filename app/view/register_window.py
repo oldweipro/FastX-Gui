@@ -20,7 +20,7 @@ from qfluentwidgets import (
 
 from app.common import resource
 from app.common.config import cfg
-from app.common.license_service import LicenseService
+from app.common.license_service import get_license_service
 
 
 def isWin11():
@@ -42,7 +42,7 @@ class RegisterWindow(Window):
         super().__init__(parent=parent)
         setThemeColor("#28afe9")
         self.setTitleBar(MSFluentTitleBar(self))
-        self.register = LicenseService()
+        self.license_service = get_license_service()
 
         self.imageLabel = ImageLabel(":/app/images/jpg/background.jpg", self)
         self.iconLabel = ImageLabel(":/app/images/png/logo.png", self)
@@ -56,6 +56,9 @@ class RegisterWindow(Window):
         self.rememberCheckBox = CheckBox(self.tr("Remember me"), self)
 
         self.loginButton = PrimaryPushButton(self.tr("Login"), self)
+        
+        # 获取激活码链接
+        self.getActivationCodeLink = HyperlinkButton("", self.tr("Get Activation Code"), self)
 
         self.hBoxLayout = QHBoxLayout(self)
         self.vBoxLayout = QVBoxLayout()
@@ -68,9 +71,15 @@ class RegisterWindow(Window):
         self.rememberCheckBox.setChecked(cfg.get(cfg.rememberMe))
 
         self.emailLineEdit.setPlaceholderText("example@example.com")
-        self.activateCodeLineEdit.setPlaceholderText("••••••••••••")
+        self.activateCodeLineEdit.setPlaceholderText("Enter your activation code")
 
-        if self.rememberCheckBox.isChecked():
+        # 优先从授权服务加载已保存的信息
+        saved_license = self.license_service.load_license()
+        if saved_license:
+            saved_code, saved_email = saved_license
+            self.emailLineEdit.setText(saved_email)
+            self.activateCodeLineEdit.setText(saved_code)
+        elif self.rememberCheckBox.isChecked():
             self.emailLineEdit.setText(cfg.get(cfg.email))
             self.activateCodeLineEdit.setText(cfg.get(cfg.activationCode))
 
@@ -137,38 +146,108 @@ class RegisterWindow(Window):
         self.vBoxLayout.addWidget(self.rememberCheckBox)
         self.vBoxLayout.addSpacing(15)
         self.vBoxLayout.addWidget(self.loginButton)
+        self.vBoxLayout.addSpacing(10)
+        self.vBoxLayout.addWidget(self.getActivationCodeLink, 0, Qt.AlignmentFlag.AlignHCenter)
         self.vBoxLayout.addSpacing(30)
         self.vBoxLayout.addStretch(1)
 
     def __connectSignalToSlot(self):
         self.loginButton.clicked.connect(self._login)
         self.rememberCheckBox.stateChanged.connect(lambda: cfg.set(cfg.rememberMe, self.rememberCheckBox.isChecked()))
+        self.getActivationCodeLink.clicked.connect(self._onGetActivationCode)
 
     def _login(self):
         code = self.activateCodeLineEdit.text().strip()
+        email = self.emailLineEdit.text().strip()
 
-        if not self.register.validate(code, self.emailLineEdit.text()):
-            InfoBar.error(
-                self.tr("Activate failed"),
-                self.tr("Please check your activation code"),
+        if not email:
+            InfoBar.warning(
+                self.tr("Email Required"),
+                self.tr("Please enter your email address"),
                 position=InfoBarPosition.TOP,
                 duration=2000,
                 parent=self.window(),
             )
-        else:
-            InfoBar.success(
-                self.tr("Success"),
-                self.tr("Activation successful"),
+            return
+
+        if not code:
+            InfoBar.warning(
+                self.tr("Activation Code Required"),
+                self.tr("Please enter your activation code"),
                 position=InfoBarPosition.TOP,
+                duration=2000,
                 parent=self.window(),
             )
+            return
 
-            if cfg.get(cfg.rememberMe):
-                cfg.set(cfg.email, self.emailLineEdit.text().strip())
-                cfg.set(cfg.activationCode, code)
+        # 验证授权码
+        is_valid, message = self.license_service.validate_license_code(code, email)
+        
+        if not is_valid:
+            InfoBar.error(
+                self.tr("Activation Failed"),
+                message,
+                position=InfoBarPosition.TOP,
+                duration=3000,
+                parent=self.window(),
+            )
+            return
+        
+        # 检测时间篡改
+        time_ok, time_msg = self.license_service.check_time_tampering()
+        if not time_ok:
+            InfoBar.error(
+                self.tr("Security Check Failed"),
+                time_msg,
+                position=InfoBarPosition.TOP,
+                duration=3000,
+                parent=self.window(),
+            )
+            return
 
-            self.loginButton.setDisabled(True)
-            QTimer.singleShot(1500, self._showMainWindow)
+        # 保存授权
+        try:
+            self.license_service.save_license(code, email)
+        except Exception as e:
+            InfoBar.error(
+                self.tr("Save Failed"),
+                f"Failed to save license: {str(e)}",
+                position=InfoBarPosition.TOP,
+                duration=2000,
+                parent=self.window(),
+            )
+            return
+
+        InfoBar.success(
+            self.tr("Success"),
+            self.tr("Activation successful!"),
+            position=InfoBarPosition.TOP,
+            duration=2000,
+            parent=self.window(),
+        )
+
+        if cfg.get(cfg.rememberMe):
+            cfg.set(cfg.email, email)
+            cfg.set(cfg.activationCode, code)
+
+        self.loginButton.setDisabled(True)
+        QTimer.singleShot(1500, self._showMainWindow)
+
+    def _onGetActivationCode(self):
+        """点击获取激活码链接，复制机器码到剪贴板"""
+        machine_code = self.license_service.get_machine_code()
+        
+        # 复制机器码到剪贴板
+        clipboard = QApplication.clipboard()
+        clipboard.setText(machine_code)
+        
+        InfoBar.success(
+            self.tr("Copied"),
+            self.tr("Machine code copied! Please send your email and machine code to developer to get activation code."),
+            position=InfoBarPosition.TOP,
+            duration=3000,
+            parent=self.window(),
+        )
 
     def _showMainWindow(self):
         self.close()

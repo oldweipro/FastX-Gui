@@ -58,6 +58,7 @@ from app.common.setting import APPLY_NAME, VERSION
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
 from app.common.translator import Translator
+from app.common.license_service import get_license_service
 from app.components.custom_titlebar import CustomTitleBar, CustomTitleBar1
 from app.view.app_interface import AppInterface
 from app.view.floating_window import LevitationWindow
@@ -79,42 +80,63 @@ class SimpleUserInfoDialog(MessageBoxBase):
         super().__init__(parent)
 
         # 标题
-        self.titleLabel = SubtitleLabel("用户信息(Beta)", self)
+        self.titleLabel = SubtitleLabel("用户信息", self)
+
+        # 获取授权信息
+        license_service = get_license_service()
+        license_info = license_service.get_license_info()
+        machine_code = license_service.get_machine_code()
+
+        # 构建用户信息
+        if license_info and license_info.is_valid:
+            status_badge = '<span class="badge success">✓ 已激活</span>'
+            if license_info.is_permanent:
+                duration_text = "永久授权"
+                expire_text = "永久有效"
+            else:
+                duration_text = f"{license_info.duration_days} 天授权"
+                expire_text = f"{license_info.end_date}"
+                if license_info.days_remaining > 0:
+                    expire_text += f" (剩余 {license_info.days_remaining} 天)"
+        else:
+            status_badge = '<span class="badge error">✗ 未激活</span>'
+            duration_text = "未授权"
+            expire_text = "-"
 
         # 用户信息表格样式
-        info_text = """
+        info_text = f"""
         <style>
-            .info-table { width: 100%; border-collapse: collapse; }
-            .info-table td { padding: 8px; }
-            .info-table td:first-child {
+            .info-table {{ width: 100%; border-collapse: collapse; }}
+            .info-table td {{ padding: 8px; }}
+            .info-table td:first-child {{
                 font-weight: bold;
                 color: #666;
                 width: 100px;
-            }
-            .badge {
+            }}
+            .badge {{
                 background-color: #4caf50;
                 color: white;
                 padding: 4px 8px;
                 border-radius: 12px;
                 font-size: 12px;
                 display: inline-block;
-            }
+            }}
+            .badge.error {{
+                background-color: #f44336;
+            }}
         </style>
 
         <table class="info-table">
-            <tr><td>👤 用户</td><td><b>FastXTeam/MG</b></td></tr>
-            <tr><td>📧 邮箱</td><td>wanqiang.liu@fastxteam.com</td></tr>
-            <tr><td>💻 机器码</td><td><code>M6X9-2K4R-8H7J-3P5Q</code></td></tr>
+            <tr><td>📧 邮箱</td><td>{license_info.email if license_info else '-'}</td></tr>
+            <tr><td>💻 机器码</td><td><code>{machine_code}</code></td></tr>
             <tr>
-                <td>🔑 激活</td>
-                <td>
-                    <span class="badge">✓ 已激活</span>
-                    <span style="margin-left: 10px;">永久授权 · 专业版</span>
-                </td>
+                <td>🔑 状态</td>
+                <td>{status_badge}</td>
             </tr>
-            <tr><td>📅 激活日期</td><td>2024-03-15</td></tr>
-            <tr><td>⏰ 过期日期</td><td>2099-12-31 (永久)</td></tr>
-            <tr><td>📦 版本</td><td>FastX-Gui v0.1.0 (2024-03-20)</td></tr>
+            <tr><td>📅 授权起始</td><td>{license_info.start_date if license_info else '-'}</td></tr>
+            <tr><td>⏰ 授权期限</td><td>{duration_text}</td></tr>
+            <tr><td>📆 到期日期</td><td>{expire_text}</td></tr>
+            <tr><td>📦 版本</td><td>{APPLY_NAME} {VERSION}</td></tr>
         </table>
         """
 
@@ -128,9 +150,14 @@ class SimpleUserInfoDialog(MessageBoxBase):
 
         # 按钮
         self.yesButton.setText("确认")
-        self.cancelButton.setText("复制信息")
+        self.cancelButton.setText("复制机器码")
 
         self.widget.setMinimumWidth(450)
+    
+    def exec(self):
+        """重写exec方法，处理取消按钮点击"""
+        result = super().exec()
+        return result
 
 class MainWindow(SplitFluentWindow):
     def __init__(self):
@@ -497,8 +524,26 @@ class MainWindow(SplitFluentWindow):
 
     def __showMessageBox(self):
         """显示用户信息对话框"""
-        dialog = SimpleUserInfoDialog(self)  # 或 SimpleUserInfoDialog(self)
-        dialog.exec_()
+        dialog = SimpleUserInfoDialog(self)
+        result = dialog.exec()
+        
+        # 如果点击了取消按钮（复制机器码）
+        if result == 0:  # 0 表示取消按钮
+            from app.common.license_service import get_license_service
+            from PySide6.QtWidgets import QApplication
+            from qfluentwidgets import InfoBar, InfoBarPosition
+            
+            machine_code = get_license_service().get_machine_code()
+            clipboard = QApplication.clipboard()
+            clipboard.setText(machine_code)
+            
+            InfoBar.success(
+                self.tr("Copied"),
+                self.tr("Machine code copied to clipboard"),
+                position=InfoBarPosition.TOP,
+                duration=1500,
+                parent=self,
+            )
 
     def _initFloatingWindow(self):
         """初始化悬浮窗"""
