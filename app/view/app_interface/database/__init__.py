@@ -1,5 +1,5 @@
-from app.database.engine import SessionLocal, get_session, init_db
-from app.database.models import (
+from app.view.app_interface.database.engine import SessionLocal, get_session, init_db
+from app.view.app_interface.database.models import (
     Base,
     Field,
     Item,
@@ -8,7 +8,7 @@ from app.database.models import (
     Template,
     Workspace,
 )
-from app.database.repository import UnitOfWork
+from app.view.app_interface.database.repository import UnitOfWork
 
 __all__ = [
     "init_db",

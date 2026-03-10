@@ -2,7 +2,7 @@ from typing import Any
 
 from PySide6.QtCore import QModelIndex, Qt
 
-from app.table_model.base_table_model import BaseTableModel
+from app.view.app_interface.table_model.base_table_model import BaseTableModel
 
 _EMPTY = QModelIndex()
 

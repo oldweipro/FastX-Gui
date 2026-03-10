@@ -6,8 +6,8 @@ from typing import Any
 
 from sqlalchemy.orm import Session, joinedload
 
-from app.database.engine import SessionLocal
-from app.database.models import (
+from app.view.app_interface.database.engine import SessionLocal
+from app.view.app_interface.database.models import (
     Field,
     Item,
     Project,

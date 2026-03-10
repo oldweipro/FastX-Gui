@@ -7,8 +7,8 @@ from PySide6.QtWidgets import QHeaderView, QVBoxLayout, QWidget
 from qfluentwidgets import InfoBar, InfoBarPosition, StrongBodyLabel, TableView
 
 from app.common.signal_bus import signalBus
-from app.service import item_service, template_service
-from app.table_model.base_table_model import BaseTableModel
+from app.view.app_interface.service import item_service, template_service
+from app.view.app_interface.table_model.base_table_model import BaseTableModel
 
 
 class _DynamicItemModel(BaseTableModel):

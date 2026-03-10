@@ -20,7 +20,7 @@ from qfluentwidgets import (
 )
 
 from app.common.signal_bus import signalBus
-from app.service import item_service, template_service
+from app.view.app_interface.service import item_service, template_service
 
 
 class _MultiSelectWidget(QWidget):

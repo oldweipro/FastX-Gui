@@ -10,8 +10,8 @@ from qfluentwidgets import (
 )
 
 from app.common.signal_bus import signalBus
-from app.service import template_service
-from app.table_model.fm_template_table_model import FmTemplateTableModel
+from app.view.app_interface.service import template_service
+from app.view.app_interface.table_model.fm_template_table_model import FmTemplateTableModel
 
 
 class TemplateListPanel(QWidget):

@@ -18,7 +18,7 @@ from qfluentwidgets import (
 )
 
 from app.common.signal_bus import signalBus
-from app.service import template_service
+from app.view.app_interface.service import template_service
 
 FIELD_TYPES = ["text", "number", "checkbox", "select", "date", "textarea", "template_item"]
 

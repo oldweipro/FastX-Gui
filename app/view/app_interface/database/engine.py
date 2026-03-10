@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.common.setting import CONFIG_FOLDER
-from app.database.models import Base
+from app.view.app_interface.database.models import Base
 
 _DB_PATH = CONFIG_FOLDER / "fastx.db"
 _engine = create_engine(f"sqlite:///{_DB_PATH}", echo=False, future=True)

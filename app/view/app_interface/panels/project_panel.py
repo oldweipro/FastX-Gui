@@ -12,7 +12,7 @@ from qfluentwidgets import (
 )
 
 from app.common.signal_bus import signalBus
-from app.service import import_export_service, project_service, snapshot_service
+from app.view.app_interface.service import import_export_service, project_service, snapshot_service
 
 
 class _StatCard(SimpleCardWidget):

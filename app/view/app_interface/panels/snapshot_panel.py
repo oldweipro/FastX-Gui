@@ -10,8 +10,8 @@ from qfluentwidgets import (
 )
 
 from app.common.signal_bus import signalBus
-from app.service import snapshot_service
-from app.table_model.fm_snapshot_table_model import FmSnapshotTableModel
+from app.view.app_interface.service import snapshot_service
+from app.view.app_interface.table_model.fm_snapshot_table_model import FmSnapshotTableModel
 
 
 class SnapshotPanel(QWidget):

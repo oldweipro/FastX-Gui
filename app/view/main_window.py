@@ -69,6 +69,7 @@ from app.view.log_interface import LoguruInterface, QTextEditLogger
 from app.view.setting_interface import SettingInterface
 from app.view.tool_interface import ToolsInterface
 from app.view.plugin_interface import PluginInterface
+from app.view.app_interface.database import init_db
 
 
 class SimpleUserInfoDialog(MessageBoxBase):
@@ -166,7 +167,6 @@ class MainWindow(SplitFluentWindow):
 
     def _init_services(self):
         # 初始化数据库
-        from app.database import init_db
         init_db()
         # 創建主題監聽器
         self.themeListener = SystemThemeListener(self)

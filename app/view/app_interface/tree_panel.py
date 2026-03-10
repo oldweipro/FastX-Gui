@@ -8,7 +8,7 @@ from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import SearchLineEdit, TransparentToolButton, TreeWidget
 
 from app.common.signal_bus import signalBus
-from app.service import item_service, project_service, snapshot_service, template_service, workspace_service
+from app.view.app_interface.service import item_service, project_service, snapshot_service, template_service, workspace_service
 
 
 class TreePanel(QWidget):

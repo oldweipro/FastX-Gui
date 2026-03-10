@@ -1,6 +1,6 @@
 from loguru import logger
 
-from app.database.repository import UnitOfWork
+from app.view.app_interface.database.repository import UnitOfWork
 
 
 class WorkspaceService:

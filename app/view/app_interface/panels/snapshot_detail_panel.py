@@ -11,7 +11,7 @@ from qfluentwidgets import (
     TextEdit,
 )
 
-from app.service import snapshot_service
+from app.view.app_interface.service import snapshot_service
 
 
 class SnapshotDetailPanel(QWidget):
