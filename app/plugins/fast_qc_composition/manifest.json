@@ -1,7 +1,7 @@
 {
-    "name": "fast_some_ip",
+    "name": "fast_qc_composition",
     "version": "1.0.0",
-    "description": "SOME/IP 协议处理工具，支持 SOME/IP 文件解析与处理",
+    "description": "QC 组合信号处理工具，支持信号组合与验证",
     "author": "FastXTeam",
     "category": "communication",
     "dependencies": [],

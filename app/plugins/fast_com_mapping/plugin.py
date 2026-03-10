@@ -1,16 +1,18 @@
-"""FastSomeIp 插件"""
+"""Fast COM Mapping Plugin"""
 from typing import Any, Dict, Optional
 from PySide6.QtWidgets import QWidget
 from app.plugins.plugin_base import PluginBase, PluginInfo, PluginCategory
 
 
-class FastSomeIpPlugin(PluginBase):
+class FastComMappingPlugin(PluginBase):
+    """Fast COM Mapping Plugin - COM group mapping tool"""
+
     @classmethod
     def get_plugin_info(cls) -> PluginInfo:
         return PluginInfo(
-            name="fast_some_ip",
+            name="fast_com_mapping",
             version="1.0.0",
-            description="SOME/IP 协议处理工具，支持 SOME/IP 文件解析与处理",
+            description="Com 组映射工具，用于处理 Com 文件的组映射关系",
             author="FastXTeam",
             category=PluginCategory.COMMUNICATION,
             builtin=True,
@@ -25,8 +27,8 @@ class FastSomeIpPlugin(PluginBase):
         return True
 
     def get_main_widget(self, parent: Optional[QWidget] = None) -> QWidget:
-        from .ui.fast_some_ip_ui import FastSomeIpToolUI
-        return FastSomeIpToolUI(parent=parent)
+        from .ui.com_mapping_card import FastComMappingCard
+        return FastComMappingCard(parent=parent)
 
     def cleanup(self):
         pass

@@ -1,1 +1,0 @@
-"""QcComposition Plugin - Core Module"""

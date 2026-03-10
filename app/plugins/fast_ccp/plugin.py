@@ -1,18 +1,20 @@
-"""FastSomeIp 插件"""
+"""Fast CCP Plugin"""
 from typing import Any, Dict, Optional
 from PySide6.QtWidgets import QWidget
 from app.plugins.plugin_base import PluginBase, PluginInfo, PluginCategory
 
 
-class FastSomeIpPlugin(PluginBase):
+class FastCcpPlugin(PluginBase):
+    """Fast CCP Plugin - CCP calibration protocol tool"""
+
     @classmethod
     def get_plugin_info(cls) -> PluginInfo:
         return PluginInfo(
-            name="fast_some_ip",
+            name="fast_ccp",
             version="1.0.0",
-            description="SOME/IP 协议处理工具，支持 SOME/IP 文件解析与处理",
+            description="CCP 标定协议工具，支持 A2L 文件解析和标定数据管理",
             author="FastXTeam",
-            category=PluginCategory.COMMUNICATION,
+            category=PluginCategory.DIAGNOSTIC,
             builtin=True,
         )
 
@@ -25,8 +27,8 @@ class FastSomeIpPlugin(PluginBase):
         return True
 
     def get_main_widget(self, parent: Optional[QWidget] = None) -> QWidget:
-        from .ui.fast_some_ip_ui import FastSomeIpToolUI
-        return FastSomeIpToolUI(parent=parent)
+        from .ui.ccp_card import FastCcpCard
+        return FastCcpCard(parent=parent)
 
     def cleanup(self):
         pass

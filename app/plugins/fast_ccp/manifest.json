@@ -1,0 +1,10 @@
+{
+    "name": "fast_ccp",
+    "version": "1.0.0",
+    "description": "CCP 标定协议工具，支持 A2L 文件解析和标定数据管理",
+    "author": "FastXTeam",
+    "category": "diagnostic",
+    "dependencies": [],
+    "enabled": true,
+    "builtin": true
+}

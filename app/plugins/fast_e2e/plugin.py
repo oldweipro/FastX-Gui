@@ -8,12 +8,11 @@ class FastE2EPlugin(PluginBase):
     @classmethod
     def get_plugin_info(cls) -> PluginInfo:
         return PluginInfo(
-            name="FastE2E",
+            name="fast_e2e",
             version="1.0.0",
             description="E2E 通信端到端校验工具，支持 Profile 配置与校验计算",
             author="FastXTeam",
             category=PluginCategory.COMMUNICATION,
-            icon_path="E2E",
             builtin=True,
         )
 

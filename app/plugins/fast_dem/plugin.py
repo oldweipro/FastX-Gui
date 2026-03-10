@@ -8,12 +8,11 @@ class FastDemPlugin(PluginBase):
     @classmethod
     def get_plugin_info(cls) -> PluginInfo:
         return PluginInfo(
-            name="FastDem",
+            name="fast_dem",
             version="1.0.0",
             description="DEM 诊断文件处理工具，支持 DEM 文件解析与生成",
             author="FastXTeam",
             category=PluginCategory.DIAGNOSTIC,
-            icon_path="E2E",
             builtin=True,
         )
 

@@ -1,16 +1,18 @@
-"""FastSomeIp 插件"""
+"""Fast QC Composition Plugin"""
 from typing import Any, Dict, Optional
 from PySide6.QtWidgets import QWidget
 from app.plugins.plugin_base import PluginBase, PluginInfo, PluginCategory
 
 
-class FastSomeIpPlugin(PluginBase):
+class FastQcCompositionPlugin(PluginBase):
+    """Fast QC Composition Plugin - QC composition signal processing tool"""
+
     @classmethod
     def get_plugin_info(cls) -> PluginInfo:
         return PluginInfo(
-            name="fast_some_ip",
+            name="fast_qc_composition",
             version="1.0.0",
-            description="SOME/IP 协议处理工具，支持 SOME/IP 文件解析与处理",
+            description="QC 组合信号处理工具，支持信号组合与验证",
             author="FastXTeam",
             category=PluginCategory.COMMUNICATION,
             builtin=True,
@@ -25,8 +27,8 @@ class FastSomeIpPlugin(PluginBase):
         return True
 
     def get_main_widget(self, parent: Optional[QWidget] = None) -> QWidget:
-        from .ui.fast_some_ip_ui import FastSomeIpToolUI
-        return FastSomeIpToolUI(parent=parent)
+        from .ui.qc_composition_card import FastQcCompositionCard
+        return FastQcCompositionCard(parent=parent)
 
     def cleanup(self):
         pass

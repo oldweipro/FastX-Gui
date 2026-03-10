@@ -1,18 +1,21 @@
-"""FastSomeIp 插件"""
+"""Fast Code Cleaner Plugin"""
 from typing import Any, Dict, Optional
 from PySide6.QtWidgets import QWidget
 from app.plugins.plugin_base import PluginBase, PluginInfo, PluginCategory
 
 
-class FastSomeIpPlugin(PluginBase):
+class FastCodeCleanerPlugin(PluginBase):
+    """Fast Code Cleaner Plugin - Python code comment removal tool"""
+
     @classmethod
     def get_plugin_info(cls) -> PluginInfo:
         return PluginInfo(
-            name="fast_some_ip",
+            name="fast_code_cleaner",
             version="1.0.0",
-            description="SOME/IP 协议处理工具，支持 SOME/IP 文件解析与处理",
+            description="Python 代码注释批量移除工具，支持递归处理目录",
             author="FastXTeam",
-            category=PluginCategory.COMMUNICATION,
+            category=PluginCategory.UTILITIES,
+            icon_path=None,
             builtin=True,
         )
 
@@ -25,8 +28,8 @@ class FastSomeIpPlugin(PluginBase):
         return True
 
     def get_main_widget(self, parent: Optional[QWidget] = None) -> QWidget:
-        from .ui.fast_some_ip_ui import FastSomeIpToolUI
-        return FastSomeIpToolUI(parent=parent)
+        from .ui.code_cleaner_card import FastCodeCleanerCard
+        return FastCodeCleanerCard(parent=parent)
 
     def cleanup(self):
         pass

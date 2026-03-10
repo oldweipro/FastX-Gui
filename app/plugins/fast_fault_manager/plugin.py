@@ -8,12 +8,11 @@ class FastFaultManagerPlugin(PluginBase):
     @classmethod
     def get_plugin_info(cls) -> PluginInfo:
         return PluginInfo(
-            name="FastFaultManager",
+            name="fast_fault_manager",
             version="1.0.0",
             description="故障码管理工具，支持 DTC 创建、编辑、模板管理与导出",
             author="FastXTeam",
             category=PluginCategory.DIAGNOSTIC,
-            icon_path=None,
             builtin=True,
         )
 

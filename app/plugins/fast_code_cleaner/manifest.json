@@ -1,0 +1,10 @@
+{
+    "name": "fast_code_cleaner",
+    "version": "1.0.0",
+    "description": "Python 代码注释批量移除工具，支持递归处理目录",
+    "author": "FastXTeam",
+    "category": "utilities",
+    "dependencies": [],
+    "enabled": true,
+    "builtin": true
+}
