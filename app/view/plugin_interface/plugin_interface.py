@@ -24,13 +24,14 @@ from qfluentwidgets import (
     FlowLayout,
     ComboBox,
     SearchLineEdit,
-    PrimaryPushButton,
     CaptionLabel,
-    TransparentToolButton,
+    ToolButton,
     TabBar,
     TabCloseButtonDisplayMode,
     StrongBodyLabel,
     SmoothScrollArea,
+    ToolTipFilter,
+    toggleTheme,
 )
 
 from app.common.config import cfg
@@ -235,12 +236,16 @@ class PluginInterface(ScrollArea):
 
         self.toolbar_layout.addStretch(1)
 
-        self.refresh_btn = TransparentToolButton(FIF.SYNC, self.right_container)
-        self.refresh_btn.setFixedSize(32, 32)
-        self.refresh_btn.setToolTip("刷新插件列表")
+        # 刷新按钮 - ToolButton 风格
+        self.refresh_btn = ToolButton(FIF.SYNC, self.right_container)
+        self.refresh_btn.setToolTip(self.tr("刷新插件列表"))
+        self.refresh_btn.installEventFilter(ToolTipFilter(self.refresh_btn))
         self.toolbar_layout.addWidget(self.refresh_btn)
 
-        self.install_btn = PrimaryPushButton(FIF.ADD, "安装插件", self.right_container)
+        # 安装按钮 - ToolButton 风格
+        self.install_btn = ToolButton(FIF.ADD, self.right_container)
+        self.install_btn.setToolTip(self.tr("安装插件"))
+        self.install_btn.installEventFilter(ToolTipFilter(self.install_btn))
         self.toolbar_layout.addWidget(self.install_btn)
 
         self.right_layout.addLayout(self.toolbar_layout)

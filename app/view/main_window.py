@@ -43,6 +43,7 @@ from qfluentwidgets import (
     qrouter,
     setFont,
     setTheme,
+    toggleTheme,
 )
 from qfluentwidgets import (
     FluentIcon as FIF,
@@ -261,7 +262,19 @@ class MainWindow(SplitFluentWindow):
         self.progressCenterButton = TransparentToolButton(UnicodeIcon.get_icon_by_name('ic_fluent_apps_list_32_regular'), self)
         self.progressCenterButton.setFixedSize(46, 32)
         self.progressCenterButton.clicked.connect(lambda: self.showProgressCenter(FlyoutAnimationType.DROP_DOWN))
-        self.titleBar.hBoxLayout.insertWidget(self.titleBar.hBoxLayout.indexOf(self.titleBar.minBtn), self.progressCenterButton, 0, Qt.AlignRight)
+
+        # 主题切换按钮
+        self.themeButton = TransparentToolButton(FIF.CONSTRACT, self)
+        self.themeButton.setFixedSize(46, 32)
+        self.themeButton.setToolTip(self.tr("Toggle theme"))
+        self.themeButton.clicked.connect(lambda: toggleTheme(True))
+
+        # 将主题按钮和任务中心按钮插入到标题栏（先插入右侧的，再插入左侧的，避免索引变化问题）
+        min_btn_index = self.titleBar.hBoxLayout.indexOf(self.titleBar.minBtn)
+        self.titleBar.hBoxLayout.insertWidget(min_btn_index, self.progressCenterButton, 0, Qt.AlignRight)
+        # 重新获取索引，因为布局已变化
+        min_btn_index = self.titleBar.hBoxLayout.indexOf(self.titleBar.minBtn)
+        self.titleBar.hBoxLayout.insertWidget(min_btn_index, self.themeButton, 0, Qt.AlignRight)
 
         # 桌面可用区域
         desktop = QApplication.primaryScreen().availableGeometry()
