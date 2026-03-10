@@ -4,7 +4,7 @@
 """
 
 from typing import Dict, List
-from PySide6.QtCore import Qt, Signal, QTimer, QSize, QMimeData
+from PySide6.QtCore import Qt, Signal, QTimer, QSize, QMimeData, QEasingCurve
 from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QHBoxLayout,
@@ -44,6 +44,7 @@ from app.plugins import PluginManager, PluginCategory
 from .plugin_card import PluginCard
 from .plugin_list_card import PluginListCard
 from .plugin_detail_dialog import PluginDetailDialog
+from app.components.common_widgets import BetterScrollArea
 
 
 class _DraggableListWidget(QListWidget):
@@ -195,6 +196,40 @@ class PluginInterface(ScrollArea):
         self.left_stats.setObjectName("left_stats")
         self.left_layout.addWidget(self.left_stats)
 
+        # 左侧 menubar（刷新、安装、全部隐藏/显示）
+        self.category_combo = ComboBox(self.left_container)
+        self._refresh_category_combo()  # 动态生成分类选项
+        self.category_combo.setFixedWidth(150)
+
+        self.left_menubar = QWidget(self.left_container)
+        self.left_menubar_layout = QHBoxLayout(self.left_menubar)
+        self.left_menubar_layout.setContentsMargins(5, 4, 0, 4)
+        self.left_menubar_layout.setSpacing(8)
+
+        self.left_refresh_btn = ToolButton(FIF.SYNC, self.left_menubar)
+        self.left_refresh_btn.setFixedSize(32, 32)
+        self.left_refresh_btn.setToolTip(self.tr("刷新插件列表"))
+        self.left_refresh_btn.installEventFilter(ToolTipFilter(self.left_refresh_btn))
+
+        self.left_install_btn = ToolButton(FIF.ADD, self.left_menubar)
+        self.left_install_btn.setFixedSize(32, 32)
+        self.left_install_btn.setToolTip(self.tr("安装插件"))
+        self.left_install_btn.installEventFilter(ToolTipFilter(self.left_install_btn))
+
+        # 全部显示/隐藏 toggle 按钮
+        self.left_toggle_all_btn = ToolButton(FIF.HIDE, self.left_menubar)
+        self.left_toggle_all_btn.setFixedSize(32, 32)
+        self.left_toggle_all_btn.setToolTip(self.tr("全部隐藏"))
+        self.left_toggle_all_btn.installEventFilter(ToolTipFilter(self.left_toggle_all_btn))
+        self._all_plugins_visible = True  # 记录当前状态
+
+        self.left_menubar_layout.addWidget(self.category_combo)
+        self.left_menubar_layout.addStretch(1)
+        self.left_menubar_layout.addWidget(self.left_refresh_btn)
+        self.left_menubar_layout.addWidget(self.left_install_btn)
+        self.left_menubar_layout.addWidget(self.left_toggle_all_btn)
+        self.left_layout.addWidget(self.left_menubar)
+
         # 可拖拽排序的列表
         self.list_widget = _DraggableListWidget(self.left_container)
         self.list_widget.setSpacing(4)  # 增大卡片间距
@@ -221,40 +256,28 @@ class PluginInterface(ScrollArea):
 
         self.search_box = SearchLineEdit(self.right_container)
         self.search_box.setPlaceholderText("搜索插件  (Ctrl+F)")
-        self.search_box.setMinimumWidth(280)
+        # self.search_box.setMinimumWidth(280)
         self.search_box.setFixedHeight(34)
         self.menu_btn = LineEditButton(FIF.MENU, self.search_box)
         self.search_box.hBoxLayout.addWidget(self.menu_btn, 0, Qt.AlignRight)
         self.menu_btn.setToolTip("展开插件列表")
         self.menu_btn.clicked.connect(self._toggle_left_panel)
         self.toolbar_layout.addWidget(self.search_box)
-
-        self.category_combo = ComboBox(self.right_container)
-        self._refresh_category_combo()  # 动态生成分类选项
-        self.category_combo.setFixedWidth(150)
-        self.toolbar_layout.addWidget(self.category_combo)
-
         self.toolbar_layout.addStretch(1)
-
-        # 刷新按钮 - ToolButton 风格
-        self.refresh_btn = ToolButton(FIF.SYNC, self.right_container)
-        self.refresh_btn.setToolTip(self.tr("刷新插件列表"))
-        self.refresh_btn.installEventFilter(ToolTipFilter(self.refresh_btn))
-        self.toolbar_layout.addWidget(self.refresh_btn)
-
-        # 安装按钮 - ToolButton 风格
-        self.install_btn = ToolButton(FIF.ADD, self.right_container)
-        self.install_btn.setToolTip(self.tr("安装插件"))
-        self.install_btn.installEventFilter(ToolTipFilter(self.install_btn))
-        self.toolbar_layout.addWidget(self.install_btn)
-
         self.right_layout.addLayout(self.toolbar_layout)
 
-        self.cards_container = QWidget()
+        self.cards_scroll = BetterScrollArea(self.right_container)
+        self.cards_scroll.setObjectName("cards_scroll")
+        self.cards_scroll.vBoxLayout.setContentsMargins(0, 0, 0, 0)
+        self.cards_scroll.vBoxLayout.setSpacing(0)
+        
+        self.cards_container = QWidget(self.cards_scroll.view)
         self.cards_flow_layout = FlowLayout(self.cards_container, needAni=True)
         self.cards_flow_layout.setSpacing(16)
-        self.cards_flow_layout.setContentsMargins(0, 0, 0, 0)
-        self.right_layout.addWidget(self.cards_container)
+        self.cards_flow_layout.setContentsMargins(0, 0, 20, 20)
+        
+        self.cards_scroll.vBoxLayout.addWidget(self.cards_container)
+        self.right_layout.addWidget(self.cards_scroll)
 
         self.right_panel.setWidget(self.right_container)
 
@@ -374,8 +397,11 @@ class PluginInterface(ScrollArea):
         self.search_box.textChanged.connect(self._on_search_changed)
         self.search_box.searchSignal.connect(self._on_search_changed)
         self.category_combo.currentIndexChanged.connect(self._on_category_changed)
-        self.refresh_btn.clicked.connect(self._on_refresh)
-        self.install_btn.clicked.connect(self._on_install_plugin)
+
+        # 左侧 menubar 按钮信号
+        self.left_refresh_btn.clicked.connect(self._on_refresh)
+        self.left_install_btn.clicked.connect(self._on_install_plugin)
+        self.left_toggle_all_btn.clicked.connect(self._on_toggle_all_plugins)
 
         # 拖拽排序持久化
         self.list_widget.orderChanged.connect(self._on_order_changed)
@@ -499,6 +525,27 @@ class PluginInterface(ScrollArea):
         )
         if file_path:
             QMessageBox.information(self, "提示", f"已选择插件包: {file_path}\n安装功能开发中...")
+
+    def _on_toggle_all_plugins(self):
+        """切换全部插件的显示/隐藏状态"""
+        if self._all_plugins_visible:
+            # 全部隐藏
+            for name, list_card in self.plugin_list_cards.items():
+                if list_card.is_enabled():
+                    list_card.set_enabled_state(False)
+                    self._on_plugin_toggled(name, False)
+            self._all_plugins_visible = False
+            self.left_toggle_all_btn.setIcon(FIF.VIEW)
+            self.left_toggle_all_btn.setToolTip(self.tr("全部显示"))
+        else:
+            # 全部显示
+            for name, list_card in self.plugin_list_cards.items():
+                if not list_card.is_enabled():
+                    list_card.set_enabled_state(True)
+                    self._on_plugin_toggled(name, True)
+            self._all_plugins_visible = True
+            self.left_toggle_all_btn.setIcon(FIF.HIDE)
+            self.left_toggle_all_btn.setToolTip(self.tr("全部隐藏"))
 
     # ------------------------------------------------------------------
     # 插件操作

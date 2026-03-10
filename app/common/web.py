@@ -1,11 +1,72 @@
 import re
 import traceback
+import os
+import logging
 from concurrent.futures import ThreadPoolExecutor, wait
+from urllib.parse import urlparse
 
 import requests
 from loguru import logger
 
-from app.common.utils import *
+from app.common.utils import isFile, isDir, createDir, getFileDir, joinPath, getRepeatFileName, deletePath
+
+REQUEST_HEADER = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+}
+
+
+def download_file(url: str, path: str, progress_callback=None, is_cancelled_fn=None) -> str:
+    """
+    下载文件
+    
+    Args:
+        url: 下载链接
+        path: 保存路径
+        progress_callback: 进度回调函数，接收进度百分比(0-100)
+        is_cancelled_fn: 取消检查函数，返回True表示取消
+        
+    Returns:
+        str: 保存的文件路径，失败返回空字符串
+    """
+    try:
+        # 确保目录存在
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        
+        response = requests.get(url, headers=REQUEST_HEADER, stream=True, verify=False)
+        total_size = int(response.headers.get("content-length", 0))
+        
+        downloaded = 0
+        with open(path, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                # 检查是否取消
+                if is_cancelled_fn and is_cancelled_fn():
+                    f.close()
+                    os.remove(path)
+                    return ""
+                
+                if chunk:
+                    f.write(chunk)
+                    downloaded += len(chunk)
+                    
+                    # 回调进度
+                    if progress_callback and total_size > 0:
+                        progress = int(downloaded / total_size * 100)
+                        progress_callback(progress)
+        
+        logger.info(f"下载完成: {path}")
+        return path
+        
+    except Exception as e:
+        logger.error(f"下载失败: {e}")
+        if os.path.exists(path):
+            os.remove(path)
+        return ""
+
+
+def get_filename_from_url(url: str) -> str:
+    """从URL获取文件名"""
+    return os.path.basename(urlparse(url).path)
+
 
 def getWebFileType(url: str, default="", has_dot: bool = True):
     """

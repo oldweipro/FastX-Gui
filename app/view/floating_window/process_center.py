@@ -1,129 +1,102 @@
+"""
+ProgressCenter - 任务中心
+简洁的任务管理组件，支持普通任务和下载任务
+"""
+
 import time
 from concurrent.futures import ThreadPoolExecutor
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout
-from qfluentwidgets import FlyoutViewBase, StrongBodyLabel, BodyLabel, ToolButton, FluentIcon as FIF, CardWidget, \
-    CaptionLabel, FluentIconBase, InfoBadge
+from qfluentwidgets import (
+    FlyoutViewBase, StrongBodyLabel, BodyLabel, ToolButton, FluentIcon as FIF, 
+    CardWidget, CaptionLabel, InfoBadge
+)
 
-from app.common.utils import getRepeatFileName, startFile, showFile, threadPoolDecorator, REQUEST_HEADER
-from app.common.web import downloadManager
+from app.common.web import download_file
+from app.common.utils import startFile as start_file, showFile as show_file
+from app.common.icon import UnicodeIcon
+from app.components.common_widgets import (
+    BetterScrollArea, CardGroup, CustomProgressBar, WebImage,
+    NewInfoBadgePosition, NewFlyoutAnimationType
+)
 
-import app.zbWidgetLib as zbw
-from app.zbWidgetLib import ZBF
+THREAD_POOL = ThreadPoolExecutor(max_workers=4)
 
-THREAD_POOL = ThreadPoolExecutor()  # 程序公用线程池
 
 class TaskCard(CardWidget):
+    """任务卡片 - 支持进度显示和控制"""
+    
     startSignal = Signal()
     pauseSignal = Signal()
     resumeSignal = Signal()
     finishSignal = Signal(bool)
     cancelSignal = Signal()
-    setValueSignal = Signal(int)
-    setIndeterminateSignal = Signal(bool)
-    setTitleSignal = Signal(str)
-    setTextSignal = Signal(str)
 
     def __init__(
         self,
         parent=None,
         progress_center=None,
-        card_group: zbw.CardGroup = None,
+        card_group: CardGroup = None,
         indeterminate: bool = True,
-        has_image: bool = True,
         can_pause: bool = True,
-        can_stop: bool = False,
     ):
-        """
-        普通信息卡片（搜索列表展示）
-        :param parent: 父组件
-        :param progress_center: 所属 ProgressCenter
-        :param card_group: 所属 CardGroup
-        :param indeterminate: 如果为 True，初始使用 IndeterminateProgressBar（若可用）
-        :param has_image: 是否显示左侧图片
-        :param can_pause: 是否可以暂停
-        :param can_stop: 是否可以停止
-        """
         super().__init__(parent)
-
-        self.stat = "init"  # init, running, paused, stopped, finished, error
-
+        
+        self.stat = "init"  # init, running, paused, finished, cancelled
         self.wid = str(self)
-        self.indeterminate = bool(indeterminate)
-        self.has_image = bool(has_image)
+        self.indeterminate = indeterminate
         self.cardGroup = card_group
         self.progressCenter = progress_center
         self.can_pause = can_pause
-        self.can_stop = can_stop
-
+        
         self.setFixedWidth(372)
-
-        if self.has_image:
-            self.image = zbw.WebImage(self)
-            self.image.setFixedSize(20, 20)
-
+        self.setFixedHeight(56)
+        
+        # UI
         self.titleLabel = BodyLabel(self)
         self.titleLabel.setSelectable()
-
+        
         self.contentLabel = CaptionLabel(self)
         self.contentLabel.setTextColor("#606060", "#d2d2d2")
         self.contentLabel.setAlignment(Qt.AlignLeft)
-        self.contentLabel.setSelectable()
-
+        
         self.startButton = ToolButton(FIF.PLAY, self)
         self.pauseButton = ToolButton(FIF.PAUSE, self)
         self.resumeButton = ToolButton(FIF.PAUSE_BOLD, self)
         self.stopButton = ToolButton(FIF.CLOSE, self)
-
+        
         self.startButton.clicked.connect(self.start)
-        if self.can_pause:
-            self.pauseButton.clicked.connect(self.pause)
-            self.resumeButton.clicked.connect(self.resume)
+        self.pauseButton.clicked.connect(self.pause)
+        self.resumeButton.clicked.connect(self.resume)
         self.stopButton.clicked.connect(self.stop)
-
+        
         self.pauseButton.hide()
         self.resumeButton.hide()
         self.stopButton.hide()
-
-        self.progressBar = zbw.CustomProgressBar(
-            self, useAni=False, indeterminate=self.indeterminate
-        )
-
+        
+        self.progressBar = CustomProgressBar(self, useAni=False, indeterminate=indeterminate)
         self.progressLabel = BodyLabel("0%", self)
         self.progressLabel.setTextColor("#606060", "#d2d2d2")
         self.progressLabel.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        self.progressLabel.setHidden(self.indeterminate)
-
-        self.leftLayout = QVBoxLayout()
-        self.leftLayout.setContentsMargins(0, 0, 0, 0)
-        self.leftLayout.setSpacing(0)
-        self.leftLayout.addWidget(self.titleLabel, 0, Qt.AlignVCenter)
-
-        self.centerLayout = QVBoxLayout()
-        self.centerLayout.setContentsMargins(0, 0, 0, 0)
-        self.centerLayout.setSpacing(6)
-        self.centerLayout.addWidget(self.contentLabel)
-
-        self.progressLayout = QHBoxLayout()
-        self.progressLayout.setContentsMargins(0, 0, 0, 0)
-        self.progressLayout.setSpacing(8)
-        self.progressLayout.addWidget(self.progressBar)
-        self.progressLayout.addWidget(self.progressLabel, 0)
-        self.progressLayout.setAlignment(Qt.AlignVCenter)
-
-        self.centerLayout.addLayout(self.progressLayout)
-
+        self.progressLabel.setHidden(indeterminate)
+        
+        # Layout
+        centerLayout = QVBoxLayout()
+        centerLayout.setSpacing(6)
+        centerLayout.addWidget(self.contentLabel)
+        
+        progressLayout = QHBoxLayout()
+        progressLayout.setSpacing(8)
+        progressLayout.addWidget(self.progressBar)
+        progressLayout.addWidget(self.progressLabel, 0)
+        centerLayout.addLayout(progressLayout)
+        
         self.hBoxLayout = QHBoxLayout(self)
         self.hBoxLayout.setContentsMargins(16, 11, 11, 11)
         self.hBoxLayout.setSpacing(6)
-
-        if self.has_image:
-            self.hBoxLayout.addWidget(self.image)
-
-        self.hBoxLayout.addLayout(self.leftLayout)
-        self.hBoxLayout.addLayout(self.centerLayout, 1)
-
+        self.hBoxLayout.addWidget(self.titleLabel, 0, Qt.AlignVCenter)
+        self.hBoxLayout.addLayout(centerLayout, 1)
         self.hBoxLayout.addStretch(0)
         self.hBoxLayout.addWidget(self.startButton, 0, Qt.AlignRight)
         self.hBoxLayout.addWidget(self.pauseButton, 0, Qt.AlignRight)
@@ -131,411 +104,269 @@ class TaskCard(CardWidget):
         self.hBoxLayout.addWidget(self.stopButton, 0, Qt.AlignRight)
         self.hBoxLayout.addSpacing(8)
 
-        self.setValueSignal.connect(self._setValue)
-        self.setIndeterminateSignal.connect(self._setIndeterminate)
-
-        self.setTitleSignal.connect(self.setTitle)
-        self.setTextSignal.connect(self._setText)
-
-        self.setFixedHeight(56)
-
     def start(self):
         self.stat = "running"
         self.startButton.hide()
         if self.can_pause:
             self.pauseButton.show()
-            self.resumeButton.hide()
-        if self.can_stop:
-            self.stopButton.show()
+        self.stopButton.show()
         self.startSignal.emit()
 
     def pause(self):
         self.stat = "paused"
-        self.startButton.hide()
-        if self.can_pause:
-            self.pauseButton.hide()
-            self.resumeButton.show()
-            if self.can_stop:
-                self.stopButton.show()
+        self.pauseButton.hide()
+        self.resumeButton.show()
         self.pauseSignal.emit()
 
     def resume(self):
         self.stat = "running"
-        self.startButton.hide()
-        if self.can_pause:
-            self.resumeButton.hide()
-            self.pauseButton.show()
-        if self.can_stop:
-            self.stopButton.show()
+        self.resumeButton.hide()
+        self.pauseButton.show()
         self.resumeSignal.emit()
 
     def finish(self, success: bool = True):
         self.stat = "finished"
         self.startButton.hide()
-        if self.can_pause:
-            self.resumeButton.hide()
-            self.pauseButton.hide()
+        self.pauseButton.hide()
+        self.resumeButton.hide()
         self.stopButton.show()
         if success:
             self.setValue(100)
-        else:
-            self.setValue(0)
-        if self.indeterminate:
-            self.setIndeterminate(False)
-            self.progressLabel.hide()
         self.finishSignal.emit(success)
 
     def cancel(self):
         self.stat = "cancelled"
         self.startButton.hide()
-        if self.can_pause:
-            self.resumeButton.hide()
-            self.pauseButton.hide()
+        self.pauseButton.hide()
+        self.resumeButton.hide()
         self.stopButton.show()
         self.setValue(0)
-        if self.indeterminate:
-            self.setIndeterminate(False)
-            self.progressLabel.hide()
         self.cancelSignal.emit()
 
     def stop(self):
         if self.stat in ["finished", "cancelled"]:
             self.cardGroup.removeCard(self.wid)
-            self.cardGroup.update()
             self.progressCenter.count()
         else:
             self.cancel()
 
     def setTitle(self, text: str):
-        """
-        设置标题
-        :param text: 文本
-        """
         self.titleLabel.setText(text)
 
-    def setImg(self, img: str | FluentIconBase, url: str = None):
-        """
-        设置图片
-        :param path: 路径
-        :param url: 链接
-        """
-        if self.has_image:
-            self.image.setImg(img, url, THREAD_POOL)
-
-    def setIcon(self, img: str | FluentIconBase, url: str = None):
-        """
-        设置图片
-        :param path: 路径
-        :param url: 链接
-        """
-        self.setImg(img, url)
-
-    def _setText(self, text: str):
-        """
-        设置文本
-        :param text: 文本
-        """
-        self.contentLabel.setText(text)
-        self.contentLabel.adjustSize()
-
-    def setText(self, text: str):
-        self.setTextSignal.emit(text)
-
     def setContent(self, text: str):
-        """
-        设置文本
-        :param text: 文本
-        """
-        self.setText(text)
+        self.contentLabel.setText(text)
 
-    def setDescription(self, text: str):
-        """
-        设置文本
-        :param text: 文本
-        """
-        self.setText(text)
-
-    def _setValue(self, val: int):
-        """
-        更新进度条百分比（仅在确定模式下显示）
-        :param val: 0-100
-        """
+    def setValue(self, val: int):
         self.progressBar.setValue(int(val))
         self.progressLabel.setText(f"{int(val)}%")
 
-    def setValue(self, val: int):
-        self.setValueSignal.emit(int(val))
-
-    def _setIndeterminate(self, flag: bool):
-        """
-        设置随机进度条
-        :param flag: 是否
-        :return:
-        """
-        if self.indeterminate == flag:
-            return
-
+    def setIndeterminate(self, flag: bool):
         self.indeterminate = flag
         self.progressBar.setIndeterminate(flag)
         self.progressLabel.setHidden(flag)
 
-    def setIndeterminate(self, flag: bool):
-        self.setIndeterminateSignal.emit(flag)
 
 class DownloadTaskCard(TaskCard):
+    """下载任务卡片"""
     downloadFinishedSignal = Signal(bool, str)
 
     def __init__(
         self,
         parent=None,
         progress_center=None,
-        card_group: zbw.CardGroup = None,
+        card_group: CardGroup = None,
         url: str = None,
         path: str = None,
-        exist: bool = False,
-        force: bool = False,
     ):
-        super().__init__(parent, progress_center, card_group, False, True, True, True)
+        super().__init__(parent, progress_center, card_group, False, True)
         self.url = url
         self.path = path
-        self.exist = exist
-        self.force = force
-        self.download = None
-        if self.force:
-            self.path = getRepeatFileName(self.path)
-
-        self.setImg(FIF.DOWNLOAD)
+        self._cancelled = False
+        self._paused = False
+        
         self.setTitle("下载")
         self.setContent(f"下载中...")
-
         self.setToolTip(f"链接：{self.url}\n保存至：{self.path}")
-
+        
         self.openFileButton = ToolButton(FIF.PLAY, self)
         self.openFileButton.setToolTip("打开文件")
         self.openFileButton.hide()
         self.hBoxLayout.insertWidget(5, self.openFileButton, Qt.AlignRight)
-
+        
         self.showFileButton = ToolButton(FIF.FOLDER, self)
         self.showFileButton.setToolTip("打开文件所在位置")
         self.showFileButton.hide()
         self.hBoxLayout.insertWidget(6, self.showFileButton, Qt.AlignRight)
-
-        self.startSignal.connect(self.startDownload)
-        self.pauseSignal.connect(self.pauseDownload)
-        self.resumeSignal.connect(self.resumeDownload)
-        self.cancelSignal.connect(self.cancelDownload)
-
+        
+        self.startSignal.connect(self._start_download)
+        self.pauseSignal.connect(self._pause_download)
+        self.resumeSignal.connect(self._resume_download)
+        self.cancelSignal.connect(self._cancel_download)
+        self.downloadFinishedSignal.connect(self._on_download_finished)
+        
         self.start()
 
-        self.downloadFinishedSignal.connect(self.downloadFinished)
+    def _start_download(self):
+        THREAD_POOL.submit(self._download_worker)
 
-    @threadPoolDecorator(THREAD_POOL)
-    def startDownload(self):
-        self.download = downloadManager.download(
-            self.url, self.path, self.exist, self.force, REQUEST_HEADER
-        )
-        while True:
-            if self.download.isFinished():
-                match self.download.stat():
-                    case "cancelled":
-                        self.setText("下载取消！")
-                        self.finish(False)
-                        self.downloadFinishedSignal.emit(False, "")
-                        break
-                    case "failed":
-                        self.setText("下载失败！")
-                        self.finish(False)
-                        self.downloadFinishedSignal.emit(False, "")
-                        break
-                    case "success":
-                        self.setText("下载完成！")
-                        self.finish(True)
-                        self.downloadFinishedSignal.emit(
-                            True, self.download.outputPath()
-                        )
-                        break
-            else:
-                self.setValue(int(self.download.progress()))
-            time.sleep(0.2)
+    def _download_worker(self):
+        result = download_file(self.url, self.path, self._progress_callback, self._is_cancelled)
+        if result:
+            self.setContent("下载完成！")
+            self.finish(True)
+            self.downloadFinishedSignal.emit(True, result)
+        else:
+            self.setContent("下载失败！")
+            self.finish(False)
+            self.downloadFinishedSignal.emit(False, "")
 
-    def pauseDownload(self):
-        if self.download:
-            self.download.pause()
+    def _progress_callback(self, progress: int):
+        self.setValue(progress)
 
-    def resumeDownload(self):
-        if self.download:
-            self.download.resume()
+    def _is_cancelled(self) -> bool:
+        while self._paused:
+            time.sleep(0.1)
+        return self._cancelled
 
-    def cancelDownload(self):
-        if self.download:
-            self.download.cancel()
+    def _pause_download(self):
+        self._paused = True
 
-    def downloadFinished(self, stat: bool, path: str):
-        if stat:
-            self.openFileButton.clicked.connect(lambda: startFile(path))
+    def _resume_download(self):
+        self._paused = False
+
+    def _cancel_download(self):
+        self._cancelled = True
+
+    def _on_download_finished(self, success: bool, path: str):
+        if success and path:
+            self.openFileButton.clicked.connect(lambda: start_file(path))
             self.openFileButton.show()
-            self.showFileButton.clicked.connect(lambda: showFile(path))
+            self.showFileButton.clicked.connect(lambda: show_file(path))
             self.showFileButton.show()
 
 
 class ProgressCenter(FlyoutViewBase):
+    """任务中心 - 管理所有任务卡片"""
+    
     def __init__(self, window=None):
         super().__init__()
         self.window = window
-
+        
         self.vBoxLayout = QVBoxLayout(self)
         self.vBoxLayout.setAlignment(Qt.AlignTop)
         self.vBoxLayout.setSpacing(8)
         self.vBoxLayout.setContentsMargins(14, 12, 14, 8)
-
-        self.titleLayout = QHBoxLayout(self)
-
+        
+        # Title
+        titleLayout = QHBoxLayout()
         self.titleLabel = StrongBodyLabel("任务中心", self)
-
         self.emptyLabel = BodyLabel("当前无任务", self)
         self.emptyLabel.setTextColor("#909090", "#707070")
         self.emptyLabel.setAlignment(Qt.AlignCenter)
-
+        
         self.clearButton = ToolButton(FIF.BROOM, self)
-        self.clearButton.setToolTip("清空已完成的任务")
+        self.clearButton.setToolTip("清空已完成任务")
         self.clearButton.setFixedSize(28, 28)
         self.clearButton.clicked.connect(self.clear)
-
-        self.titleLayout.addWidget(self.titleLabel, 0)
-        self.titleLayout.addWidget(self.clearButton, 0)
-
-        self.scrollArea = zbw.BetterScrollArea(self)
+        
+        titleLayout.addWidget(self.titleLabel, 0)
+        titleLayout.addWidget(self.clearButton, 0)
+        
+        # Scroll area
+        self.scrollArea = BetterScrollArea(self)
         self.scrollArea.vBoxLayout.setContentsMargins(0, 0, 0, 0)
         self.scrollArea.vBoxLayout.setSpacing(0)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.hide()
-
-        self.cardGroup = zbw.CardGroup(self, show_title=False)
+        
+        self.cardGroup = CardGroup(self, show_title=False)
         self.cardGroup.vBoxLayout.setContentsMargins(0, 0, 0, 0)
-
         self.scrollArea.vBoxLayout.addWidget(self.cardGroup, 1)
-
-        self.vBoxLayout.addLayout(self.titleLayout)
+        
+        self.vBoxLayout.addLayout(titleLayout)
         self.vBoxLayout.addWidget(self.scrollArea, 1)
         self.vBoxLayout.addWidget(self.emptyLabel, 1)
-
+        
         self.setMinimumSize(400, 100)
         self.setMaximumSize(400, 500)
-
+        
         self.infoBadge = None
 
-        self._adjustSize()
-
-    def _adjustSize(self):
-        content_height = self.cardGroup.height()
-        self.scrollArea.setMaximumHeight(min(content_height, 500))
-        if self.window.progressCenterFlyout:
-            self.window.progressCenterFlyout.setFixedHeight(
-                min(max(content_height + 60, 100), 500)
-            )
-        self.setFixedHeight(min(max(content_height + 60, 100), 500))
-
     def clear(self):
+        """清空已完成任务"""
         import copy
-
         for wid, widget in copy.copy(self.cardGroup._cardMap).items():
             if widget.stat in ["finished", "cancelled"]:
                 self.cardGroup.removeCard(wid)
-        self.cardGroup.adjustSize()
         self.count()
 
-    def addTask(
-        self,
-        show_center: bool = False,
-        use_indeterminate: bool = True,
-        has_image: bool = True,
-        can_pause: bool = True,
-        can_stop: bool = True,
-    ):
+    def add_task(self, indeterminate: bool = True, can_pause: bool = True) -> TaskCard:
         """
-        新增任务
-        :param show_center: 是否自动展示任务中心
-        :param use_indeterminate: 是否使用随机进度条
-        :param has_image: 是否有图片
-        :param can_pause: 是否可以暂停
-        :param can_stop: 是否可以停止
-        :return:
+        添加普通任务
+        
+        Args:
+            indeterminate: 是否使用不确定进度条
+            can_pause: 是否可以暂停
+            
+        Returns:
+            TaskCard: 任务卡片实例
         """
         card = TaskCard(
             self.cardGroup,
             self,
             self.cardGroup,
-            use_indeterminate,
-            has_image,
+            indeterminate,
             can_pause,
-            can_stop,
         )
         self.cardGroup.addCard(card, card.wid)
-        self.cardGroup.adjustSize()
         self.count()
-        if show_center:
-            if (
-                not self.isVisible()
-                and self.window.isVisible()
-                and not self.window.isMinimized()
-            ):
-                self.window.showProgressCenter()
         return card
 
-    def downloadTask(
-        self,
-        url: str,
-        path: str,
-        exist: bool = False,
-        force: bool = False,
-        show_center: bool = True,
-    ):
+    def add_download_task(self, url: str, path: str) -> DownloadTaskCard:
         """
-        新增下载任务
-        :param url: 链接
-        :param path: 路径
-        :param exist: 存在时是否下载
-        :param force: 是否强制下载
-        :param show_center: 是否自动展示任务中心
-        :return:
+        添加下载任务
+        
+        Args:
+            url: 下载链接
+            path: 保存路径
+            
+        Returns:
+            DownloadTaskCard: 下载任务卡片实例
         """
-        card = DownloadTaskCard(
-            self.cardGroup, self, self.cardGroup, url, path, exist, force
-        )
+        card = DownloadTaskCard(self.cardGroup, self, self.cardGroup, url, path)
         self.cardGroup.addCard(card, card.wid)
-        self.cardGroup.adjustSize()
         self.count()
-        if show_center:
-            if (
-                not self.isVisible()
-                and self.window.isVisible()
-                and not self.window.isMinimized()
-            ):
-                self.window.showProgressCenter()
         return card
 
     def count(self):
+        """更新任务计数和UI状态"""
         count = self.cardGroup.count()
+        
         if not self.infoBadge:
             self.infoBadge = InfoBadge.attension(
                 count,
                 self.window.titleBar,
                 self.window.progressCenterButton,
-                position=zbw.NewInfoBadgePosition.CENTER,
+                position=NewInfoBadgePosition.CENTER,
             )
         self.infoBadge.setText(str(count))
         self.infoBadge.setVisible(bool(count))
-        self.infoBadge.adjustSize()
-        self.infoBadge.move(self.infoBadge.manager.position())
-
+        
         self.emptyLabel.setHidden(bool(count))
         self.scrollArea.setVisible(bool(count))
+        
         if count:
             self.window.progressCenterButton.setIcon(None)
         else:
-            self.window.progressCenterButton.setIcon(ZBF.apps_list)
-
+            self.window.progressCenterButton.setIcon(UnicodeIcon.get_icon_by_name('ic_fluent_apps_list_32_regular'))
+        
         self.cardGroup.adjustSize()
-        self._adjustSize()
-        if self.isVisible():
-            self.window.showProgressCenter(zbw.NewFlyoutAnimationType.FADE_IN)
+        self._adjust_size()
+
+    def _adjust_size(self):
+        """调整大小"""
+        content_height = self.cardGroup.height()
+        new_height = min(max(content_height + 60, 100), 500)
+        self.setFixedHeight(new_height)
+        if self.window.progressCenterFlyout:
+            self.window.progressCenterFlyout.setFixedHeight(new_height)
