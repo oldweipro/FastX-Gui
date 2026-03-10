@@ -1,0 +1,1 @@
+"""FastFaultManager Plugin - Core Module"""

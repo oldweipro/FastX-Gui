@@ -25,7 +25,7 @@ class FastSomeIpPlugin(PluginBase):
         return True
 
     def get_main_widget(self, parent: Optional[QWidget] = None) -> QWidget:
-        from app.tools.ui.FastSomeIp_ui import FastSomeIpToolUI
+        from .ui.fast_some_ip_ui import FastSomeIpToolUI
         return FastSomeIpToolUI(parent=parent)
 
     def cleanup(self):

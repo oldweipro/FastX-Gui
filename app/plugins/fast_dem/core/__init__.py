@@ -1,0 +1,1 @@
+"""FastDem Plugin - Core Module"""

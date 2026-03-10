@@ -12,7 +12,7 @@ from qfluentwidgets import (
 
 from app.common.config import cfg
 from app.common.icon import UnicodeIcon
-from app.tools.core.rm_comments_core import RmCommentsCore
+from ..core.rm_comments_core import RmCommentsCore
 
 
 class RmCommentsUI(ExpandSettingCard):

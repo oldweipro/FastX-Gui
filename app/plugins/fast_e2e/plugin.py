@@ -26,7 +26,7 @@ class FastE2EPlugin(PluginBase):
         return True
 
     def get_main_widget(self, parent: Optional[QWidget] = None) -> QWidget:
-        from app.tools.ui.FastE2E_ui import FastE2EToolUI
+        from .ui.fast_e2e_ui import FastE2EToolUI
         return FastE2EToolUI(parent=parent)
 
     def cleanup(self):

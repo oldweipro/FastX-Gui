@@ -25,7 +25,7 @@ class ComGroupMappingPlugin(PluginBase):
         return True
 
     def get_main_widget(self, parent: Optional[QWidget] = None) -> QWidget:
-        from app.tools.ui.ComGroupMapping_ui import ComGroupMappingToolUI
+        from .ui.com_group_mapping_ui import ComGroupMappingToolUI
         return ComGroupMappingToolUI(parent=parent)
 
     def cleanup(self):

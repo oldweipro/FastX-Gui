@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from qfluentwidgets import FluentIcon as FIF
+from qfluentwidgets import FluentIcon as FIF, SettingCard, ExpandSettingCard
 from qfluentwidgets import (
     FluentIconBase,
     ScrollArea,
@@ -22,14 +22,6 @@ from app.common.config import cfg
 from app.common.icon import UnicodeIcon
 from app.common.style_sheet import StyleSheet
 from app.components.main_layout_card import ToolBar
-from app.tools.ui.qc_composition_ui import QcCompositionUI
-from app.tools.ui.rm_comments_ui import RmCommentsUI
-from app.tools.ui.FastDem_ui import FastDemToolUI
-from app.tools.ui.FastE2E_ui import FastE2EToolUI
-from app.tools.ui.FastCCP_ui import FastCCPToolUI
-from app.tools.ui.FastFaultManager_ui import FastFaultManagerToolUI
-from app.tools.ui.ComGroupMapping_ui import ComGroupMappingToolUI
-from app.tools.ui.FastSomeIp_ui import FastSomeIpToolUI
 
 
 class ToolsInterface(ScrollArea):
@@ -109,16 +101,14 @@ class ToolsInterface(ScrollArea):
         self.main_layout.addWidget(self.headCard)
         self.main_layout.addWidget(self.pivot)
         self.main_layout.addWidget(self.stackedWidget)
-
-        # Add Remove Comments tool card
-        self.UtilitiesGroup.addSettingCard(RmCommentsUI(parent=self.view))
-        self.DiagnosticGroup.addSettingCard(FastDemToolUI(parent=self.view))
-        self.DiagnosticGroup.addSettingCard(FastFaultManagerToolUI(parent=self.view))
-        self.CommunicationGroup.addSettingCard(QcCompositionUI(parent=self.view))
-        self.CommunicationGroup.addSettingCard(FastE2EToolUI(parent=self.view))
-        self.CommunicationGroup.addSettingCard(FastCCPToolUI(parent=self.view))
-        self.CommunicationGroup.addSettingCard(ComGroupMappingToolUI(parent=self.view))
-        self.CommunicationGroup.addSettingCard(FastSomeIpToolUI(parent=self.view))
+	
+        self.templateCard = ExpandSettingCard(
+            FIF.HELP,
+            self.tr("Template"),
+            self.tr("template card content which will be displayed when the card is expanded"),
+            self.view,
+        )
+        self.UtilitiesGroup.addSettingCard(self.templateCard)
 
         # 添加标签页
         self.addSubInterface(self.DiagnosticGroup, "TabDiagnosticInterface", self.tr("Diagnostic"))

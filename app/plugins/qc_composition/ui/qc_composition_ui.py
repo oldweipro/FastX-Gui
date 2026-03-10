@@ -16,7 +16,6 @@ from qfluentwidgets import (
 
 from app.common.config import cfg
 from app.common.icon import UnicodeIcon
-from app.tools.core.rm_comments_core import RmCommentsCore
 
 
 class CoreAssignDelegate(QStyledItemDelegate):
@@ -268,7 +267,6 @@ class QcCompositionUI(ExpandSettingCard):
         if content is None:
             content = self.tr("To Modify QCraft Composition Arxml File To FT Rules For J6")
         super().__init__(icon, title, content, parent)
-        self.core = RmCommentsCore()
         self.combox = ComboBox(self)
         self.combox.addItems(["Option 1", "Option 2", "Option 3"])
         # Load saved option from config

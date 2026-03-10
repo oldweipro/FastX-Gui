@@ -26,7 +26,7 @@ class FastFaultManagerPlugin(PluginBase):
         return True
 
     def get_main_widget(self, parent: Optional[QWidget] = None) -> QWidget:
-        from app.tools.ui.FastFaultManager_ui import FastFaultManagerToolUI
+        from .ui.fast_fault_manager_ui import FastFaultManagerToolUI
         return FastFaultManagerToolUI(parent=parent)
 
     def cleanup(self):

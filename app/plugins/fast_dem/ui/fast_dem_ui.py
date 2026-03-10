@@ -16,11 +16,10 @@ from qfluentwidgets import (
 
 from app.common.config import cfg
 from app.common.icon import UnicodeIcon, Icon
-from app.tools.core.rm_comments_core import RmCommentsCore
 
 
-class FastCCPToolUI(ExpandSettingCard):
-    """FastCCP Tool UI class"""
+class FastDemToolUI(ExpandSettingCard):
+    """FastDem Tool UI class"""
 
     def __init__(
             self,
@@ -31,19 +30,18 @@ class FastCCPToolUI(ExpandSettingCard):
     ):
         # 如果 icon 为 None，可以设置一个默认图标
         if icon is None:
-            icon = Icon.CCP
+            icon = Icon.E2E
         # 如果 title 为空字符串，设置默认标题
         if not title:
-            title = self.tr("FastCCP Tool")
+            title = self.tr("FastDem Tool")
         # 如果 content 为空字符串，设置默认标题
         if content is None:
-            content = self.tr("FastCCP Tool for processing CCP files")
+            content = self.tr("FastDem Tool for processing DEM files")
         super().__init__(icon, title, content, parent)
-        self.core = RmCommentsCore()
         self.combox = ComboBox(self)
         self.combox.addItems(["Option 1", "Option 2", "Option 3"])
         # Load saved option from config
-        selected_index = cfg.get(cfg.fastCCPSelectedOption)
+        selected_index = cfg.get(cfg.fastDemSelectedOption)
         if 0 <= selected_index < self.combox.count():
             self.combox.setCurrentIndex(selected_index)
         self.card.addWidget(self.combox)
@@ -58,26 +56,26 @@ class FastCCPToolUI(ExpandSettingCard):
         """
 
         # 文件夹选择卡片
-        self.fastCCPOutputFolderCard = PushSettingCard(
+        self.fastDemOutputFolderCard = PushSettingCard(
             self.tr("Choose folder"),
             FIF.FOLDER_ADD,
-            self.tr("FastCCP Output Directory"),
-            cfg.get(cfg.fastCCPOutputFolder)
+            self.tr("FastDem Output Directory"),
+            cfg.get(cfg.fastDemOutputFolder)
         )
 
         # 文件选择卡片
-        self.fastCCPInputFileCard = PushSettingCard(
+        self.fastDemInputFileCard = PushSettingCard(
             self.tr("Choose file"),
             UnicodeIcon.get_icon_by_name('ic_fluent_document_table_truck_24_regular'),
             self.tr("Input File"),
-            cfg.get(cfg.fastCCPInputFile)
+            cfg.get(cfg.fastDemInputFile)
         )
 
         # Execute button
-        self.fastCCPExecuteCard = PrimaryPushSettingCard(
+        self.fastDemExecuteCard = PrimaryPushSettingCard(
             self.tr("Execute"),
             FIF.PLAY,
-            self.tr("Execute FastCCP Processing"),
+            self.tr("Execute FastDem Processing"),
             self.tr("Click to start processing")
         )
 
@@ -88,9 +86,9 @@ class FastCCPToolUI(ExpandSettingCard):
         """
         添加卡片到布局
         """
-        self.viewLayout.addWidget(self.fastCCPInputFileCard)
-        self.viewLayout.addWidget(self.fastCCPOutputFolderCard)
-        self.viewLayout.addWidget(self.fastCCPExecuteCard)
+        self.viewLayout.addWidget(self.fastDemInputFileCard)
+        self.viewLayout.addWidget(self.fastDemOutputFolderCard)
+        self.viewLayout.addWidget(self.fastDemExecuteCard)
 
         self._adjustViewSize()
 
@@ -99,17 +97,17 @@ class FastCCPToolUI(ExpandSettingCard):
         连接信号
         """
         # 按钮 | 选择文件夹
-        self.fastCCPOutputFolderCard.clicked.connect(
-            lambda: self.__onChooseFolderClicked(cfg.fastCCPOutputFolder, self.fastCCPOutputFolderCard)
+        self.fastDemOutputFolderCard.clicked.connect(
+            lambda: self.__onChooseFolderClicked(cfg.fastDemOutputFolder, self.fastDemOutputFolderCard)
         )
 
         # 按钮 | 选择文件
-        self.fastCCPInputFileCard.clicked.connect(
-            lambda: self.__onChooseFileClicked(cfg.fastCCPInputFile, self.fastCCPInputFileCard)
+        self.fastDemInputFileCard.clicked.connect(
+            lambda: self.__onChooseFileClicked(cfg.fastDemInputFile, self.fastDemInputFileCard)
         )
 
         # Execute button connection
-        self.fastCCPExecuteCard.clicked.connect(self.__onExecuteFastCCPClicked)
+        self.fastDemExecuteCard.clicked.connect(self.__onExecuteFastDemClicked)
 
         # ComboBox signal for controlling cards
         self.combox.currentIndexChanged.connect(self.__onComboBoxChanged)
@@ -157,9 +155,9 @@ class FastCCPToolUI(ExpandSettingCard):
             cfg.set(config_item, value)
             card.setContent(value)
 
-    def __onExecuteFastCCPClicked(self):
+    def __onExecuteFastDemClicked(self):
         """
-        执行FastCCP处理
+        执行FastDem处理
         """
         try:
             # 显示结果
@@ -176,31 +174,31 @@ class FastCCPToolUI(ExpandSettingCard):
             index: 选中项的索引
         """
         # Save selected option to config
-        cfg.set(cfg.fastCCPSelectedOption, index)
+        cfg.set(cfg.fastDemSelectedOption, index)
 
         if index == 0:  # Option 1
             # 显示所有卡片并启用
-            self.fastCCPOutputFolderCard.setVisible(True)
-            self.fastCCPInputFileCard.setVisible(True)
-            self.fastCCPExecuteCard.setVisible(True)
-            self.fastCCPOutputFolderCard.setEnabled(True)
-            self.fastCCPInputFileCard.setEnabled(True)
-            self.fastCCPExecuteCard.setEnabled(True)
+            self.fastDemOutputFolderCard.setVisible(True)
+            self.fastDemInputFileCard.setVisible(True)
+            self.fastDemExecuteCard.setVisible(True)
+            self.fastDemOutputFolderCard.setEnabled(True)
+            self.fastDemInputFileCard.setEnabled(True)
+            self.fastDemExecuteCard.setEnabled(True)
         elif index == 1:  # Option 2
             # 只显示输入文件夹卡片，禁用执行按钮
-            self.fastCCPOutputFolderCard.setVisible(True)
-            self.fastCCPInputFileCard.setVisible(True)
-            self.fastCCPExecuteCard.setVisible(False)
-            self.fastCCPOutputFolderCard.setEnabled(True)
-            self.fastCCPInputFileCard.setEnabled(True)
+            self.fastDemOutputFolderCard.setVisible(True)
+            self.fastDemInputFileCard.setVisible(True)
+            self.fastDemExecuteCard.setVisible(False)
+            self.fastDemOutputFolderCard.setEnabled(True)
+            self.fastDemInputFileCard.setEnabled(True)
         elif index == 2:  # Option 3
             # 显示所有卡片但禁用
-            self.fastCCPOutputFolderCard.setVisible(True)
-            self.fastCCPInputFileCard.setVisible(True)
-            self.fastCCPExecuteCard.setVisible(True)
-            self.fastCCPOutputFolderCard.setEnabled(False)
-            self.fastCCPInputFileCard.setEnabled(False)
-            self.fastCCPExecuteCard.setEnabled(False)
+            self.fastDemOutputFolderCard.setVisible(True)
+            self.fastDemInputFileCard.setVisible(True)
+            self.fastDemExecuteCard.setVisible(True)
+            self.fastDemOutputFolderCard.setEnabled(False)
+            self.fastDemInputFileCard.setEnabled(False)
+            self.fastDemExecuteCard.setEnabled(False)
 
         # 调整布局大小
         self._adjustViewSize()

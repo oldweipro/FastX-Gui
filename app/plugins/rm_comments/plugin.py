@@ -26,7 +26,7 @@ class RmCommentsPlugin(PluginBase):
         return True
 
     def get_main_widget(self, parent: Optional[QWidget] = None) -> QWidget:
-        from app.tools.ui.rm_comments_ui import RmCommentsUI
+        from .ui.rm_comments_ui import RmCommentsUI
         return RmCommentsUI(parent=parent)
 
     def cleanup(self):

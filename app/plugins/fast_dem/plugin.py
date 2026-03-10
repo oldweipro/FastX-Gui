@@ -26,7 +26,7 @@ class FastDemPlugin(PluginBase):
         return True
 
     def get_main_widget(self, parent: Optional[QWidget] = None) -> QWidget:
-        from app.tools.ui.FastDem_ui import FastDemToolUI
+        from .ui.fast_dem_ui import FastDemToolUI
         w = FastDemToolUI(parent=parent)
         return w
 

@@ -1,0 +1,1 @@
+"""FastSomeIp Plugin - Core Module"""

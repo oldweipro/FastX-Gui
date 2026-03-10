@@ -8,7 +8,8 @@ from qfluentwidgets import (
     PrimaryPushSettingCard,
     PushSettingCard,
     SwitchSettingCard, ScrollArea, FluentIconBase, ComboBox, TableWidget, IconWidget, FluentIcon, SearchLineEdit,
-    StrongBodyLabel, Dialog, LineEdit, PrimaryPushButton, PushButton, MessageBoxBase, BodyLabel, SpinBox, SubtitleLabel
+    StrongBodyLabel, Dialog, LineEdit, PrimaryPushButton, PushButton, MessageBoxBase, BodyLabel, SpinBox, SubtitleLabel,
+    ComboBoxSettingCard
 )
 from qfluentwidgets import (
     FluentIcon as FIF,
@@ -16,11 +17,11 @@ from qfluentwidgets import (
 
 from app.common.config import cfg
 from app.common.icon import UnicodeIcon, Icon
-from app.tools.core.rm_comments_core import RmCommentsCore
+from app.common.utils import downloadTemplate
 
 
-class FastDemToolUI(ExpandSettingCard):
-    """FastDem Tool UI class"""
+class FastE2EToolUI(ExpandSettingCard):
+    """FastE2E Tool UI class"""
 
     def __init__(
             self,
@@ -34,16 +35,15 @@ class FastDemToolUI(ExpandSettingCard):
             icon = Icon.E2E
         # 如果 title 为空字符串，设置默认标题
         if not title:
-            title = self.tr("FastDem Tool")
+            title = self.tr("FastE2E Tool")
         # 如果 content 为空字符串，设置默认标题
         if content is None:
-            content = self.tr("FastDem Tool for processing DEM files")
+            content = self.tr("FastE2E Tool for processing E2E files")
         super().__init__(icon, title, content, parent)
-        self.core = RmCommentsCore()
         self.combox = ComboBox(self)
         self.combox.addItems(["Option 1", "Option 2", "Option 3"])
         # Load saved option from config
-        selected_index = cfg.get(cfg.fastDemSelectedOption)
+        selected_index = cfg.get(cfg.fastE2ESelectedOption)
         if 0 <= selected_index < self.combox.count():
             self.combox.setCurrentIndex(selected_index)
         self.card.addWidget(self.combox)
@@ -58,26 +58,43 @@ class FastDemToolUI(ExpandSettingCard):
         """
 
         # 文件夹选择卡片
-        self.fastDemOutputFolderCard = PushSettingCard(
+        self.fastE2EOutputFolderCard = PushSettingCard(
             self.tr("Choose folder"),
             FIF.FOLDER_ADD,
-            self.tr("FastDem Output Directory"),
-            cfg.get(cfg.fastDemOutputFolder)
+            self.tr("FastE2E Output Directory"),
+            cfg.get(cfg.fastE2EOutputFolder)
         )
 
         # 文件选择卡片
-        self.fastDemInputFileCard = PushSettingCard(
+        self.fastE2EInputFileCard = PushSettingCard(
             self.tr("Choose file"),
             UnicodeIcon.get_icon_by_name('ic_fluent_document_table_truck_24_regular'),
             self.tr("Input File"),
-            cfg.get(cfg.fastDemInputFile)
+            cfg.get(cfg.fastE2EInputFile)
+        )
+
+        # 方向切换组合框 (Tx/Rx)
+        self.directionCard = ComboBoxSettingCard(
+            cfg.fastE2EDirection,
+            UnicodeIcon.get_icon_by_name("ic_fluent_text_paragraph_24_regular"),
+            self.tr("Direction"),
+            self.tr("Select the direction for E2E processing"),
+            texts=[self.tr("Tx"), self.tr("Rx")]
+        )
+
+        # 下载模板按钮
+        self.downloadTemplateCard = PushSettingCard(
+            self.tr("Download Template"),
+            FIF.DOWNLOAD,
+            self.tr("Download Excel Template"),
+            self.tr("Click to download the Excel template for E2E processing")
         )
 
         # Execute button
-        self.fastDemExecuteCard = PrimaryPushSettingCard(
+        self.fastE2EExecuteCard = PrimaryPushSettingCard(
             self.tr("Execute"),
             FIF.PLAY,
-            self.tr("Execute FastDem Processing"),
+            self.tr("Execute FastE2E Processing"),
             self.tr("Click to start processing")
         )
 
@@ -88,9 +105,11 @@ class FastDemToolUI(ExpandSettingCard):
         """
         添加卡片到布局
         """
-        self.viewLayout.addWidget(self.fastDemInputFileCard)
-        self.viewLayout.addWidget(self.fastDemOutputFolderCard)
-        self.viewLayout.addWidget(self.fastDemExecuteCard)
+        self.viewLayout.addWidget(self.fastE2EInputFileCard)
+        self.viewLayout.addWidget(self.fastE2EOutputFolderCard)
+        self.viewLayout.addWidget(self.directionCard)
+        self.viewLayout.addWidget(self.downloadTemplateCard)
+        self.viewLayout.addWidget(self.fastE2EExecuteCard)
 
         self._adjustViewSize()
 
@@ -99,17 +118,20 @@ class FastDemToolUI(ExpandSettingCard):
         连接信号
         """
         # 按钮 | 选择文件夹
-        self.fastDemOutputFolderCard.clicked.connect(
-            lambda: self.__onChooseFolderClicked(cfg.fastDemOutputFolder, self.fastDemOutputFolderCard)
+        self.fastE2EOutputFolderCard.clicked.connect(
+            lambda: self.__onChooseFolderClicked(cfg.fastE2EOutputFolder, self.fastE2EOutputFolderCard)
         )
 
         # 按钮 | 选择文件
-        self.fastDemInputFileCard.clicked.connect(
-            lambda: self.__onChooseFileClicked(cfg.fastDemInputFile, self.fastDemInputFileCard)
+        self.fastE2EInputFileCard.clicked.connect(
+            lambda: self.__onChooseFileClicked(cfg.fastE2EInputFile, self.fastE2EInputFileCard)
         )
 
         # Execute button connection
-        self.fastDemExecuteCard.clicked.connect(self.__onExecuteFastDemClicked)
+        self.fastE2EExecuteCard.clicked.connect(self.__onExecuteFastE2EClicked)
+
+        # 下载模板按钮连接
+        self.downloadTemplateCard.clicked.connect(self.__onDownloadTemplateClicked)
 
         # ComboBox signal for controlling cards
         self.combox.currentIndexChanged.connect(self.__onComboBoxChanged)
@@ -157,9 +179,9 @@ class FastDemToolUI(ExpandSettingCard):
             cfg.set(config_item, value)
             card.setContent(value)
 
-    def __onExecuteFastDemClicked(self):
+    def __onExecuteFastE2EClicked(self):
         """
-        执行FastDem处理
+        执行FastE2E处理
         """
         try:
             # 显示结果
@@ -167,6 +189,28 @@ class FastDemToolUI(ExpandSettingCard):
             QMessageBox.information(self, self.tr("Success"), message)
         except Exception as e:
             QMessageBox.critical(self, self.tr("Error"), self.tr(f"Processing failed: {str(e)}"))
+
+    def __onDownloadTemplateClicked(self):
+        """
+        下载模板文件
+        """
+        try:
+            from PySide6.QtWidgets import QMessageBox
+            
+            # 下载模板
+            template_name = "E2E_Template.xlsx"
+            save_path = downloadTemplate(template_name)
+            
+            if save_path:
+                # 显示成功消息
+                message = self.tr(f"Template downloaded successfully!\nSaved to: {save_path}")
+                QMessageBox.information(self, self.tr("Success"), message)
+            else:
+                # 显示取消或失败消息
+                message = self.tr("Template download cancelled or failed.")
+                QMessageBox.warning(self, self.tr("Warning"), message)
+        except Exception as e:
+            QMessageBox.critical(self, self.tr("Error"), self.tr(f"Failed to download template: {str(e)}"))
 
     def __onComboBoxChanged(self, index):
         """
@@ -176,31 +220,37 @@ class FastDemToolUI(ExpandSettingCard):
             index: 选中项的索引
         """
         # Save selected option to config
-        cfg.set(cfg.fastDemSelectedOption, index)
+        cfg.set(cfg.fastE2ESelectedOption, index)
 
         if index == 0:  # Option 1
             # 显示所有卡片并启用
-            self.fastDemOutputFolderCard.setVisible(True)
-            self.fastDemInputFileCard.setVisible(True)
-            self.fastDemExecuteCard.setVisible(True)
-            self.fastDemOutputFolderCard.setEnabled(True)
-            self.fastDemInputFileCard.setEnabled(True)
-            self.fastDemExecuteCard.setEnabled(True)
+            self.fastE2EOutputFolderCard.setVisible(True)
+            self.fastE2EInputFileCard.setVisible(True)
+            self.directionCard.setVisible(True)
+            self.fastE2EExecuteCard.setVisible(True)
+            self.fastE2EOutputFolderCard.setEnabled(True)
+            self.fastE2EInputFileCard.setEnabled(True)
+            self.directionCard.setEnabled(True)
+            self.fastE2EExecuteCard.setEnabled(True)
         elif index == 1:  # Option 2
             # 只显示输入文件夹卡片，禁用执行按钮
-            self.fastDemOutputFolderCard.setVisible(True)
-            self.fastDemInputFileCard.setVisible(True)
-            self.fastDemExecuteCard.setVisible(False)
-            self.fastDemOutputFolderCard.setEnabled(True)
-            self.fastDemInputFileCard.setEnabled(True)
+            self.fastE2EOutputFolderCard.setVisible(True)
+            self.fastE2EInputFileCard.setVisible(True)
+            self.directionCard.setVisible(True)
+            self.fastE2EExecuteCard.setVisible(False)
+            self.fastE2EOutputFolderCard.setEnabled(True)
+            self.fastE2EInputFileCard.setEnabled(True)
+            self.directionCard.setEnabled(True)
         elif index == 2:  # Option 3
             # 显示所有卡片但禁用
-            self.fastDemOutputFolderCard.setVisible(True)
-            self.fastDemInputFileCard.setVisible(True)
-            self.fastDemExecuteCard.setVisible(True)
-            self.fastDemOutputFolderCard.setEnabled(False)
-            self.fastDemInputFileCard.setEnabled(False)
-            self.fastDemExecuteCard.setEnabled(False)
+            self.fastE2EOutputFolderCard.setVisible(True)
+            self.fastE2EInputFileCard.setVisible(True)
+            self.directionCard.setVisible(True)
+            self.fastE2EExecuteCard.setVisible(True)
+            self.fastE2EOutputFolderCard.setEnabled(False)
+            self.fastE2EInputFileCard.setEnabled(False)
+            self.directionCard.setEnabled(False)
+            self.fastE2EExecuteCard.setEnabled(False)
 
         # 调整布局大小
         self._adjustViewSize()

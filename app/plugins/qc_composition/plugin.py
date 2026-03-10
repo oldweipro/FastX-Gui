@@ -25,7 +25,7 @@ class QcCompositionPlugin(PluginBase):
         return True
 
     def get_main_widget(self, parent: Optional[QWidget] = None) -> QWidget:
-        from app.tools.ui.qc_composition_ui import QcCompositionUI
+        from .ui.qc_composition_ui import QcCompositionUI
         return QcCompositionUI(parent=parent)
 
     def cleanup(self):

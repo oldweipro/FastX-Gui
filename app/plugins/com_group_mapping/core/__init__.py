@@ -1,0 +1,1 @@
+"""ComGroupMapping Plugin - Core Module"""
