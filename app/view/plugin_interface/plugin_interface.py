@@ -30,6 +30,7 @@ from qfluentwidgets import (
     TabBar,
     TabCloseButtonDisplayMode,
     StrongBodyLabel,
+    SmoothScrollArea,
 )
 
 from app.common.config import cfg
@@ -171,40 +172,53 @@ class PluginInterface(ScrollArea):
         self.splitter.setChildrenCollapsible(False)
 
         # ========== 左侧面板 ==========
-        self.left_panel = QWidget()
+        self.left_panel = SmoothScrollArea()
         self.left_panel.setObjectName("left_panel")
         self.left_panel.setMinimumWidth(280)
+        self.left_panel.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.left_panel.setWidgetResizable(True)
 
-        self.left_layout = QVBoxLayout(self.left_panel)
+        self.left_container = QWidget()
+        self.left_container.setObjectName("left_panel_container")
+        self.left_layout = QVBoxLayout(self.left_container)
         self.left_layout.setContentsMargins(12, 12, 12, 12)
         self.left_layout.setSpacing(8)
+        self.left_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        self.left_title = StrongBodyLabel("插件列表", self.left_panel)
+        self.left_title = StrongBodyLabel("插件列表", self.left_container)
         self.left_title.setObjectName("left_title")
         self.left_title.setStyleSheet("font-size: 14px; font-weight: bold;")
         self.left_layout.addWidget(self.left_title)
 
-        self.left_stats = CaptionLabel("共 0 个插件", self.left_panel)
+        self.left_stats = CaptionLabel("共 0 个插件", self.left_container)
         self.left_stats.setObjectName("left_stats")
         self.left_layout.addWidget(self.left_stats)
 
         # 可拖拽排序的列表
-        self.list_widget = _DraggableListWidget(self.left_panel)
+        self.list_widget = _DraggableListWidget(self.left_container)
         self.list_widget.setSpacing(4)  # 增大卡片间距
         self.left_layout.addWidget(self.list_widget)
 
+        self.left_panel.setWidget(self.left_container)
+
         # ========== 右侧面板 ==========
-        self.right_panel = QWidget()
+        self.right_panel = SmoothScrollArea()
         self.right_panel.setObjectName("right_panel")
-        self.right_layout = QVBoxLayout(self.right_panel)
-        self.right_layout.setContentsMargins(12, 12, 16, 16)
-        self.right_layout.setSpacing(12)
+        self.right_panel.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.right_panel.setWidgetResizable(True)
+
+        self.right_container = QWidget()
+        self.right_container.setObjectName("right_panel_container")
+        self.right_layout = QVBoxLayout(self.right_container)
+        self.right_layout.setContentsMargins(12, 12, 12, 12)
+        self.right_layout.setSpacing(8)
+        self.right_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         # 工具栏
         self.toolbar_layout = QHBoxLayout()
         self.toolbar_layout.setSpacing(12)
 
-        self.search_box = SearchLineEdit(self.right_panel)
+        self.search_box = SearchLineEdit(self.right_container)
         self.search_box.setPlaceholderText("搜索插件  (Ctrl+F)")
         self.search_box.setMinimumWidth(280)
         self.search_box.setFixedHeight(34)
@@ -214,19 +228,19 @@ class PluginInterface(ScrollArea):
         self.menu_btn.clicked.connect(self._toggle_left_panel)
         self.toolbar_layout.addWidget(self.search_box)
 
-        self.category_combo = ComboBox(self.right_panel)
+        self.category_combo = ComboBox(self.right_container)
         self._refresh_category_combo()  # 动态生成分类选项
         self.category_combo.setFixedWidth(150)
         self.toolbar_layout.addWidget(self.category_combo)
 
         self.toolbar_layout.addStretch(1)
 
-        self.refresh_btn = TransparentToolButton(FIF.SYNC, self.right_panel)
+        self.refresh_btn = TransparentToolButton(FIF.SYNC, self.right_container)
         self.refresh_btn.setFixedSize(32, 32)
         self.refresh_btn.setToolTip("刷新插件列表")
         self.toolbar_layout.addWidget(self.refresh_btn)
 
-        self.install_btn = PrimaryPushButton(FIF.ADD, "安装插件", self.right_panel)
+        self.install_btn = PrimaryPushButton(FIF.ADD, "安装插件", self.right_container)
         self.toolbar_layout.addWidget(self.install_btn)
 
         self.right_layout.addLayout(self.toolbar_layout)
@@ -236,6 +250,8 @@ class PluginInterface(ScrollArea):
         self.cards_flow_layout.setSpacing(16)
         self.cards_flow_layout.setContentsMargins(0, 0, 0, 0)
         self.right_layout.addWidget(self.cards_container)
+
+        self.right_panel.setWidget(self.right_container)
 
         self.splitter.addWidget(self.left_panel)
         self.splitter.addWidget(self.right_panel)

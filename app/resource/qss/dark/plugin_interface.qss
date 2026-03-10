@@ -8,6 +8,11 @@ ScrollArea {
     background-color: transparent;
 }
 
+SmoothScrollArea {
+    background-color: transparent;
+    border: none;
+}
+
 /* 插件管理页面背景 */
 #plugin_manager_page {
     background-color: transparent;
@@ -40,7 +45,7 @@ TabBar > QToolButton:pressed {
 }
 
 /* 左侧面板 - 透明背景 */
-#left_panel {
+#left_panel_container {
     background-color: #323232;
     border: 1px solid rgba(70, 70, 75, 0.4);
     border-right: 1px solid rgba(70, 70, 75, 0.4);
@@ -145,7 +150,7 @@ ComboBox:pressed {
 }
 
 /* 右侧面板 - 透明背景 */
-#right_panel {
+#right_panel_container {
     background-color: #323232;
     border: 1px solid rgba(70, 70, 75, 0.4);
     border-right: 1px solid rgba(70, 70, 75, 0.4);
