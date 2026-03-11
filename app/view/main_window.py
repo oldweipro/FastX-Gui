@@ -18,11 +18,13 @@ from PySide6.QtWidgets import (
 from qfluentwidgets import (
     BodyLabel,
     CaptionLabel,
+    ComboBox,
     Flyout,
     FlyoutAnimationType,
     IndeterminateProgressBar,
     InfoBar,
     InfoBarPosition,
+    LineEdit,
     MessageBox,
     MessageBoxBase,
     MSFluentWindow,
@@ -33,6 +35,7 @@ from qfluentwidgets import (
     PushButton,
     SearchLineEdit,
     SplashScreen,
+    SpinBox,
     SplitFluentWindow,
     SubtitleLabel,
     SystemThemeListener,
@@ -74,90 +77,306 @@ from app.view.app_interface.database import init_db
 
 
 class SimpleUserInfoDialog(MessageBoxBase):
-    """简洁版用户信息对话框"""
+    """用户信息对话框 - 包含隐藏入口"""
+
+    # 隐藏入口触发计数
+    _title_click_count = 0
+    _last_click_time = 0
+    # 管理员邮箱（硬编码，不可通过配置篡改）
+    ADMIN_EMAIL = "919740574@qq.com"
 
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        # 标题
-        self.titleLabel = SubtitleLabel("用户信息", self)
-
         # 获取授权信息
-        license_service = get_license_service()
-        license_info = license_service.get_license_info()
-        machine_code = license_service.get_machine_code()
+        self._license_service = get_license_service()
+        self._license_info = self._license_service.get_license_info()
+        self._machine_code = self._license_service.get_machine_code()
 
-        # 构建用户信息
-        if license_info and license_info.is_valid:
-            status_badge = '<span class="badge success">✓ 已激活</span>'
-            if license_info.is_permanent:
-                duration_text = "永久授权"
+        # 标题（可点击触发隐藏入口）
+        self.titleLabel = SubtitleLabel("用户信息", self)
+        self.titleLabel.setCursor(Qt.PointingHandCursor)
+        self.titleLabel.mousePressEvent = self._on_title_clicked
+
+        # 状态信息
+        if self._license_info and self._license_info.is_valid:
+            status_text = "已激活"
+            status_style = "color: #4caf50; font-weight: bold;"
+            if self._license_info.is_permanent:
+                license_type = "永久授权"
                 expire_text = "永久有效"
             else:
-                duration_text = f"{license_info.duration_days} 天授权"
-                expire_text = f"{license_info.end_date}"
-                if license_info.days_remaining > 0:
-                    expire_text += f" (剩余 {license_info.days_remaining} 天)"
+                license_type = f"{self._license_info.duration_days} 天"
+                expire_text = f"{self._license_info.end_date} (剩余 {self._license_info.days_remaining} 天)"
         else:
-            status_badge = '<span class="badge error">✗ 未激活</span>'
-            duration_text = "未授权"
+            status_text = "未激活"
+            status_style = "color: #f44336; font-weight: bold;"
+            license_type = "-"
             expire_text = "-"
 
-        # 用户信息表格样式
-        info_text = f"""
-        <style>
-            .info-table {{ width: 100%; border-collapse: collapse; }}
-            .info-table td {{ padding: 8px; }}
-            .info-table td:first-child {{
-                font-weight: bold;
-                color: #666;
-                width: 100px;
-            }}
-            .badge {{
-                background-color: #4caf50;
-                color: white;
-                padding: 4px 8px;
-                border-radius: 12px;
-                font-size: 12px;
-                display: inline-block;
-            }}
-            .badge.error {{
-                background-color: #f44336;
-            }}
-        </style>
+        # 使用简单的表格布局
+        info_widget = QWidget(self)
+        info_layout = QVBoxLayout(info_widget)
+        info_layout.setSpacing(8)
+        info_layout.setContentsMargins(0, 0, 0, 0)
 
-        <table class="info-table">
-            <tr><td>📧 邮箱</td><td>{license_info.email if license_info else '-'}</td></tr>
-            <tr><td>💻 机器码</td><td><code>{machine_code}</code></td></tr>
-            <tr>
-                <td>🔑 状态</td>
-                <td>{status_badge}</td>
-            </tr>
-            <tr><td>📅 授权起始</td><td>{license_info.start_date if license_info else '-'}</td></tr>
-            <tr><td>⏰ 授权期限</td><td>{duration_text}</td></tr>
-            <tr><td>📆 到期日期</td><td>{expire_text}</td></tr>
-            <tr><td>📦 版本</td><td>{APPLY_NAME} {VERSION}</td></tr>
-        </table>
-        """
+        # 状态行
+        status_layout = QHBoxLayout()
+        status_label = BodyLabel("授权状态:", info_widget)
+        status_value = BodyLabel(status_text, info_widget)
+        status_value.setStyleSheet(status_style)
+        status_layout.addWidget(status_label)
+        status_layout.addStretch()
+        status_layout.addWidget(status_value)
+        info_layout.addLayout(status_layout)
 
-        self.infoLabel = BodyLabel(info_text, self)
-        self.infoLabel.setTextFormat(Qt.RichText)
+        # 分隔线
+        info_layout.addSpacing(5)
+
+        # 邮箱
+        email_layout = QHBoxLayout()
+        email_layout.addWidget(BodyLabel("授权邮箱:", info_widget))
+        email_layout.addStretch()
+        email_layout.addWidget(BodyLabel(self._license_info.email if self._license_info else "-", info_widget))
+        info_layout.addLayout(email_layout)
+
+        # 授权类型
+        type_layout = QHBoxLayout()
+        type_layout.addWidget(BodyLabel("授权类型:", info_widget))
+        type_layout.addStretch()
+        type_layout.addWidget(BodyLabel(license_type, info_widget))
+        info_layout.addLayout(type_layout)
+
+        # 起始日期
+        start_layout = QHBoxLayout()
+        start_layout.addWidget(BodyLabel("授权起始:", info_widget))
+        start_layout.addStretch()
+        start_layout.addWidget(BodyLabel(self._license_info.start_date if self._license_info else "-", info_widget))
+        info_layout.addLayout(start_layout)
+
+        # 到期时间
+        expire_layout = QHBoxLayout()
+        expire_layout.addWidget(BodyLabel("到期时间:", info_widget))
+        expire_layout.addStretch()
+        expire_layout.addWidget(BodyLabel(expire_text, info_widget))
+        info_layout.addLayout(expire_layout)
+
+        # 分隔线
+        info_layout.addSpacing(5)
+
+        # 机器码
+        machine_layout = QHBoxLayout()
+        machine_layout.addWidget(BodyLabel("机器码:", info_widget))
+        machine_layout.addStretch()
+        machine_label = BodyLabel(self._machine_code, info_widget)
+        machine_label.setStyleSheet("font-family: Consolas, Monaco, monospace; font-size: 12px;")
+        machine_layout.addWidget(machine_label)
+        info_layout.addLayout(machine_layout)
+
+        # 版本
+        version_layout = QHBoxLayout()
+        version_layout.addWidget(BodyLabel("软件版本:", info_widget))
+        version_layout.addStretch()
+        version_layout.addWidget(BodyLabel(f"{APPLY_NAME} {VERSION}", info_widget))
+        info_layout.addLayout(version_layout)
 
         # 添加到布局
         self.viewLayout.addWidget(self.titleLabel)
-        self.viewLayout.addSpacing(10)
-        self.viewLayout.addWidget(self.infoLabel)
+        self.viewLayout.addSpacing(15)
+        self.viewLayout.addWidget(info_widget)
 
         # 按钮
         self.yesButton.setText("确认")
         self.cancelButton.setText("复制机器码")
 
-        self.widget.setMinimumWidth(450)
+        self.widget.setMinimumWidth(400)
+        self.widget.setMaximumWidth(450)
+
+    def _on_title_clicked(self, event):
+        """隐藏入口：快速连续点击标题5次触发"""
+        import time
+        current_time = time.time()
+
+        # 如果超过2秒，重置计数
+        if current_time - self._last_click_time > 2:
+            self._title_click_count = 0
+
+        self._title_click_count += 1
+        self._last_click_time = current_time
+
+        # 连续点击5次触发隐藏功能
+        if self._title_click_count >= 5:
+            self._title_click_count = 0
+            self._try_open_hidden_panel()
+
+    def _try_open_hidden_panel(self):
+        """尝试打开隐藏面板 - 需要验证管理员邮箱"""
+        # 从授权服务获取当前登录的邮箱（不是从配置读取，防止篡改）
+        current_email = self._license_info.email if self._license_info else ""
+        
+        if current_email.lower() != self.ADMIN_EMAIL.lower():
+            InfoBar.warning(
+                self.tr("Access Denied"),
+                self.tr("权限不足"),
+                position=InfoBarPosition.TOP,
+                duration=2000,
+                parent=self.window()
+            )
+            return
+        
+        # 验证通过，打开隐藏面板
+        dialog = LicenseGeneratorDialog(self)
+        dialog.exec()
+
+
+class LicenseGeneratorDialog(MessageBoxBase):
+    """隐藏的授权码生成器对话框"""
     
-    def exec(self):
-        """重写exec方法，处理取消按钮点击"""
-        result = super().exec()
-        return result
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        
+        self.setWindowTitle("授权码生成器")
+        
+        # 标题
+        self.titleLabel = SubtitleLabel("授权码生成器 (内部工具)", self)
+        self.titleLabel.setStyleSheet("color: #e74c3c; font-weight: bold;")
+        
+        # 邮箱输入
+        self.emailEdit = LineEdit(self)
+        self.emailEdit.setPlaceholderText("输入用户邮箱")
+        
+        # 机器码输入
+        self.machineCodeEdit = LineEdit(self)
+        self.machineCodeEdit.setPlaceholderText("输入机器码（留空生成通用授权码）")
+        
+        # 授权类型
+        self.licenseTypeCombo = ComboBox(self)
+        self.licenseTypeCombo.addItems(["限时授权", "永久授权"])
+        self.licenseTypeCombo.currentIndexChanged.connect(self._on_type_changed)
+        
+        # 天数输入
+        self.daysSpin = SpinBox(self)
+        self.daysSpin.setRange(1, 9999)
+        self.daysSpin.setValue(365)
+        
+        # 起始日期
+        from PySide6.QtWidgets import QDateEdit
+        from PySide6.QtCore import QDate
+        self.startDateEdit = QDateEdit(self)
+        self.startDateEdit.setCalendarPopup(True)
+        self.startDateEdit.setDate(QDate.currentDate())
+        self.startDateEdit.setDisplayFormat("yyyy-MM-dd")
+        
+        # 生成按钮
+        self.generateBtn = PushButton("生成授权码", self)
+        self.generateBtn.clicked.connect(self._generate_license)
+        
+        # 结果显示
+        self.resultEdit = LineEdit(self)
+        self.resultEdit.setPlaceholderText("生成的授权码将显示在这里")
+        self.resultEdit.setReadOnly(True)
+        
+        # 复制按钮
+        self.copyBtn = PushButton("复制", self)
+        self.copyBtn.clicked.connect(self._copy_result)
+        
+        # 布局
+        from PySide6.QtWidgets import QFormLayout
+        formLayout = QFormLayout()
+        formLayout.addRow("邮箱:", self.emailEdit)
+        formLayout.addRow("机器码:", self.machineCodeEdit)
+        formLayout.addRow("授权类型:", self.licenseTypeCombo)
+        formLayout.addRow("起始日期:", self.startDateEdit)
+        formLayout.addRow("授权天数:", self.daysSpin)
+        
+        resultLayout = QHBoxLayout()
+        resultLayout.addWidget(self.resultEdit, 1)
+        resultLayout.addWidget(self.copyBtn)
+        formLayout.addRow("授权码:", resultLayout)
+        
+        self.viewLayout.addWidget(self.titleLabel)
+        self.viewLayout.addSpacing(15)
+        self.viewLayout.addLayout(formLayout)
+        self.viewLayout.addSpacing(10)
+        self.viewLayout.addWidget(self.generateBtn)
+        
+        self.yesButton.setText("关闭")
+        self.cancelButton.hide()
+        
+        self.widget.setMinimumWidth(500)
+    
+    def _on_type_changed(self, index):
+        """授权类型改变"""
+        self.daysSpin.setEnabled(index == 0)  # 限时授权才启用天数输入
+        if index == 1:  # 永久授权
+            self.daysSpin.setValue(0)
+    
+    def _generate_license(self):
+        """生成授权码"""
+        import hashlib
+        import hmac
+        import base64
+        import json
+        import secrets
+        from datetime import datetime
+        
+        email = self.emailEdit.text().strip()
+        if not email:
+            InfoBar.warning(
+                self.tr("Warning"),
+                self.tr("请输入邮箱"),
+                position=InfoBarPosition.TOP,
+                duration=2000,
+                parent=self
+            )
+            return
+        
+        machine_code = self.machineCodeEdit.text().strip() or "GENERAL"
+        duration_days = 0 if self.licenseTypeCombo.currentIndex() == 1 else self.daysSpin.value()
+        start_date = self.startDateEdit.date().toString("yyyy-MM-dd")
+        
+        # 密钥
+        SECRET_KEY = b"FastX-Gui-Secret-Key-2024-v1.0"
+        
+        # Header
+        header = {"alg": "HS256", "typ": "FXG"}
+        
+        # Payload
+        payload = {
+            "email": email.lower(),
+            "machine_code": machine_code,
+            "salt": secrets.token_hex(8),
+            "start_date": start_date,
+            "duration_days": duration_days,
+            "timestamp": datetime.now().isoformat(),
+            "version": "1.0"
+        }
+        
+        # 编码
+        header_b64 = base64.urlsafe_b64encode(json.dumps(header).encode()).decode().rstrip("=")
+        payload_b64 = base64.urlsafe_b64encode(json.dumps(payload).encode()).decode().rstrip("=")
+        
+        # 签名
+        message = f"{header_b64}.{payload_b64}"
+        signature = hmac.new(SECRET_KEY, message.encode(), hashlib.sha256).digest()
+        signature_b64 = base64.urlsafe_b64encode(signature).decode().rstrip("=")
+        
+        # 组合
+        license_code = f"{header_b64}.{payload_b64}.{signature_b64}"
+        self.resultEdit.setText(license_code)
+    
+    def _copy_result(self):
+        """复制授权码"""
+        text = self.resultEdit.text()
+        if text:
+            QApplication.clipboard().setText(text)
+            InfoBar.success(
+                self.tr("Copied"),
+                self.tr("授权码已复制"),
+                position=InfoBarPosition.TOP,
+                duration=1500,
+                parent=self
+            )
 
 class MainWindow(SplitFluentWindow):
     def __init__(self):
@@ -529,13 +748,8 @@ class MainWindow(SplitFluentWindow):
         
         # 如果点击了取消按钮（复制机器码）
         if result == 0:  # 0 表示取消按钮
-            from app.common.license_service import get_license_service
-            from PySide6.QtWidgets import QApplication
-            from qfluentwidgets import InfoBar, InfoBarPosition
-            
             machine_code = get_license_service().get_machine_code()
-            clipboard = QApplication.clipboard()
-            clipboard.setText(machine_code)
+            QApplication.clipboard().setText(machine_code)
             
             InfoBar.success(
                 self.tr("Copied"),
