@@ -71,13 +71,26 @@ class LicenseService:
     REGISTRY_VALUE_NAME = "LicenseData"
     TIME_ANCHOR_VALUE = "TimeAnchor"
     
+    # 管理员密码存储
+    ADMIN_PASSWORD_VALUE = "AdminAuth"
+    ADMIN_SESSION_VALUE = "AdminSession"
+    AUDIT_LOG_VALUE = "AuditLog"
+    
     # 本地文件存储（作为备份和交叉验证）
     LOCAL_DATA_DIR = Path.home() / ".fastxgui"
     LICENSE_FILE = LOCAL_DATA_DIR / ".license.dat"
     TIME_FILE = LOCAL_DATA_DIR / ".time_anchor.dat"
+    ADMIN_FILE = LOCAL_DATA_DIR / ".admin.dat"
+    AUDIT_FILE = LOCAL_DATA_DIR / ".audit.dat"
     
     # 时间容差（秒）- 允许的时间回拨容差
     TIME_TOLERANCE = 300  # 5分钟
+    
+    # 管理员会话有效期（秒）
+    ADMIN_SESSION_TIMEOUT = 24 * 60 * 60  # 24小时
+    
+    # PBKDF2 迭代次数
+    PBKDF2_ITERATIONS = 100000
     
     # 类级别缓存（避免重复计算）
     _machine_code_cache: Optional[str] = None
@@ -494,6 +507,228 @@ class LicenseService:
             return False
         
         return license_info.is_valid
+    
+    # ==================== 管理员密码管理 ====================
+    
+    def has_admin_password(self) -> bool:
+        """检查是否已设置管理员密码"""
+        return self._load_admin_password() is not None
+    
+    def set_admin_password(self, password: str) -> bool:
+        """
+        设置管理员密码（首次设置或修改）
+        
+        使用 PBKDF2-SHA256 哈希存储
+        """
+        try:
+            import secrets
+            # 生成随机盐
+            salt = secrets.token_hex(16)
+            # PBKDF2 哈希
+            key = hashlib.pbkdf2_hmac(
+                'sha256',
+                password.encode('utf-8'),
+                salt.encode('utf-8'),
+                self.PBKDF2_ITERATIONS
+            )
+            # 存储格式: salt:hash
+            password_hash = f"{salt}:{key.hex()}"
+            encrypted = self._encrypt_data(password_hash)
+            
+            # 写入注册表
+            try:
+                import winreg
+                with winreg.CreateKey(winreg.HKEY_CURRENT_USER, self.REGISTRY_KEY) as key:
+                    winreg.SetValueEx(key, self.ADMIN_PASSWORD_VALUE, 0, winreg.REG_SZ, encrypted)
+            except Exception as e:
+                logger.warning(f"写入注册表失败: {e}")
+            
+            # 写入文件备份
+            self.ADMIN_FILE.write_text(encrypted)
+            return True
+            
+        except Exception as e:
+            logger.error(f"设置管理员密码失败: {e}")
+            return False
+    
+    def verify_admin_password(self, password: str) -> bool:
+        """验证管理员密码"""
+        stored = self._load_admin_password()
+        if not stored:
+            return False
+        
+        try:
+            salt, stored_hash = stored.split(':')
+            # 计算输入密码的哈希
+            key = hashlib.pbkdf2_hmac(
+                'sha256',
+                password.encode('utf-8'),
+                salt.encode('utf-8'),
+                self.PBKDF2_ITERATIONS
+            )
+            # 使用常量时间比较防止时序攻击
+            return hmac.compare_digest(key.hex(), stored_hash)
+        except Exception:
+            return False
+    
+    def _load_admin_password(self) -> Optional[str]:
+        """加载管理员密码哈希"""
+        try:
+            import winreg
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, self.REGISTRY_KEY, 0,
+                               winreg.KEY_READ) as key:
+                encrypted, _ = winreg.QueryValueEx(key, self.ADMIN_PASSWORD_VALUE)
+                return self._decrypt_data(encrypted)
+        except Exception:
+            pass
+        
+        try:
+            if self.ADMIN_FILE.exists():
+                return self._decrypt_data(self.ADMIN_FILE.read_text())
+        except Exception:
+            pass
+        
+        return None
+    
+    # ==================== 管理员会话管理 ====================
+    
+    def create_admin_session(self) -> str:
+        """创建管理员会话（验证密码成功后调用）"""
+        import secrets
+        session_token = secrets.token_urlsafe(32)
+        session_data = {
+            "token": session_token,
+            "created_at": datetime.now().isoformat(),
+            "machine_code": self.get_machine_code()
+        }
+        encrypted = self._encrypt_data(json.dumps(session_data))
+        
+        # 存储会话
+        try:
+            import winreg
+            with winreg.CreateKey(winreg.HKEY_CURRENT_USER, self.REGISTRY_KEY) as key:
+                winreg.SetValueEx(key, self.ADMIN_SESSION_VALUE, 0, winreg.REG_SZ, encrypted)
+        except Exception:
+            pass
+        
+        self.ADMIN_FILE.parent.mkdir(parents=True, exist_ok=True)
+        self.ADMIN_FILE.write_text(encrypted)
+        
+        return session_token
+    
+    def validate_admin_session(self) -> bool:
+        """验证管理员会话是否有效"""
+        try:
+            session_data = self._load_admin_session()
+            if not session_data:
+                return False
+            
+            # 检查会话是否过期
+            created_at = datetime.fromisoformat(session_data["created_at"])
+            if (datetime.now() - created_at).total_seconds() > self.ADMIN_SESSION_TIMEOUT:
+                return False
+            
+            # 检查机器码是否匹配
+            if session_data.get("machine_code") != self.get_machine_code():
+                return False
+            
+            return True
+            
+        except Exception:
+            return False
+    
+    def clear_admin_session(self):
+        """清除管理员会话"""
+        try:
+            import winreg
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, self.REGISTRY_KEY, 0,
+                               winreg.KEY_ALL_ACCESS) as key:
+                winreg.DeleteValue(key, self.ADMIN_SESSION_VALUE)
+        except Exception:
+            pass
+    
+    def _load_admin_session(self) -> Optional[dict]:
+        """加载管理员会话数据"""
+        try:
+            import winreg
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, self.REGISTRY_KEY, 0,
+                               winreg.KEY_READ) as key:
+                encrypted, _ = winreg.QueryValueEx(key, self.ADMIN_SESSION_VALUE)
+                return json.loads(self._decrypt_data(encrypted))
+        except Exception:
+            pass
+        
+        return None
+    
+    # ==================== 审计日志 ====================
+    
+    def add_audit_log(self, action: str, email: str, machine_code: str, details: str = ""):
+        """
+        添加审计日志
+        
+        Args:
+            action: 操作类型 (generate_license, verify_admin, etc.)
+            email: 相关邮箱
+            machine_code: 相关机器码
+            details: 详细信息
+        """
+        try:
+            logs = self._load_audit_logs()
+            
+            log_entry = {
+                "timestamp": datetime.now().isoformat(),
+                "action": action,
+                "email": email,
+                "machine_code": machine_code,
+                "details": details,
+                "operator_machine": self.get_machine_code()
+            }
+            
+            logs.append(log_entry)
+            
+            # 只保留最近100条日志
+            if len(logs) > 100:
+                logs = logs[-100:]
+            
+            encrypted = self._encrypt_data(json.dumps(logs))
+            
+            # 写入注册表
+            try:
+                import winreg
+                with winreg.CreateKey(winreg.HKEY_CURRENT_USER, self.REGISTRY_KEY) as key:
+                    winreg.SetValueEx(key, self.AUDIT_LOG_VALUE, 0, winreg.REG_SZ, encrypted)
+            except Exception:
+                pass
+            
+            # 写入文件
+            self.AUDIT_FILE.write_text(encrypted)
+            
+        except Exception as e:
+            logger.error(f"添加审计日志失败: {e}")
+    
+    def get_audit_logs(self, limit: int = 50) -> list:
+        """获取审计日志"""
+        logs = self._load_audit_logs()
+        return logs[-limit:] if logs else []
+    
+    def _load_audit_logs(self) -> list:
+        """加载审计日志"""
+        try:
+            import winreg
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, self.REGISTRY_KEY, 0,
+                               winreg.KEY_READ) as key:
+                encrypted, _ = winreg.QueryValueEx(key, self.AUDIT_LOG_VALUE)
+                return json.loads(self._decrypt_data(encrypted))
+        except Exception:
+            pass
+        
+        try:
+            if self.AUDIT_FILE.exists():
+                return json.loads(self._decrypt_data(self.AUDIT_FILE.read_text()))
+        except Exception:
+            pass
+        
+        return []
     
     def clear_license(self):
         """清除授权（用于测试或注销）"""

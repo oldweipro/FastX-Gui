@@ -82,8 +82,6 @@ class SimpleUserInfoDialog(MessageBoxBase):
     # 隐藏入口触发计数
     _title_click_count = 0
     _last_click_time = 0
-    # 管理员邮箱（硬编码，不可通过配置篡改）
-    ADMIN_EMAIL = "919740574@qq.com"
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -210,23 +208,194 @@ class SimpleUserInfoDialog(MessageBoxBase):
             self._try_open_hidden_panel()
 
     def _try_open_hidden_panel(self):
-        """尝试打开隐藏面板 - 需要验证管理员邮箱"""
-        # 从授权服务获取当前登录的邮箱（不是从配置读取，防止篡改）
-        current_email = self._license_info.email if self._license_info else ""
-        
-        if current_email.lower() != self.ADMIN_EMAIL.lower():
-            InfoBar.warning(
-                self.tr("Access Denied"),
-                self.tr("权限不足"),
-                position=InfoBarPosition.TOP,
-                duration=2000,
-                parent=self.window()
-            )
+        """尝试打开隐藏面板 - 需要验证管理员密码"""
+        # 检查是否有有效的管理员会话
+        if self._license_service.validate_admin_session():
+            dialog = LicenseGeneratorDialog(self)
+            dialog.exec()
             return
         
-        # 验证通过，打开隐藏面板
-        dialog = LicenseGeneratorDialog(self)
-        dialog.exec()
+        # 检查是否已设置管理员密码
+        if not self._license_service.has_admin_password():
+            # 首次使用，显示密码设置对话框
+            dialog = AdminPasswordSetupDialog(self)
+            if dialog.exec():
+                # 密码设置成功，创建会话并打开生成器
+                self._license_service.create_admin_session()
+                self._license_service.add_audit_log(
+                    "admin_password_set", "", self._machine_code, "首次设置管理员密码"
+                )
+                dialog = LicenseGeneratorDialog(self)
+                dialog.exec()
+        else:
+            # 需要验证密码
+            dialog = AdminPasswordVerifyDialog(self)
+            if dialog.exec():
+                # 密码验证成功，创建会话并打开生成器
+                self._license_service.create_admin_session()
+                self._license_service.add_audit_log(
+                    "admin_verify_success", "", self._machine_code, "管理员密码验证成功"
+                )
+                dialog = LicenseGeneratorDialog(self)
+                dialog.exec()
+
+
+class AdminPasswordSetupDialog(MessageBoxBase):
+    """管理员密码设置对话框（首次使用）"""
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        
+        self.setWindowTitle("设置管理员密码")
+        
+        # 标题
+        self.titleLabel = SubtitleLabel("首次使用 - 设置管理员密码", self)
+        self.titleLabel.setStyleSheet("color: #e74c3c; font-weight: bold;")
+        
+        # 密码输入
+        from qfluentwidgets import PasswordLineEdit
+        self.passwordEdit = PasswordLineEdit(self)
+        self.passwordEdit.setPlaceholderText("请输入管理员密码（至少6位）")
+        
+        # 确认密码
+        self.confirmEdit = PasswordLineEdit(self)
+        self.confirmEdit.setPlaceholderText("请再次输入密码确认")
+        
+        # 提示
+        self.hintLabel = BodyLabel("此密码用于访问授权码生成器，请妥善保管", self)
+        self.hintLabel.setStyleSheet("color: gray; font-size: 12px;")
+        
+        # 布局
+        from PySide6.QtWidgets import QFormLayout
+        formLayout = QFormLayout()
+        formLayout.addRow("密码:", self.passwordEdit)
+        formLayout.addRow("确认:", self.confirmEdit)
+        
+        self.viewLayout.addWidget(self.titleLabel)
+        self.viewLayout.addSpacing(15)
+        self.viewLayout.addLayout(formLayout)
+        self.viewLayout.addSpacing(10)
+        self.viewLayout.addWidget(self.hintLabel)
+        
+        self.yesButton.setText("确认设置")
+        self.cancelButton.setText("取消")
+        
+        self.widget.setMinimumWidth(400)
+    
+    def validate(self) -> bool:
+        """验证输入"""
+        password = self.passwordEdit.text()
+        confirm = self.confirmEdit.text()
+        
+        if len(password) < 6:
+            InfoBar.warning(
+                self.tr("Warning"),
+                self.tr("密码长度至少6位"),
+                position=InfoBarPosition.TOP,
+                duration=2000,
+                parent=self
+            )
+            return False
+        
+        if password != confirm:
+            InfoBar.warning(
+                self.tr("Warning"),
+                self.tr("两次输入的密码不一致"),
+                position=InfoBarPosition.TOP,
+                duration=2000,
+                parent=self
+            )
+            return False
+        
+        return True
+    
+    def exec(self):
+        """执行对话框"""
+        result = super().exec()
+        if result:
+            if not self.validate():
+                return 0
+            # 保存密码
+            if self._license_service.set_admin_password(self.passwordEdit.text()):
+                InfoBar.success(
+                    self.tr("Success"),
+                    self.tr("管理员密码设置成功"),
+                    position=InfoBarPosition.TOP,
+                    duration=2000,
+                    parent=self
+                )
+                return 1
+            else:
+                InfoBar.error(
+                    self.tr("Error"),
+                    self.tr("密码设置失败"),
+                    position=InfoBarPosition.TOP,
+                    duration=2000,
+                    parent=self
+                )
+                return 0
+        return 0
+    
+    @property
+    def _license_service(self):
+        return get_license_service()
+
+
+class AdminPasswordVerifyDialog(MessageBoxBase):
+    """管理员密码验证对话框"""
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        
+        self.setWindowTitle("管理员验证")
+        
+        # 标题
+        self.titleLabel = SubtitleLabel("请输入管理员密码", self)
+        self.titleLabel.setStyleSheet("color: #e74c3c; font-weight: bold;")
+        
+        # 密码输入
+        from qfluentwidgets import PasswordLineEdit
+        self.passwordEdit = PasswordLineEdit(self)
+        self.passwordEdit.setPlaceholderText("请输入管理员密码")
+        
+        # 布局
+        from PySide6.QtWidgets import QFormLayout
+        formLayout = QFormLayout()
+        formLayout.addRow("密码:", self.passwordEdit)
+        
+        self.viewLayout.addWidget(self.titleLabel)
+        self.viewLayout.addSpacing(15)
+        self.viewLayout.addLayout(formLayout)
+        
+        self.yesButton.setText("验证")
+        self.cancelButton.setText("取消")
+        
+        self.widget.setMinimumWidth(350)
+    
+    def exec(self):
+        """执行对话框"""
+        result = super().exec()
+        if result:
+            password = self.passwordEdit.text()
+            if self._license_service.verify_admin_password(password):
+                return 1
+            else:
+                InfoBar.error(
+                    self.tr("Error"),
+                    self.tr("密码错误"),
+                    position=InfoBarPosition.TOP,
+                    duration=2000,
+                    parent=self
+                )
+                self._license_service.add_audit_log(
+                    "admin_verify_failed", "", self._license_service.get_machine_code(), "管理员密码验证失败"
+                )
+                return 0
+        return 0
+    
+    @property
+    def _license_service(self):
+        return get_license_service()
 
 
 class LicenseGeneratorDialog(MessageBoxBase):
@@ -364,6 +533,16 @@ class LicenseGeneratorDialog(MessageBoxBase):
         # 组合
         license_code = f"{header_b64}.{payload_b64}.{signature_b64}"
         self.resultEdit.setText(license_code)
+        
+        # 记录审计日志
+        license_service = get_license_service()
+        license_type = "永久授权" if duration_days == 0 else f"{duration_days}天"
+        license_service.add_audit_log(
+            "generate_license",
+            email,
+            machine_code,
+            f"类型: {license_type}, 起始: {start_date}"
+        )
     
     def _copy_result(self):
         """复制授权码"""
