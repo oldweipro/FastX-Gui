@@ -2,7 +2,7 @@ import json
 from enum import Enum
 
 from loguru import logger
-from PySide6.QtCore import QFile, QIODevice
+from PySide6.QtCore import QFile, QIODevice, QSize
 from PySide6.QtGui import QIcon
 from qfluentwidgets import (
     FluentFontIconBase,
@@ -49,18 +49,31 @@ class UIcon:
         return cls._map
 
     @classmethod
-    def get(cls, name: str) -> QIcon:
+    def get(cls, name: str, size: int = None) -> QIcon:
         """通过图标名称获取图标
 
         Args:
             name: 图标名称，如 "settings_20_filled"
                  或完整名称 "ic_fluent_settings_20_filled"
+            size: 图标显示尺寸（像素），如 24, 32, 48
+                  为 None 时返回原始图标，需自行 setIconSize
 
         Returns:
             QIcon: 图标对象
+
+        Examples:
+            # 只获取图标，自行设置大小
+            icon = UIcon.get("settings_20_filled")
+            btn.setIcon(icon)
+            btn.setIconSize(QSize(32, 32))
+
+            # 直接获取指定尺寸的图标（自动缩放）
+            icon = UIcon.get("settings", size=32)
+            btn.setIcon(icon)  # 已经是 32x32
         """
-        if name in cls._cache:
-            return cls._cache[name]
+        cache_key = f"{name}_{size}" if size else name
+        if cache_key in cls._cache:
+            return cls._cache[cache_key]
 
         try:
             icon_map = cls._load_map()
@@ -70,7 +83,12 @@ class UIcon:
             if key in icon_map:
                 char = chr(icon_map[key])
                 icon = cls._Icon(char)
-                cls._cache[name] = icon
+                
+                # 如果需要特定尺寸，创建缩放后的图标
+                if size and size > 0:
+                    icon = cls._scale_icon(icon, size)
+                
+                cls._cache[cache_key] = icon
                 return icon
             else:
                 logger.warning(f"图标未找到: {name}")
@@ -78,6 +96,18 @@ class UIcon:
         except Exception as e:
             logger.error(f"加载图标失败 {name}: {e}")
             return cls._default(name)
+
+    @classmethod
+    def _scale_icon(cls, icon: QIcon, size: int) -> QIcon:
+        """缩放图标到指定尺寸"""
+        from PySide6.QtGui import QPixmap
+        from PySide6.QtCore import Qt
+        
+        pixmap = icon.pixmap(QSize(size, size))
+        scaled_pixmap = pixmap.scaled(QSize(size, size), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        scaled_icon = QIcon(scaled_pixmap)
+        return scaled_icon
+
 
     @classmethod
     def _default(cls, name: str) -> QIcon:

@@ -702,7 +702,7 @@ class MainWindow(SplitFluentWindow):
         # 任务中心
         self.progressCenterFlyout = None
         self.progressCenter = ProgressCenter(self)
-        self.progressCenterButton = TransparentToolButton(UIcon.get('ic_fluent_apps_list_32_regular'), self)
+        self.progressCenterButton = TransparentToolButton(UIcon.get('ic_fluent_list_32_regular'), self)
         self.progressCenterButton.setFixedSize(46, 32)
         self.progressCenterButton.clicked.connect(lambda: self.showProgressCenter(FlyoutAnimationType.DROP_DOWN))
 
@@ -882,7 +882,7 @@ class MainWindow(SplitFluentWindow):
         # ):
         self.addSubInterface(
             self.pluginInterface,
-            UIcon.get('ic_fluent_agents_add_20_filled'),
+            FIcon.APP_STORE,
             self.tr("Plugins"),
             pos,
             isTransparent=False,
@@ -908,7 +908,7 @@ class MainWindow(SplitFluentWindow):
         with self.safe_block(default=None, error_msg=self.tr("Load Log interface to left route")):
             self.addSubInterface(
                 self.loguru_interface,
-                UIcon.get("ic_fluent_document_bullet_list_clock_24_regular"),
+                UIcon.get("ic_fluent_document_text_20_regular"),
                 self.tr("Logs"),
                 pos,
                 isTransparent=False,

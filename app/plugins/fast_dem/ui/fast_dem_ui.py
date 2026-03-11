@@ -68,7 +68,7 @@ class FastDemToolUI(ExpandSettingCard):
         # 文件选择卡片
         self.fastDemInputFileCard = PushSettingCard(
             self.tr("Choose file"),
-            UIcon.get('ic_fluent_document_table_truck_24_regular'),
+            UIcon.get('ic_fluent_document_table_24_regular'),
             self.tr("Input File"),
             cfg.get(cfg.fastDemInputFile)
         )

@@ -68,13 +68,13 @@ class LogConfig:
     LEVEL_CONFIG = {
         LogLevel.TRACE: {
             "name": "追踪",
-            "icon": "ic_fluent_number_circle_0_32_regular",
+            "icon": "ic_fluent_number_circle_0_24_regular",
             "fif_icon": FIF.CODE,
             "bg_color": "#f3e6ff",
         },
         LogLevel.DEBUG: {
             "name": "调试",
-            "icon": "ic_fluent_bug_arrow_counterclockwise_20_regular",
+            "icon": "ic_fluent_bug_24_regular",
             "fif_icon": FIF.CODE,
             "bg_color": "#e6f7ff",
         },
@@ -86,25 +86,25 @@ class LogConfig:
         },
         LogLevel.SUCCESS: {
             "name": "成功",
-            "icon": "ic_fluent_flash_checkmark_16_regular",
+            "icon": "ic_fluent_checkmark_circle_24_regular",
             "fif_icon": FIF.COMPLETED,
             "bg_color": "#e6ffe6",
         },
         LogLevel.WARNING: {
             "name": "警告",
-            "icon": "ic_fluent_warning_12_regular",
+            "icon": "ic_fluent_warning_24_regular",
             "fif_icon": FIF.QUESTION,
             "bg_color": "#fff7e6",
         },
         LogLevel.ERROR: {
             "name": "错误",
-            "icon": "ic_fluent_warning_shield_20_regular",
+            "icon": "ic_fluent_error_circle_24_regular",
             "fif_icon": FIF.CLOSE,
             "bg_color": "#ffe6e6",
         },
         LogLevel.CRITICAL: {
             "name": "严重",
-            "icon": "ic_fluent_share_screen_stop_24_regular",
+            "icon": "ic_fluent_prohibited_24_regular",
             "fif_icon": FIF.EDUCATION,
             "bg_color": "#ffe6f0",
         },
@@ -488,7 +488,7 @@ class LoguruInterface(ScrollArea):
         self.badge_labels = {}  # 用于存储每个级别的计数
 
         # 添加"所有日志"按钮
-        self.all_logs_btn = ToggleToolButton(UIcon.get("ic_fluent_channel_28_regular"))
+        self.all_logs_btn = ToggleToolButton(UIcon.get("ic_fluent_channel_20_regular"))
         self.all_logs_btn.setToolTip(self.tr("Show all logs"))
         self.all_logs_btn.setFixedSize(36, 36)
         self.all_logs_btn.setProperty("level", -1)  # -1表示所有日志

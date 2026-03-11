@@ -125,14 +125,14 @@ class PluginCard(QWidget):
         footer.addWidget(self.status_ring)
 
         self.open_btn = TransparentToolButton(
-            UIcon.get("ic_fluent_open_32_regular"), self
+            UIcon.get("ic_fluent_open_folder_20_regular"), self
         )
         self.open_btn.setFixedSize(30, 30)
         self.open_btn.setToolTip(self.tr("Open Plugin"))
         footer.addWidget(self.open_btn)
 
         self.settings_btn = TransparentToolButton(
-            UIcon.get("ic_fluent_settings_24_regular"), self
+            UIcon.get("ic_fluent_settings_20_regular"), self
         )
         self.settings_btn.setFixedSize(30, 30)
         self.settings_btn.setToolTip(self.tr("Plugin Settings"))
@@ -140,7 +140,7 @@ class PluginCard(QWidget):
 
         # 文档按钮
         self.docs_btn = TransparentToolButton(
-            UIcon.get("ic_fluent_book_open_24_regular"), self
+            UIcon.get("ic_fluent_book_open_20_regular"), self
         )
         self.docs_btn.setFixedSize(30, 30)
         self.docs_btn.setToolTip(self.tr("View Documentation"))
@@ -148,7 +148,7 @@ class PluginCard(QWidget):
 
         # Release Notes 按钮
         self.release_notes_btn = TransparentToolButton(
-            UIcon.get("ic_fluent_history_24_regular"), self
+            UIcon.get("ic_fluent_history_20_regular"), self
         )
         self.release_notes_btn.setFixedSize(30, 30)
         self.release_notes_btn.setToolTip("Release Notes")
@@ -156,7 +156,7 @@ class PluginCard(QWidget):
 
         # 卸载按钮：内置插件置灰不可用
         self.uninstall_btn = TransparentToolButton(
-            UIcon.get("ic_fluent_delete_24_regular"), self
+            UIcon.get("ic_fluent_delete_20_regular"), self
         )
         self.uninstall_btn.setFixedSize(30, 30)
         is_builtin = getattr(self.plugin_info, 'builtin', False)

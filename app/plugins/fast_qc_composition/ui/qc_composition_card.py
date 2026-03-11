@@ -139,7 +139,7 @@ class FastQcCompositionCard(ExpandSettingCard):
         parent=None,
     ):
         if icon is None:
-            icon = UIcon.get("ic_fluent_channel_share_48_regular")
+            icon = UIcon.get("ic_fluent_data_usage_20_regular")
         if not title:
             title = self.tr("QCraft Composition Arxml Adapter")
         if content is None:
@@ -162,7 +162,7 @@ class FastQcCompositionCard(ExpandSettingCard):
         )
         self.input_file_card = PushSettingCard(
             self.tr("Choose file"),
-            UIcon.get('ic_fluent_document_table_truck_24_regular'),
+            UIcon.get('ic_fluent_document_table_24_regular'),
             self.tr("Input File"), cfg.get(cfg.qcCompositionInputFile)
         )
         self.table_card = TableFrame(self)

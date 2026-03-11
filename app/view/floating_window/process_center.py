@@ -358,7 +358,7 @@ class ProgressCenter(FlyoutViewBase):
         if count:
             self.window.progressCenterButton.setIcon(None)
         else:
-            self.window.progressCenterButton.setIcon(UIcon.get('ic_fluent_apps_list_32_regular'))
+            self.window.progressCenterButton.setIcon(UIcon.get('ic_fluent_list_32_regular'))
         
         self.cardGroup.adjustSize()
         self._adjust_size()

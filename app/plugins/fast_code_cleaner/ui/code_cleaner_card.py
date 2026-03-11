@@ -24,7 +24,7 @@ class FastCodeCleanerCard(ExpandSettingCard):
         parent=None,
     ):
         if icon is None:
-            icon = UIcon.get("ic_fluent_comment_dismiss_24_regular")
+            icon = UIcon.get("ic_fluent_comment_off_20_regular")
         if not title:
             title = self.tr("Remove Python Code Comment")
         if content is None:
