@@ -1,6 +1,13 @@
-import os
 import sys
 
+# 移除对 Icon 类的依赖
+from model import (
+    DocumentModel,
+    FieldFillMode,
+    FieldModel,
+    ProjectModel,
+    TemplateModel,
+)
 from PySide6.QtCore import QEvent, QModelIndex, Qt
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -18,18 +25,6 @@ from qfluentwidgets import (
     TableView,
     ToolButton,
 )
-
-from app.common.icon import Icon
-# 移除对 Icon 类的依赖
-from model import (
-    DocumentModel,
-    FieldModel,
-    FieldFillMode,
-    FontModel,
-    ProjectModel,
-    TemplateModel,
-)
-
 from table_model import (
     DocumentTableModel,
     FieldTableModel,
@@ -37,6 +32,8 @@ from table_model import (
     ProjectTableModel,
     TemplateTableModel,
 )
+
+from app.common.icon import Icon
 
 
 class EnhancedTabelWidget(QWidget):
@@ -74,7 +71,7 @@ class EnhancedTabelWidget(QWidget):
         self.update_page_info()
 
     def _init_widget(self):
-        """初始化组件"""
+        """Initialize widgets"""
         self.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableView.setSelectionMode(QAbstractItemView.SingleSelection)
         self.tableView.horizontalHeader().setSectionResizeMode(
@@ -85,7 +82,7 @@ class EnhancedTabelWidget(QWidget):
         self.tableView.verticalHeader().setVisible(False)
         self.tableView.setCurrentIndex(QModelIndex())
 
-        self.searchLineEdit.setPlaceholderText("搜索...")
+        self.searchLineEdit.setPlaceholderText(self.tr("Search..."))
         self.searchLineEdit.setSizePolicy(
             QSizePolicy.Expanding, QSizePolicy.Fixed
         )
@@ -99,8 +96,8 @@ class EnhancedTabelWidget(QWidget):
         self.spinBox_Page.setMinimumWidth(50)
 
     def _init_layout(self):
-        """设置布局"""
-        # 创建主布局
+        """Set layout"""
+        # Create main layout
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.addWidget(self.searchLineEdit)
@@ -109,7 +106,7 @@ class EnhancedTabelWidget(QWidget):
         page_layout = QHBoxLayout(self.widget_page_controller)
         page_layout.setContentsMargins(0, 0, 0, 0)
 
-        # 添加分页按钮和控件
+        # Add pagination buttons and controls
         page_layout.addStretch()
         page_layout.addWidget(self.toolButton_first_page)
         page_layout.addWidget(self.toolButton_last_page)
@@ -119,34 +116,34 @@ class EnhancedTabelWidget(QWidget):
         page_layout.addWidget(self.toolButton_final_page)
         page_layout.addStretch()
 
-        # 将分页控制器添加到主布局
+        # Add pagination controller to main layout
         main_layout.addWidget(self.widget_page_controller)
 
-        # 初始显示分页控制器
+        # Initially show pagination controller
         self.widget_page_controller.show()
 
     def _connect_signals(self):
-        """连接信号和槽"""
-        # 连接按钮点击事件
+        """Connect signals and slots"""
+        # Connect button click events
         self.toolButton_first_page.clicked.connect(self._first_page)
         self.toolButton_last_page.clicked.connect(self._last_page)
         self.toolButton_next_page.clicked.connect(self._next_page)
         self.toolButton_final_page.clicked.connect(self._final_page)
 
-        # 连接跳转页面控件信号
+        # Connect page navigation signals
         self.spinBox_Page.valueChanged.connect(self._go_to_page)
 
-        # 连接搜索控件信号
+        # Connect search widget signals
         self.searchLineEdit.searchButton.clicked.connect(self._search)
         self.searchLineEdit.clearButton.clicked.connect(self._search)
         self.searchLineEdit.returnPressed.connect(self._search)
 
-        # 安装事件过滤器以处理点击空白区域清除选中
+        # Install event filter to handle clearing selection when clicking blank area
         self.tableView.viewport().installEventFilter(self)
 
     def _init_data(self):
-        """初始化数据模型"""
-        # 根据model_type选择合适的模型
+        """Initialize data model"""
+        # Select appropriate model based on model_type
         if self.model_type == "document":
             self.table_model = DocumentTableModel(
                 self.data, page_size=self.page_size
@@ -172,26 +169,26 @@ class EnhancedTabelWidget(QWidget):
                 f"[EnhancedTabelWidget] Unsupported model type: {self.model_type}"
             )
 
-        # 设置模型到表格
+        # Set model to table
         self.tableView.setModel(self.table_model)
 
-        # 保存原始数据
+        # Save original data
         self.original_data = self.data.copy() if self.data else []
 
     def _first_page(self):
-        """处理首页按钮点击事件"""
+        """Handle first page button click event"""
         self.table_model.set_current_page(1)
         self.update_page_info()
 
     def _last_page(self):
-        """处理上一页按钮点击事件"""
+        """Handle previous page button click event"""
         current_page = self.table_model.current_page()
         if current_page > 1:
             self.table_model.set_current_page(current_page - 1)
             self.update_page_info()
 
     def _next_page(self):
-        """处理下一页按钮点击事件"""
+        """Handle next page button click event"""
         current_page = self.table_model.current_page()
         page_count = self.table_model.page_count()
         if current_page < page_count:
@@ -199,14 +196,14 @@ class EnhancedTabelWidget(QWidget):
             self.update_page_info()
 
     def _final_page(self):
-        """处理末页按钮点击事件"""
+        """Handle last page button click event"""
         page_count = self.table_model.page_count()
         self.table_model.set_current_page(page_count)
         self.update_page_info()
 
     def update_page_info(self):
-        """更新页面信息显示"""
-        # 如果小于等于一页，则隐藏页码控件
+        """Update page information display"""
+        # Hide pagination controls if there's only one page or less
         if self.table_model.page_count() <= 1:
             self.widget_page_controller.hide()
         else:
@@ -214,7 +211,7 @@ class EnhancedTabelWidget(QWidget):
         page_info = self.table_model.get_page_info()
         self.bodyLabel.setText(page_info)
 
-        # 更新跳转页面控件的范围和当前值
+        # Update page navigation control range and current value
         self.spinBox_Page.setMinimum(1)
         self.spinBox_Page.setMaximum(self.table_model.page_count())
         self.spinBox_Page.setValue(self.table_model.current_page())

@@ -70,7 +70,7 @@ class TableFrame(TableWidget):
         class TableEditDialog(MessageBoxBase):
             def __init__(self, parent=None):
                 super().__init__(parent)
-                self.titleLabel = SubtitleLabel(self.tr("编辑条目"), self)
+                self.titleLabel = SubtitleLabel(self.tr("Edit Item"), self)
                 self.viewLayout.addWidget(self.titleLabel)
                 self._widgets = []
                 for i, title in enumerate(headers):

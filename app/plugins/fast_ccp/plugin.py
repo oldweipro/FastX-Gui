@@ -1,7 +1,9 @@
 """Fast CCP Plugin"""
-from typing import Any, Dict, Optional
+from typing import Any
+
 from PySide6.QtWidgets import QWidget
-from app.plugins.plugin_base import PluginBase, PluginInfo, PluginCategory
+
+from app.plugins.plugin_base import PluginBase, PluginCategory, PluginInfo
 
 
 class FastCcpPlugin(PluginBase):
@@ -12,7 +14,7 @@ class FastCcpPlugin(PluginBase):
         return PluginInfo(
             name="fast_ccp",
             version="1.0.0",
-            description="CCP 标定协议工具，支持 A2L 文件解析和标定数据管理",
+            description="CCP calibration protocol tool, supports A2L file parsing and calibration data management",
             author="FastXTeam",
             category=PluginCategory.DIAGNOSTIC,
             builtin=True,
@@ -20,21 +22,21 @@ class FastCcpPlugin(PluginBase):
 
     def __init__(self):
         super().__init__()
-        self._config: Dict[str, Any] = {}
+        self._config: dict[str, Any] = {}
 
     def initialize(self) -> bool:
         self._is_initialized = True
         return True
 
-    def get_main_widget(self, parent: Optional[QWidget] = None) -> QWidget:
+    def get_main_widget(self, parent: QWidget | None = None) -> QWidget:
         from .ui.ccp_card import FastCcpCard
         return FastCcpCard(parent=parent)
 
     def cleanup(self):
         pass
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return self._config.copy()
 
-    def set_config(self, config: Dict[str, Any]):
+    def set_config(self, config: dict[str, Any]):
         self._config.update(config)

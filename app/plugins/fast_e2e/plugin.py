@@ -1,7 +1,9 @@
 """FastE2E 插件"""
-from typing import Any, Dict, Optional
+from typing import Any
+
 from PySide6.QtWidgets import QWidget
-from app.plugins.plugin_base import PluginBase, PluginInfo, PluginCategory
+
+from app.plugins.plugin_base import PluginBase, PluginCategory, PluginInfo
 
 
 class FastE2EPlugin(PluginBase):
@@ -10,7 +12,7 @@ class FastE2EPlugin(PluginBase):
         return PluginInfo(
             name="fast_e2e",
             version="1.0.0",
-            description="E2E 通信端到端校验工具，支持 Profile 配置与校验计算",
+            description="E2E communication end-to-end verification tool, supports Profile configuration and verification calculation",
             author="FastXTeam",
             category=PluginCategory.COMMUNICATION,
             builtin=True,
@@ -18,21 +20,21 @@ class FastE2EPlugin(PluginBase):
 
     def __init__(self):
         super().__init__()
-        self._config: Dict[str, Any] = {}
+        self._config: dict[str, Any] = {}
 
     def initialize(self) -> bool:
         self._is_initialized = True
         return True
 
-    def get_main_widget(self, parent: Optional[QWidget] = None) -> QWidget:
+    def get_main_widget(self, parent: QWidget | None = None) -> QWidget:
         from .ui.fast_e2e_ui import FastE2EToolUI
         return FastE2EToolUI(parent=parent)
 
     def cleanup(self):
         pass
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return self._config.copy()
 
-    def set_config(self, config: Dict[str, Any]):
+    def set_config(self, config: dict[str, Any]):
         self._config.update(config)

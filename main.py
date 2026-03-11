@@ -51,7 +51,7 @@ def main():
         if cfg.get(cfg.autoHide):
             hide_window = True
 
-    # 每次启动都显示注册页面验证邮箱和激活码
+    # Show registration page to verify email and activation code on every startup
     w = RegisterWindow()
     w.loginSignal.connect(lambda: showMainWindow(hide=hide_window))
     w.show()

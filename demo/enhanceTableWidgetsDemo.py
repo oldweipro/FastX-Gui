@@ -1,35 +1,59 @@
 import datetime
 import json
+
+# 尝试使用相对导入
+import os
 import sys
 import typing
 from enum import Enum
-from typing import List, Optional, Any, Type
+from typing import Any
 
-from PySide6.QtCore import Qt, QAbstractTableModel, QModelIndex, Signal
+from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt
 from PySide6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-    QFileDialog, QHeaderView, QSizePolicy, QDialog, QFrame
+    QApplication,
+    QDialog,
+    QFileDialog,
+    QFrame,
+    QHBoxLayout,
+    QHeaderView,
+    QMainWindow,
+    QSizePolicy,
+    QVBoxLayout,
+    QWidget,
 )
-from PySide6.QtGui import QIcon
 
 # 导入 qfluentwidgets 组件
 from qfluentwidgets import (
-    setTheme, Theme, PushButton, SearchLineEdit, SpinBox, BodyLabel,
-    TableView, InfoBar, InfoBarPosition, FluentIcon, ToolButton,
-    MessageBoxBase, SubtitleLabel, LineEdit, ComboBox, Dialog, DoubleSpinBox, TextEdit, DateTimeEdit, DateEdit,
-    ScrollArea, RoundMenu, TransparentDropDownPushButton, Action, PrimaryDropDownToolButton, PrimaryDropDownPushButton,
-    TransparentDropDownToolButton
+    Action,
+    BodyLabel,
+    ComboBox,
+    DateEdit,
+    DateTimeEdit,
+    DoubleSpinBox,
+    FluentIcon,
+    InfoBar,
+    InfoBarPosition,
+    LineEdit,
+    MessageBoxBase,
+    RoundMenu,
+    ScrollArea,
+    SearchLineEdit,
+    SpinBox,
+    SubtitleLabel,
+    TableView,
+    TextEdit,
+    Theme,
+    ToolButton,
+    setTheme,
 )
-
-# 尝试使用相对导入
-import sys
-import os
 
 # 添加项目根目录到Python路径
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-from app.common.icon import Icon
 from pydantic import BaseModel, Field
+
+from app.common.icon import Icon
+
 
 class EnumCore(Enum):
     Core0 = 'Core0'
@@ -41,13 +65,13 @@ class EnumCore(Enum):
 class Document(BaseModel):
     """文档数据类"""
     id: int = Field(..., title="ID")
-    enable: bool = Field(..., title='使能')
-    core: EnumCore = Field(...,title='内核分配')
-    doc_number: str = Field(..., title="文档编号")
-    name: str = Field(..., title="名称")
-    description: str = Field("", title="描述")
-    tags: str = Field("", title="标签")
-    created_at: str = Field(..., title="创建时间")
+    enable: bool = Field(..., title='Enable')
+    core: EnumCore = Field(...,title='Core Allocation')
+    doc_number: str = Field(..., title="Document Number")
+    name: str = Field(..., title="Name")
+    description: str = Field("", title="Description")
+    tags: str = Field("", title="Tags")
+    created_at: str = Field(..., title="Creation Time")
 
 
 # -------------------- 非 Pydantic 数据模型 --------------------
@@ -71,7 +95,7 @@ class BaseTableModel(QAbstractTableModel):
     子类必须实现 columnCount()、data()、_get_header_labels()
     以及可选的 to_dataframe() / from_dataframe() 用于导入导出
     """
-    def __init__(self, data: Optional[List] = None, page_size: int = 10, parent=None):
+    def __init__(self, data: list | None = None, page_size: int = 10, parent=None):
         super().__init__(parent)
         self._all_data = data if data is not None else []
         self._filtered_data = self._all_data[:]   # 初始与全部数据相同
@@ -87,7 +111,7 @@ class BaseTableModel(QAbstractTableModel):
     def data(self, index: QModelIndex, role: int = Qt.DisplayRole) -> Any:
         raise NotImplementedError
 
-    def _get_header_labels(self) -> List[str]:
+    def _get_header_labels(self) -> list[str]:
         """返回表头标签列表"""
         raise NotImplementedError
 
@@ -117,7 +141,7 @@ class BaseTableModel(QAbstractTableModel):
                     value = value.value
                 if text in str(value).lower():
                     return True
-        
+
         # 对于其他模型，尝试获取对象的所有属性
         if hasattr(item, '__dict__'):
             # 尝试获取对象的所有属性
@@ -130,7 +154,7 @@ class BaseTableModel(QAbstractTableModel):
                     attr_value = attr_value.value
                 if text in str(attr_value).lower():
                     return True
-        
+
         # 默认返回 False
         return False
 
@@ -191,7 +215,6 @@ class BaseTableModel(QAbstractTableModel):
     def export_to_excel(self, filepath: str):
         """导出数据到 Excel"""
         try:
-            import pandas as pd
             df = self.to_dataframe()
             df.to_excel(filepath, index=False)
             InfoBar.success(
@@ -216,7 +239,7 @@ class BaseTableModel(QAbstractTableModel):
             raise
 
     # ---------- 辅助方法 ----------
-    def set_all_data(self, data: List):
+    def set_all_data(self, data: list):
         """设置全部数据，重置过滤和页码"""
         self.beginResetModel()
         self._all_data = data[:]
@@ -276,7 +299,7 @@ class BaseTableModel(QAbstractTableModel):
                         if hasattr(value, 'value'):
                             return value.value
                         return value
-                
+
                 # 对于其他模型，尝试通过 data 方法获取列值
                 # 注意：这里需要确保 data 方法能够正确处理索引
                 try:
@@ -291,7 +314,7 @@ class BaseTableModel(QAbstractTableModel):
                         return value
                 except Exception:
                     pass
-                
+
                 # 对于其他模型，尝试获取对象的属性
                 if hasattr(item, '__dict__'):
                     # 尝试获取对象的所有属性
@@ -306,10 +329,10 @@ class BaseTableModel(QAbstractTableModel):
                         if hasattr(value, 'value'):
                             return value.value
                         return value
-                
+
                 # 默认返回空字符串
                 return ""
-            
+
             # 排序数据
             self._filtered_data.sort(
                 key=lambda item: get_column_value(item, self._sort_column),
@@ -346,7 +369,7 @@ class DocumentTableModel(BaseTableModel):
         return None
 
     def _get_header_labels(self):
-        return ["文档编号", "名称", "描述", "标签", "创建时间"]
+        return [self.tr("Document Number"), self.tr("Name"), self.tr("Description"), self.tr("Tags"), self.tr("Creation Time")]
 
     def filter(self, text: str):
         """针对特定字段搜索"""
@@ -435,13 +458,13 @@ class PydanticTableModel(BaseTableModel):
     通用的 Pydantic 表格模型，自动根据模型类的字段生成列。
     可通过 include_fields / exclude_fields 控制显示哪些字段。
     """
-    def __init__(self, model_class: Type[BaseModel],
-                 data: Optional[List] = None,
+    def __init__(self, model_class: type[BaseModel],
+                 data: list | None = None,
                  page_size: int = 10,
                  parent=None,
-                 include_fields: Optional[List[str]] = None,
-                 exclude_fields: Optional[List[str]] = None,
-                 field_titles: Optional[dict] = None):
+                 include_fields: list[str] | None = None,
+                 exclude_fields: list[str] | None = None,
+                 field_titles: dict | None = None):
         super().__init__(data, page_size, parent)
         self.model_class = model_class
 
@@ -485,7 +508,7 @@ class PydanticTableModel(BaseTableModel):
             pass
         return None
 
-    def _get_header_labels(self) -> List[str]:
+    def _get_header_labels(self) -> list[str]:
         return self.headers
 
     def to_dataframe(self):
@@ -505,7 +528,7 @@ class DynamicEditDialog(MessageBoxBase):
         self.model_class = None
         self.fields = []
         self.field_infos = {}
-        
+
         # 检查是否是 Pydantic 模型或具有 model_fields 属性的对象
         if hasattr(item, '_original_model_class'):
             # 临时对象，使用原始模型类
@@ -607,13 +630,13 @@ class DynamicEditDialog(MessageBoxBase):
             is_undefined = current_value is PydanticUndefined
         except ImportError:
             pass
-        
+
         # 额外检查：如果current_value的类型名称包含"Undefined"，也视为undefined
         if not is_undefined and hasattr(current_value, '__class__'):
             class_name = current_value.__class__.__name__
             if 'Undefined' in class_name:
                 is_undefined = True
-        
+
         if annotation is int or (origin is None and annotation is int):
             editor = SpinBox()
             editor.setRange(-10**9, 10**9)
@@ -708,7 +731,7 @@ class DynamicEditDialog(MessageBoxBase):
             else:
                 value = editor.text()
             updated_data[field] = value
-        
+
         # 检查是否是 Pydantic 模型
         if hasattr(self, 'model_class') and self.model_class:
             return self.model_class(**updated_data)
@@ -727,7 +750,7 @@ class EnhancedTableWidget(QWidget):
     - 提供搜索、分页导航、导入/导出按钮
     - 双击行时发射 doubleClicked 信号，携带该行数据对象
     """
-    def __init__(self, model: Optional[QAbstractTableModel] = None, page_size: int = 10, parent=None):
+    def __init__(self, model: QAbstractTableModel | None = None, page_size: int = 10, parent=None):
         super().__init__(parent)
         self._model = None
         self._page_size = page_size
@@ -735,33 +758,33 @@ class EnhancedTableWidget(QWidget):
         # 创建UI组件（使用 qfluentwidgets）
         self.tableView = TableView(self)
         self.searchEdit = SearchLineEdit(self)
-        self.searchEdit.setPlaceholderText("搜索...")
+        self.searchEdit.setPlaceholderText(self.tr("Search..."))
         self.searchEdit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         # 创建右键菜单
         self.context_menu = RoundMenu(parent=self)
         # 添加复制功能
-        self.context_menu.addAction(Action(FluentIcon.COPY, self.tr('复制 (JSON格式)'), triggered=lambda: self._on_copy_current_row('json')))
-        self.context_menu.addAction(Action(FluentIcon.COPY, self.tr('复制所有行 (JSON格式)'), triggered=lambda: self._on_copy_all_rows('json')))
+        self.context_menu.addAction(Action(FluentIcon.COPY, self.tr('Copy (JSON format)'), triggered=lambda: self._on_copy_current_row('json')))
+        self.context_menu.addAction(Action(FluentIcon.COPY, self.tr('Copy all rows (JSON format)'), triggered=lambda: self._on_copy_all_rows('json')))
         self.context_menu.addSeparator()
-        self.context_menu.addAction(Action(FluentIcon.COPY, self.tr('复制 (单行分隔符格式)'), triggered=lambda: self._on_copy_current_row('csv')))
-        self.context_menu.addAction(Action(FluentIcon.COPY, self.tr('复制所有行 (单行分隔符格式)'), triggered=lambda: self._on_copy_all_rows('csv')))
+        self.context_menu.addAction(Action(FluentIcon.COPY, self.tr('Copy (Single line separator format)'), triggered=lambda: self._on_copy_current_row('csv')))
+        self.context_menu.addAction(Action(FluentIcon.COPY, self.tr('Copy all rows (Single line separator format)'), triggered=lambda: self._on_copy_all_rows('csv')))
         self.context_menu.addSeparator()
-        self.context_menu.addAction(Action(FluentIcon.PASTE, self.tr('粘贴到当前行(单行)'), triggered=self._on_paste_to_current_row))
-        self.context_menu.addAction(Action(FluentIcon.PASTE, self.tr('插入粘贴(单/多行)'), triggered=self._on_paste_multiple_rows))
+        self.context_menu.addAction(Action(FluentIcon.PASTE, self.tr('Paste to current row (Single row)'), triggered=self._on_paste_to_current_row))
+        self.context_menu.addAction(Action(FluentIcon.PASTE, self.tr('Insert paste (Single/Multiple rows)'), triggered=self._on_paste_multiple_rows))
         self.context_menu.addSeparator()
         # 添加行操作
-        self.context_menu.addAction(Action(FluentIcon.ADD, self.tr('新增行'), triggered=self._on_add_row))
-        self.context_menu.addAction(Action(FluentIcon.ADD, self.tr('插入行'), triggered=self._on_insert_row))
-        self.context_menu.addAction(Action(FluentIcon.DELETE, self.tr('删除当前行'), triggered=self._on_delete_current_row))
+        self.context_menu.addAction(Action(FluentIcon.ADD, self.tr('Add row'), triggered=self._on_add_row))
+        self.context_menu.addAction(Action(FluentIcon.ADD, self.tr('Insert row'), triggered=self._on_insert_row))
+        self.context_menu.addAction(Action(FluentIcon.DELETE, self.tr('Delete current row'), triggered=self._on_delete_current_row))
         self.context_menu.addSeparator()
         # 添加导入导出功能
-        self.context_menu.addAction(Action(FluentIcon.SEND, self.tr('导入到表格'), triggered=self._on_import))
-        self.context_menu.addAction(Action(FluentIcon.SAVE, self.tr('导出到表格'), triggered=self._on_export))
+        self.context_menu.addAction(Action(FluentIcon.SEND, self.tr('Import to table'), triggered=self._on_import))
+        self.context_menu.addAction(Action(FluentIcon.SAVE, self.tr('Export to table'), triggered=self._on_export))
         self.context_menu.addSeparator()
         # 添加排序功能
-        self.context_menu.addAction(Action(FluentIcon.SCROLL, self.tr('清除筛选'), triggered=self._on_clear_sort))
-        
+        self.context_menu.addAction(Action(FluentIcon.SCROLL, self.tr('Clear filter'), triggered=self._on_clear_sort))
+
         # 连接右键菜单信号
         self.tableView.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tableView.customContextMenuRequested.connect(self._show_context_menu)
@@ -774,9 +797,9 @@ class EnhancedTableWidget(QWidget):
         self.btnPrev = ToolButton(self)
         self.btnNext = ToolButton(self)
         self.btnLast = ToolButton(self)
-        
+
         # 添加每页显示行数设置
-        self.pageSizeLabel = BodyLabel("页")
+        self.pageSizeLabel = BodyLabel(self.tr("Page"))
         self.pageSizeComboBox = ComboBox()
         self.pageSizeComboBox.addItems(["10", "20", "30", "50", "100"])
         self.pageSizeComboBox.setCurrentText(str(self._page_size))
@@ -850,14 +873,14 @@ class EnhancedTableWidget(QWidget):
         self.spinPage.valueChanged.connect(self._go_to_page)
 
         self.tableView.doubleClicked.connect(self._on_double_click)
-        
+
         # 添加Ctrl+C快捷键支持
         self.tableView.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tableView.customContextMenuRequested.connect(self._show_context_menu)
-        
+
         # 注册Ctrl+C快捷键
         from PySide6.QtGui import QKeySequence
-        copy_action = Action(FluentIcon.COPY, "复制", self)
+        copy_action = Action(FluentIcon.COPY, self.tr("Copy"), self)
         copy_action.setShortcut(QKeySequence.Copy)
         copy_action.triggered.connect(lambda: self._on_copy_current_row('json'))
         self.addAction(copy_action)
@@ -986,12 +1009,12 @@ class EnhancedTableWidget(QWidget):
 
         total_pages = self._model.page_count()
         current = self._model.current_page()
-        
+
         # 确保当前页有效
         if current > total_pages and total_pages > 0:
             self._model.set_current_page(total_pages)
             current = total_pages
-        
+
         if total_pages <= 1:
             self.pageWidget.hide()
         else:
@@ -1067,17 +1090,17 @@ class EnhancedTableWidget(QWidget):
         selected_indexes = self.tableView.selectionModel().selectedRows()
         if not selected_indexes:
             return
-        
+
         items = []
         for index in selected_indexes:
             row = index.row()
             if self._model and hasattr(self._model, 'get_item'):
                 item = self._model.get_item(row)
                 items.append(item)
-        
+
         if not items:
             return
-        
+
         # 实现复制逻辑，将数据保存到剪贴板
         import json
         data_list = []
@@ -1096,7 +1119,7 @@ class EnhancedTableWidget(QWidget):
                             value = value.value
                         data[attr] = value
             data_list.append(data)
-        
+
         if format_type == 'json':
             # 将数据转换为 JSON 字符串并复制到剪贴板
             json_data = json.dumps(data_list, ensure_ascii=False, indent=2)
@@ -1116,7 +1139,7 @@ class EnhancedTableWidget(QWidget):
                     csv_lines.append('\t'.join(values))
                 csv_data = '\n'.join(csv_lines)
                 QApplication.clipboard().setText(csv_data)
-        
+
         print(f"复制 {len(items)} 行，格式: {format_type}")
 
     def _on_copy_all_rows(self, format_type='json'):
@@ -1144,7 +1167,7 @@ class EnhancedTableWidget(QWidget):
                                 value = value.value
                             item_data[attr] = value
                 all_data.append(item_data)
-            
+
             if format_type == 'json':
                 # 将数据转换为 JSON 字符串并复制到剪贴板
                 json_data = json.dumps(all_data, ensure_ascii=False, indent=2)
@@ -1164,7 +1187,7 @@ class EnhancedTableWidget(QWidget):
                         csv_lines.append('\t'.join(values))
                     csv_data = '\n'.join(csv_lines)
                     QApplication.clipboard().setText(csv_data)
-            
+
             print(f"复制所有行: {len(data)} 行，格式: {format_type}")
 
     def _on_paste_to_current_row(self):
@@ -1238,17 +1261,17 @@ class EnhancedTableWidget(QWidget):
                         insert_pos = (page - 1) * page_size + row
                     else:
                         insert_pos = row
-                    
+
                     # 确保插入位置在有效范围内
                     insert_pos = min(insert_pos, len(self._model._all_data))
-                    
+
                     # 获取模型类
                     model_class = None
                     if hasattr(self._model, 'model_class'):
                         model_class = self._model.model_class
                     elif len(self._model._all_data) > 0:
                         model_class = type(self._model._all_data[0])
-                    
+
                     if model_class:
                         # 批量插入数据
                         for i, item_data in enumerate(data):
@@ -1272,10 +1295,10 @@ class EnhancedTableWidget(QWidget):
                                     for key, value in item_data.items():
                                         if hasattr(new_item, key):
                                             setattr(new_item, key, value)
-                                
+
                                 # 插入到模型中
                                 self._model._all_data.insert(insert_pos + i, new_item)
-                        
+
                         # 复制数据到filtered_data
                         self._model._filtered_data = self._model._all_data[:]
                         # 如果有排序，重新排序数据
@@ -1335,7 +1358,7 @@ class EnhancedTableWidget(QWidget):
                             self.__dict__ = data
                             # 存储原始模型类
                             self._original_model_class = model_class
-                    
+
                     # 创建临时对象
                     temp_item = TempItem(default_data, model_class)
                     # 直接设置model_fields属性，而不是设置到类上
@@ -1480,7 +1503,7 @@ class EnhancedTableWidget(QWidget):
                             self.__dict__ = data
                             # 存储原始模型类
                             self._original_model_class = model_class
-                    
+
                     # 创建临时对象
                     temp_item = TempItem(default_data, model_class)
                     # 直接设置model_fields属性，而不是设置到类上
@@ -1516,10 +1539,10 @@ class EnhancedTableWidget(QWidget):
                             insert_pos = (page - 1) * page_size + row
                         else:
                             insert_pos = row
-                        
+
                         # 确保插入位置在有效范围内
                         insert_pos = min(insert_pos, len(self._model._all_data))
-                        
+
                         # 插入新实例到模型
                         self._model._all_data.insert(insert_pos, new_item)
                         # 复制数据到filtered_data
@@ -1544,7 +1567,7 @@ class EnhancedTableWidget(QWidget):
                 else:
                     # 复制最后一行
                     item = self._model._all_data[-1]
-                
+
                 if hasattr(item, 'model_dump'):
                     # Pydantic 模型
                     # 显示编辑对话框
@@ -1563,10 +1586,10 @@ class EnhancedTableWidget(QWidget):
                             insert_pos = (page - 1) * page_size + row
                         else:
                             insert_pos = row
-                        
+
                         # 确保插入位置在有效范围内
                         insert_pos = min(insert_pos, len(self._model._all_data))
-                        
+
                         # 插入新实例到模型
                         self._model._all_data.insert(insert_pos, new_item)
                         # 复制数据到filtered_data
@@ -1598,10 +1621,10 @@ class EnhancedTableWidget(QWidget):
                             insert_pos = (page - 1) * page_size + row
                         else:
                             insert_pos = row
-                        
+
                         # 确保插入位置在有效范围内
                         insert_pos = min(insert_pos, len(self._model._all_data))
-                        
+
                         # 插入新实例到模型
                         self._model._all_data.insert(insert_pos, new_item)
                         # 复制数据到filtered_data
@@ -1627,7 +1650,7 @@ class EnhancedTableWidget(QWidget):
         selected_indexes = self.tableView.selectionModel().selectedRows()
         if not selected_indexes:
             return
-        
+
         # 收集所有要删除的行索引（考虑分页偏移）
         delete_positions = []
         for index in selected_indexes:
@@ -1642,21 +1665,21 @@ class EnhancedTableWidget(QWidget):
                     else:
                         # 没有分页，直接使用行索引
                         delete_pos = row
-                    
+
                     # 确保删除位置在有效范围内
                     if 0 <= delete_pos < len(self._model._all_data):
                         delete_positions.append(delete_pos)
                 except Exception as e:
                     print(f"计算删除位置失败: {e}")
-        
+
         # 按降序排序，避免删除时索引变化
         delete_positions.sort(reverse=True)
-        
+
         # 执行删除操作
         for pos in delete_positions:
             if 0 <= pos < len(self._model._all_data):
                 self._model._all_data.pop(pos)
-        
+
         if delete_positions:
             # 复制数据到filtered_data
             self._model._filtered_data = self._model._all_data[:]
@@ -1677,9 +1700,10 @@ class EnhancedTableWidget(QWidget):
 
 
 if __name__ == "__main__":
-    import app.common.resource
     import numpy as np
     from numpy.random import choice
+
+    import app.common.resource
     class MainWindow(QMainWindow):
         def __init__(self):
             super().__init__()

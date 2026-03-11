@@ -1,7 +1,9 @@
 """Fast QC Composition Plugin"""
-from typing import Any, Dict, Optional
+from typing import Any
+
 from PySide6.QtWidgets import QWidget
-from app.plugins.plugin_base import PluginBase, PluginInfo, PluginCategory
+
+from app.plugins.plugin_base import PluginBase, PluginCategory, PluginInfo
 
 
 class FastQcCompositionPlugin(PluginBase):
@@ -12,7 +14,7 @@ class FastQcCompositionPlugin(PluginBase):
         return PluginInfo(
             name="fast_qc_composition",
             version="1.0.0",
-            description="QC 组合信号处理工具，支持信号组合与验证",
+            description="QC composition signal processing tool, supports signal composition and verification",
             author="FastXTeam",
             category=PluginCategory.COMMUNICATION,
             builtin=True,
@@ -20,21 +22,21 @@ class FastQcCompositionPlugin(PluginBase):
 
     def __init__(self):
         super().__init__()
-        self._config: Dict[str, Any] = {}
+        self._config: dict[str, Any] = {}
 
     def initialize(self) -> bool:
         self._is_initialized = True
         return True
 
-    def get_main_widget(self, parent: Optional[QWidget] = None) -> QWidget:
+    def get_main_widget(self, parent: QWidget | None = None) -> QWidget:
         from .ui.qc_composition_card import FastQcCompositionCard
         return FastQcCompositionCard(parent=parent)
 
     def cleanup(self):
         pass
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return self._config.copy()
 
-    def set_config(self, config: Dict[str, Any]):
+    def set_config(self, config: dict[str, Any]):
         self._config.update(config)

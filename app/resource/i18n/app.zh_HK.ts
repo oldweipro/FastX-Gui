@@ -424,6 +424,34 @@
     </message>
 </context>
 <context>
+    <name>DocumentTableModel</name>
+    <message>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="372"/>
+        <source>Document Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="372"/>
+        <source>Name</source>
+        <translation type="unfinished">名稱</translation>
+    </message>
+    <message>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="372"/>
+        <source>Description</source>
+        <translation type="unfinished">描述</translation>
+    </message>
+    <message>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="372"/>
+        <source>Tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="372"/>
+        <source>Creation Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DownloadTaskCard</name>
     <message>
         <location filename="../../view/floating_window/process_center.py" line="187"/>
@@ -457,66 +485,89 @@
     </message>
 </context>
 <context>
+    <name>EnhancedTabelWidget</name>
+    <message>
+        <location filename="../../../demo/enhanceTableWidgets/enhance_table_widget.py" line="85"/>
+        <source>Search...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>EnhancedTableWidget</name>
     <message>
-        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="744"/>
-        <source>复制 (JSON格式)</source>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="761"/>
+        <source>Search...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="745"/>
-        <source>复制所有行 (JSON格式)</source>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="767"/>
+        <source>Copy (JSON format)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="747"/>
-        <source>复制 (单行分隔符格式)</source>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="768"/>
+        <source>Copy all rows (JSON format)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="748"/>
-        <source>复制所有行 (单行分隔符格式)</source>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="770"/>
+        <source>Copy (Single line separator format)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="750"/>
-        <source>粘贴到当前行(单行)</source>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="771"/>
+        <source>Copy all rows (Single line separator format)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="751"/>
-        <source>插入粘贴(单/多行)</source>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="773"/>
+        <source>Paste to current row (Single row)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="754"/>
-        <source>新增行</source>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="774"/>
+        <source>Insert paste (Single/Multiple rows)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="755"/>
-        <source>插入行</source>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="777"/>
+        <source>Add row</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="756"/>
-        <source>删除当前行</source>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="778"/>
+        <source>Insert row</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="759"/>
-        <source>导入到表格</source>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="779"/>
+        <source>Delete current row</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="760"/>
-        <source>导出到表格</source>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="782"/>
+        <source>Import to table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="763"/>
-        <source>清除筛选</source>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="783"/>
+        <source>Export to table</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="786"/>
+        <source>Clear filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="802"/>
+        <source>Page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../demo/enhanceTableWidgetsDemo.py" line="883"/>
+        <source>Copy</source>
+        <translation type="unfinished">複製</translation>
     </message>
 </context>
 <context>
@@ -577,7 +628,7 @@
     <message>
         <location filename="../../plugins/fast_ccp/ui/ccp_card.py" line="43"/>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">执行</translation>
     </message>
     <message>
         <location filename="../../plugins/fast_ccp/ui/ccp_card.py" line="43"/>
@@ -746,7 +797,7 @@
     <message>
         <location filename="../../plugins/fast_code_cleaner/ui/code_cleaner_card.py" line="98"/>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">执行</translation>
     </message>
     <message>
         <location filename="../../plugins/fast_code_cleaner/ui/code_cleaner_card.py" line="98"/>
@@ -809,7 +860,7 @@
     <message>
         <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="49"/>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">执行</translation>
     </message>
     <message>
         <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="49"/>
@@ -878,7 +929,7 @@
     <message>
         <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="75"/>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">执行</translation>
     </message>
     <message>
         <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="75"/>
@@ -982,7 +1033,7 @@
     <message>
         <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="94"/>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">执行</translation>
     </message>
     <message>
         <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="94"/>
@@ -1072,7 +1123,7 @@ Saved to: {save_path}</source>
     <message>
         <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="61"/>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">执行</translation>
     </message>
     <message>
         <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="61"/>
@@ -1141,7 +1192,7 @@ Saved to: {save_path}</source>
     <message>
         <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="168"/>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">执行</translation>
     </message>
     <message>
         <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="168"/>
@@ -1243,7 +1294,7 @@ Saved to: {save_path}</source>
     <message>
         <location filename="../../plugins/fast_some_ip/ui/fast_some_ip_ui.py" line="62"/>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">执行</translation>
     </message>
     <message>
         <location filename="../../plugins/fast_some_ip/ui/fast_some_ip_ui.py" line="62"/>
@@ -1311,21 +1362,6 @@ Saved to: {save_path}</source>
 <context>
     <name>InputDialog</name>
     <message>
-        <location filename="../../plugins/fast_code_cleaner/ui/code_cleaner_card.py" line="182"/>
-        <source>请输入...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/fast_code_cleaner/ui/code_cleaner_card.py" line="186"/>
-        <source>确定</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/fast_code_cleaner/ui/code_cleaner_card.py" line="187"/>
-        <source>取消</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../plugins/fast_code_cleaner/ui/code_cleaner_card.py" line="210"/>
         <source>Processing completed!
 </source>
@@ -1368,6 +1404,21 @@ Saved to: {save_path}</source>
         <location filename="../../plugins/fast_code_cleaner/ui/code_cleaner_card.py" line="220"/>
         <source>Processing failed: {str(e)}</source>
         <translation type="unfinished">處理失敗: {str(e)}</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/fast_code_cleaner/ui/code_cleaner_card.py" line="182"/>
+        <source>Please enter...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/fast_code_cleaner/ui/code_cleaner_card.py" line="186"/>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/fast_code_cleaner/ui/code_cleaner_card.py" line="187"/>
+        <source>Cancel</source>
+        <translation type="unfinished">取消</translation>
     </message>
 </context>
 <context>
@@ -2934,11 +2985,6 @@ This action cannot be undone.</source>
 <context>
     <name>TableEditDialog</name>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="73"/>
-        <source>编辑条目</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="101"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
@@ -2947,6 +2993,11 @@ This action cannot be undone.</source>
         <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="102"/>
         <source>Cancel</source>
         <translation type="unfinished">取消</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="73"/>
+        <source>Edit Item</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
