@@ -55,7 +55,7 @@ class FastFaultManagerToolUI(ExpandSettingCard):
         )
         self.fastFaultManagerInputFileCard = PushSettingCard(
             self.tr("Choose file"),
-            UIcon.get('ic_fluent_document_table_truck_24_regular'),
+            UIcon.get('ic_fluent_document_table_truck_20_regular'),
             self.tr("Input File"),
             cfg.get(cfg.fastFaultManagerInputFile)
         )

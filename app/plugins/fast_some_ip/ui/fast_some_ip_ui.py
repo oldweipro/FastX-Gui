@@ -56,7 +56,7 @@ class FastSomeIpToolUI(ExpandSettingCard):
         )
         self.fastSomeIpInputFileCard = PushSettingCard(
             self.tr("Choose file"),
-            UIcon.get('ic_fluent_document_table_24_regular'),
+            UIcon.get('ic_fluent_document_table_20_regular'),
             self.tr("Input File"),
             cfg.get(cfg.fastSomeIpInputFile)
         )

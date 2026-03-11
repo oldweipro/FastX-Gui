@@ -44,7 +44,7 @@ class FastComMappingCard(ExpandSettingCard):
         )
         self.input_file_card = PushSettingCard(
             self.tr("Choose file"),
-            UIcon.get('ic_fluent_document_table_24_regular'),
+            UIcon.get('ic_fluent_document_table_20_regular'),
             self.tr("Input File"), cfg.get(cfg.comGroupMappingInputFile)
         )
         self.execute_card = PrimaryPushSettingCard(

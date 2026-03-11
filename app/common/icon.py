@@ -256,6 +256,9 @@ class Icon(FluentIconBase, Enum):
     RX_SIMPLE = "Rx_Simple"
     SDB_SIMPLE = "SDB_Simple"
 
+    # 图标
+    LOGS = "logs"
+
     def path(self, theme=Theme.AUTO):
         return f":/app/images/icons/{self.value}_{getIconColor(theme)}.svg"
 

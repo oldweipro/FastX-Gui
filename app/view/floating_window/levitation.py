@@ -1499,6 +1499,12 @@ class LevitationWindow(QWidget):
 
     def hideEvent(self, event):
         """隐藏事件"""
+        # 保存位置（用户主动隐藏时记录当前位置）
+        if not self._suppress_visibility_tracking:
+            try:
+                self._save_position()
+            except Exception:
+                pass
         super().hideEvent(event)
         if not self._suppress_visibility_tracking:
             self._user_requested_visible = False
@@ -1510,19 +1516,25 @@ class LevitationWindow(QWidget):
 
     def closeEvent(self, event):
         """关闭事件"""
+        # 保存当前位置（无论何种关闭原因，都先保存位置）
+        try:
+            self._save_position()
+        except Exception:
+            pass
+
         # 如果应用程序正在关闭，允许关闭
         if QApplication.instance().closingDown():
             self._close_guard_enabled = False
             event.accept()
             return
-        
+
         # 如果父窗口已经关闭或不可见，允许关闭
         parent = self.parent()
         if parent is None or not parent.isVisible():
             self._close_guard_enabled = False
             event.accept()
             return
-            
+
         # 关闭保护：防止误关闭，只隐藏不关闭
         if self._close_guard_enabled:
             event.ignore()
