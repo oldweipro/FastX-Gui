@@ -46,7 +46,7 @@ from pathlib import Path
 BLACK_COLORS = {
     '#000000', '#000', '#010101',
     '#111111', '#1a1a1a', '#212121',
-    '#2c2c2c', '#333333', '#3c3c3c',
+    '#262626', '#2c2c2c', '#333333', '#3c3c3c',
     'black',
 }
 
@@ -80,6 +80,54 @@ def _extract_fill_colors(content: str) -> list[str]:
     return colors
 
 
+def _is_dark_color(hex_color: str) -> bool:
+    """判断一个十六进制颜色是否为深色（黑色系）"""
+    try:
+        # 移除 # 符号
+        hex_val = hex_color.lstrip('#')
+        # 处理简写形式（如 #fff）
+        if len(hex_val) == 3:
+            hex_val = ''.join([c*2 for c in hex_val])
+        
+        if len(hex_val) != 6:
+            return False
+        
+        # 转换为 RGB
+        r = int(hex_val[0:2], 16)
+        g = int(hex_val[2:4], 16)
+        b = int(hex_val[4:6], 16)
+        
+        # 计算亮度（简单的平均值）
+        brightness = (r + g + b) / 3
+        
+        # 亮度低于 80 视为深色
+        return brightness < 80
+    except Exception:
+        return False
+
+
+def _is_light_color(hex_color: str) -> bool:
+    """判断一个十六进制颜色是否为浅色（白色系）"""
+    try:
+        hex_val = hex_color.lstrip('#')
+        if len(hex_val) == 3:
+            hex_val = ''.join([c*2 for c in hex_val])
+        
+        if len(hex_val) != 6:
+            return False
+        
+        r = int(hex_val[0:2], 16)
+        g = int(hex_val[2:4], 16)
+        b = int(hex_val[4:6], 16)
+        
+        brightness = (r + g + b) / 3
+        
+        # 亮度高于 200 视为浅色
+        return brightness > 200
+    except Exception:
+        return False
+
+
 def detect_color(content: str) -> str:
     """
     检测 SVG 的主色调。
@@ -95,9 +143,19 @@ def detect_color(content: str) -> str:
         # 没有任何颜色属性，默认视为黑色（currentColor 在亮色背景渲染为黑）
         return 'black'
 
-    black_count = sum(1 for c in colors if c in BLACK_COLORS or c == 'currentcolor')
-    white_count = sum(1 for c in colors if c in WHITE_COLORS)
+    black_count = 0
+    white_count = 0
     none_count  = sum(1 for c in colors if c in ('none', 'transparent'))
+
+    for color in colors:
+        if color in BLACK_COLORS or color == 'currentcolor':
+            black_count += 1
+        elif color in WHITE_COLORS:
+            white_count += 1
+        elif color.startswith('#') and _is_dark_color(color):
+            black_count += 1
+        elif color.startswith('#') and _is_light_color(color):
+            white_count += 1
 
     effective = len(colors) - none_count
     if effective == 0:

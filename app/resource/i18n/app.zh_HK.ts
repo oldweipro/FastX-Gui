@@ -4,7 +4,7 @@
 <context>
     <name>@default</name>
     <message>
-        <location filename="../../view/floating_window/levitation.py" line="850"/>
+        <location filename="../../view/floating_window/levitation.py" line="862"/>
         <source>Show floating window</source>
         <translation>顯示浮動窗口</translation>
     </message>
@@ -3163,7 +3163,7 @@ This action cannot be undone.</source>
 <context>
     <name>parent</name>
     <message>
-        <location filename="../../view/floating_window/levitation.py" line="1550"/>
+        <location filename="../../view/floating_window/levitation.py" line="1566"/>
         <source>Show floating window</source>
         <translation type="unfinished">顯示浮動窗口</translation>
     </message>
