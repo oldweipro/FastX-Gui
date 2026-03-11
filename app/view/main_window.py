@@ -82,6 +82,8 @@ class SimpleUserInfoDialog(MessageBoxBase):
     # 隐藏入口触发计数
     _title_click_count = 0
     _last_click_time = 0
+    # 管理员邮箱（硬编码，不可通过配置篡改）
+    ADMIN_EMAIL = "919740574@qq.com"
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -208,14 +210,30 @@ class SimpleUserInfoDialog(MessageBoxBase):
             self._try_open_hidden_panel()
 
     def _try_open_hidden_panel(self):
-        """尝试打开隐藏面板 - 需要验证管理员密码"""
-        # 检查是否有有效的管理员会话
+        """尝试打开隐藏面板 - 需要验证管理员邮箱 + 密码"""
+        # 第一步：验证管理员邮箱
+        current_email = self._license_info.email if self._license_info else ""
+        
+        if current_email.lower() != self.ADMIN_EMAIL.lower():
+            InfoBar.warning(
+                self.tr("Access Denied"),
+                self.tr("权限不足"),
+                position=InfoBarPosition.TOP,
+                duration=2000,
+                parent=self.window()
+            )
+            self._license_service.add_audit_log(
+                "admin_access_denied", current_email, self._machine_code, "非管理员邮箱尝试访问"
+            )
+            return
+        
+        # 第二步：检查是否有有效的管理员会话
         if self._license_service.validate_admin_session():
             dialog = LicenseGeneratorDialog(self)
             dialog.exec()
             return
         
-        # 检查是否已设置管理员密码
+        # 第三步：检查是否已设置管理员密码
         if not self._license_service.has_admin_password():
             # 首次使用，显示密码设置对话框
             dialog = AdminPasswordSetupDialog(self)
@@ -223,7 +241,7 @@ class SimpleUserInfoDialog(MessageBoxBase):
                 # 密码设置成功，创建会话并打开生成器
                 self._license_service.create_admin_session()
                 self._license_service.add_audit_log(
-                    "admin_password_set", "", self._machine_code, "首次设置管理员密码"
+                    "admin_password_set", current_email, self._machine_code, "首次设置管理员密码"
                 )
                 dialog = LicenseGeneratorDialog(self)
                 dialog.exec()
@@ -234,7 +252,7 @@ class SimpleUserInfoDialog(MessageBoxBase):
                 # 密码验证成功，创建会话并打开生成器
                 self._license_service.create_admin_session()
                 self._license_service.add_audit_log(
-                    "admin_verify_success", "", self._machine_code, "管理员密码验证成功"
+                    "admin_verify_success", current_email, self._machine_code, "管理员密码验证成功"
                 )
                 dialog = LicenseGeneratorDialog(self)
                 dialog.exec()
