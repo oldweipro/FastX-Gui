@@ -128,14 +128,14 @@ class PluginCard(QWidget):
             UnicodeIcon.get_icon_by_name("ic_fluent_open_32_regular"), self
         )
         self.open_btn.setFixedSize(30, 30)
-        self.open_btn.setToolTip("打开插件")
+        self.open_btn.setToolTip(self.tr("Open Plugin"))
         footer.addWidget(self.open_btn)
 
         self.settings_btn = TransparentToolButton(
             UnicodeIcon.get_icon_by_name("ic_fluent_settings_24_regular"), self
         )
         self.settings_btn.setFixedSize(30, 30)
-        self.settings_btn.setToolTip("插件设置")
+        self.settings_btn.setToolTip(self.tr("Plugin Settings"))
         footer.addWidget(self.settings_btn)
 
         # 文档按钮
@@ -143,7 +143,7 @@ class PluginCard(QWidget):
             UnicodeIcon.get_icon_by_name("ic_fluent_book_open_24_regular"), self
         )
         self.docs_btn.setFixedSize(30, 30)
-        self.docs_btn.setToolTip("查看文档")
+        self.docs_btn.setToolTip(self.tr("View Documentation"))
         footer.addWidget(self.docs_btn)
 
         # Release Notes 按钮
@@ -161,7 +161,7 @@ class PluginCard(QWidget):
         self.uninstall_btn.setFixedSize(30, 30)
         is_builtin = getattr(self.plugin_info, 'builtin', False)
         self.uninstall_btn.setEnabled(not is_builtin)
-        self.uninstall_btn.setToolTip("内置插件不可卸载" if is_builtin else "卸载插件")
+        self.uninstall_btn.setToolTip(self.tr("Built-in plugins cannot be uninstalled") if is_builtin else self.tr("Uninstall Plugin"))
         footer.addWidget(self.uninstall_btn)
 
         outer.addLayout(footer)
@@ -271,13 +271,13 @@ class PluginCard(QWidget):
 
     def _get_category_text(self) -> str:
         texts = {
-            PluginCategory.DIAGNOSTIC:    "诊断工具",
-            PluginCategory.COMMUNICATION: "通信工具",
-            PluginCategory.SERIAL:        "串口工具",
-            PluginCategory.UTILITIES:     "实用工具",
-            PluginCategory.CUSTOM:        "自定义",
+            PluginCategory.DIAGNOSTIC:    self.tr("Diagnostic Tools"),
+            PluginCategory.COMMUNICATION: self.tr("Communication Tools"),
+            PluginCategory.SERIAL:        self.tr("Serial Tools"),
+            PluginCategory.UTILITIES:     self.tr("Utilities"),
+            PluginCategory.CUSTOM:        self.tr("Custom"),
         }
-        return texts.get(self.plugin_info.category, "未知")
+        return texts.get(self.plugin_info.category, self.tr("Unknown"))
 
     def set_enabled(self, enabled: bool):
         self._is_enabled = enabled

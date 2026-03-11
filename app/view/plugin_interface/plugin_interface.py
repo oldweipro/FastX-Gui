@@ -159,7 +159,7 @@ class PluginInterface(ScrollArea):
 
         self.tab_bar.addTab(
             routeKey="plugin_manager",
-            text="插件管理",
+            text=self.tr("Plugin Management"),
             icon=FIF.HOME,
             onClick=lambda: self.tab_stack.setCurrentWidget(self.plugin_manager_page)
         )
@@ -187,12 +187,12 @@ class PluginInterface(ScrollArea):
         self.left_layout.setSpacing(8)
         self.left_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        self.left_title = StrongBodyLabel("插件列表", self.left_container)
+        self.left_title = StrongBodyLabel(self.tr("Plugin List"), self.left_container)
         self.left_title.setObjectName("left_title")
         self.left_title.setStyleSheet("font-size: 14px; font-weight: bold;")
         self.left_layout.addWidget(self.left_title)
 
-        self.left_stats = CaptionLabel("共 0 个插件", self.left_container)
+        self.left_stats = CaptionLabel(self.tr("0 plugins total"), self.left_container)
         self.left_stats.setObjectName("left_stats")
         self.left_layout.addWidget(self.left_stats)
 
@@ -208,18 +208,18 @@ class PluginInterface(ScrollArea):
 
         self.left_refresh_btn = ToolButton(FIF.SYNC, self.left_menubar)
         self.left_refresh_btn.setFixedSize(32, 32)
-        self.left_refresh_btn.setToolTip(self.tr("刷新插件列表"))
+        self.left_refresh_btn.setToolTip(self.tr("Refresh plugin list"))
         self.left_refresh_btn.installEventFilter(ToolTipFilter(self.left_refresh_btn))
 
         self.left_install_btn = ToolButton(FIF.ADD, self.left_menubar)
         self.left_install_btn.setFixedSize(32, 32)
-        self.left_install_btn.setToolTip(self.tr("安装插件"))
+        self.left_install_btn.setToolTip(self.tr("Install plugin"))
         self.left_install_btn.installEventFilter(ToolTipFilter(self.left_install_btn))
 
         # 全部显示/隐藏 toggle 按钮
         self.left_toggle_all_btn = ToolButton(FIF.HIDE, self.left_menubar)
         self.left_toggle_all_btn.setFixedSize(32, 32)
-        self.left_toggle_all_btn.setToolTip(self.tr("全部隐藏"))
+        self.left_toggle_all_btn.setToolTip(self.tr("Hide all"))
         self.left_toggle_all_btn.installEventFilter(ToolTipFilter(self.left_toggle_all_btn))
         self._all_plugins_visible = True  # 记录当前状态
 
@@ -255,12 +255,12 @@ class PluginInterface(ScrollArea):
         self.toolbar_layout.setSpacing(12)
 
         self.search_box = SearchLineEdit(self.right_container)
-        self.search_box.setPlaceholderText("搜索插件  (Ctrl+F)")
+        self.search_box.setPlaceholderText(self.tr("Search plugins (Ctrl+F)"))
         # self.search_box.setMinimumWidth(280)
         self.search_box.setFixedHeight(34)
         self.menu_btn = LineEditButton(FIF.MENU, self.search_box)
         self.search_box.hBoxLayout.addWidget(self.menu_btn, 0, Qt.AlignRight)
-        self.menu_btn.setToolTip("展开插件列表")
+        self.menu_btn.setToolTip(self.tr("Expand plugin list"))
         self.menu_btn.clicked.connect(self._toggle_left_panel)
         self.toolbar_layout.addWidget(self.search_box)
         self.toolbar_layout.addStretch(1)
@@ -293,7 +293,7 @@ class PluginInterface(ScrollArea):
     def _apply_collapsed_state(self):
         self.left_panel.setFixedWidth(0)
         self._left_panel_expanded = False
-        self.menu_btn.setToolTip("展开插件列表")
+        self.menu_btn.setToolTip(self.tr("Expand plugin list"))
 
     def _toggle_left_panel(self):
         if self._left_panel_expanded:
@@ -304,12 +304,12 @@ class PluginInterface(ScrollArea):
     def _collapse_left_panel(self):
         self.left_panel.setFixedWidth(0)
         self._left_panel_expanded = False
-        self.menu_btn.setToolTip("展开插件列表")
+        self.menu_btn.setToolTip(self.tr("Expand plugin list"))
 
     def _expand_left_panel(self):
         self.left_panel.setFixedWidth(400)
         self._left_panel_expanded = True
-        self.menu_btn.setToolTip("收缩插件列表")
+        self.menu_btn.setToolTip(self.tr("Collapse plugin list"))
 
     # ------------------------------------------------------------------
     # 加载插件
@@ -521,10 +521,10 @@ class PluginInterface(ScrollArea):
     def _on_install_plugin(self):
         from PySide6.QtWidgets import QFileDialog, QMessageBox
         file_path, _ = QFileDialog.getOpenFileName(
-            self, "选择插件包", "", "插件包 (*.zip);;所有文件 (*.*)"
+            self, self.tr("Select Plugin Package"), "", self.tr("Plugin Package (*.zip);;All Files (*.*)")
         )
         if file_path:
-            QMessageBox.information(self, "提示", f"已选择插件包: {file_path}\n安装功能开发中...")
+            QMessageBox.information(self, self.tr("Info"), self.tr("Selected plugin package: {0}\nInstallation feature under development...").format(file_path))
 
     def _on_toggle_all_plugins(self):
         """切换全部插件的显示/隐藏状态"""
@@ -536,7 +536,7 @@ class PluginInterface(ScrollArea):
                     self._on_plugin_toggled(name, False)
             self._all_plugins_visible = False
             self.left_toggle_all_btn.setIcon(FIF.VIEW)
-            self.left_toggle_all_btn.setToolTip(self.tr("全部显示"))
+            self.left_toggle_all_btn.setToolTip(self.tr("Show all"))
         else:
             # 全部显示
             for name, list_card in self.plugin_list_cards.items():
@@ -545,7 +545,7 @@ class PluginInterface(ScrollArea):
                     self._on_plugin_toggled(name, True)
             self._all_plugins_visible = True
             self.left_toggle_all_btn.setIcon(FIF.HIDE)
-            self.left_toggle_all_btn.setToolTip(self.tr("全部隐藏"))
+            self.left_toggle_all_btn.setToolTip(self.tr("Hide all"))
 
     # ------------------------------------------------------------------
     # 插件操作
@@ -568,8 +568,8 @@ class PluginInterface(ScrollArea):
         else:
             from qfluentwidgets import InfoBar, InfoBarPosition
             InfoBar.info(
-                title="暂无文档",
-                content=f"插件 {plugin_name} 尚未提供文档链接",
+                title=self.tr("No Documentation"),
+                content=self.tr("Plugin {0} has not provided documentation link").format(plugin_name),
                 parent=self,
                 position=InfoBarPosition.TOP_RIGHT,
             )
@@ -590,8 +590,8 @@ class PluginInterface(ScrollArea):
         else:
             from qfluentwidgets import InfoBar, InfoBarPosition
             InfoBar.info(
-                title="暂无 Release Notes",
-                content=f"插件 {plugin_name} 尚未提供更新日志",
+                title=self.tr("No Release Notes"),
+                content=self.tr("Plugin {0} has not provided release notes").format(plugin_name),
                 parent=self,
                 position=InfoBarPosition.TOP_RIGHT,
             )
@@ -696,8 +696,8 @@ class PluginInterface(ScrollArea):
         from PySide6.QtWidgets import QMessageBox
         reply = QMessageBox.question(
             self,
-            "确认卸载",
-            f"确定要卸载插件 '{plugin_name}' 吗？\n此操作不可撤销。",
+            self.tr("Confirm Uninstall"),
+            self.tr("Are you sure you want to uninstall plugin '{0}'?\nThis action cannot be undone.").format(plugin_name),
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No
         )

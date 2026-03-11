@@ -98,7 +98,7 @@ class CustomTitleBar(TitleBar):
         # add search line edit
         self.searchLineEdit = SearchLineEdit(self)
         self.searchLineEdit.setObjectName("searchLineEdit")
-        self.searchLineEdit.setPlaceholderText("搜索应用、脚本、工具、设置等")
+        self.searchLineEdit.setPlaceholderText(self.tr("Search apps, scripts, tools, settings..."))
         self.searchLineEdit.setFixedWidth(400)
         self.searchLineEdit.setClearButtonEnabled(True)
 

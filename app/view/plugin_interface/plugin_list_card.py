@@ -43,7 +43,7 @@ class PluginListCard(CardWidget):
         # 拖拽手柄图标（提示用户可拖拽）
         self.drag_handle = IconWidget(FIF.MENU, self)
         self.drag_handle.setFixedSize(14, 14)
-        self.drag_handle.setToolTip("拖动以调整顺序")
+        self.drag_handle.setToolTip(self.tr("Drag to reorder"))
         self.layout.addWidget(self.drag_handle)
 
         # 插件图标
@@ -85,8 +85,8 @@ class PluginListCard(CardWidget):
         # 显示/隐藏开关（所有插件均可操作）
         self.enable_switch = SwitchButton(self)
         self.enable_switch.setChecked(self._is_enabled)
-        self.enable_switch.setOnText("显示")
-        self.enable_switch.setOffText("隐藏")
+        self.enable_switch.setOnText(self.tr("Show"))
+        self.enable_switch.setOffText(self.tr("Hide"))
         self._update_tooltip()
         self.layout.addWidget(self.enable_switch)
 
@@ -101,7 +101,7 @@ class PluginListCard(CardWidget):
         # 样式由 QSS 控制，不随开关状态变化
 
     def _update_tooltip(self):
-        self.enable_switch.setToolTip("点击隐藏插件" if self._is_enabled else "点击显示插件")
+        self.enable_switch.setToolTip(self.tr("Click to hide plugin") if self._is_enabled else self.tr("Click to show plugin"))
 
     def _get_icon(self):
         if self.plugin_info.icon_path:
@@ -118,12 +118,12 @@ class PluginListCard(CardWidget):
 
     def _get_category_text(self) -> str:
         return {
-            PluginCategory.DIAGNOSTIC:    "诊断",
-            PluginCategory.COMMUNICATION: "通信",
-            PluginCategory.SERIAL:        "串口",
-            PluginCategory.UTILITIES:     "工具",
-            PluginCategory.CUSTOM:        "自定义",
-        }.get(self.plugin_info.category, "未知")
+            PluginCategory.DIAGNOSTIC:    self.tr("Diagnostic"),
+            PluginCategory.COMMUNICATION: self.tr("Communication"),
+            PluginCategory.SERIAL:        self.tr("Serial"),
+            PluginCategory.UTILITIES:     self.tr("Utilities"),
+            PluginCategory.CUSTOM:        self.tr("Custom"),
+        }.get(self.plugin_info.category, self.tr("Unknown"))
 
     def set_enabled_state(self, enabled: bool):
         """设置启用状态（外部调用）"""

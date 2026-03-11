@@ -94,22 +94,22 @@ class SimpleUserInfoDialog(MessageBoxBase):
         self._machine_code = self._license_service.get_machine_code()
 
         # 标题（可点击触发隐藏入口）
-        self.titleLabel = SubtitleLabel("用户信息", self)
+        self.titleLabel = SubtitleLabel(self.tr("User Info"), self)
         self.titleLabel.setCursor(Qt.PointingHandCursor)
         self.titleLabel.mousePressEvent = self._on_title_clicked
 
         # 状态信息
         if self._license_info and self._license_info.is_valid:
-            status_text = "已激活"
+            status_text = self.tr("Activated")
             status_style = "color: #4caf50; font-weight: bold;"
             if self._license_info.is_permanent:
-                license_type = "永久授权"
-                expire_text = "永久有效"
+                license_type = self.tr("Permanent License")
+                expire_text = self.tr("Permanent")
             else:
-                license_type = f"{self._license_info.duration_days} 天"
-                expire_text = f"{self._license_info.end_date} (剩余 {self._license_info.days_remaining} 天)"
+                license_type = f"{self._license_info.duration_days} " + self.tr("days")
+                expire_text = f"{self._license_info.end_date} ({self._license_info.days_remaining} " + self.tr("days remaining") + ")"
         else:
-            status_text = "未激活"
+            status_text = self.tr("Not Activated")
             status_style = "color: #f44336; font-weight: bold;"
             license_type = "-"
             expire_text = "-"
@@ -122,7 +122,7 @@ class SimpleUserInfoDialog(MessageBoxBase):
 
         # 状态行
         status_layout = QHBoxLayout()
-        status_label = BodyLabel("授权状态:", info_widget)
+        status_label = BodyLabel(self.tr("License Status:"), info_widget)
         status_value = BodyLabel(status_text, info_widget)
         status_value.setStyleSheet(status_style)
         status_layout.addWidget(status_label)
@@ -135,28 +135,28 @@ class SimpleUserInfoDialog(MessageBoxBase):
 
         # 邮箱
         email_layout = QHBoxLayout()
-        email_layout.addWidget(BodyLabel("授权邮箱:", info_widget))
+        email_layout.addWidget(BodyLabel(self.tr("Licensed Email:"), info_widget))
         email_layout.addStretch()
         email_layout.addWidget(BodyLabel(self._license_info.email if self._license_info else "-", info_widget))
         info_layout.addLayout(email_layout)
 
         # 授权类型
         type_layout = QHBoxLayout()
-        type_layout.addWidget(BodyLabel("授权类型:", info_widget))
+        type_layout.addWidget(BodyLabel(self.tr("License Type:"), info_widget))
         type_layout.addStretch()
         type_layout.addWidget(BodyLabel(license_type, info_widget))
         info_layout.addLayout(type_layout)
 
         # 起始日期
         start_layout = QHBoxLayout()
-        start_layout.addWidget(BodyLabel("授权起始:", info_widget))
+        start_layout.addWidget(BodyLabel(self.tr("License Start:"), info_widget))
         start_layout.addStretch()
         start_layout.addWidget(BodyLabel(self._license_info.start_date if self._license_info else "-", info_widget))
         info_layout.addLayout(start_layout)
 
         # 到期时间
         expire_layout = QHBoxLayout()
-        expire_layout.addWidget(BodyLabel("到期时间:", info_widget))
+        expire_layout.addWidget(BodyLabel(self.tr("Expiration Date:"), info_widget))
         expire_layout.addStretch()
         expire_layout.addWidget(BodyLabel(expire_text, info_widget))
         info_layout.addLayout(expire_layout)
@@ -166,7 +166,7 @@ class SimpleUserInfoDialog(MessageBoxBase):
 
         # 机器码
         machine_layout = QHBoxLayout()
-        machine_layout.addWidget(BodyLabel("机器码:", info_widget))
+        machine_layout.addWidget(BodyLabel(self.tr("Machine Code:"), info_widget))
         machine_layout.addStretch()
         machine_label = BodyLabel(self._machine_code, info_widget)
         machine_label.setStyleSheet("font-family: Consolas, Monaco, monospace; font-size: 12px;")
@@ -175,7 +175,7 @@ class SimpleUserInfoDialog(MessageBoxBase):
 
         # 版本
         version_layout = QHBoxLayout()
-        version_layout.addWidget(BodyLabel("软件版本:", info_widget))
+        version_layout.addWidget(BodyLabel(self.tr("Software Version:"), info_widget))
         version_layout.addStretch()
         version_layout.addWidget(BodyLabel(f"{APPLY_NAME} {VERSION}", info_widget))
         info_layout.addLayout(version_layout)
@@ -186,8 +186,8 @@ class SimpleUserInfoDialog(MessageBoxBase):
         self.viewLayout.addWidget(info_widget)
 
         # 按钮
-        self.yesButton.setText("确认")
-        self.cancelButton.setText("复制机器码")
+        self.yesButton.setText(self.tr("Confirm"))
+        self.cancelButton.setText(self.tr("Copy Machine Code"))
 
         self.widget.setMinimumWidth(400)
         self.widget.setMaximumWidth(450)
@@ -264,30 +264,30 @@ class AdminPasswordSetupDialog(MessageBoxBase):
     def __init__(self, parent=None):
         super().__init__(parent)
         
-        self.setWindowTitle("设置管理员密码")
+        self.setWindowTitle(self.tr("Set Admin Password"))
         
         # 标题
-        self.titleLabel = SubtitleLabel("首次使用 - 设置管理员密码", self)
+        self.titleLabel = SubtitleLabel(self.tr("First Use - Set Admin Password"), self)
         self.titleLabel.setStyleSheet("color: #e74c3c; font-weight: bold;")
         
         # 密码输入
         from qfluentwidgets import PasswordLineEdit
         self.passwordEdit = PasswordLineEdit(self)
-        self.passwordEdit.setPlaceholderText("请输入管理员密码（至少6位）")
+        self.passwordEdit.setPlaceholderText(self.tr("Please enter admin password (at least 6 characters)"))
         
         # 确认密码
         self.confirmEdit = PasswordLineEdit(self)
-        self.confirmEdit.setPlaceholderText("请再次输入密码确认")
+        self.confirmEdit.setPlaceholderText(self.tr("Please enter the password again to confirm"))
         
         # 提示
-        self.hintLabel = BodyLabel("此密码用于访问授权码生成器，请妥善保管", self)
+        self.hintLabel = BodyLabel(self.tr("This password is used to access the license code generator, please keep it safe"), self)
         self.hintLabel.setStyleSheet("color: gray; font-size: 12px;")
         
         # 布局
         from PySide6.QtWidgets import QFormLayout
         formLayout = QFormLayout()
-        formLayout.addRow("密码:", self.passwordEdit)
-        formLayout.addRow("确认:", self.confirmEdit)
+        formLayout.addRow(self.tr("Password:"), self.passwordEdit)
+        formLayout.addRow(self.tr("Confirm:"), self.confirmEdit)
         
         self.viewLayout.addWidget(self.titleLabel)
         self.viewLayout.addSpacing(15)
@@ -295,8 +295,8 @@ class AdminPasswordSetupDialog(MessageBoxBase):
         self.viewLayout.addSpacing(10)
         self.viewLayout.addWidget(self.hintLabel)
         
-        self.yesButton.setText("确认设置")
-        self.cancelButton.setText("取消")
+        self.yesButton.setText(self.tr("Confirm Setting"))
+        self.cancelButton.setText(self.tr("Cancel"))
         
         self.widget.setMinimumWidth(400)
     
@@ -308,7 +308,7 @@ class AdminPasswordSetupDialog(MessageBoxBase):
         if len(password) < 6:
             InfoBar.warning(
                 self.tr("Warning"),
-                self.tr("密码长度至少6位"),
+                self.tr("Password must be at least 6 characters"),
                 position=InfoBarPosition.TOP,
                 duration=2000,
                 parent=self
@@ -318,7 +318,7 @@ class AdminPasswordSetupDialog(MessageBoxBase):
         if password != confirm:
             InfoBar.warning(
                 self.tr("Warning"),
-                self.tr("两次输入的密码不一致"),
+                self.tr("The two passwords entered do not match"),
                 position=InfoBarPosition.TOP,
                 duration=2000,
                 parent=self
@@ -337,7 +337,7 @@ class AdminPasswordSetupDialog(MessageBoxBase):
             if self._license_service.set_admin_password(self.passwordEdit.text()):
                 InfoBar.success(
                     self.tr("Success"),
-                    self.tr("管理员密码设置成功"),
+                    self.tr("Admin password set successfully"),
                     position=InfoBarPosition.TOP,
                     duration=2000,
                     parent=self
@@ -346,7 +346,7 @@ class AdminPasswordSetupDialog(MessageBoxBase):
             else:
                 InfoBar.error(
                     self.tr("Error"),
-                    self.tr("密码设置失败"),
+                    self.tr("Failed to set password"),
                     position=InfoBarPosition.TOP,
                     duration=2000,
                     parent=self
@@ -365,28 +365,28 @@ class AdminPasswordVerifyDialog(MessageBoxBase):
     def __init__(self, parent=None):
         super().__init__(parent)
         
-        self.setWindowTitle("管理员验证")
+        self.setWindowTitle(self.tr("Admin Verification"))
         
         # 标题
-        self.titleLabel = SubtitleLabel("请输入管理员密码", self)
+        self.titleLabel = SubtitleLabel(self.tr("Please enter admin password"), self)
         self.titleLabel.setStyleSheet("color: #e74c3c; font-weight: bold;")
         
         # 密码输入
         from qfluentwidgets import PasswordLineEdit
         self.passwordEdit = PasswordLineEdit(self)
-        self.passwordEdit.setPlaceholderText("请输入管理员密码")
+        self.passwordEdit.setPlaceholderText(self.tr("Please enter admin password"))
         
         # 布局
         from PySide6.QtWidgets import QFormLayout
         formLayout = QFormLayout()
-        formLayout.addRow("密码:", self.passwordEdit)
+        formLayout.addRow(self.tr("Password:"), self.passwordEdit)
         
         self.viewLayout.addWidget(self.titleLabel)
         self.viewLayout.addSpacing(15)
         self.viewLayout.addLayout(formLayout)
         
-        self.yesButton.setText("验证")
-        self.cancelButton.setText("取消")
+        self.yesButton.setText(self.tr("Verify"))
+        self.cancelButton.setText(self.tr("Cancel"))
         
         self.widget.setMinimumWidth(350)
     
@@ -400,7 +400,7 @@ class AdminPasswordVerifyDialog(MessageBoxBase):
             else:
                 InfoBar.error(
                     self.tr("Error"),
-                    self.tr("密码错误"),
+                    self.tr("Incorrect password"),
                     position=InfoBarPosition.TOP,
                     duration=2000,
                     parent=self
@@ -422,23 +422,23 @@ class LicenseGeneratorDialog(MessageBoxBase):
     def __init__(self, parent=None):
         super().__init__(parent)
         
-        self.setWindowTitle("授权码生成器")
+        self.setWindowTitle(self.tr("License Code Generator"))
         
         # 标题
-        self.titleLabel = SubtitleLabel("授权码生成器 (内部工具)", self)
+        self.titleLabel = SubtitleLabel(self.tr("License Code Generator (Internal Tool)"), self)
         self.titleLabel.setStyleSheet("color: #e74c3c; font-weight: bold;")
         
         # 邮箱输入
         self.emailEdit = LineEdit(self)
-        self.emailEdit.setPlaceholderText("输入用户邮箱")
+        self.emailEdit.setPlaceholderText(self.tr("Enter user email"))
         
         # 机器码输入
         self.machineCodeEdit = LineEdit(self)
-        self.machineCodeEdit.setPlaceholderText("输入机器码（留空生成通用授权码）")
+        self.machineCodeEdit.setPlaceholderText(self.tr("Enter machine code (leave blank for general license)"))
         
         # 授权类型
         self.licenseTypeCombo = ComboBox(self)
-        self.licenseTypeCombo.addItems(["限时授权", "永久授权"])
+        self.licenseTypeCombo.addItems([self.tr("Time-limited License"), self.tr("Permanent License")])
         self.licenseTypeCombo.currentIndexChanged.connect(self._on_type_changed)
         
         # 天数输入
@@ -455,31 +455,31 @@ class LicenseGeneratorDialog(MessageBoxBase):
         self.startDateEdit.setDisplayFormat("yyyy-MM-dd")
         
         # 生成按钮
-        self.generateBtn = PushButton("生成授权码", self)
+        self.generateBtn = PushButton(self.tr("Generate License Code"), self)
         self.generateBtn.clicked.connect(self._generate_license)
         
         # 结果显示
         self.resultEdit = LineEdit(self)
-        self.resultEdit.setPlaceholderText("生成的授权码将显示在这里")
+        self.resultEdit.setPlaceholderText(self.tr("Generated license code will be displayed here"))
         self.resultEdit.setReadOnly(True)
         
         # 复制按钮
-        self.copyBtn = PushButton("复制", self)
+        self.copyBtn = PushButton(self.tr("Copy"), self)
         self.copyBtn.clicked.connect(self._copy_result)
         
         # 布局
         from PySide6.QtWidgets import QFormLayout
         formLayout = QFormLayout()
-        formLayout.addRow("邮箱:", self.emailEdit)
-        formLayout.addRow("机器码:", self.machineCodeEdit)
-        formLayout.addRow("授权类型:", self.licenseTypeCombo)
-        formLayout.addRow("起始日期:", self.startDateEdit)
-        formLayout.addRow("授权天数:", self.daysSpin)
+        formLayout.addRow(self.tr("Email:"), self.emailEdit)
+        formLayout.addRow(self.tr("Machine Code:"), self.machineCodeEdit)
+        formLayout.addRow(self.tr("License Type:"), self.licenseTypeCombo)
+        formLayout.addRow(self.tr("Start Date:"), self.startDateEdit)
+        formLayout.addRow(self.tr("License Days:"), self.daysSpin)
         
         resultLayout = QHBoxLayout()
         resultLayout.addWidget(self.resultEdit, 1)
         resultLayout.addWidget(self.copyBtn)
-        formLayout.addRow("授权码:", resultLayout)
+        formLayout.addRow(self.tr("License Code:"), resultLayout)
         
         self.viewLayout.addWidget(self.titleLabel)
         self.viewLayout.addSpacing(15)
@@ -487,7 +487,7 @@ class LicenseGeneratorDialog(MessageBoxBase):
         self.viewLayout.addSpacing(10)
         self.viewLayout.addWidget(self.generateBtn)
         
-        self.yesButton.setText("关闭")
+        self.yesButton.setText(self.tr("Close"))
         self.cancelButton.hide()
         
         self.widget.setMinimumWidth(500)
@@ -511,7 +511,7 @@ class LicenseGeneratorDialog(MessageBoxBase):
         if not email:
             InfoBar.warning(
                 self.tr("Warning"),
-                self.tr("请输入邮箱"),
+                self.tr("Please enter email"),
                 position=InfoBarPosition.TOP,
                 duration=2000,
                 parent=self
@@ -554,7 +554,7 @@ class LicenseGeneratorDialog(MessageBoxBase):
         
         # 记录审计日志
         license_service = get_license_service()
-        license_type = "永久授权" if duration_days == 0 else f"{duration_days}天"
+        license_type = self.tr("Permanent License") if duration_days == 0 else self.tr("{0} days").format(duration_days)
         license_service.add_audit_log(
             "generate_license",
             email,
@@ -569,7 +569,7 @@ class LicenseGeneratorDialog(MessageBoxBase):
             QApplication.clipboard().setText(text)
             InfoBar.success(
                 self.tr("Copied"),
-                self.tr("授权码已复制"),
+                self.tr("License code copied"),
                 position=InfoBarPosition.TOP,
                 duration=1500,
                 parent=self

@@ -73,7 +73,7 @@ class MessageBoxSupport(MessageBoxImage):
     def __init__(self, title: str, content: str, image: str, parent=None):
         super().__init__(title, content, image, parent)
 
-        self.yesButton.setText("下次一定")
+        self.yesButton.setText(self.tr("Maybe Next Time"))
         self.cancelButton.setHidden(True)
 
 
@@ -81,14 +81,14 @@ class MessageBoxCloseWindow(MessageBox):
     """关闭窗口询问对话框"""
 
     def __init__(self, parent=None):
-        super().__init__("关闭确认", "您希望如何处理程序?", parent)
+        super().__init__(self.tr("Close Confirmation"), self.tr("How would you like to handle the application?"), parent)
 
         # 修改按钮文本
-        self.yesButton.setText("最小化到托盘")
-        self.cancelButton.setText("关闭程序")
+        self.yesButton.setText(self.tr("Minimize to Tray"))
+        self.cancelButton.setText(self.tr("Close Application"))
 
         # 添加记住选择的复选框ComboBoxSettingCard2
-        self.rememberCheckBox = CheckBox("记住我的选择,下次不再询问", self)
+        self.rememberCheckBox = CheckBox(self.tr("Remember my choice, don't ask again"), self)
         self.textLayout.addWidget(self.rememberCheckBox)
 
         # 存储用户的选择

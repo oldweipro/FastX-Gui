@@ -88,9 +88,9 @@ class PluginDetailDialog(MessageBoxBase):
         self.viewLayout.addLayout(self.content_layout)
 
         # 设置按钮
-        self.yesButton.setText("打开插件")
+        self.yesButton.setText(self.tr("Open Plugin"))
         self.yesButton.setIcon(FIF.PLAY)
-        self.cancelButton.setText("关闭")
+        self.cancelButton.setText(self.tr("Close"))
 
         # 设置对话框大小
         self.widget.setMinimumWidth(700)
@@ -116,14 +116,14 @@ class PluginDetailDialog(MessageBoxBase):
         enable_layout = QHBoxLayout()
         enable_layout.setSpacing(8)
 
-        self.enable_label = CaptionLabel("启用状态:", self)
+        self.enable_label = CaptionLabel(self.tr("Enabled Status:"), self)
         self.enable_label.setStyleSheet("color: #666;")
         enable_layout.addWidget(self.enable_label)
 
         self.enable_switch = SwitchButton(self)
         self.enable_switch.setChecked(self.plugin_info.enabled)
-        self.enable_switch.setOnText("已启用")
-        self.enable_switch.setOffText("已禁用")
+        self.enable_switch.setOnText(self.tr("Enabled"))
+        self.enable_switch.setOffText(self.tr("Disabled"))
         self.enable_switch.setFixedHeight(28)
         enable_layout.addWidget(self.enable_switch)
 
@@ -138,7 +138,7 @@ class PluginDetailDialog(MessageBoxBase):
         author_icon.setFixedSize(16, 16)
         author_layout.addWidget(author_icon)
 
-        self.author_label = BodyLabel(f"作者: {self.plugin_info.author}", self)
+        self.author_label = BodyLabel(self.tr("Author: {0}").format(self.plugin_info.author), self)
         self.author_label.setStyleSheet("font-size: 13px;")
         author_layout.addWidget(self.author_label)
 
@@ -156,7 +156,7 @@ class PluginDetailDialog(MessageBoxBase):
         self.left_layout.addWidget(separator)
 
         # 描述
-        self.desc_title = SubtitleLabel("描述", self)
+        self.desc_title = SubtitleLabel(self.tr("Description"), self)
         self.desc_title.setStyleSheet("font-weight: bold; font-size: 14px;")
         self.left_layout.addWidget(self.desc_title)
 
@@ -171,9 +171,9 @@ class PluginDetailDialog(MessageBoxBase):
         self.details_grid.setColumnStretch(1, 1)
 
         details = [
-            (FIF.TAG, "分类", self._get_category_text()),
-            (FIF.DICTIONARY, "版本", f"v{self.plugin_info.version}"),
-            (FIF.SETTING, "依赖", ", ".join(self.plugin_info.dependencies) or "无"),
+            (FIF.TAG, self.tr("Category"), self._get_category_text()),
+            (FIF.DICTIONARY, self.tr("Version"), f"v{self.plugin_info.version}"),
+            (FIF.SETTING, self.tr("Dependencies"), ", ".join(self.plugin_info.dependencies) or self.tr("None")),
         ]
 
         for row, (icon, label, value) in enumerate(details):
@@ -203,24 +203,24 @@ class PluginDetailDialog(MessageBoxBase):
         actions_layout.setContentsMargins(16, 12, 16, 12)
         actions_layout.setSpacing(8)
 
-        actions_title = SubtitleLabel("快捷操作", self)
+        actions_title = SubtitleLabel(self.tr("Quick Actions"), self)
         actions_title.setStyleSheet("font-weight: bold; font-size: 14px;")
         actions_layout.addWidget(actions_title)
 
         # 打开插件目录
-        folder_btn = TransparentPushButton(FIF.FOLDER, "打开插件目录", actions_card)
+        folder_btn = TransparentPushButton(FIF.FOLDER, self.tr("Open Plugin Folder"), actions_card)
         folder_btn.setFixedHeight(32)
         folder_btn.clicked.connect(self._on_open_folder)
         actions_layout.addWidget(folder_btn)
 
         # 重置设置
-        reset_btn = TransparentPushButton(FIF.UPDATE, "重置设置", actions_card)
+        reset_btn = TransparentPushButton(FIF.UPDATE, self.tr("Reset Settings"), actions_card)
         reset_btn.setFixedHeight(32)
         reset_btn.clicked.connect(self._on_reset_settings)
         actions_layout.addWidget(reset_btn)
 
         # 检查更新
-        update_btn = TransparentPushButton(FIF.CLOUD_DOWNLOAD, "检查更新", actions_card)
+        update_btn = TransparentPushButton(FIF.CLOUD_DOWNLOAD, self.tr("Check for Updates"), actions_card)
         update_btn.setFixedHeight(32)
         actions_layout.addWidget(update_btn)
 
@@ -232,7 +232,7 @@ class PluginDetailDialog(MessageBoxBase):
         settings_layout.setContentsMargins(16, 12, 16, 12)
         settings_layout.setSpacing(8)
 
-        settings_title = SubtitleLabel("插件配置", self)
+        settings_title = SubtitleLabel(self.tr("Plugin Configuration"), self)
         settings_title.setStyleSheet("font-weight: bold; font-size: 14px;")
         settings_layout.addWidget(settings_title)
 
@@ -257,16 +257,16 @@ class PluginDetailDialog(MessageBoxBase):
                             switch.setFixedHeight(24)
                             row_layout.addWidget(switch)
                         else:
-                            value_label = CaptionLabel(str(value) if value else "未设置", settings_card)
+                            value_label = CaptionLabel(str(value) if value else self.tr("Not Set"), settings_card)
                             value_label.setStyleSheet("color: #666;")
                             row_layout.addWidget(value_label)
                         settings_layout.addLayout(row_layout)
                 else:
-                    no_config = CaptionLabel("暂无配置项", settings_card)
+                    no_config = CaptionLabel(self.tr("No configuration items"), settings_card)
                     no_config.setStyleSheet("color: #888; font-style: italic;")
                     settings_layout.addWidget(no_config)
         else:
-            no_instance = CaptionLabel("插件实例未加载", settings_card)
+            no_instance = CaptionLabel(self.tr("Plugin instance not loaded"), settings_card)
             no_instance.setStyleSheet("color: #888; font-style: italic;")
             settings_layout.addWidget(no_instance)
 
@@ -280,11 +280,11 @@ class PluginDetailDialog(MessageBoxBase):
             danger_layout.setContentsMargins(16, 12, 16, 12)
             danger_layout.setSpacing(8)
 
-            danger_title = SubtitleLabel("危险操作", self)
+            danger_title = SubtitleLabel(self.tr("Dangerous Operations"), self)
             danger_title.setStyleSheet("font-weight: bold; font-size: 14px; color: #d13438;")
             danger_layout.addWidget(danger_title)
 
-            uninstall_btn = PushButton(FIF.DELETE, "卸载插件", danger_card)
+            uninstall_btn = PushButton(FIF.DELETE, self.tr("Uninstall Plugin"), danger_card)
             uninstall_btn.setFixedHeight(32)
             uninstall_btn.setStyleSheet("color: #d13438;")
             uninstall_btn.clicked.connect(self._on_uninstall)
@@ -315,18 +315,19 @@ class PluginDetailDialog(MessageBoxBase):
         from app.plugins.plugin_base import PluginCategory
 
         category_texts = {
-            PluginCategory.DIAGNOSTIC: "诊断工具",
-            PluginCategory.COMMUNICATION: "通信工具",
-            PluginCategory.SERIAL: "串口工具",
-            PluginCategory.UTILITIES: "实用工具",
-            PluginCategory.CUSTOM: "自定义"
+            PluginCategory.DIAGNOSTIC: self.tr("Diagnostic Tools"),
+            PluginCategory.COMMUNICATION: self.tr("Communication Tools"),
+            PluginCategory.SERIAL: self.tr("Serial Tools"),
+            PluginCategory.UTILITIES: self.tr("Utilities"),
+            PluginCategory.CUSTOM: self.tr("Custom")
         }
-        return category_texts.get(self.plugin_info.category, "未知")
+        return category_texts.get(self.plugin_info.category, self.tr("Unknown"))
 
     def _on_enable_changed(self, enabled: bool):
         """启用/禁用状态改变"""
         self.plugin_info.enabled = enabled
-        print(f"[PluginDetailDialog] 插件 '{self.plugin_name}' 状态改变: {'已启用' if enabled else '已禁用'}")
+        status = self.tr("Enabled") if enabled else self.tr("Disabled")
+        print(f"[PluginDetailDialog] Plugin '{self.plugin_name}' status changed: {status}")
 
     def _on_open_folder(self):
         """打开插件目录"""
@@ -357,8 +358,8 @@ class PluginDetailDialog(MessageBoxBase):
 
         reply = QMessageBox.question(
             self,
-            "确认卸载",
-            f"确定要卸载插件 '{self.plugin_name}' 吗？\n此操作不可撤销。",
+            self.tr("Confirm Uninstall"),
+            self.tr("Are you sure you want to uninstall plugin '{0}'?\nThis action cannot be undone.").format(self.plugin_name),
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No
         )

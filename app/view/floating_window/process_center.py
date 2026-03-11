@@ -184,17 +184,17 @@ class DownloadTaskCard(TaskCard):
         self._cancelled = False
         self._paused = False
         
-        self.setTitle("下载")
-        self.setContent(f"下载中...")
+        self.setTitle(self.tr("Download"))
+        self.setContent(self.tr("Downloading..."))
         self.setToolTip(f"链接：{self.url}\n保存至：{self.path}")
         
         self.openFileButton = ToolButton(FIF.PLAY, self)
-        self.openFileButton.setToolTip("打开文件")
+        self.openFileButton.setToolTip(self.tr("Open File"))
         self.openFileButton.hide()
         self.hBoxLayout.insertWidget(5, self.openFileButton, Qt.AlignRight)
         
         self.showFileButton = ToolButton(FIF.FOLDER, self)
-        self.showFileButton.setToolTip("打开文件所在位置")
+        self.showFileButton.setToolTip(self.tr("Open File Location"))
         self.showFileButton.hide()
         self.hBoxLayout.insertWidget(6, self.showFileButton, Qt.AlignRight)
         
@@ -212,11 +212,11 @@ class DownloadTaskCard(TaskCard):
     def _download_worker(self):
         result = download_file(self.url, self.path, self._progress_callback, self._is_cancelled)
         if result:
-            self.setContent("下载完成！")
+            self.setContent(self.tr("Download completed!"))
             self.finish(True)
             self.downloadFinishedSignal.emit(True, result)
         else:
-            self.setContent("下载失败！")
+            self.setContent(self.tr("Download failed!"))
             self.finish(False)
             self.downloadFinishedSignal.emit(False, "")
 
@@ -259,13 +259,13 @@ class ProgressCenter(FlyoutViewBase):
         
         # Title
         titleLayout = QHBoxLayout()
-        self.titleLabel = StrongBodyLabel("任务中心", self)
-        self.emptyLabel = BodyLabel("当前无任务", self)
+        self.titleLabel = StrongBodyLabel(self.tr("Task Center"), self)
+        self.emptyLabel = BodyLabel(self.tr("No tasks currently"), self)
         self.emptyLabel.setTextColor("#909090", "#707070")
         self.emptyLabel.setAlignment(Qt.AlignCenter)
         
         self.clearButton = ToolButton(FIF.BROOM, self)
-        self.clearButton.setToolTip("清空已完成任务")
+        self.clearButton.setToolTip(self.tr("Clear Completed Tasks"))
         self.clearButton.setFixedSize(28, 28)
         self.clearButton.clicked.connect(self.clear)
         

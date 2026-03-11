@@ -32,7 +32,7 @@ class BreadcrumbNavigation(QWidget):
         # 主页按钮
         self.home_btn = TransparentToolButton(FIF.HOME, self)
         self.home_btn.setFixedSize(32, 32)
-        self.home_btn.setToolTip("返回主页")
+        self.home_btn.setToolTip(self.tr("Back to Home"))
         self.home_btn.clicked.connect(lambda: self.navigateRequested.emit("home"))
         self.layout.addWidget(self.home_btn)
         
@@ -44,7 +44,7 @@ class BreadcrumbNavigation(QWidget):
         # 刷新按钮
         self.refresh_btn = TransparentToolButton(FIF.SYNC, self)
         self.refresh_btn.setFixedSize(32, 32)
-        self.refresh_btn.setToolTip("刷新")
+        self.refresh_btn.setToolTip(self.tr("Refresh"))
         self.layout.addWidget(self.refresh_btn)
     
     def set_path(self, path_items: List[str]):
