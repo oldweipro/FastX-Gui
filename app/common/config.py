@@ -232,6 +232,14 @@ class Config(QConfig):
     # 浮窗位置设置
     floatingWindowPosX = ConfigItem("FloatingWindow", "PosX", 100)
     floatingWindowPosY = ConfigItem("FloatingWindow", "PosY", 100)
+    # 浮窗主题设置（0=跟随系统，1=浅色，2=深色）
+    floatingWindowTheme = OptionsConfigItem("FloatingWindow", "Theme", 0, OptionsValidator([0, 1, 2]))
+    # 扩展闪抽组件
+    extendQuickDrawComponent = ConfigItem("FloatingWindow", "ExtendQuickDraw", False, BoolValidator())
+    # 前台应用隐藏设置
+    hideFloatingWindowOnForeground = ConfigItem("FloatingWindow", "HideOnForeground", False, BoolValidator())
+    hideFloatingWindowOnForegroundWindowTitles = ConfigItem("FloatingWindow", "HideOnForegroundTitles", "")
+    hideFloatingWindowOnForegroundProcessNames = ConfigItem("FloatingWindow", "HideOnForegroundProcesses", "")
 
     # 插件状态配置
     # 存储插件启用状态，格式: {"plugin_name": true/false, ...}

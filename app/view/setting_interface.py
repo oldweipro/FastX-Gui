@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 from typing import Union
 
-from PySide6.QtCore import QStandardPaths, Qt, QUrl
+from PySide6.QtCore import QStandardPaths, Qt, QUrl, Signal
 from PySide6.QtGui import QDesktopServices, QIcon
 from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QLabel, QWidget
 from qfluentwidgets import (
@@ -24,7 +24,7 @@ from qfluentwidgets import (
     SettingCard,
     SettingCardGroup,
     SwitchSettingCard,
-    setTheme,
+    setTheme, LineEdit,
     setThemeColor, isDarkTheme, FluentIconBase, HyperlinkButton, GroupHeaderCardWidget, SwitchButton, ComboBox, SpinBox,
 )
 from qfluentwidgets import FluentIcon as FIF
@@ -237,6 +237,38 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
             self.focus_switch,
         )
 
+        # 重置位置按钮
+        self.reset_pos_btn = PushButton("重置位置")
+        self.reset_pos_btn.clicked.connect(self._on_reset_position)
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_arrow_reset_20_regular"),
+            "重置悬浮窗位置",
+            "将悬浮窗移回屏幕默认位置",
+            self.reset_pos_btn,
+        )
+
+    def _on_reset_position(self):
+        """重置悬浮窗位置"""
+        try:
+            # 重置配置
+            cfg.set(cfg.floatingWindowPosX, 100)
+            cfg.set(cfg.floatingWindowPosY, 100)
+            
+            # 如果浮窗存在，移动它
+            from PySide6.QtWidgets import QApplication
+            from ..view.main_window import MainWindow
+            
+            for widget in QApplication.topLevelWidgets():
+                if isinstance(widget, MainWindow):
+                    if hasattr(widget, "floatingWindow") and widget.floatingWindow:
+                        widget.floatingWindow.move(100, 100)
+                        # 如果处于贴边状态，展开它
+                        if widget.floatingWindow._retracted:
+                            widget.floatingWindow._expand_from_edge()
+                    break
+        except Exception as e:
+            print(f"重置悬浮窗位置失败: {e}")
+
     def _on_topmost_changed(self, index):
         """置顶模式改变处理"""
         mode_map = {
@@ -283,6 +315,246 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
                     break
         except Exception as e:
             print(f"控制浮窗显示失败: {e}")
+
+
+class FloatingWindowAppearanceSettings(GroupHeaderCardWidget):
+    """浮窗外观设置卡片"""
+
+    appearance_settings_changed = Signal()
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setTitle(self.tr("appearance_settings"))
+        self.setBorderRadius(8)
+        self._create_controls()
+
+    def _create_controls(self):
+        """创建外观设置控件"""
+
+        # 按钮控制
+        self.btn_combo = self._create_button_control_combo()
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_button_20_regular"),
+            "显示的按钮",
+            "选择悬浮窗上要显示的功能按钮",
+            self.btn_combo,
+        )
+
+        # 排列方式
+        self.placement_combo = ComboBox()
+        self.placement_combo.addItems(["双行网格", "垂直排列", "水平排列"])
+        self.placement_combo.setCurrentIndex(cfg.floatingWindowPlacement.value)
+        self.placement_combo.currentIndexChanged.connect(self._on_placement_changed)
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_align_left_20_regular"),
+            "按钮排列方式",
+            "控制悬浮窗按钮的排列方向",
+            self.placement_combo,
+        )
+
+        # 显示样式
+        self.style_combo = ComboBox()
+        self.style_combo.addItems(["图标+文字", "仅图标", "仅文字"])
+        self.style_combo.setCurrentIndex(cfg.floatingWindowDisplayStyle.value)
+        self.style_combo.currentIndexChanged.connect(self._on_style_changed)
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_design_ideas_20_regular"),
+            "按钮显示样式",
+            "控制按钮是显示图标、文字还是两者都显示",
+            self.style_combo,
+        )
+
+        # 大小
+        self.size_combo = ComboBox()
+        self.size_combo.addItems(["超级小", "超小", "小", "中（默认）", "大", "超大", "超级大"])
+        self.size_combo.setCurrentIndex(cfg.floatingWindowSize.value)
+        self.size_combo.currentIndexChanged.connect(self._on_size_changed)
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_resize_20_regular"),
+            "悬浮窗大小",
+            "调整按钮与图标的整体尺寸",
+            self.size_combo,
+        )
+
+        # 主题
+        self.theme_combo = ComboBox()
+        self.theme_combo.addItems(["跟随系统", "浅色", "深色"])
+        self.theme_combo.setCurrentIndex(cfg.floatingWindowTheme.value)
+        self.theme_combo.currentIndexChanged.connect(self._on_theme_changed)
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_dark_theme_20_regular"),
+            "悬浮窗主题",
+            "单独控制悬浮窗的浅色/深色外观（不影响主界面）",
+            self.theme_combo,
+        )
+
+        # 扩展闪抽组件
+        self.extend_switch = SwitchButton()
+        self.extend_switch.setChecked(cfg.extendQuickDrawComponent.value)
+        self.extend_switch.checkedChanged.connect(lambda v: setattr(cfg.extendQuickDrawComponent, "value", v))
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_panel_right_20_regular"),
+            "扩展闪抽组件",
+            "在闪抽按钮旁显示下拉箭头，可快速切换班级/筛选条件",
+            self.extend_switch,
+        )
+
+    def _create_button_control_combo(self) -> ComboBox:
+        """创建按钮控制下拉框"""
+        combo = ComboBox()
+        combo.addItems([
+            "仅点名", "仅闪抽", "仅抽奖",
+            "点名+闪抽", "点名+抽奖", "闪抽+抽奖", "点名+闪抽+抽奖",
+            "仅计时", "点名+计时", "闪抽+计时",
+            "抽奖+计时", "点名+闪抽+计时", "点名+抽奖+计时", "闪抽+抽奖+计时",
+            "点名+闪抽+抽奖+计时"
+        ])
+        # 将配置值映射到索引
+        value = cfg.floatingWindowButtonControl.value
+        if isinstance(value, int) and 0 <= value < combo.count():
+            combo.setCurrentIndex(value)
+        else:
+            combo.setCurrentIndex(6)  # 默认点名+闪抽+抽奖
+        combo.currentIndexChanged.connect(self._on_button_control_changed)
+        return combo
+
+    def _on_button_control_changed(self, index: int):
+        """按钮控制改变"""
+        cfg.floatingWindowButtonControl.value = index
+        self.appearance_settings_changed.emit()
+
+    def _on_placement_changed(self, index: int):
+        """排列方式改变"""
+        cfg.floatingWindowPlacement.value = index
+        self.appearance_settings_changed.emit()
+
+    def _on_style_changed(self, index: int):
+        """显示样式改变"""
+        cfg.floatingWindowDisplayStyle.value = index
+        self.appearance_settings_changed.emit()
+
+    def _on_size_changed(self, index: int):
+        """大小改变"""
+        cfg.floatingWindowSize.value = index
+        self.appearance_settings_changed.emit()
+
+    def _on_theme_changed(self, index: int):
+        """主题改变"""
+        cfg.floatingWindowTheme.value = index
+        self.appearance_settings_changed.emit()
+
+
+class FloatingWindowEdgeSettings(GroupHeaderCardWidget):
+    """浮窗贴边设置卡片"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setTitle(self.tr("edge_settings"))
+        self.setBorderRadius(8)
+        self._create_controls()
+
+    def _create_controls(self):
+        """创建贴边设置控件"""
+
+        # 贴边开关
+        self.stick_switch = SwitchButton()
+        self.stick_switch.setChecked(cfg.floatingWindowStickToEdge.value)
+        self.stick_switch.checkedChanged.connect(lambda v: setattr(cfg.floatingWindowStickToEdge, "value", v))
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_pin_20_regular"),
+            "启用贴边自动隐藏",
+            "悬浮窗拖到屏幕边缘后自动缩进，鼠标经过时展开",
+            self.stick_switch,
+        )
+
+        # 回收秒数
+        self.recover_spinbox = SpinBox()
+        self.recover_spinbox.setRange(1, 60)
+        self.recover_spinbox.setSuffix(" s")
+        self.recover_spinbox.setValue(cfg.floatingWindowStickToEdgeRecoverSeconds.value)
+        self.recover_spinbox.valueChanged.connect(lambda v: setattr(cfg.floatingWindowStickToEdgeRecoverSeconds, "value", v))
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_timer_20_regular"),
+            "自动隐藏延迟",
+            "鼠标离开后等待多少秒再收回边缘",
+            self.recover_spinbox,
+        )
+
+        # 指示器样式
+        self.indicator_combo = ComboBox()
+        self.indicator_combo.addItems(["图标样式", "文字样式", "箭头样式"])
+        self.indicator_combo.setCurrentIndex(cfg.floatingWindowStickToEdgeDisplayStyle.value)
+        self.indicator_combo.currentIndexChanged.connect(lambda i: setattr(cfg.floatingWindowStickToEdgeDisplayStyle, "value", i))
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_desktop_sync_20_regular"),
+            "收纳指示器样式",
+            "控制贴边后显示的小按钮外观",
+            self.indicator_combo,
+        )
+
+
+class FloatingWindowForegroundSettings(GroupHeaderCardWidget):
+    """浮窗前台隐藏设置卡片"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setTitle(self.tr("foreground_settings"))
+        self.setBorderRadius(8)
+        self._create_controls()
+
+    def _create_controls(self):
+        """创建前台隐藏设置控件"""
+
+        # 启用开关
+        self.enabled_switch = SwitchButton()
+        self.enabled_switch.setChecked(cfg.hideFloatingWindowOnForeground.value)
+        self.enabled_switch.checkedChanged.connect(self._on_enabled_changed)
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_window_ad_20_regular"),
+            "前台特定窗口时隐藏",
+            "当指定的窗口处于前台时自动隐藏悬浮窗",
+            self.enabled_switch,
+        )
+
+        # 窗口标题
+        self.titles_edit = LineEdit()
+        self.titles_edit.setPlaceholderText("分号分隔，如: 钉钉;腾讯会议")
+        self.titles_edit.setText(cfg.hideFloatingWindowOnForegroundWindowTitles.value)
+        self.titles_edit.editingFinished.connect(
+            lambda: setattr(cfg.hideFloatingWindowOnForegroundWindowTitles, "value", self.titles_edit.text().strip())
+        )
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_window_20_regular"),
+            "窗口标题关键词",
+            "包含这些关键词的窗口处于前台时隐藏悬浮窗（分号分隔）",
+            self.titles_edit,
+        )
+
+        # 进程名称
+        self.processes_edit = LineEdit()
+        self.processes_edit.setPlaceholderText("分号分隔，如: dingtalk.exe;Teams.exe")
+        self.processes_edit.setText(cfg.hideFloatingWindowOnForegroundProcessNames.value)
+        self.processes_edit.editingFinished.connect(
+            lambda: setattr(cfg.hideFloatingWindowOnForegroundProcessNames, "value", self.processes_edit.text().strip())
+        )
+        self.addGroup(
+            UnicodeIcon.get_icon_by_name("ic_fluent_window_20_regular"),
+            "进程名称关键词",
+            "指定进程处于前台时隐藏悬浮窗（分号分隔）",
+            self.processes_edit,
+        )
+
+        self._set_inputs_enabled(self.enabled_switch.isChecked())
+
+    def _on_enabled_changed(self, enabled: bool):
+        """启用状态改变"""
+        cfg.hideFloatingWindowOnForeground.value = enabled
+        self._set_inputs_enabled(enabled)
+
+    def _set_inputs_enabled(self, enabled: bool):
+        """设置输入框启用状态"""
+        self.titles_edit.setEnabled(enabled)
+        self.processes_edit.setEnabled(enabled)
 
 
 class SettingInterface(ScrollArea):
@@ -425,7 +697,10 @@ class SettingInterface(ScrollArea):
             self.tr("Float Windows Settings"),
             self.view,
         )
-        self.floatingWindowSettingCard = FloatingWindowBasicSettings(self.floatingWindowGroupCard)
+        self.floatingWindowBasicCard = FloatingWindowBasicSettings(self.floatingWindowGroupCard)
+        self.floatingWindowAppearanceCard = FloatingWindowAppearanceSettings(self.floatingWindowGroupCard)
+        self.floatingWindowEdgeCard = FloatingWindowEdgeSettings(self.floatingWindowGroupCard)
+        self.floatingWindowForegroundCard = FloatingWindowForegroundSettings(self.floatingWindowGroupCard)
 
         # material
         self.materialGroup = SettingCardGroup(self.tr("Material"), self.view)
@@ -637,7 +912,10 @@ class SettingInterface(ScrollArea):
         self.backgroundGroupCard._adjustViewSize()
 
         # float window
-        self.floatingWindowGroupCard.viewLayout.addWidget(self.floatingWindowSettingCard)
+        self.floatingWindowGroupCard.viewLayout.addWidget(self.floatingWindowBasicCard)
+        self.floatingWindowGroupCard.viewLayout.addWidget(self.floatingWindowAppearanceCard)
+        self.floatingWindowGroupCard.viewLayout.addWidget(self.floatingWindowEdgeCard)
+        self.floatingWindowGroupCard.viewLayout.addWidget(self.floatingWindowForegroundCard)
 
         # add log setting cards
         self.logGroupCard.viewLayout.addWidget(self.logLevelCard)

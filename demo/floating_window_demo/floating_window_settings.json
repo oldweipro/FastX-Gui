@@ -1,0 +1,33 @@
+{
+    "floating_window_management": {
+        "startup_display_floating_window": true,
+        "floating_window_opacity": 0.72,
+        "floating_window_topmost_mode": 1,
+        "floating_window_draggable": true,
+        "floating_window_long_press_duration": 850,
+        "do_not_steal_focus": false,
+        "extend_quick_draw_component": false,
+        "floating_window_button_control": [
+            "roll_call",
+            "quick_draw",
+            "lottery"
+        ],
+        "floating_window_placement": 1,
+        "floating_window_display_style": 0,
+        "floating_window_size": 3,
+        "floating_window_theme": 1,
+        "floating_window_stick_to_edge": true,
+        "floating_window_stick_to_edge_recover_seconds": 5,
+        "floating_window_stick_to_edge_display_style": 0,
+        "hide_floating_window_on_foreground": false,
+        "hide_floating_window_on_foreground_window_titles": "",
+        "hide_floating_window_on_foreground_process_names": "",
+        "quick_draw_class_name": "",
+        "quick_draw_group_filter": "",
+        "quick_draw_gender_filter": ""
+    },
+    "float_position": {
+        "x": 2331,
+        "y": 1119
+    }
+}
