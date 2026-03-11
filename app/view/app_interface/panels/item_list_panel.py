@@ -4,12 +4,11 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QHeaderView, QVBoxLayout, QWidget
 from qfluentwidgets import (
     ComboBox,
-    InfoBar,
-    InfoBarPosition,
     StrongBodyLabel,
     TableView,
 )
 
+from app.common.notification import Notification
 from app.common.signal_bus import signalBus
 from app.view.app_interface.service import import_export_service, item_service, template_service
 from app.view.app_interface.table_model.fm_item_table_model import FmItemTableModel
@@ -98,7 +97,7 @@ class ItemListPanel(QWidget):
 
         templates = template_service.list_templates(self._project_id)
         if not templates:
-            InfoBar.warning("Warning", "Create a template first", parent=self, position=InfoBarPosition.TOP)
+            Notification.warning("Warning", "Create a template first", parent=self)
             return
         dlg = ItemCreateDialog(templates, self.window())
         if dlg.exec():
@@ -114,14 +113,14 @@ class ItemListPanel(QWidget):
                     self._reload_items()
                     self.editItemRequested.emit(result["id"], self._project_id)
                 except Exception as e:
-                    InfoBar.error("Error", str(e), parent=self, position=InfoBarPosition.TOP)
+                    Notification.error("Error", str(e), parent=self)
 
     def on_delete_item(self):
         from qfluentwidgets import MessageBox
 
         item_id = self._get_selected_id()
         if not item_id:
-            InfoBar.warning("Warning", "Select an item first", parent=self, position=InfoBarPosition.TOP)
+            Notification.warning("Warning", "Select an item first", parent=self)
             return
         box = MessageBox("Delete Item", "Are you sure?", self.window())
         if box.exec():
@@ -143,9 +142,9 @@ class ItemListPanel(QWidget):
                     import_export_service.import_project_json(ws_id, path)
                 signalBus.dataChanged.emit()
                 self._reload_items()
-                InfoBar.success("Success", "Import complete", parent=self, position=InfoBarPosition.TOP)
+                Notification.success("Success", "Import complete", parent=self)
             except Exception as e:
-                InfoBar.error("Error", str(e), parent=self, position=InfoBarPosition.TOP)
+                Notification.error("Error", str(e), parent=self)
 
     def on_export_items(self):
         path, _ = QFileDialog.getSaveFileName(
@@ -157,6 +156,6 @@ class ItemListPanel(QWidget):
                     import_export_service.export_project_xlsx(self._project_id, path)
                 else:
                     import_export_service.export_project_json(self._project_id, path)
-                InfoBar.success("Success", f"Exported to {path}", parent=self, position=InfoBarPosition.TOP)
+                Notification.success("Success", f"Exported to {path}", parent=self)
             except Exception as e:
-                InfoBar.error("Error", str(e), parent=self, position=InfoBarPosition.TOP)
+                Notification.error("Error", str(e), parent=self)

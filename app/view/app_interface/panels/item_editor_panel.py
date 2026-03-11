@@ -11,14 +11,13 @@ from qfluentwidgets import (
     BodyLabel,
     CheckBox,
     ComboBox,
-    InfoBar,
-    InfoBarPosition,
     LineEdit,
     SpinBox,
     StrongBodyLabel,
     TextEdit,
 )
 
+from app.common.notification import Notification
 from app.common.signal_bus import signalBus
 from app.view.app_interface.service import item_service, template_service
 
@@ -225,12 +224,12 @@ class ItemEditorPanel(QWidget):
     def on_save(self):
         title = self.item_title_edit.text().strip()
         if not title:
-            InfoBar.warning("Warning", "Item title cannot be empty", parent=self, position=InfoBarPosition.TOP)
+            Notification.warning("Warning", "Item title cannot be empty", parent=self)
             return
         field_values = self._collect_field_values()
         try:
             item_service.update_item(self._item_id, title=title, field_values=field_values)
             signalBus.dataChanged.emit()
-            InfoBar.success("Saved", "Item updated", parent=self, position=InfoBarPosition.TOP)
+            Notification.success("Saved", "Item updated", parent=self)
         except Exception as e:
-            InfoBar.error("Error", str(e), parent=self, position=InfoBarPosition.TOP)
+            Notification.error("Error", str(e), parent=self)

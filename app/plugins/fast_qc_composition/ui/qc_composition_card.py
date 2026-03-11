@@ -3,13 +3,13 @@ from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QVBoxLayout, QTableWidgetItem, QHeaderView, QAbstractItemView
 from qfluentwidgets import (
     ExpandSettingCard, PrimaryPushSettingCard, PushSettingCard, ComboBox, TableWidget,
-    FluentIconBase, MessageBox, MessageBoxBase, SubtitleLabel, LineEdit, BodyLabel, SpinBox,
-    InfoBar, InfoBarPosition
+    FluentIconBase, MessageBox, MessageBoxBase, SubtitleLabel, LineEdit, BodyLabel, SpinBox
 )
 from qfluentwidgets import FluentIcon as FIF
 
 from app.common.config import cfg
 from app.common.icon import UnicodeIcon
+from app.common.notification import Notification
 
 
 class TableFrame(TableWidget):
@@ -210,19 +210,15 @@ class FastQcCompositionCard(ExpandSettingCard):
     def __on_execute(self):
         try:
             message = self.tr("Processing completed!\n")
-            InfoBar.success(
+            Notification.success(
                 self.tr("Success"),
                 message,
-                position=InfoBarPosition.TOP,
-                duration=3000,
                 parent=self
             )
         except Exception as e:
-            InfoBar.error(
+            Notification.error(
                 self.tr("Error"),
                 self.tr(f"Processing failed: {str(e)}"),
-                position=InfoBarPosition.TOP,
-                duration=3000,
                 parent=self
             )
 

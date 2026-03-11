@@ -9,7 +9,7 @@ from qfluentwidgets import (
     PushSettingCard,
     SwitchSettingCard, ScrollArea, FluentIconBase, ComboBox, TableWidget, IconWidget, FluentIcon, SearchLineEdit,
     StrongBodyLabel, Dialog, LineEdit, PrimaryPushButton, PushButton, MessageBoxBase, BodyLabel, SpinBox, SubtitleLabel,
-    ComboBoxSettingCard, InfoBar, InfoBarPosition, MessageBox
+    ComboBoxSettingCard, MessageBox
 )
 from qfluentwidgets import (
     FluentIcon as FIF,
@@ -17,6 +17,7 @@ from qfluentwidgets import (
 
 from app.common.config import cfg
 from app.common.icon import UnicodeIcon, Icon
+from app.common.notification import Notification
 from app.common.utils import downloadTemplate
 
 
@@ -205,19 +206,15 @@ class FastE2EToolUI(ExpandSettingCard):
         try:
             # 显示结果
             message = self.tr("Processing completed!\n")
-            InfoBar.success(
+            Notification.success(
                 self.tr("Success"),
                 message,
-                position=InfoBarPosition.TOP,
-                duration=3000,
                 parent=self
             )
         except Exception as e:
-            InfoBar.error(
+            Notification.error(
                 self.tr("Error"),
                 self.tr(f"Processing failed: {str(e)}"),
-                position=InfoBarPosition.TOP,
-                duration=3000,
                 parent=self
             )
 
@@ -233,29 +230,23 @@ class FastE2EToolUI(ExpandSettingCard):
             if save_path:
                 # 显示成功消息
                 message = self.tr(f"Template downloaded successfully!\nSaved to: {save_path}")
-                InfoBar.success(
+                Notification.success(
                     self.tr("Success"),
                     message,
-                    position=InfoBarPosition.TOP,
-                    duration=3000,
                     parent=self
                 )
             else:
                 # 显示取消或失败消息
                 message = self.tr("Template download cancelled or failed.")
-                InfoBar.warning(
+                Notification.warning(
                     self.tr("Warning"),
                     message,
-                    position=InfoBarPosition.TOP,
-                    duration=3000,
                     parent=self
                 )
         except Exception as e:
-            InfoBar.error(
+            Notification.error(
                 self.tr("Error"),
                 self.tr(f"Failed to download template: {str(e)}"),
-                position=InfoBarPosition.TOP,
-                duration=3000,
                 parent=self
             )
 

@@ -32,7 +32,7 @@ from qfluentwidgets import FluentIcon as FIF
 from app.common.background_manager import get_background_manager
 from app.common.config import cfg, isWin11, TopmostMode
 from app.common.icon import UnicodeIcon
-from app.common.notification import show_notification, NotificationType, NotificationConfig
+from app.common.notification import Notification, NotifyPosition
 from app.common.setting import (
     AUTHOR,
     COPYRIGHT_HOLDER,
@@ -935,38 +935,29 @@ class SettingInterface(ScrollArea):
 
         if result.error and not result.no_release:
             # 网络错误 / 未知错误
-            show_notification(
-                NotificationType.ERROR,
-                NotificationConfig(
-                    title=self.tr("Check update"),
-                    content=result.error,
-                    duration=5000,
-                    position=InfoBarPosition.TOP_RIGHT,
-                ),
+            Notification.error(
+                self.tr("Check update"),
+                result.error,
+                duration=5000,
+                position=NotifyPosition.TOP_RIGHT,
                 parent=parent,
             )
         elif result.no_release:
             # 仓库尚未发布任何 Release
-            show_notification(
-                NotificationType.INFO,
-                NotificationConfig(
-                    title=self.tr("Check update"),
-                    content=self.tr("Currently a development version, no release available."),
-                    duration=4000,
-                    position=InfoBarPosition.TOP_RIGHT,
-                ),
+            Notification.info(
+                self.tr("Check update"),
+                self.tr("Currently a development version, no release available."),
+                duration=4000,
+                position=NotifyPosition.TOP_RIGHT,
                 parent=parent,
             )
         elif result.is_latest:
             # 已是最新版本
-            show_notification(
-                NotificationType.SUCCESS,
-                NotificationConfig(
-                    title=self.tr("Check update"),
-                    content=self.tr("Already the latest version: ") + result.current_version,
-                    duration=3000,
-                    position=InfoBarPosition.TOP_RIGHT,
-                ),
+            Notification.success(
+                self.tr("Check update"),
+                self.tr("Already the latest version: ") + result.current_version,
+                duration=3000,
+                position=NotifyPosition.TOP_RIGHT,
                 parent=parent,
             )
         elif result.has_update:
@@ -1072,20 +1063,20 @@ class SettingInterface(ScrollArea):
         ok = self.set_autostart(checked)
         if ok:
             if checked:
-                show_notification(
-                    NotificationType.SUCCESS,
-                    NotificationConfig(title=self.tr("auto start up"),content=self.tr("enable")),
+                Notification.success(
+                    self.tr("auto start up"),
+                    self.tr("enable"),
                     parent=self.window(),
                 )
             else:
-                show_notification(
-                    NotificationType.INFO,
-                    NotificationConfig(title=self.tr("auto start up"),content=self.tr("disable")),
+                Notification.info(
+                    self.tr("auto start up"),
+                    self.tr("disable"),
                     parent=self.window(),
                 )
         else:
-            show_notification(
-                NotificationType.ERROR,
-                NotificationConfig(title=self.tr("auto start up"), content=self.tr("failure")),
+            Notification.error(
+                self.tr("auto start up"),
+                self.tr("failure"),
                 parent=self.window(),
             )

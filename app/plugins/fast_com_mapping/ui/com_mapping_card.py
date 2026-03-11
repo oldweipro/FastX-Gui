@@ -1,13 +1,13 @@
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QFileDialog
 from qfluentwidgets import (
-    ExpandSettingCard, PrimaryPushSettingCard, PushSettingCard, ComboBox, FluentIconBase,
-    InfoBar, InfoBarPosition
+    ExpandSettingCard, PrimaryPushSettingCard, PushSettingCard, ComboBox, FluentIconBase
 )
 from qfluentwidgets import FluentIcon as FIF
 
 from app.common.config import cfg
 from app.common.icon import UnicodeIcon, Icon
+from app.common.notification import Notification
 
 
 class FastComMappingCard(ExpandSettingCard):
@@ -90,19 +90,15 @@ class FastComMappingCard(ExpandSettingCard):
     def __on_execute(self):
         try:
             message = self.tr("Processing completed!\n")
-            InfoBar.success(
+            Notification.success(
                 self.tr("Success"),
                 message,
-                position=InfoBarPosition.TOP,
-                duration=3000,
                 parent=self
             )
         except Exception as e:
-            InfoBar.error(
+            Notification.error(
                 self.tr("Error"),
                 self.tr(f"Processing failed: {str(e)}"),
-                position=InfoBarPosition.TOP,
-                duration=3000,
                 parent=self
             )
 

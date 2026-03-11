@@ -1,5 +1,24 @@
+"""
+统一通知模块 - 提供系统级和应用内通知的统一接口
+
+使用方式:
+    from app.common.notification import Notification
+    
+    # 成功通知
+    Notification.success("操作成功", "文件已保存", parent=self)
+    
+    # 警告通知
+    Notification.warning("警告", "请检查输入", parent=self)
+    
+    # 错误通知
+    Notification.error("错误", "操作失败", parent=self)
+    
+    # 信息通知
+    Notification.info("提示", "正在处理中...", parent=self)
+"""
 import sys
 from typing import Optional, Union
+from enum import Enum
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget
@@ -9,10 +28,8 @@ from qfluentwidgets import InfoBar, FluentIcon, InfoBarIcon, InfoBarPosition
 from app.common.setting import APPLY_NAME
 
 
-# ==================== 通知模块 ====================
-class NotificationType:
-    """预定义的通知类型"""
-
+class NotifyType(Enum):
+    """通知类型枚举"""
     SUCCESS = "success"
     WARNING = "warning"
     ERROR = "error"
@@ -20,249 +37,303 @@ class NotificationType:
     CUSTOM = "custom"
 
 
-class NotificationConfig:
-    """通知配置类，用于定义通知的各种参数"""
+class NotifyPosition(Enum):
+    """通知位置枚举 - 映射到InfoBarPosition"""
+    TOP = InfoBarPosition.TOP
+    BOTTOM = InfoBarPosition.BOTTOM
+    TOP_LEFT = InfoBarPosition.TOP_LEFT
+    TOP_RIGHT = InfoBarPosition.TOP_RIGHT
+    BOTTOM_LEFT = InfoBarPosition.BOTTOM_LEFT
+    BOTTOM_RIGHT = InfoBarPosition.BOTTOM_RIGHT
+    NONE = InfoBarPosition.NONE
 
-    def __init__(
-        self,
-        title: str = "",
+
+class Notification:
+    """
+    统一通知接口类
+    
+    提供静态方法用于显示各种类型的通知：
+    - success: 成功通知（绿色）
+    - warning: 警告通知（黄色）
+    - error: 错误通知（红色）
+    - info: 信息通知（蓝色）
+    - custom: 自定义通知
+    
+    所有通知都支持：
+    - 自定义持续时间
+    - 自定义位置
+    - 国际化文本
+    - 日志记录
+    """
+    
+    # 默认配置
+    DEFAULT_DURATION = {
+        NotifyType.SUCCESS: 3000,
+        NotifyType.WARNING: 4000,
+        NotifyType.ERROR: 5000,
+        NotifyType.INFO: 3000,
+    }
+    
+    DEFAULT_POSITION = {
+        NotifyType.SUCCESS: NotifyPosition.TOP,
+        NotifyType.WARNING: NotifyPosition.TOP,
+        NotifyType.ERROR: NotifyPosition.TOP,
+        NotifyType.INFO: NotifyPosition.TOP,
+    }
+    
+    @staticmethod
+    def success(
+        title: str,
         content: str = "",
-        icon: Union[FluentIcon, InfoBarIcon, str] = None,
+        parent: Optional[QWidget] = None,
+        duration: Optional[int] = None,
+        position: Optional[Union[NotifyPosition, InfoBarPosition]] = None,
+        is_closable: bool = True,
+        orient: Qt.Orientation = Qt.Orientation.Horizontal,
+    ) -> InfoBar:
+        """
+        显示成功通知
+        
+        Args:
+            title: 通知标题
+            content: 通知内容
+            parent: 父窗口
+            duration: 持续时间(毫秒)，None使用默认值
+            position: 显示位置，None使用默认值
+            is_closable: 是否可关闭
+            orient: 布局方向
+        
+        Returns:
+            InfoBar实例
+        """
+        duration = duration or Notification.DEFAULT_DURATION[NotifyType.SUCCESS]
+        position = position or Notification.DEFAULT_POSITION[NotifyType.SUCCESS]
+        
+        if isinstance(position, NotifyPosition):
+            position = position.value
+        
+        logger.debug(f"[Notification] Success: {title} - {content}")
+        return InfoBar.success(
+            title=title,
+            content=content,
+            orient=orient,
+            isClosable=is_closable,
+            position=position,
+            duration=duration,
+            parent=parent,
+        )
+    
+    @staticmethod
+    def warning(
+        title: str,
+        content: str = "",
+        parent: Optional[QWidget] = None,
+        duration: Optional[int] = None,
+        position: Optional[Union[NotifyPosition, InfoBarPosition]] = None,
+        is_closable: bool = True,
+        orient: Qt.Orientation = Qt.Orientation.Horizontal,
+    ) -> InfoBar:
+        """
+        显示警告通知
+        
+        Args:
+            title: 通知标题
+            content: 通知内容
+            parent: 父窗口
+            duration: 持时间(毫秒)，None使用默认值
+            position: 显示位置，None使用默认值
+            is_closable: 是否可关闭
+            orient: 布局方向
+        
+        Returns:
+            InfoBar实例
+        """
+        duration = duration or Notification.DEFAULT_DURATION[NotifyType.WARNING]
+        position = position or Notification.DEFAULT_POSITION[NotifyType.WARNING]
+        
+        if isinstance(position, NotifyPosition):
+            position = position.value
+        
+        logger.debug(f"[Notification] Warning: {title} - {content}")
+        return InfoBar.warning(
+            title=title,
+            content=content,
+            orient=orient,
+            isClosable=is_closable,
+            position=position,
+            duration=duration,
+            parent=parent,
+        )
+    
+    @staticmethod
+    def error(
+        title: str,
+        content: str = "",
+        parent: Optional[QWidget] = None,
+        duration: Optional[int] = None,
+        position: Optional[Union[NotifyPosition, InfoBarPosition]] = None,
+        is_closable: bool = True,
+        orient: Qt.Orientation = Qt.Orientation.Horizontal,
+    ) -> InfoBar:
+        """
+        显示错误通知
+        
+        Args:
+            title: 通知标题
+            content: 通知内容
+            parent: 父窗口
+            duration: 持续时间(毫秒)，None使用默认值
+            position: 显示位置，None使用默认值
+            is_closable: 是否可关闭
+            orient: 布局方向
+        
+        Returns:
+            InfoBar实例
+        """
+        duration = duration or Notification.DEFAULT_DURATION[NotifyType.ERROR]
+        position = position or Notification.DEFAULT_POSITION[NotifyType.ERROR]
+        
+        if isinstance(position, NotifyPosition):
+            position = position.value
+        
+        logger.error(f"[Notification] Error: {title} - {content}")
+        return InfoBar.error(
+            title=title,
+            content=content,
+            orient=orient,
+            isClosable=is_closable,
+            position=position,
+            duration=duration,
+            parent=parent,
+        )
+    
+    @staticmethod
+    def info(
+        title: str,
+        content: str = "",
+        parent: Optional[QWidget] = None,
+        duration: Optional[int] = None,
+        position: Optional[Union[NotifyPosition, InfoBarPosition]] = None,
+        is_closable: bool = True,
+        orient: Qt.Orientation = Qt.Orientation.Horizontal,
+    ) -> InfoBar:
+        """
+        显示信息通知
+        
+        Args:
+            title: 通知标题
+            content: 通知内容
+            parent: 父窗口
+            duration: 持续时间(毫秒)，None使用默认值
+            position: 显示位置，None使用默认值
+            is_closable: 是否可关闭
+            orient: 布局方向
+        
+        Returns:
+            InfoBar实例
+        """
+        duration = duration or Notification.DEFAULT_DURATION[NotifyType.INFO]
+        position = position or Notification.DEFAULT_POSITION[NotifyType.INFO]
+        
+        if isinstance(position, NotifyPosition):
+            position = position.value
+        
+        logger.debug(f"[Notification] Info: {title} - {content}")
+        return InfoBar.info(
+            title=title,
+            content=content,
+            orient=orient,
+            isClosable=is_closable,
+            position=position,
+            duration=duration,
+            parent=parent,
+        )
+    
+    @staticmethod
+    def custom(
+        title: str,
+        content: str = "",
+        icon: Union[FluentIcon, InfoBarIcon, str] = InfoBarIcon.INFORMATION,
+        parent: Optional[QWidget] = None,
         duration: int = 3000,
-        position: Union[InfoBarPosition, str] = InfoBarPosition.TOP,
+        position: Optional[Union[NotifyPosition, InfoBarPosition]] = None,
         is_closable: bool = True,
         orient: Qt.Orientation = Qt.Orientation.Horizontal,
         background_color: Optional[str] = None,
         text_color: Optional[str] = None,
-    ):
-        self.title = title
-        self.content = content
-        self.icon = icon
-        self.duration = duration
-        self.position = position
-        self.is_closable = is_closable
-        self.orient = orient
-        self.background_color = background_color
-        self.text_color = text_color
-
-
-def show_success_notification(
-    title: str,
-    content: str,
-    parent: Optional[QWidget] = None,
-    duration: int = 3000,
-    position: Union[InfoBarPosition, str] = InfoBarPosition.TOP,
-    is_closable: bool = True,
-    orient: Qt.Orientation = Qt.Orientation.Horizontal,
-) -> InfoBar:
-    """显示成功通知"""
-    return InfoBar.success(
-        title=title,
-        content=content,
-        orient=orient,
-        isClosable=is_closable,
-        position=position,
-        duration=duration,
-        parent=parent,
-    )
-
-
-def show_warning_notification(
-    title: str,
-    content: str,
-    parent: Optional[QWidget] = None,
-    duration: int = -1,
-    position: Union[InfoBarPosition, str] = InfoBarPosition.BOTTOM,
-    is_closable: bool = True,
-    orient: Qt.Orientation = Qt.Orientation.Horizontal,
-) -> InfoBar:
-    """显示警告通知"""
-    return InfoBar.warning(
-        title=title,
-        content=content,
-        orient=orient,
-        isClosable=is_closable,
-        position=position,
-        duration=duration,
-        parent=parent,
-    )
-
-
-def show_error_notification(
-    title: str,
-    content: str,
-    parent: Optional[QWidget] = None,
-    duration: int = 5000,
-    position: Union[InfoBarPosition, str] = InfoBarPosition.BOTTOM_RIGHT,
-    is_closable: bool = True,
-    orient: Qt.Orientation = Qt.Orientation.Vertical,
-) -> InfoBar:
-    """显示错误通知"""
-    return InfoBar.error(
-        title=title,
-        content=content,
-        orient=orient,
-        isClosable=is_closable,
-        position=position,
-        duration=duration,
-        parent=parent,
-    )
-
-def show_info_notification(
-    title: str,
-    content: str,
-    parent: Optional[QWidget] = None,
-    duration: int = -1,
-    position: Union[InfoBarPosition, str] = InfoBarPosition.BOTTOM_LEFT,
-    is_closable: bool = True,
-    orient: Qt.Orientation = Qt.Orientation.Horizontal,
-) -> InfoBar:
-    """显示信息通知"""
-    return InfoBar.info(
-        title=title,
-        content=content,
-        orient=orient,
-        isClosable=is_closable,
-        position=position,
-        duration=duration,
-        parent=parent,
-    )
-
-def show_custom_notification(
-    title: str,
-    content: str,
-    icon: Union[FluentIcon, InfoBarIcon, str] = InfoBarIcon.INFORMATION,
-    parent: Optional[QWidget] = None,
-    duration: int = 3000,
-    position: Union[InfoBarPosition, str] = InfoBarPosition.TOP,
-    is_closable: bool = True,
-    orient: Qt.Orientation = Qt.Orientation.Horizontal,
-    background_color: Optional[str] = None,
-    text_color: Optional[str] = None,
-) -> InfoBar:
-    """显示自定义通知"""
-    info_bar = InfoBar.new(
-        icon=icon,
-        title=title,
-        content=content,
-        orient=orient,
-        isClosable=is_closable,
-        position=position,
-        duration=duration,
-        parent=parent,
-    )
-
-    if background_color and text_color:
-        info_bar.setCustomBackgroundColor(background_color, text_color)
-
-    return info_bar
-
-def show_notification(notification_type: str, config: NotificationConfig, parent: Optional[QWidget] = None) -> InfoBar:
-    """显示通知
-
-    Args:
-        notification_type: 通知类型，值为NotificationType中定义的常量
-        config: 通知配置对象
-        parent: 父窗口组件
-
-    Returns:
-        InfoBar实例
-    """
-    if parent is not None and not isinstance(parent, QWidget):
-        parent = None
-    type_handlers = {
-        NotificationType.SUCCESS: lambda: InfoBar.success(
-            title=config.title,
-            content=config.content,
-            orient=config.orient,
-            isClosable=config.is_closable,
-            position=config.position,
-            duration=config.duration,
+    ) -> InfoBar:
+        """
+        显示自定义通知
+        
+        Args:
+            title: 通知标题
+            content: 通知内容
+            icon: 自定义图标
+            parent: 父窗口
+            duration: 持续时间(毫秒)
+            position: 显示位置
+            is_closable: 是否可关闭
+            orient: 布局方向
+            background_color: 背景颜色
+            text_color: 文字颜色
+        
+        Returns:
+            InfoBar实例
+        """
+        position = position or NotifyPosition.TOP
+        
+        if isinstance(position, NotifyPosition):
+            position = position.value
+        
+        logger.debug(f"[Notification] Custom: {title} - {content}")
+        info_bar = InfoBar.new(
+            icon=icon,
+            title=title,
+            content=content,
+            orient=orient,
+            isClosable=is_closable,
+            position=position,
+            duration=duration,
             parent=parent,
-        ),
-        NotificationType.WARNING: lambda: InfoBar.warning(
-            title=config.title,
-            content=config.content,
-            orient=config.orient,
-            isClosable=config.is_closable,
-            position=config.position,
-            duration=config.duration,
-            parent=parent,
-        ),
-        NotificationType.ERROR: lambda: InfoBar.error(
-            title=config.title,
-            content=config.content,
-            orient=config.orient,
-            isClosable=config.is_closable,
-            position=config.position,
-            duration=config.duration,
-            parent=parent,
-        ),
-        NotificationType.INFO: lambda: InfoBar.info(
-            title=config.title,
-            content=config.content,
-            orient=config.orient,
-            isClosable=config.is_closable,
-            position=config.position,
-            duration=config.duration,
-            parent=parent,
-        ),
-        NotificationType.CUSTOM: lambda: _create_custom_notification(config, parent),
-    }
+        )
+        
+        if background_color and text_color:
+            info_bar.setCustomBackgroundColor(background_color, text_color)
+        
+        return info_bar
 
-    handler = type_handlers.get(notification_type)
-    if handler:
-        return handler()
 
-    raise ValueError(f"不支持的通知类型: {notification_type}")
-
-def _create_custom_notification(
-    config: NotificationConfig, parent: Optional[QWidget]
-) -> InfoBar:
-    """创建自定义通知"""
-    info_bar = InfoBar.new(
-        icon=config.icon or InfoBarIcon.INFORMATION,
-        title=config.title,
-        content=config.content,
-        orient=config.orient,
-        isClosable=config.is_closable,
-        position=config.position,
-        duration=config.duration,
-        parent=parent,
-    )
-
-    if config.background_color and config.text_color:
-        info_bar.setCustomBackgroundColor(config.background_color, config.text_color)
-
-    return info_bar
+# ============================================================================
+# 系统通知功能
+# ============================================================================
 
 def send_system_notification(title: str, content: str, url: str = None) -> bool:
-    """发送系统通知
-
+    """
+    发送系统级通知（Windows/Linux桌面通知）
+    
     Args:
         title: 通知标题
         content: 通知内容
         url: 点击通知后跳转的URL
-
+    
     Returns:
         bool: 通知发送是否成功
     """
     try:
-        icon_path = str(get_data_path("assets", "icon/secrandom-icon-paper.ico"))
-
+        icon_path = _get_icon_path()
+        
         def on_notification_click():
             """点击通知时执行的函数"""
             try:
                 if url:
                     import webbrowser
-
                     webbrowser.open(url)
                     logger.debug(f"已打开通知链接: {url}")
                 else:
                     logger.warning("通知未配置URL，无法打开链接")
             except Exception as e:
                 logger.exception(f"打开通知链接失败: {e}")
-
+        
         if sys.platform == "win32":
             return _send_windows_notification(
                 title, content, icon_path, on_notification_click
@@ -275,6 +346,21 @@ def send_system_notification(title: str, content: str, url: str = None) -> bool:
     except Exception as e:
         logger.exception(f"发送系统通知时发生意外错误: {e}")
         return False
+
+
+def _get_icon_path() -> str:
+    """获取应用图标路径"""
+    from pathlib import Path
+    # 尝试多个可能的图标路径
+    possible_paths = [
+        Path(__file__).parent.parent / "resource" / "images" / "icon" / "app.ico",
+        Path(__file__).parent.parent / "resource" / "images" / "app.ico",
+        Path(__file__).parent.parent / "resource" / "icon.ico",
+    ]
+    for path in possible_paths:
+        if path.exists():
+            return str(path)
+    return ""
 
 
 def _send_windows_notification(
@@ -301,7 +387,7 @@ def _send_windows_notification(
                 title=title,
                 message=content,
                 app_name=APPLY_NAME,
-                app_icon=icon_path,
+                app_icon=icon_path if icon_path else None,
                 timeout=0,
             )
             logger.debug(f"已发送Windows通知(使用plyer): {title}")
@@ -317,15 +403,13 @@ def _send_linux_notification(
     """发送Linux平台通知"""
     try:
         import subprocess
-
+        
         if url:
             subprocess.run(
                 [
                     "notify-send",
-                    "--icon",
-                    icon_path,
-                    "--action",
-                    f"default={url}",
+                    "--icon", icon_path,
+                    "--action", f"default={url}",
                     title,
                     content,
                 ],
@@ -344,12 +428,11 @@ def _send_linux_notification(
     except (subprocess.CalledProcessError, FileNotFoundError):
         try:
             from plyer import notification
-
             notification.notify(
                 title=title,
                 message=content,
                 app_name=APPLY_NAME,
-                app_icon=icon_path,
+                app_icon=icon_path if icon_path else None,
                 timeout=0,
             )
             logger.debug(f"已发送Linux通知(使用plyer): {title}")
@@ -357,4 +440,3 @@ def _send_linux_notification(
         except Exception as e:
             logger.warning(f"发送Linux通知失败: {e}")
             return False
-

@@ -4,13 +4,12 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QVBoxLayout, QWidget
 from qfluentwidgets import (
     BodyLabel,
-    InfoBar,
-    InfoBarPosition,
     SimpleCardWidget,
     SubtitleLabel,
     TitleLabel,
 )
 
+from app.common.notification import Notification
 from app.common.signal_bus import signalBus
 from app.view.app_interface.service import import_export_service, project_service, snapshot_service
 
@@ -128,9 +127,9 @@ class ProjectPanel(QWidget):
                     snapshot_service.create_snapshot(self._project_id, name, desc)
                     signalBus.dataChanged.emit()
                     self.load_project(self._project_id)
-                    InfoBar.success("Success", "Snapshot created", parent=self, position=InfoBarPosition.TOP)
+                    Notification.success("Success", "Snapshot created", parent=self)
                 except Exception as e:
-                    InfoBar.error("Error", str(e), parent=self, position=InfoBarPosition.TOP)
+                    Notification.error("Error", str(e), parent=self)
 
     def on_export_project(self):
         path, filt = QFileDialog.getSaveFileName(
@@ -143,6 +142,6 @@ class ProjectPanel(QWidget):
                 import_export_service.export_project_xlsx(self._project_id, path)
             else:
                 import_export_service.export_project_json(self._project_id, path)
-            InfoBar.success("Success", f"Exported to {path}", parent=self, position=InfoBarPosition.TOP)
+            Notification.success("Success", f"Exported to {path}", parent=self)
         except Exception as e:
-            InfoBar.error("Error", str(e), parent=self, position=InfoBarPosition.TOP)
+            Notification.error("Error", str(e), parent=self)

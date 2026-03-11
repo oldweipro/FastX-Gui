@@ -3,11 +3,12 @@ from typing import Dict, Any, Optional
 from PySide6.QtWidgets import QWidget, QFileDialog
 from qfluentwidgets import (
     ExpandSettingCard, PrimaryPushSettingCard, PushSettingCard,
-    ComboBox, FluentIcon as FIF, MessageBox, InfoBar, InfoBarPosition
+    ComboBox, FluentIcon as FIF, MessageBox
 )
 
 from app.common.config import cfg
 from app.common.icon import Icon
+from app.common.notification import Notification
 from ..core.ccp_core import CcpCore
 
 
@@ -86,37 +87,29 @@ class FastCcpCard(ExpandSettingCard):
         try:
             config = self.get_config()
             if not config["input_file"]:
-                InfoBar.warning(
+                Notification.warning(
                     self.tr("Warning"),
                     self.tr("Please select input file"),
-                    position=InfoBarPosition.TOP,
-                    duration=2000,
                     parent=self
                 )
                 return
             result = self.processor.process(config)
             if result.success:
-                InfoBar.success(
+                Notification.success(
                     self.tr("Success"),
                     self.tr(f"Processing completed!\n{result.message}"),
-                    position=InfoBarPosition.TOP,
-                    duration=3000,
                     parent=self
                 )
             else:
-                InfoBar.error(
+                Notification.error(
                     self.tr("Error"),
                     self.tr(f"Processing failed: {result.message}"),
-                    position=InfoBarPosition.TOP,
-                    duration=3000,
                     parent=self
                 )
         except Exception as e:
-            InfoBar.error(
+            Notification.error(
                 self.tr("Error"),
                 self.tr(f"Processing error: {str(e)}"),
-                position=InfoBarPosition.TOP,
-                duration=3000,
                 parent=self
             )
 
