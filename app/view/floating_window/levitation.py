@@ -91,11 +91,12 @@ class LevitationWindow(QWidget):
         # ==================== 初始化配置 ====================
         self._init_settings()
 
-        # ==================== 构建UI ====================
+        # ==================== 构建 UI ====================
         self._build_ui()
-        self._apply_window()
-        self._apply_position()
         self._install_drag_filters()
+        # 先应用位置（在显示之前），确保从配置文件读取的位置被正确应用
+        self._apply_position()
+        self._apply_window()
 
         # ==================== 信号连接 ====================
         self._connect_signals()
@@ -667,6 +668,17 @@ class LevitationWindow(QWidget):
         except Exception:
             x = 100
             y = 100
+        
+        # 确保窗口已经调整好大小后再应用位置
+        if self.width() <= 0 or self.height() <= 0:
+            self.adjustSize()
+            # 给一点时间让布局完成
+            QTimer.singleShot(50, lambda: self._apply_position_final(x, y))
+        else:
+            self._apply_position_final(x, y)
+    
+    def _apply_position_final(self, x, y):
+        """最终应用位置（在窗口大小确定后）"""
         nx, ny = self._clamp_to_screen(x, y)
         self.move(nx, ny)
 
@@ -1069,6 +1081,9 @@ class LevitationWindow(QWidget):
             self.setCursor(Qt.ArrowCursor)
             if self._dragging and self._draggable:
                 self._end_drag()
+            else:
+                # 如果没有拖拽（只是点击），也保存位置（防止用户移动后快速点击）
+                QTimer.singleShot(200, self._save_position)
             self._dragging = False
 
     def _should_start_drag(self, delta: QPoint, duration: int) -> bool:
@@ -1091,7 +1106,8 @@ class LevitationWindow(QWidget):
         self._dragging = False
         self.setCursor(Qt.ArrowCursor)
         self._stick_to_nearest_edge()
-        self._save_position()
+        # 延迟保存位置，确保在屏幕边缘吸附后保存最终位置
+        QTimer.singleShot(300, self._save_position)
         if self.floating_window_stick_to_edge:
             QTimer.singleShot(100, self._check_edge_proximity)
 
