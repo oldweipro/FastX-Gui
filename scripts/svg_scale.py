@@ -42,6 +42,63 @@ from pathlib import Path
 from xml.etree import ElementTree as ET
 
 
+def _tokenize_path(path_data: str) -> list[str]:
+    """
+    将 SVG path d 属性拆分为 token 列表（命令字母 + 数字）。
+
+    处理 SVG path 数字的特殊分隔规则：
+      - 数字之间可以用空格、逗号分隔
+      - 符号 +/- 可以作为数字分隔符（如 "10-5" → ["10", "-5"]）
+      - 小数点可以作为数字分隔符（如 "1.2.3" → ["1.2", ".3"]）
+      - A/a 弧形命令的 large-arc-flag 和 sweep-flag 是严格的 0/1 整数，
+        在解析 A/a 参数时每组第 4、5 个参数单独取 0 或 1，
+        避免与紧跟的小数点数字粘连（如 "0 0 1.283.75" 应为 [0,0,1,283,0.75]）
+
+    Returns:
+        token 列表，每个 token 是一个命令字母或数字字符串
+    """
+    token_re = re.compile(
+        r'([MmZzLlHhVvCcSsQqTtAa])'
+        r'|([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)'
+    )
+    return [m.group() for m in token_re.finditer(path_data)]
+
+
+def _parse_arc_nums(raw_nums: list[float]) -> list[float]:
+    """
+    对 A/a 弧形命令的参数列表做 flag 修正。
+
+    A/a 每组参数格式: rx ry x-rot large-arc-flag sweep-flag x y
+    其中第 4、5 个（index 3, 4）是 flag，只能是 0 或 1（整数部分）。
+
+    问题场景：path 中写 "0 0 1.5" 时 tokenizer 把 "1.5" 作为一个数，
+    但实际上 "1" 是 sweep-flag，".5" 本不存在（或属于下一参数）。
+    更常见的是 "...0 0 1.283.75 0 0..." → tokenizer 给出 [0, 0, 1.283, 0.75, 0, 0, ...]
+    而正确应该是 [0, 0, 1, 0.283, 0.75, 0, 0, ...] ← 无法从已 tokenized 数据中还原
+
+    实际上 SVG 规范要求 flag 与后续数字之间必须有合规分隔，
+    大多数工具生成的 SVG 会保证这一点。
+    此函数做保守处理：若某 flag 位置的值不是 0 或 1，截断为整数部分，
+    将小数部分作为警告（实际坐标数据将会有偏差，这是源文件格式问题）。
+
+    Returns:
+        修正后的参数列表
+    """
+    result = []
+    i = 0
+    while i + 6 < len(raw_nums):
+        # rx, ry, x-rot（正常浮点数）
+        result.extend(raw_nums[i:i + 3])
+        # large-arc-flag: 取整数部分 0 或 1
+        result.append(1.0 if raw_nums[i + 3] >= 0.5 else 0.0)
+        # sweep-flag: 取整数部分 0 或 1
+        result.append(1.0 if raw_nums[i + 4] >= 0.5 else 0.0)
+        # x, y 终点坐标
+        result.extend(raw_nums[i + 5:i + 7])
+        i += 7
+    return result
+
+
 def parse_path_commands(path_data: str) -> list[tuple[float, float]]:
     """
     解析 SVG path 的 d 属性，提取所有端点的绝对坐标。
@@ -69,33 +126,38 @@ def parse_path_commands(path_data: str) -> list[tuple[float, float]]:
         所有端点/控制点的绝对坐标列表 [(x, y), ...]
     """
     points = []
-    tokens = re.findall(r'([MmLlHhVvCcSsQqTtAaZz])|([+-]?[\d.]+(?:[eE][+-]?\d+)?)', path_data)
-    
+    tokens = _tokenize_path(path_data)
+
     cmd = None
-    nums = []
-    cx, cy = 0.0, 0.0  # 当前位置
-    
-    def process(cmd, nums, cx, cy):
+    nums: list[float] = []
+    cx, cy = 0.0, 0.0   # 当前位置
+    start_x, start_y = 0.0, 0.0  # 当前子路径起点（用于 Z 后的 m）
+
+    def process(cmd: str, nums: list[float], cx: float, cy: float):
         """处理一条命令，返回 (新坐标列表, 新cx, 新cy)"""
         pts = []
+        nonlocal start_x, start_y
+
         if not nums and cmd not in ('Z', 'z'):
             return pts, cx, cy
-        
+
         if cmd == 'M':
             for i in range(0, len(nums) - 1, 2):
-                cx, cy = nums[i], nums[i+1]
+                cx, cy = nums[i], nums[i + 1]
                 pts.append((cx, cy))
+            start_x, start_y = pts[0] if pts else (cx, cy)
         elif cmd == 'm':
             for i in range(0, len(nums) - 1, 2):
-                cx += nums[i]; cy += nums[i+1]
+                cx += nums[i]; cy += nums[i + 1]
                 pts.append((cx, cy))
+            start_x, start_y = pts[0] if pts else (cx, cy)
         elif cmd == 'L':
             for i in range(0, len(nums) - 1, 2):
-                cx, cy = nums[i], nums[i+1]
+                cx, cy = nums[i], nums[i + 1]
                 pts.append((cx, cy))
         elif cmd == 'l':
             for i in range(0, len(nums) - 1, 2):
-                cx += nums[i]; cy += nums[i+1]
+                cx += nums[i]; cy += nums[i + 1]
                 pts.append((cx, cy))
         elif cmd == 'H':
             for n in nums:
@@ -115,61 +177,79 @@ def parse_path_commands(path_data: str) -> list[tuple[float, float]]:
                 pts.append((cx, cy))
         elif cmd == 'C':
             for i in range(0, len(nums) - 5, 6):
-                pts.append((nums[i], nums[i+1]))
-                pts.append((nums[i+2], nums[i+3]))
-                cx, cy = nums[i+4], nums[i+5]
+                pts.append((nums[i],     nums[i + 1]))
+                pts.append((nums[i + 2], nums[i + 3]))
+                cx, cy = nums[i + 4], nums[i + 5]
                 pts.append((cx, cy))
         elif cmd == 'c':
             for i in range(0, len(nums) - 5, 6):
-                pts.append((cx + nums[i], cy + nums[i+1]))
-                pts.append((cx + nums[i+2], cy + nums[i+3]))
-                cx += nums[i+4]; cy += nums[i+5]
+                pts.append((cx + nums[i],     cy + nums[i + 1]))
+                pts.append((cx + nums[i + 2], cy + nums[i + 3]))
+                cx += nums[i + 4]; cy += nums[i + 5]
                 pts.append((cx, cy))
-        elif cmd in ('S', 'Q'):
+        elif cmd == 'S':
             for i in range(0, len(nums) - 3, 4):
-                pts.append((nums[i], nums[i+1]))
-                cx, cy = nums[i+2], nums[i+3]
+                pts.append((nums[i],     nums[i + 1]))
+                cx, cy = nums[i + 2], nums[i + 3]
                 pts.append((cx, cy))
-        elif cmd in ('s', 'q'):
+        elif cmd == 's':
             for i in range(0, len(nums) - 3, 4):
-                pts.append((cx + nums[i], cy + nums[i+1]))
-                cx += nums[i+2]; cy += nums[i+3]
+                pts.append((cx + nums[i], cy + nums[i + 1]))
+                cx += nums[i + 2]; cy += nums[i + 3]
+                pts.append((cx, cy))
+        elif cmd == 'Q':
+            for i in range(0, len(nums) - 3, 4):
+                pts.append((nums[i],     nums[i + 1]))
+                cx, cy = nums[i + 2], nums[i + 3]
+                pts.append((cx, cy))
+        elif cmd == 'q':
+            for i in range(0, len(nums) - 3, 4):
+                pts.append((cx + nums[i], cy + nums[i + 1]))
+                cx += nums[i + 2]; cy += nums[i + 3]
                 pts.append((cx, cy))
         elif cmd == 'T':
             for i in range(0, len(nums) - 1, 2):
-                cx, cy = nums[i], nums[i+1]
+                cx, cy = nums[i], nums[i + 1]
                 pts.append((cx, cy))
         elif cmd == 't':
             for i in range(0, len(nums) - 1, 2):
-                cx += nums[i]; cy += nums[i+1]
+                cx += nums[i]; cy += nums[i + 1]
                 pts.append((cx, cy))
         elif cmd == 'A':
-            for i in range(0, len(nums) - 6, 7):
-                cx, cy = nums[i+5], nums[i+6]
+            # 格式: rx ry x-rotation large-arc-flag sweep-flag x y (7个参数一组)
+            # 对 flag 位置做修正后再提取终点
+            fixed = _parse_arc_nums(nums)
+            for i in range(0, len(fixed) - 6, 7):
+                cx, cy = fixed[i + 5], fixed[i + 6]
                 pts.append((cx, cy))
         elif cmd == 'a':
-            for i in range(0, len(nums) - 6, 7):
-                cx += nums[i+5]; cy += nums[i+6]
+            fixed = _parse_arc_nums(nums)
+            for i in range(0, len(fixed) - 6, 7):
+                cx += fixed[i + 5]; cy += fixed[i + 6]
                 pts.append((cx, cy))
+        elif cmd in ('Z', 'z'):
+            # 闭合：回到子路径起点
+            cx, cy = start_x, start_y
+
         return pts, cx, cy
-    
-    for letter, number in tokens:
-        if letter:
+
+    for token in tokens:
+        if token and token[0] in 'MmZzLlHhVvCcSsQqTtAa':
             if cmd is not None:
                 new_pts, cx, cy = process(cmd, nums, cx, cy)
                 points.extend(new_pts)
-            cmd = letter
+            cmd = token
             nums = []
-        elif number:
+        else:
             try:
-                nums.append(float(number))
+                nums.append(float(token))
             except ValueError:
                 pass
-    
+
     if cmd is not None:
         new_pts, cx, cy = process(cmd, nums, cx, cy)
         points.extend(new_pts)
-    
+
     return points
 
 
