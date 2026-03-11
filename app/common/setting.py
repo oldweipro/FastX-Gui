@@ -15,7 +15,7 @@ APPLY_NAME = "FastXGui"
 CODENAME = "Q-FLUENT-WIDGETS-GUI-PLAN"  # 软件代号
 AUTHOR = "wanqiang.liu"
 COPYRIGHT_HOLDER = "FastXTeam"
-VERSION = "v0.1.3"  # 软件当前版本
+VERSION = "v0.1.4"  # 软件当前版本
 NEXT_VERSION = "v0.1.0-beta.1"  # 软件下一个版本
 SPECIAL_VERSION = VERSION if VERSION != "v0.0.0" else NEXT_VERSION
 HELP_URL = "https://qfluentwidgets.com"
@@ -76,5 +76,10 @@ SYSTEM = _detect_system()
 STRUCT = "exe" if SYSTEM == "windows" else "dmg" if SYSTEM == "macos" else "deb" if SYSTEM == "linux" else "tar"
 
 
-CONFIG_FOLDER = Path("AppData").absolute()
-CONFIG_FILE = CONFIG_FOLDER / "config.json"
+# ==================== 路径配置 ====================
+# 使用统一的路径配置
+from app.common.paths import AppPaths
+
+# 兼容旧代码的别名
+CONFIG_FOLDER = AppPaths.USER_DATA_DIR
+CONFIG_FILE = AppPaths.CONFIG_FILE

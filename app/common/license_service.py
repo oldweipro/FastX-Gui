@@ -76,12 +76,13 @@ class LicenseService:
     ADMIN_SESSION_VALUE = "AdminSession"
     AUDIT_LOG_VALUE = "AuditLog"
     
-    # 本地文件存储（作为备份和交叉验证）
-    LOCAL_DATA_DIR = Path.home() / ".fastxgui"
-    LICENSE_FILE = LOCAL_DATA_DIR / ".license.dat"
-    TIME_FILE = LOCAL_DATA_DIR / ".time_anchor.dat"
-    ADMIN_FILE = LOCAL_DATA_DIR / ".admin.dat"
-    AUDIT_FILE = LOCAL_DATA_DIR / ".audit.dat"
+    # 本地文件存储（作为备份和交叉验证）（使用统一路径配置）
+    from app.common.paths import AppPaths
+    LOCAL_DATA_DIR = AppPaths.USER_DATA_DIR
+    LICENSE_FILE = AppPaths.LICENSE_FILE
+    TIME_FILE = AppPaths.TIME_ANCHOR_FILE
+    ADMIN_FILE = AppPaths.ADMIN_DATA_FILE
+    AUDIT_FILE = AppPaths.AUDIT_LOG_FILE
     
     # 时间容差（秒）- 允许的时间回拨容差
     TIME_TOLERANCE = 300  # 5分钟
@@ -102,18 +103,8 @@ class LicenseService:
     
     def _ensure_data_dir(self):
         """确保数据目录存在"""
-        if self.LOCAL_DATA_DIR.exists():
-            return  # 已存在，跳过
-        self.LOCAL_DATA_DIR.mkdir(parents=True, exist_ok=True)
-        # 设置隐藏属性（Windows）- 只在首次创建时执行
-        if sys.platform == "win32":
-            try:
-                subprocess.run(
-                    ["attrib", "+H", str(self.LOCAL_DATA_DIR)],
-                    check=False, capture_output=True, timeout=5
-                )
-            except Exception:
-                pass
+        from app.common.paths import AppPaths
+        AppPaths.ensure_directories()
     
     @classmethod
     def get_machine_code(cls) -> str:

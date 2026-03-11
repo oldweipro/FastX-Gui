@@ -3,19 +3,18 @@ from loguru import logger
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.common.setting import CONFIG_FOLDER
+from app.common.paths import AppPaths
 from app.view.app_interface.database.models import Base
 
-_DB_PATH = CONFIG_FOLDER / "fastx.db"
-_engine = create_engine(f"sqlite:///{_DB_PATH}", echo=False, future=True)
+_engine = create_engine(f"sqlite:///{AppPaths.DATABASE_FILE}", echo=False, future=True)
 SessionLocal = sessionmaker(bind=_engine, expire_on_commit=False)
 
 
 def init_db() -> None:
     """Create all tables if they don't exist."""
-    CONFIG_FOLDER.mkdir(parents=True, exist_ok=True)
+    AppPaths.ensure_directories()
     Base.metadata.create_all(_engine)
-    logger.info(f"[Database] Initialized at {_DB_PATH}")
+    logger.info(f"[Database] Initialized at {AppPaths.DATABASE_FILE}")
 
 
 def get_session():
