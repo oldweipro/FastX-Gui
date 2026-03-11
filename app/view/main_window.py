@@ -857,7 +857,7 @@ class MainWindow(SplitFluentWindow):
         ):
             self.addSubInterface(
                 self.funcInterface,
-                FIcon.INTERFACE,
+                FIcon.EXCHANGE_4,
                 self.tr("FastRte"),
                 pos,
                 isTransparent=True,

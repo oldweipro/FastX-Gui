@@ -7,6 +7,7 @@ from PySide6.QtWidgets import QMenu, QTreeWidgetItem, QVBoxLayout, QWidget
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import SearchLineEdit, TransparentToolButton, TreeWidget
 
+from app.common.icon import Icon
 from app.common.signal_bus import signalBus
 from app.view.app_interface.service import item_service, project_service, snapshot_service, template_service, workspace_service
 
@@ -82,22 +83,22 @@ class TreePanel(QWidget):
         self.tree.clear()
 
         for ws in workspace_service.list_workspaces():
-            ws_item = self._make_node(ws["name"], FIF.FOLDER, "workspace", ws["id"])
+            ws_item = self._make_node(ws["name"], Icon.WORKSPACE, "workspace", ws["id"])
 
             for proj in project_service.list_projects(ws["id"]):
                 proj_id = proj["id"]
-                proj_item = self._make_node(proj["name"], FIF.DOCUMENT, "project", proj_id, ws["id"])
+                proj_item = self._make_node(proj["name"], Icon.PROJECT, "project", proj_id, ws["id"])
 
                 # ── Templates ──
-                tmpl_list_node = self._make_node("Templates", FIF.LABEL, "template_list", proj_id, ws["id"])
+                tmpl_list_node = self._make_node("Templates", Icon.TEMPLATE, "template_list", proj_id, ws["id"])
                 for t in template_service.list_templates(proj_id):
                     tmpl_list_node.addChild(
-                        self._make_node(t["name"], FIF.DOCUMENT, "template", t["id"], proj_id)
+                        self._make_node(t["name"], Icon.TEMPLATE, "template", t["id"], proj_id)
                     )
                 proj_item.addChild(tmpl_list_node)
 
                 # ── Items (grouped by template) ──
-                item_list_node = self._make_node("Items", FIF.EDIT, "item_list", proj_id, ws["id"])
+                item_list_node = self._make_node("Items", Icon.ITEM, "item_list", proj_id, ws["id"])
                 all_items = item_service.list_items(proj_id)
                 groups: dict[str, list[dict]] = defaultdict(list)
                 for it in all_items:
@@ -107,17 +108,17 @@ class TreePanel(QWidget):
                 for tmpl_id, items in groups.items():
                     group_name = tmpl_name_map.get(tmpl_id, tmpl_id[:8])
                     group_node = self._make_node(
-                        f"{group_name}s ({len(items)})", FIF.EDIT, "item_group", tmpl_id, proj_id
+                        f"{group_name}s ({len(items)})", Icon.ITEM, "item_group", tmpl_id, proj_id
                     )
                     for it in items:
                         group_node.addChild(
-                            self._make_node(it["title"], FIF.EDIT, "item", it["id"], proj_id)
+                            self._make_node(it["title"], Icon.ITEM, "item", it["id"], proj_id)
                         )
                     item_list_node.addChild(group_node)
                 proj_item.addChild(item_list_node)
 
                 # ── Snapshots ──
-                snap_list_node = self._make_node("Snapshots", FIF.HISTORY, "snapshot_list", proj_id, ws["id"])
+                snap_list_node = self._make_node("Snapshots", Icon.SNAPSHOT, "snapshot_list", proj_id, ws["id"])
                 for s in snapshot_service.list_snapshots(proj_id):
                     date_str = ""
                     if s.get("created_at"):
@@ -125,7 +126,7 @@ class TreePanel(QWidget):
                     snap_list_node.addChild(
                         self._make_node(
                             f"{s['name']} ({date_str})" if date_str else s["name"],
-                            FIF.HISTORY, "snapshot", s["id"], proj_id,
+                            Icon.SNAPSHOT, "snapshot", s["id"], proj_id,
                         )
                     )
                 proj_item.addChild(snap_list_node)

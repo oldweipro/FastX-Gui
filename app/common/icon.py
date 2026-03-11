@@ -131,12 +131,23 @@ class FIcon(FluentIconBase, Enum):
     LIST = "list"
     PLUGIN = "tab-plugin"
     TASK = "task"
+    EXCHANGE_1 = "exchange-1"
+    EXCHANGE_2 = "exchange-2"
+    EXCHANGE_3 = "exchange-3"
+    EXCHANGE_4 = "exchange-4"
 
     def path(self, theme=Theme.AUTO):
         return f":/app/images/fluentIcon/{self.value}_{getIconColor(theme)}.svg"
 
 
 class Icon(FluentIconBase, Enum):
+    # FM
+    WORKSPACE = "workspace"
+    PROJECT = "project"
+    TEMPLATE = "template"
+    ITEM = "item"
+    SNAPSHOT = "snapshot"
+
     # 基础图标
     SELECT = "Select"
     SETTINGS = "Settings"
