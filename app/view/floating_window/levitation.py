@@ -453,8 +453,8 @@ class LevitationWindow(QWidget):
 
     def _on_theme_changed(self):
         """主题变更处理"""
-        if self._floating_window_theme == 0:  # 跟随系统
-            self.rebuild_ui()
+        # 无论什么主题设置，都需要重建 UI（因为图标是静态的）
+        self.rebuild_ui()
         self._apply_theme_style()
 
     def rebuild_ui(self):
