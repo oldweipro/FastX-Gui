@@ -3,11 +3,13 @@ from enum import Enum
 
 from loguru import logger
 from PySide6.QtCore import QObject, Qt, Signal
-from PySide6.QtGui import QColor, QFont, QTextCharFormat, QTextCursor
-from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
+from PySide6.QtGui import QAction, QColor, QFont, QKeySequence, QShortcut, QTextCharFormat, QTextCursor
+from PySide6.QtWidgets import QApplication, QHBoxLayout, QMenu, QVBoxLayout, QWidget
 from qfluentwidgets import (
     CaptionLabel,
     ComboBox,
+    InfoBar,
+    InfoBarPosition,
     PlainTextEdit,
     ScrollArea,
     SearchLineEdit,
@@ -586,6 +588,87 @@ class LoguruInterface(ScrollArea):
 
         # 确保"所有日志"按钮默认选中
         self.all_logs_btn.setChecked(True)
+
+        # 设置快捷键和右键菜单
+        self._setup_shortcuts_and_context_menu()
+
+    def _setup_shortcuts_and_context_menu(self):
+        """设置快捷键和右键菜单"""
+        # Ctrl+C 复制选中内容
+        self.copy_shortcut = QShortcut(QKeySequence.Copy, self.log_viewer)
+        self.copy_shortcut.activated.connect(self._copy_selected_text)
+
+        # Ctrl+A 全选
+        self.select_all_shortcut = QShortcut(QKeySequence.SelectAll, self.log_viewer)
+        self.select_all_shortcut.activated.connect(self.log_viewer.selectAll)
+
+        # 设置右键菜单
+        self.log_viewer.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.log_viewer.customContextMenuRequested.connect(self._show_context_menu)
+
+    def _copy_selected_text(self):
+        """复制选中的文本到剪贴板"""
+        cursor = self.log_viewer.textCursor()
+        if cursor.hasSelection():
+            text = cursor.selectedText()
+        else:
+            # 如果没有选中，复制当前行
+            cursor.select(QTextCursor.LineUnderCursor)
+            text = cursor.selectedText()
+
+        if text:
+            QApplication.clipboard().setText(text)
+            self._show_copy_notification("已复制到剪贴板")
+
+    def _show_context_menu(self, pos):
+        """显示右键菜单"""
+        menu = QMenu(self)
+
+        # 复制
+        copy_action = QAction(FIF.COPY.icon(), "复制", self)
+        copy_action.setShortcut(QKeySequence.Copy)
+        copy_action.triggered.connect(self._copy_selected_text)
+        menu.addAction(copy_action)
+
+        # 复制全部
+        copy_all_action = QAction(FIF.COPY.icon(), "复制全部", self)
+        copy_all_action.triggered.connect(self.copy_all_logs_with_notification)
+        menu.addAction(copy_all_action)
+
+        menu.addSeparator()
+
+        # 全选
+        select_all_action = QAction("全选", self)
+        select_all_action.setShortcut(QKeySequence.SelectAll)
+        select_all_action.triggered.connect(self.log_viewer.selectAll)
+        menu.addAction(select_all_action)
+
+        menu.addSeparator()
+
+        # 清空
+        clear_action = QAction(FIF.DELETE.icon(), "清空日志", self)
+        clear_action.triggered.connect(self.clear_logs)
+        menu.addAction(clear_action)
+
+        # 在光标位置显示菜单
+        menu.exec(self.log_viewer.mapToGlobal(pos))
+
+    def _show_copy_notification(self, message: str):
+        """显示复制成功通知"""
+        InfoBar.success(
+            title="复制成功",
+            content=message,
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP,
+            duration=2000,
+            parent=self,
+        )
+
+    def copy_all_logs_with_notification(self):
+        """复制全部日志并显示通知"""
+        self.copy_all_logs()
+        self._show_copy_notification("全部日志已复制到剪贴板")
 
     def on_log_config_changed(self):
         """处理日志配置变化"""

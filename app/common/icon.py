@@ -123,12 +123,12 @@ class UIcon:
 
 class FIcon(FluentIconBase, Enum):
     # 基础图标
-    APP_FILLED = "ic_fluent_app_store_24_filled"
-    APP_STORE = "app_store"
+    APP_STORE = "app_store_regular"
+    APP_TORE_FILLED = "app_store_filled"
+    LOGS = "logs_regular"
 
     def path(self, theme=Theme.AUTO):
         return f":/app/images/fluentIcon/{self.value}_{getIconColor(theme)}.svg"
-        # return f"./app/resource/images/fluentIcon/{theme.value.lower()}/{self.value}.svg"
 
 
 class Icon(FluentIconBase, Enum):
@@ -255,9 +255,6 @@ class Icon(FluentIconBase, Enum):
     XML_IN = "XML_In"
     RX_SIMPLE = "Rx_Simple"
     SDB_SIMPLE = "SDB_Simple"
-
-    # 图标
-    LOGS = "logs"
 
     def path(self, theme=Theme.AUTO):
         return f":/app/images/icons/{self.value}_{getIconColor(theme)}.svg"

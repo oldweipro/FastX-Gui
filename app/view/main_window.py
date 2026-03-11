@@ -1,7 +1,7 @@
 import sys
 
 from loguru import logger
-from PySide6.QtCore import QDateTime, QEventLoop, QPoint, QSize, Qt, QTimer, QUrl
+from PySide6.QtCore import QDateTime, QEvent, QEventLoop, QPoint, QSize, Qt, QTimer, QUrl
 from PySide6.QtGui import QAction, QColor, QDesktopServices, QFont, QIcon, QPainter
 from PySide6.QtWidgets import (
     QApplication,
@@ -770,8 +770,8 @@ class MainWindow(SplitFluentWindow):
         with self.safe_block(default=None, error_msg=self.tr("Create Tools interface")):
             self.toolInterface = ToolsInterface(self)
         # 插件管理界面
-        # with self.safe_block(default=None, error_msg=self.tr("Create Plugin interface")):
-        self.pluginInterface = PluginInterface(self)
+        with self.safe_block(default=None, error_msg=self.tr("Create Plugin interface")):
+            self.pluginInterface = PluginInterface(self)
         with self.safe_block(default=None, error_msg=self.tr("Create Library interface")):
             self.libraryInterface = LibraryViewInterface(self)
         with self.safe_block(default=None, error_msg=self.tr("Create Settings interface")):
@@ -876,17 +876,17 @@ class MainWindow(SplitFluentWindow):
             )
 
         # 插件管理
-        # with self.safe_block(
-        #     default=None,
-        #     error_msg=self.tr("Load Plugin interface to left route"),
-        # ):
-        self.addSubInterface(
-            self.pluginInterface,
-            FIcon.APP_STORE,
-            self.tr("Plugins"),
-            pos,
-            isTransparent=False,
-        )
+        with self.safe_block(
+            default=None,
+            error_msg=self.tr("Load Plugin interface to left route"),
+        ):
+            self.addSubInterface(
+                self.pluginInterface,
+                FIcon.APP_STORE,
+                self.tr("Plugins"),
+                pos,
+                isTransparent=False,
+            )
 
         # 底部功能区
         pos = NavigationItemPosition.BOTTOM
@@ -908,7 +908,7 @@ class MainWindow(SplitFluentWindow):
         with self.safe_block(default=None, error_msg=self.tr("Load Log interface to left route")):
             self.addSubInterface(
                 self.loguru_interface,
-                Icon.LOGS,
+                FIcon.LOGS,
                 self.tr("Logs"),
                 pos,
                 isTransparent=False,
@@ -1088,6 +1088,18 @@ class MainWindow(SplitFluentWindow):
         super().resizeEvent(e)
         if hasattr(self, "splashScreen"):
             self.splashScreen.resize(self.size())
+
+    def changeEvent(self, event):
+        """窗口状态改变事件处理"""
+        if event.type() == QEvent.WindowStateChange:
+            # 检测是否是最小化操作
+            if self.windowState() & Qt.WindowMinimized:
+                # 窗口被最小化，但浮窗保持原状（不隐藏）
+                pass
+            else:
+                # 窗口从最小化恢复
+                pass
+        super().changeEvent(event)
 
     def switchToSetting(self, settingGroup):
         """switch to sample"""
