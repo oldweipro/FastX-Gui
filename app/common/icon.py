@@ -126,6 +126,11 @@ class FIcon(FluentIconBase, Enum):
     APP_STORE = "app_store_regular"
     APP_TORE_FILLED = "app_store_filled"
     LOGS = "logs_regular"
+    COFFEE = "coffee"
+    INTERFACE = "interface"
+    LIST = "list"
+    PLUGIN = "tab-plugin"
+    TASK = "task"
 
     def path(self, theme=Theme.AUTO):
         return f":/app/images/fluentIcon/{self.value}_{getIconColor(theme)}.svg"

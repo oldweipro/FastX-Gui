@@ -100,10 +100,22 @@
         <file>images/controls/Viewbox.png</file>
         <file>images/controls/WebView.png</file>
         <file>images/controls/XamlUICommand.png</file>
-        <file>images/fluentIcon/app_store_black.svg</file>
-        <file>images/fluentIcon/app_store_white.svg</file>
-        <file>images/fluentIcon/ic_fluent_app_store_24_filled_black.svg</file>
-        <file>images/fluentIcon/ic_fluent_app_store_24_filled_white.svg</file>
+        <file>images/fluentIcon/app_store_filled_black.svg</file>
+        <file>images/fluentIcon/app_store_filled_white.svg</file>
+        <file>images/fluentIcon/app_store_regular_black.svg</file>
+        <file>images/fluentIcon/app_store_regular_white.svg</file>
+        <file>images/fluentIcon/coffee_black.svg</file>
+        <file>images/fluentIcon/coffee_white.svg</file>
+        <file>images/fluentIcon/interface_black.svg</file>
+        <file>images/fluentIcon/interface_white.svg</file>
+        <file>images/fluentIcon/list_black.svg</file>
+        <file>images/fluentIcon/list_white.svg</file>
+        <file>images/fluentIcon/logs_regular_black.svg</file>
+        <file>images/fluentIcon/logs_regular_white.svg</file>
+        <file>images/fluentIcon/tab-plugin_black.svg</file>
+        <file>images/fluentIcon/tab-plugin_white.svg</file>
+        <file>images/fluentIcon/task_black.svg</file>
+        <file>images/fluentIcon/task_white.svg</file>
         <file>images/ico/M3U8DL.ico</file>
         <file>images/ico/logo-m.ico</file>
         <file>images/ico/logo.ico</file>
@@ -329,8 +341,6 @@
         <file>images/icons/Zhiji_white.svg</file>
         <file>images/icons/ZipFile_black.svg</file>
         <file>images/icons/ZipFile_white.svg</file>
-        <file>images/icons/logs_black.svg</file>
-        <file>images/icons/logs_white.svg</file>
         <file>images/jpg/background.jpg</file>
         <file>images/jpg/background2.jpg</file>
         <file>images/jpg/sponsor.jpg</file>

@@ -830,7 +830,7 @@ class MainWindow(SplitFluentWindow):
         with self.safe_block(default=None, error_msg=self.tr("Load App interface to left route")):
             self.addSubInterface(
                 self.appInterface,
-                FIF.APPLICATION,
+                FIF.LIBRARY,
                 self.tr("App"),
                 pos,
                 isTransparent=False,
@@ -845,7 +845,7 @@ class MainWindow(SplitFluentWindow):
         ):
             self.addSubInterface(
                 self.libraryInterface,
-                FIF.BOOK_SHELF,
+                FIF.DOCUMENT,
                 self.tr("Library"),
                 pos,
                 isTransparent=False,
@@ -857,7 +857,7 @@ class MainWindow(SplitFluentWindow):
         ):
             self.addSubInterface(
                 self.funcInterface,
-                FIF.BRIGHTNESS,
+                FIcon.INTERFACE,
                 self.tr("FastRte"),
                 pos,
                 isTransparent=True,
@@ -893,7 +893,7 @@ class MainWindow(SplitFluentWindow):
         # add custom widget to bottom
         self.navigationInterface.addItem(
             routeKey="sponsor",
-            icon=FIF.HEART,
+            icon=FIcon.COFFEE,
             text=self.tr("sponsor"),
             onClick=lambda: MessageBoxSupport(
                 "支持作者🥰",

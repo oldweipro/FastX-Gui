@@ -21,7 +21,12 @@ SVG 图标颜色规范化脚本
 【颜色判断】
 - 黑色系：fill/stroke 值为 #000000、#212121、#2c2c2c、currentColor（默认黑）等
 - 白色系：fill/stroke 值为 #ffffff、#fefefe 等
-- 无颜色属性（fill="none"，只有描边）：按 path 数量判断，或视为黑色处理
+- 无颜色属性（fill=""，只有描边）：按 path 数量判断，或视为黑色处理
+
+【特殊处理】
+- 自动移除 DOCTYPE 声明以避免 Qt 解析错误
+- 智能处理 fill="" 空属性，避免重复属性错误
+- 支持所有常见 SVG 图形标签：path, circle, rect, ellipse, line, polyline, polygon
 
 【用法】
     uv run fix-svg                          # 处理项目默认图标目录
@@ -143,23 +148,97 @@ def _replace_colors(content: str, from_set: set[str], to_color: str) -> str:
     return content
 
 
-def to_black(content: str) -> str:
-    """将 SVG 中的白色系全部替换为黑色"""
-    result = _replace_colors(content, WHITE_COLORS, TARGET_BLACK)
-    # 处理 currentColor 不动，处理 fill="none" 不动
-    return result
-
-
 def to_white(content: str) -> str:
-    """将 SVG 中的黑色系（含 currentColor）全部替换为白色"""
-    result = _replace_colors(content, BLACK_COLORS, TARGET_WHITE)
-    # currentColor 也替换
+    """
+    将 SVG 中的黑色系（含 currentColor）全部替换为白色。
+    
+    特殊处理：
+    - fill="" 或没有 fill 属性的 path/shape 元素 → 添加 fill="#ffffff"
+    - stroke="" → 添加 stroke="#ffffff"
+    - 移除 DOCTYPE 声明以避免解析错误
+    """
+    # 步骤 1: 移除 DOCTYPE 声明（避免 Qt 解析错误）
+    result = re.sub(r'<!DOCTYPE[^>]*>', '', content)
+    
+    # 步骤 2: 替换已有颜色
+    result = _replace_colors(result, BLACK_COLORS, TARGET_WHITE)
+    
+    # 步骤 3: 处理 currentColor
     result = re.sub(
-        r'(fill|stroke)=["\']currentColor["\']',
+        r'(?:fill|stroke)=["\']currentColor["\']',
         lambda m: f'{m.group(1)}="{TARGET_WHITE}"',
         result,
         flags=re.IGNORECASE
     )
+    
+    # 步骤 4: 智能处理 path/shape 标签的 fill 属性
+    def process_tag(match):
+        """处理单个标签，确保有且只有一个 fill 属性"""
+        full_tag = match.group(0)
+        
+        # 检查是否已经有非空 fill 属性
+        if re.search(r'\bfill\s*=\s*["\'][^"\']+["\']', full_tag):
+            # 已有有效 fill 属性，保持不变
+            return full_tag
+        
+        # 移除空的 fill 属性 (fill="" 或 fill='')
+        attrs = re.sub(r'\s*\bfill\s*=\s*["\']["\']', '', full_tag)
+        
+        # 在标签名后添加 fill="#ffffff"
+        tag_name = match.group(1)
+        return re.sub(rf'<{tag_name}', f'<{tag_name} fill="{TARGET_WHITE}"', attrs)
+    
+    # 匹配常见的图形标签的开始标签
+    for tag in ['path', 'circle', 'rect', 'ellipse', 'line', 'polyline', 'polygon']:
+        result = re.sub(
+            rf'<({tag})\s+[^>]*>',
+            process_tag,
+            result,
+            flags=re.IGNORECASE
+        )
+    
+    return result
+
+
+def to_black(content: str) -> str:
+    """
+    将 SVG 中的白色系全部替换为黑色。
+    
+    特殊处理：
+    - fill="" 或没有 fill 属性的 path/shape 元素 → 添加 fill="#212121"
+    - stroke="" → 添加 stroke="#212121"
+    - 移除 DOCTYPE 声明以避免解析错误
+    """
+    # 步骤 1: 移除 DOCTYPE 声明
+    result = re.sub(r'<!DOCTYPE[^>]*>', '', content)
+    
+    result = _replace_colors(result, WHITE_COLORS, TARGET_BLACK)
+    
+    # 处理 fill="" 空字符串 → 填充为黑色
+    def process_tag(match):
+        """处理单个标签，确保有且只有一个 fill 属性"""
+        full_tag = match.group(0)
+        
+        # 检查是否已经有非空 fill 属性
+        if re.search(r'\bfill\s*=\s*["\'][^"\']+["\']', full_tag):
+            return full_tag
+        
+        # 移除空的 fill 属性
+        attrs = re.sub(r'\s*\bfill\s*=\s*["\']["\']', '', full_tag)
+        
+        # 添加 fill 属性
+        tag_name = match.group(1)
+        return re.sub(rf'<{tag_name}', f'<{tag_name} fill="{TARGET_BLACK}"', attrs)
+    
+    # 匹配常见的图形标签的开始标签
+    for tag in ['path', 'circle', 'rect', 'ellipse', 'line', 'polyline', 'polygon']:
+        result = re.sub(
+            rf'<({tag})\s+[^>]*>',
+            process_tag,
+            result,
+            flags=re.IGNORECASE
+        )
+    
     return result
 
 
@@ -186,6 +265,11 @@ def process_directory(icons_path: Path, dry_run: bool = False, recursive: bool =
     """
     pattern = '**/*.svg' if recursive else '*.svg'
     all_svgs = list(icons_path.glob(pattern))
+    
+    # 调试：打印找到的文件
+    print(f"[调试] 在 {icons_path} 中找到 {len(all_svgs)} 个 SVG 文件")
+    for svg in all_svgs[:5]:  # 只显示前 5 个
+        print(f"  - {svg.name}")
 
     # 按基础名分组
     # groups[base_name] = {'black': Path, 'white': Path, 'raw': Path}

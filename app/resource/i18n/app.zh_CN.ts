@@ -1524,82 +1524,82 @@ Saved to: {save_path}</source>
 <context>
     <name>LoguruInterface</name>
     <message>
-        <location filename="../../view/log_interface.py" line="420"/>
+        <location filename="../../view/log_interface.py" line="423"/>
         <source>Log Center</source>
         <translation>日志中心</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="425"/>
+        <location filename="../../view/log_interface.py" line="428"/>
         <source>Real-time system status monitoring</source>
         <translation>实时系统状态监控</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="471"/>
+        <location filename="../../view/log_interface.py" line="474"/>
         <source>Clear logs</source>
         <translation>清空日志</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="474"/>
+        <location filename="../../view/log_interface.py" line="477"/>
         <source>Copy all logs</source>
         <translation>复制全部日志</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="477"/>
+        <location filename="../../view/log_interface.py" line="480"/>
         <source>Save all logs</source>
         <translation>保存全部日志</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="480"/>
+        <location filename="../../view/log_interface.py" line="483"/>
         <source>Switch theme</source>
         <translation>切换主题</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="483"/>
+        <location filename="../../view/log_interface.py" line="486"/>
         <source>Log settings</source>
         <translation>日志设置</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="492"/>
+        <location filename="../../view/log_interface.py" line="495"/>
         <source>Show all logs</source>
         <translation>显示所有日志</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="503"/>
+        <location filename="../../view/log_interface.py" line="506"/>
         <source>Show only {LogConfig.get_level_name(level)}</source>
         <translation>仅显示 {LogConfig.get_level_name(level)}</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="535"/>
+        <location filename="../../view/log_interface.py" line="538"/>
         <source>Search log content...</source>
         <translation>搜索日志内容...</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="540"/>
+        <location filename="../../view/log_interface.py" line="543"/>
         <source>All time</source>
         <translation>全部时间</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="540"/>
+        <location filename="../../view/log_interface.py" line="543"/>
         <source>Last 1 hour</source>
         <translation>最近 1 小时</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="540"/>
+        <location filename="../../view/log_interface.py" line="543"/>
         <source>Last 24 hours</source>
         <translation>最近 24 小时</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="540"/>
+        <location filename="../../view/log_interface.py" line="543"/>
         <source>Last 7 days</source>
         <translation>最近 7 天</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="723"/>
+        <location filename="../../view/log_interface.py" line="807"/>
         <source>Save logs</source>
         <translation>保存日志</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="723"/>
+        <location filename="../../view/log_interface.py" line="807"/>
         <source>Text files (*.txt);;All files (*)</source>
         <translation>文本文件 (*.txt);;所有文件 (*)</translation>
     </message>
@@ -2257,7 +2257,7 @@ This action cannot be undone.</source>
         <translation>隐藏浮动窗口</translation>
     </message>
     <message>
-        <location filename="../../view/main_window.py" line="1218"/>
+        <location filename="../../view/main_window.py" line="1230"/>
         <source>Application minimized to tray</source>
         <translation>应用已最小化到托盘</translation>
     </message>
@@ -2295,6 +2295,16 @@ This action cannot be undone.</source>
         <location filename="../../view/main_window.py" line="712"/>
         <source>Toggle theme</source>
         <translation type="unfinished">切换主题</translation>
+    </message>
+    <message>
+        <location filename="../../view/main_window.py" line="773"/>
+        <source>Create Plugin interface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../view/main_window.py" line="879"/>
+        <source>Load Plugin interface to left route</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3154,7 +3164,7 @@ This action cannot be undone.</source>
 <context>
     <name>parent</name>
     <message>
-        <location filename="../../view/floating_window/levitation.py" line="1538"/>
+        <location filename="../../view/floating_window/levitation.py" line="1550"/>
         <source>Show floating window</source>
         <translation type="unfinished">显示浮动窗口</translation>
     </message>

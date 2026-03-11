@@ -4,13 +4,14 @@ from enum import Enum
 from loguru import logger
 from PySide6.QtCore import QObject, Qt, Signal
 from PySide6.QtGui import QAction, QColor, QFont, QKeySequence, QShortcut, QTextCharFormat, QTextCursor
-from PySide6.QtWidgets import QApplication, QHBoxLayout, QMenu, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QApplication, QHBoxLayout, QVBoxLayout, QWidget
 from qfluentwidgets import (
     CaptionLabel,
     ComboBox,
     InfoBar,
     InfoBarPosition,
     PlainTextEdit,
+    RoundMenu,
     ScrollArea,
     SearchLineEdit,
     StrongBodyLabel,
@@ -622,7 +623,7 @@ class LoguruInterface(ScrollArea):
 
     def _show_context_menu(self, pos):
         """显示右键菜单"""
-        menu = QMenu(self)
+        menu = RoundMenu(parent=self)
 
         # 复制
         copy_action = QAction(FIF.COPY.icon(), "复制", self)
