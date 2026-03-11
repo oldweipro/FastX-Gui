@@ -9,7 +9,7 @@ from qfluentwidgets import (
 from qfluentwidgets import FluentIcon as FIF
 
 from app.common.config import cfg
-from app.common.icon import UnicodeIcon
+from app.common.icon import UIcon
 from ..core.code_cleaner_core import CodeCleanerCore
 
 
@@ -24,7 +24,7 @@ class FastCodeCleanerCard(ExpandSettingCard):
         parent=None,
     ):
         if icon is None:
-            icon = UnicodeIcon.get_icon_by_name("ic_fluent_comment_dismiss_24_regular")
+            icon = UIcon.get("ic_fluent_comment_dismiss_24_regular")
         if not title:
             title = self.tr("Remove Python Code Comment")
         if content is None:

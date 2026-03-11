@@ -6,7 +6,7 @@ from qfluentwidgets import (
 from qfluentwidgets import FluentIcon as FIF
 
 from app.common.config import cfg
-from app.common.icon import UnicodeIcon, Icon
+from app.common.icon import UIcon, Icon
 from app.common.notification import Notification
 
 
@@ -44,7 +44,7 @@ class FastComMappingCard(ExpandSettingCard):
         )
         self.input_file_card = PushSettingCard(
             self.tr("Choose file"),
-            UnicodeIcon.get_icon_by_name('ic_fluent_document_table_truck_24_regular'),
+            UIcon.get('ic_fluent_document_table_truck_24_regular'),
             self.tr("Input File"), cfg.get(cfg.comGroupMappingInputFile)
         )
         self.execute_card = PrimaryPushSettingCard(

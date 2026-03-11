@@ -15,7 +15,7 @@ from qfluentwidgets import (
 )
 
 from app.common.config import cfg
-from app.common.icon import UnicodeIcon, Icon
+from app.common.icon import UIcon, Icon
 from app.common.notification import Notification
 
 
@@ -55,7 +55,7 @@ class FastFaultManagerToolUI(ExpandSettingCard):
         )
         self.fastFaultManagerInputFileCard = PushSettingCard(
             self.tr("Choose file"),
-            UnicodeIcon.get_icon_by_name('ic_fluent_document_table_truck_24_regular'),
+            UIcon.get('ic_fluent_document_table_truck_24_regular'),
             self.tr("Input File"),
             cfg.get(cfg.fastFaultManagerInputFile)
         )

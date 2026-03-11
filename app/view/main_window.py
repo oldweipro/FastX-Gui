@@ -56,7 +56,7 @@ from app.components.messagebox_custom import MessageBoxCloseWindow, MessageBoxSu
 from app.common import resource
 from app.common.background_manager import get_background_manager
 from app.common.config import cfg
-from app.common.icon import Icon, UnicodeIcon, FIcon
+from app.common.icon import Icon, UIcon, FIcon
 from app.common.setting import APPLY_NAME, VERSION
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
@@ -702,7 +702,7 @@ class MainWindow(SplitFluentWindow):
         # 任务中心
         self.progressCenterFlyout = None
         self.progressCenter = ProgressCenter(self)
-        self.progressCenterButton = TransparentToolButton(UnicodeIcon.get_icon_by_name('ic_fluent_apps_list_32_regular'), self)
+        self.progressCenterButton = TransparentToolButton(UIcon.get('ic_fluent_apps_list_32_regular'), self)
         self.progressCenterButton.setFixedSize(46, 32)
         self.progressCenterButton.clicked.connect(lambda: self.showProgressCenter(FlyoutAnimationType.DROP_DOWN))
 
@@ -882,7 +882,7 @@ class MainWindow(SplitFluentWindow):
         # ):
         self.addSubInterface(
             self.pluginInterface,
-            FIcon.APP_STORE,
+            UIcon.get('ic_fluent_agents_add_20_filled'),
             self.tr("Plugins"),
             pos,
             isTransparent=False,
@@ -908,7 +908,7 @@ class MainWindow(SplitFluentWindow):
         with self.safe_block(default=None, error_msg=self.tr("Load Log interface to left route")):
             self.addSubInterface(
                 self.loguru_interface,
-                UnicodeIcon.get_icon_by_name("ic_fluent_document_bullet_list_clock_24_regular"),
+                UIcon.get("ic_fluent_document_bullet_list_clock_24_regular"),
                 self.tr("Logs"),
                 pos,
                 isTransparent=False,

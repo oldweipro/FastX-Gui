@@ -15,7 +15,7 @@ from qfluentwidgets import (
 
 from app.common.web import download_file
 from app.common.utils import startFile as start_file, showFile as show_file
-from app.common.icon import UnicodeIcon
+from app.common.icon import UIcon
 from app.components.common_widgets import (
     BetterScrollArea, CardGroup, CustomProgressBar, WebImage,
     NewInfoBadgePosition, NewFlyoutAnimationType
@@ -358,7 +358,7 @@ class ProgressCenter(FlyoutViewBase):
         if count:
             self.window.progressCenterButton.setIcon(None)
         else:
-            self.window.progressCenterButton.setIcon(UnicodeIcon.get_icon_by_name('ic_fluent_apps_list_32_regular'))
+            self.window.progressCenterButton.setIcon(UIcon.get('ic_fluent_apps_list_32_regular'))
         
         self.cardGroup.adjustSize()
         self._adjust_size()

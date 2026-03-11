@@ -25,7 +25,7 @@ from qfluentwidgets import (
     ScrollArea,
     FluentIcon as FIF,
 )
-from app.common.icon import JPG, PNG, UnicodeIcon
+from app.common.icon import JPG, PNG, UIcon
 from app.common.setting import (
     ARCH,
     AUTHOR,
@@ -262,7 +262,7 @@ class AboutInfoHomeIf(GroupHeaderCardWidget):
 
         # 打开bilibili按钮
         self.about_bilibili_Button = HyperlinkButton(
-            UnicodeIcon.get_icon_by_name("ic_fluent_globe_arrow_forward_20_regular"),
+            UIcon.get("ic_fluent_globe_arrow_forward_20_regular"),
             BILIBILI_WEB,
             self.tr("Bilibili"),
         )
@@ -290,16 +290,16 @@ class AboutInfoHomeIf(GroupHeaderCardWidget):
         self.contributor_button = PushButton(
             self.tr("Contributor"),
         )
-        self.contributor_button.setIcon(UnicodeIcon.get_icon_by_name("ic_fluent_code_block_edit_24_regular"))
+        self.contributor_button.setIcon(UIcon.get("ic_fluent_code_block_edit_24_regular"))
         self.contributor_button.clicked.connect(self.show_contributors)
 
         # 创建捐赠支持按钮
         self.donation_button = PushButton(self.tr("Donation"))
-        self.donation_button.setIcon(UnicodeIcon.get_icon_by_name("ic_fluent_drink_margarita_24_regular"))
+        self.donation_button.setIcon(UIcon.get("ic_fluent_drink_margarita_24_regular"))
         self.donation_button.clicked.connect(self.open_donation_url)
 
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_branch_fork_link_20_regular"),
+            UIcon.get("ic_fluent_branch_fork_link_20_regular"),
             self.tr("bilibili"),
             self.tr("open wanqiang.liu's personal bilibili homepage"),
             bilibili_widget,
@@ -313,28 +313,28 @@ class AboutInfoHomeIf(GroupHeaderCardWidget):
         )
 
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_code_block_edit_24_regular"),
+            UIcon.get("ic_fluent_code_block_edit_24_regular"),
             self.tr("Contributor"),
             self.tr("view details of contributor lists"),
             self.contributor_button,
         )
 
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_drink_margarita_24_regular"),
+            UIcon.get("ic_fluent_drink_margarita_24_regular"),
             self.tr("Donation"),
             self.tr("support project development, thanks for your sponser"),
             self.donation_button,
         )
 
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_video_background_effect_48_regular"),
+            UIcon.get("ic_fluent_video_background_effect_48_regular"),
             self.tr("Copyright"),
             self.tr("FastXGui GPL-3.0 license"),
             copyright_widget,
         )
 
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_text_number_format_24_regular"),
+            UIcon.get("ic_fluent_text_number_format_24_regular"),
             self.tr("version"),
             self.tr("show current software version"),
             self.about_version_label,

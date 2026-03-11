@@ -23,7 +23,7 @@ from qfluentwidgets import (
 from qfluentwidgets import FluentIcon as FIF
 
 from app.common.config import cfg
-from app.common.icon import UnicodeIcon
+from app.common.icon import UIcon
 from app.common.style_sheet import StyleSheet
 
 
@@ -158,7 +158,7 @@ class LogConfig:
                 icon_name = config.get("icon")
                 if icon_name:
                     try:
-                        return UnicodeIcon.get_icon_by_name(icon_name)
+                        return UIcon.get(icon_name)
                     except Exception:
                         # 如果UnicodeIcon加载失败，回退到使用FIF图标
                         pass
@@ -488,7 +488,7 @@ class LoguruInterface(ScrollArea):
         self.badge_labels = {}  # 用于存储每个级别的计数
 
         # 添加"所有日志"按钮
-        self.all_logs_btn = ToggleToolButton(UnicodeIcon.get_icon_by_name("ic_fluent_channel_28_regular"))
+        self.all_logs_btn = ToggleToolButton(UIcon.get("ic_fluent_channel_28_regular"))
         self.all_logs_btn.setToolTip(self.tr("Show all logs"))
         self.all_logs_btn.setFixedSize(36, 36)
         self.all_logs_btn.setProperty("level", -1)  # -1表示所有日志

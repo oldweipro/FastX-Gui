@@ -395,8 +395,8 @@
         <file>images/png/shoko.png</file>
         <file>images/png/tips.png</file>
         <file>images/png/todo.png</file>
-        <file>images/unicodeIcon/FluentSystemIcons-Regular.json</file>
-        <file>images/unicodeIcon/FluentSystemIcons-Regular.ttf</file>
+        <file>images/unicodeIcon/FluentSystemIcons-Resizable.json</file>
+        <file>images/unicodeIcon/FluentSystemIcons-Resizable.ttf</file>
         <file>qss/dark/app_interface.qss</file>
         <file>qss/dark/gallery_interface.qss</file>
         <file>qss/dark/home_interface.qss</file>

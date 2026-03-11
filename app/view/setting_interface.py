@@ -31,7 +31,7 @@ from qfluentwidgets import FluentIcon as FIF
 
 from app.common.background_manager import get_background_manager
 from app.common.config import cfg, isWin11, TopmostMode
-from app.common.icon import UnicodeIcon
+from app.common.icon import UIcon
 from app.common.notification import Notification, NotifyPosition
 from app.common.setting import (
     AUTHOR,
@@ -167,7 +167,7 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
         self.startup_switch.setChecked(cfg.startupDisplayFloatingWindow.value)
         self.startup_switch.checkedChanged.connect(self._on_floating_window_switch_changed)
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_view_desktop_24_regular"),
+            UIcon.get("ic_fluent_view_desktop_24_regular"),
             "浮窗开关",
             "控制浮窗的开启与关闭（开启后程序启动时自动显示）",
             self.startup_switch,
@@ -183,7 +183,7 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
         self.opacity_spinbox.setValue(cfg.floatingWindowOpacity.value)
         self.opacity_spinbox.valueChanged.connect(lambda v: setattr(cfg.floatingWindowOpacity, "value", v))
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_brightness_high_20_regular"),
+            UIcon.get("ic_fluent_brightness_high_20_regular"),
             "浮窗透明度",
             "调整浮窗透明度",
             self.opacity_spinbox,
@@ -195,7 +195,7 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
         self.topmost_combo.setCurrentIndex(cfg.floatingWindowTopmostMode.value.value)
         self.topmost_combo.currentIndexChanged.connect(self._on_topmost_changed)
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_note_pin_20_regular"),
+            UIcon.get("ic_fluent_note_pin_20_regular"),
             "置顶模式",
             "选择浮窗置顶方式（UIA置顶需以管理员运行）",
             self.topmost_combo,
@@ -206,7 +206,7 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
         self.draggable_switch.setChecked(cfg.floatingWindowDraggable.value)
         self.draggable_switch.checkedChanged.connect(lambda v: setattr(cfg.floatingWindowDraggable, "value", v))
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_drag_24_regular"),
+            UIcon.get("ic_fluent_drag_24_regular"),
             "浮窗可拖动",
             "控制浮窗是否可被拖动",
             self.draggable_switch,
@@ -220,7 +220,7 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
         self.long_press_spinbox.setValue(cfg.floatingWindowLongPressDuration.value)
         self.long_press_spinbox.valueChanged.connect(lambda v: setattr(cfg.floatingWindowLongPressDuration, "value", v))
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_hand_draw_32_regular"),
+            UIcon.get("ic_fluent_hand_draw_32_regular"),
             "长按时间",
             "设置浮窗长按时间（毫秒）",
             self.long_press_spinbox,
@@ -231,7 +231,7 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
         self.focus_switch.setChecked(cfg.doNotStealFocus.value)
         self.focus_switch.checkedChanged.connect(lambda v: setattr(cfg.doNotStealFocus, "value", v))
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_group_dismiss_24_regular"),
+            UIcon.get("ic_fluent_group_dismiss_24_regular"),
             "无焦点模式",
             "通知窗口显示时不抢占焦点，保持原有顶层软件焦点",
             self.focus_switch,
@@ -241,7 +241,7 @@ class FloatingWindowBasicSettings(GroupHeaderCardWidget):
         self.reset_pos_btn = PushButton("重置位置")
         self.reset_pos_btn.clicked.connect(self._on_reset_position)
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_arrow_reset_20_regular"),
+            UIcon.get("ic_fluent_arrow_reset_20_regular"),
             "重置悬浮窗位置",
             "将悬浮窗移回屏幕默认位置",
             self.reset_pos_btn,
@@ -334,7 +334,7 @@ class FloatingWindowAppearanceSettings(GroupHeaderCardWidget):
         # 按钮控制
         self.btn_combo = self._create_button_control_combo()
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_button_20_regular"),
+            UIcon.get("ic_fluent_button_20_regular"),
             "显示的按钮",
             "选择悬浮窗上要显示的功能按钮",
             self.btn_combo,
@@ -346,7 +346,7 @@ class FloatingWindowAppearanceSettings(GroupHeaderCardWidget):
         self.placement_combo.setCurrentIndex(cfg.floatingWindowPlacement.value)
         self.placement_combo.currentIndexChanged.connect(self._on_placement_changed)
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_align_left_20_regular"),
+            UIcon.get("ic_fluent_align_left_20_regular"),
             "按钮排列方式",
             "控制悬浮窗按钮的排列方向",
             self.placement_combo,
@@ -358,7 +358,7 @@ class FloatingWindowAppearanceSettings(GroupHeaderCardWidget):
         self.style_combo.setCurrentIndex(cfg.floatingWindowDisplayStyle.value)
         self.style_combo.currentIndexChanged.connect(self._on_style_changed)
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_design_ideas_20_regular"),
+            UIcon.get("ic_fluent_design_ideas_20_regular"),
             "按钮显示样式",
             "控制按钮是显示图标、文字还是两者都显示",
             self.style_combo,
@@ -370,7 +370,7 @@ class FloatingWindowAppearanceSettings(GroupHeaderCardWidget):
         self.size_combo.setCurrentIndex(cfg.floatingWindowSize.value)
         self.size_combo.currentIndexChanged.connect(self._on_size_changed)
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_resize_20_regular"),
+            UIcon.get("ic_fluent_resize_20_regular"),
             "悬浮窗大小",
             "调整按钮与图标的整体尺寸",
             self.size_combo,
@@ -382,7 +382,7 @@ class FloatingWindowAppearanceSettings(GroupHeaderCardWidget):
         self.theme_combo.setCurrentIndex(cfg.floatingWindowTheme.value)
         self.theme_combo.currentIndexChanged.connect(self._on_theme_changed)
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_dark_theme_20_regular"),
+            UIcon.get("ic_fluent_dark_theme_20_regular"),
             "悬浮窗主题",
             "单独控制悬浮窗的浅色/深色外观（不影响主界面）",
             self.theme_combo,
@@ -393,7 +393,7 @@ class FloatingWindowAppearanceSettings(GroupHeaderCardWidget):
         self.extend_switch.setChecked(cfg.extendQuickDrawComponent.value)
         self.extend_switch.checkedChanged.connect(lambda v: setattr(cfg.extendQuickDrawComponent, "value", v))
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_panel_right_20_regular"),
+            UIcon.get("ic_fluent_panel_right_20_regular"),
             "扩展闪抽组件",
             "在闪抽按钮旁显示下拉箭头，可快速切换班级/筛选条件",
             self.extend_switch,
@@ -461,7 +461,7 @@ class FloatingWindowEdgeSettings(GroupHeaderCardWidget):
         self.stick_switch.setChecked(cfg.floatingWindowStickToEdge.value)
         self.stick_switch.checkedChanged.connect(lambda v: setattr(cfg.floatingWindowStickToEdge, "value", v))
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_pin_20_regular"),
+            UIcon.get("ic_fluent_pin_20_regular"),
             "启用贴边自动隐藏",
             "悬浮窗拖到屏幕边缘后自动缩进，鼠标经过时展开",
             self.stick_switch,
@@ -474,7 +474,7 @@ class FloatingWindowEdgeSettings(GroupHeaderCardWidget):
         self.recover_spinbox.setValue(cfg.floatingWindowStickToEdgeRecoverSeconds.value)
         self.recover_spinbox.valueChanged.connect(lambda v: setattr(cfg.floatingWindowStickToEdgeRecoverSeconds, "value", v))
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_timer_20_regular"),
+            UIcon.get("ic_fluent_timer_20_regular"),
             "自动隐藏延迟",
             "鼠标离开后等待多少秒再收回边缘",
             self.recover_spinbox,
@@ -486,7 +486,7 @@ class FloatingWindowEdgeSettings(GroupHeaderCardWidget):
         self.indicator_combo.setCurrentIndex(cfg.floatingWindowStickToEdgeDisplayStyle.value)
         self.indicator_combo.currentIndexChanged.connect(lambda i: setattr(cfg.floatingWindowStickToEdgeDisplayStyle, "value", i))
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_desktop_sync_20_regular"),
+            UIcon.get("ic_fluent_desktop_sync_20_regular"),
             "收纳指示器样式",
             "控制贴边后显示的小按钮外观",
             self.indicator_combo,
@@ -510,7 +510,7 @@ class FloatingWindowForegroundSettings(GroupHeaderCardWidget):
         self.enabled_switch.setChecked(cfg.hideFloatingWindowOnForeground.value)
         self.enabled_switch.checkedChanged.connect(self._on_enabled_changed)
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_window_ad_20_regular"),
+            UIcon.get("ic_fluent_window_ad_20_regular"),
             "前台特定窗口时隐藏",
             "当指定的窗口处于前台时自动隐藏悬浮窗",
             self.enabled_switch,
@@ -524,7 +524,7 @@ class FloatingWindowForegroundSettings(GroupHeaderCardWidget):
             lambda: setattr(cfg.hideFloatingWindowOnForegroundWindowTitles, "value", self.titles_edit.text().strip())
         )
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_window_20_regular"),
+            UIcon.get("ic_fluent_window_20_regular"),
             "窗口标题关键词",
             "包含这些关键词的窗口处于前台时隐藏悬浮窗（分号分隔）",
             self.titles_edit,
@@ -538,7 +538,7 @@ class FloatingWindowForegroundSettings(GroupHeaderCardWidget):
             lambda: setattr(cfg.hideFloatingWindowOnForegroundProcessNames, "value", self.processes_edit.text().strip())
         )
         self.addGroup(
-            UnicodeIcon.get_icon_by_name("ic_fluent_window_20_regular"),
+            UIcon.get("ic_fluent_window_20_regular"),
             "进程名称关键词",
             "指定进程处于前台时隐藏悬浮窗（分号分隔）",
             self.processes_edit,
@@ -658,7 +658,7 @@ class SettingInterface(ScrollArea):
         self.backgroundImageCard = BackgroundImageCard(
             self.tr("Background image path"),
             self.tr("Choose a custom background image file"),
-            UnicodeIcon.get_icon_by_name("ic_fluent_image_add_32_regular"),
+            UIcon.get("ic_fluent_image_add_32_regular"),
             self.backgroundGroupCard,
         )
         self.backgroundOpacityCard = RangeSettingCard(
@@ -692,7 +692,7 @@ class SettingInterface(ScrollArea):
 
         # 懸浮窗
         self.floatingWindowGroupCard = ExpandSettingCard(
-            UnicodeIcon.get_icon_by_name("ic_fluent_panel_right_32_regular"),
+            UIcon.get("ic_fluent_panel_right_32_regular"),
             self.tr("FloatWindow"),
             self.tr("Float Windows Settings"),
             self.view,
@@ -715,14 +715,14 @@ class SettingInterface(ScrollArea):
         # Application
         self.appGroup = SettingCardGroup(self.tr("Application settings"), self.view)
         self.StartupCard = SwitchSettingCard(
-            UnicodeIcon.get_icon_by_name("ic_fluent_bug_prohibited_20_regular"),
+            UIcon.get("ic_fluent_bug_prohibited_20_regular"),
             self.tr("Auto StartUp Settings(Beta)"),
             self.tr("Automatically start up the application"),
             configItem=cfg.autoRun,
             parent=self.appGroup,
         )
         self.betaCard = SwitchSettingCard(
-            UnicodeIcon.get_icon_by_name("ic_fluent_bug_prohibited_20_regular"),
+            UIcon.get("ic_fluent_bug_prohibited_20_regular"),
             self.tr("Beta experimental features"),
             self.tr("When turned on, experimental features will be enabled"),
             configItem=cfg.beta,
@@ -741,7 +741,7 @@ class SettingInterface(ScrollArea):
 
         self.windowSizeModeCard = ComboBoxSettingCard(
             cfg.windowSizeMode,
-            UnicodeIcon.get_icon_by_name("ic_fluent_resize_large_24_regular"),
+            UIcon.get("ic_fluent_resize_large_24_regular"),
             self.tr("window size mode"),
             self.tr("Select the window size mode, fixed size or auto-adaptive to screen resolution"),
             texts=[self.tr("fixed"), self.tr("auto")],
@@ -750,7 +750,7 @@ class SettingInterface(ScrollArea):
 
         # Log
         self.logGroupCard = ExpandSettingCard(
-            UnicodeIcon.get_icon_by_name("ic_fluent_document_bullet_list_24_regular"),
+            UIcon.get("ic_fluent_document_bullet_list_24_regular"),
             self.tr("Logs Settings"),
             self.tr("Custom logs settings"),
             self.view,
@@ -954,7 +954,7 @@ class SettingInterface(ScrollArea):
     def _createBetaSetting(self):
         self.BetaGroup = SettingCardGroup(self.tr("Beta"), self.view)
         self.debug_Card = SwitchSettingCard(
-            UnicodeIcon.get_icon_by_name("ic_fluent_bug_24_regular"),
+            UIcon.get("ic_fluent_bug_24_regular"),
             self.tr("Debug Mode"),
             self.tr(
                 "The global exception capture will be disabled, and there will be outputs in the commandline.(Code Running Only)"

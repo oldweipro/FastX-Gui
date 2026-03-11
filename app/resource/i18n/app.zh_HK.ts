@@ -4,7 +4,7 @@
 <context>
     <name>@default</name>
     <message>
-        <location filename="../../view/floating_window/levitation.py" line="540"/>
+        <location filename="../../view/floating_window/levitation.py" line="850"/>
         <source>Show floating window</source>
         <translation>顯示浮動窗口</translation>
     </message>
@@ -1267,11 +1267,35 @@
     </message>
 </context>
 <context>
+    <name>FloatingWindowAppearanceSettings</name>
+    <message>
+        <location filename="../../view/setting_interface.py" line="327"/>
+        <source>appearance_settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FloatingWindowBasicSettings</name>
     <message>
         <location filename="../../view/setting_interface.py" line="156"/>
         <source>basic_settings</source>
         <translation>基礎設置</translation>
+    </message>
+</context>
+<context>
+    <name>FloatingWindowEdgeSettings</name>
+    <message>
+        <location filename="../../view/setting_interface.py" line="452"/>
+        <source>edge_settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FloatingWindowForegroundSettings</name>
+    <message>
+        <location filename="../../view/setting_interface.py" line="501"/>
+        <source>foreground_settings</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2275,537 +2299,537 @@ This action cannot be undone.</source>
 <context>
     <name>SettingInterface</name>
     <message>
-        <location filename="../../view/setting_interface.py" line="298"/>
+        <location filename="../../view/setting_interface.py" line="570"/>
         <source>Settings</source>
         <translation>設置</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="699"/>
+        <location filename="../../view/setting_interface.py" line="977"/>
         <source>Choose folder</source>
         <translation>選擇文件夾</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="317"/>
+        <location filename="../../view/setting_interface.py" line="589"/>
         <source>Personalization</source>
         <translation>個性化</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="325"/>
+        <location filename="../../view/setting_interface.py" line="597"/>
         <source>Application theme</source>
         <translation>應用主題</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="325"/>
+        <location filename="../../view/setting_interface.py" line="597"/>
         <source>Change the appearance of your application</source>
         <translation>調整你的應用的外觀</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="325"/>
+        <location filename="../../view/setting_interface.py" line="597"/>
         <source>Light</source>
         <translation>淺色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="325"/>
+        <location filename="../../view/setting_interface.py" line="597"/>
         <source>Dark</source>
         <translation>深色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="359"/>
+        <location filename="../../view/setting_interface.py" line="631"/>
         <source>Use system setting</source>
         <translation>跟隨繫統設置</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="337"/>
+        <location filename="../../view/setting_interface.py" line="609"/>
         <source>Theme color</source>
         <translation>主題色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="337"/>
+        <location filename="../../view/setting_interface.py" line="609"/>
         <source>Change the theme color of you application</source>
         <translation>調整你的應用的主題色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="359"/>
+        <location filename="../../view/setting_interface.py" line="631"/>
         <source>Language</source>
         <translation>語言</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="359"/>
+        <location filename="../../view/setting_interface.py" line="631"/>
         <source>Set your preferred language for UI</source>
         <translation>選擇界麵所使用的語言</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="578"/>
+        <location filename="../../view/setting_interface.py" line="853"/>
         <source>About</source>
         <translation>關於</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="571"/>
+        <location filename="../../view/setting_interface.py" line="846"/>
         <source>Provide feedback</source>
         <translation>提供反饋</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="690"/>
+        <location filename="../../view/setting_interface.py" line="968"/>
         <source>Configuration takes effect after restart</source>
         <translation>配置在重啟軟件後生效</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="690"/>
+        <location filename="../../view/setting_interface.py" line="968"/>
         <source>Updated successfully</source>
         <translation>更新成功</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="318"/>
+        <location filename="../../view/setting_interface.py" line="590"/>
         <source>Mica effect</source>
         <translation>雲母效果</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="318"/>
+        <location filename="../../view/setting_interface.py" line="590"/>
         <source>Apply semi transparent to windows and surfaces</source>
         <translation>窗口和表麵顯示半透明</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="301"/>
+        <location filename="../../view/setting_interface.py" line="573"/>
         <source>Project on this PC</source>
         <translation>此電腦上的專案</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="302"/>
+        <location filename="../../view/setting_interface.py" line="574"/>
         <source>Local Project library</source>
         <translation>本地專案庫</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="308"/>
+        <location filename="../../view/setting_interface.py" line="580"/>
         <source>Project directory</source>
         <translation>專案文件夾</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="344"/>
+        <location filename="../../view/setting_interface.py" line="616"/>
         <source>Interface zoom</source>
         <translation>介面縮放</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="344"/>
+        <location filename="../../view/setting_interface.py" line="616"/>
         <source>Change the size of widgets and fonts</source>
         <translation>改變組件和字體的大小</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="431"/>
+        <location filename="../../view/setting_interface.py" line="706"/>
         <source>Material</source>
         <translation>材料</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="432"/>
+        <location filename="../../view/setting_interface.py" line="707"/>
         <source>Acrylic blur radius</source>
         <translation>壓克力模糊半徑</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="432"/>
+        <location filename="../../view/setting_interface.py" line="707"/>
         <source>The greater the radius, the more blurred the image</source>
         <translation>半徑越大，圖像越模糊</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="552"/>
+        <location filename="../../view/setting_interface.py" line="827"/>
         <source>Software update</source>
         <translation>軟件更新</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="553"/>
+        <location filename="../../view/setting_interface.py" line="828"/>
         <source>Check for updates when the application starts</source>
         <translation>應用啟動時檢查更新</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="553"/>
+        <location filename="../../view/setting_interface.py" line="828"/>
         <source>The new version will be more stable and have more features</source>
         <translation>新版本將更加穩定並具有更多功能</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="563"/>
+        <location filename="../../view/setting_interface.py" line="838"/>
         <source>Open help page</source>
         <translation>打開幫助頁面</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="563"/>
+        <location filename="../../view/setting_interface.py" line="838"/>
         <source>Help</source>
         <translation>幫助</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="956"/>
+        <location filename="../../view/setting_interface.py" line="1234"/>
         <source>Check update</source>
         <translation>檢查更新</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="927"/>
+        <location filename="../../view/setting_interface.py" line="1205"/>
         <source>Checking...</source>
         <translation>檢查更新中...</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="578"/>
+        <location filename="../../view/setting_interface.py" line="853"/>
         <source>Version</source>
         <translation>版本</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="373"/>
+        <location filename="../../view/setting_interface.py" line="645"/>
         <source>Background</source>
         <translation>背景</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="373"/>
+        <location filename="../../view/setting_interface.py" line="645"/>
         <source>Customize application background settings</source>
         <translation>自定義應用背景設置</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="379"/>
+        <location filename="../../view/setting_interface.py" line="651"/>
         <source>Background image</source>
         <translation>背景圖片</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="379"/>
+        <location filename="../../view/setting_interface.py" line="651"/>
         <source>Enable custom background image for the application</source>
         <translation>啟用應用自定義背景圖片</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="386"/>
+        <location filename="../../view/setting_interface.py" line="658"/>
         <source>Background image path</source>
         <translation>背景圖片路徑</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="386"/>
+        <location filename="../../view/setting_interface.py" line="658"/>
         <source>Choose a custom background image file</source>
         <translation>選擇自定義背景圖片文件</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="392"/>
+        <location filename="../../view/setting_interface.py" line="664"/>
         <source>Background opacity</source>
         <translation>背景透明度</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="392"/>
+        <location filename="../../view/setting_interface.py" line="664"/>
         <source>Adjust the opacity of the background image (0-100%)</source>
         <translation>調整背景圖片的透明度 (0-100%)</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="399"/>
+        <location filename="../../view/setting_interface.py" line="671"/>
         <source>Background blur</source>
         <translation>背景模糊</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="399"/>
+        <location filename="../../view/setting_interface.py" line="671"/>
         <source>Adjust the blur radius of the background image (0-50px)</source>
         <translation>調整背景圖片的模糊半徑 (0-50px)</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="406"/>
+        <location filename="../../view/setting_interface.py" line="678"/>
         <source>Display mode</source>
         <translation>顯示模式</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="406"/>
+        <location filename="../../view/setting_interface.py" line="678"/>
         <source>Choose how the background image is displayed</source>
         <translation>選擇背景圖片的顯示方式</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="406"/>
+        <location filename="../../view/setting_interface.py" line="678"/>
         <source>Stretch</source>
         <translation>拉伸</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="406"/>
+        <location filename="../../view/setting_interface.py" line="678"/>
         <source>Keep Aspect Ratio</source>
         <translation>保持縱橫比</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="406"/>
+        <location filename="../../view/setting_interface.py" line="678"/>
         <source>Tile</source>
         <translation>平鋪</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="406"/>
+        <location filename="../../view/setting_interface.py" line="678"/>
         <source>Original Size</source>
         <translation>原始大小</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="406"/>
+        <location filename="../../view/setting_interface.py" line="678"/>
         <source>Fit Window</source>
         <translation>適應窗口</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="422"/>
+        <location filename="../../view/setting_interface.py" line="694"/>
         <source>FloatWindow</source>
         <translation>浮動窗口</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="422"/>
+        <location filename="../../view/setting_interface.py" line="694"/>
         <source>Float Windows Settings</source>
         <translation>浮動窗口設置</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="441"/>
+        <location filename="../../view/setting_interface.py" line="716"/>
         <source>Application settings</source>
         <translation>應用設置</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="449"/>
+        <location filename="../../view/setting_interface.py" line="724"/>
         <source>Beta experimental features</source>
         <translation>Beta 實驗性功能</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="449"/>
+        <location filename="../../view/setting_interface.py" line="724"/>
         <source>When turned on, experimental features will be enabled</source>
         <translation>開啟後將啟用實驗性功能</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="456"/>
+        <location filename="../../view/setting_interface.py" line="731"/>
         <source>when close windows</source>
         <translation>關閉窗口時</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="456"/>
+        <location filename="../../view/setting_interface.py" line="731"/>
         <source>Select the default behavior when closing the window, or you can be asked by the dialog box on closing</source>
         <translation>選擇關閉窗口時的默認行為，或在關閉時通過對話框詢問</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="456"/>
+        <location filename="../../view/setting_interface.py" line="731"/>
         <source>ask</source>
         <translation>詢問</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="456"/>
+        <location filename="../../view/setting_interface.py" line="731"/>
         <source>minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="456"/>
+        <location filename="../../view/setting_interface.py" line="731"/>
         <source>close</source>
         <translation>關閉</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="467"/>
+        <location filename="../../view/setting_interface.py" line="742"/>
         <source>window size mode</source>
         <translation>窗口大小模式</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="467"/>
+        <location filename="../../view/setting_interface.py" line="742"/>
         <source>Select the window size mode, fixed size or auto-adaptive to screen resolution</source>
         <translation>選擇窗口大小模式，固定大小或自動適應屏幕分辨率</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="467"/>
+        <location filename="../../view/setting_interface.py" line="742"/>
         <source>fixed</source>
         <translation>固定</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="467"/>
+        <location filename="../../view/setting_interface.py" line="742"/>
         <source>auto</source>
         <translation>自動</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="477"/>
+        <location filename="../../view/setting_interface.py" line="752"/>
         <source>Logs Settings</source>
         <translation>日誌設置</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="477"/>
+        <location filename="../../view/setting_interface.py" line="752"/>
         <source>Custom logs settings</source>
         <translation>自定義日誌設置</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="483"/>
+        <location filename="../../view/setting_interface.py" line="758"/>
         <source>Log level Filter</source>
         <translation>日誌級別過濾</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="483"/>
+        <location filename="../../view/setting_interface.py" line="758"/>
         <source>Set the minimum log level to display</source>
         <translation>設置要顯示的最低日誌級別</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="483"/>
+        <location filename="../../view/setting_interface.py" line="758"/>
         <source>TRACE</source>
         <translation>追蹤</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="483"/>
+        <location filename="../../view/setting_interface.py" line="758"/>
         <source>DEBUG</source>
         <translation>調試</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="483"/>
+        <location filename="../../view/setting_interface.py" line="758"/>
         <source>INFO</source>
         <translation>信息</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="483"/>
+        <location filename="../../view/setting_interface.py" line="758"/>
         <source>SUCCESS</source>
         <translation>成功</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="483"/>
+        <location filename="../../view/setting_interface.py" line="758"/>
         <source>WARNING</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="483"/>
+        <location filename="../../view/setting_interface.py" line="758"/>
         <source>ERROR</source>
         <translation>錯誤</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="483"/>
+        <location filename="../../view/setting_interface.py" line="758"/>
         <source>CRITICAL</source>
         <translation>嚴重</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="845"/>
+        <location filename="../../view/setting_interface.py" line="1123"/>
         <source>Trace color</source>
         <translation>追蹤顏色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="845"/>
+        <location filename="../../view/setting_interface.py" line="1123"/>
         <source>Set the color for trace level logs</source>
         <translation>設置追蹤級日誌的顏色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="852"/>
+        <location filename="../../view/setting_interface.py" line="1130"/>
         <source>Debug color</source>
         <translation>調試顏色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="852"/>
+        <location filename="../../view/setting_interface.py" line="1130"/>
         <source>Set the color for debug level logs</source>
         <translation>設置調試級日誌的顏色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="859"/>
+        <location filename="../../view/setting_interface.py" line="1137"/>
         <source>Info color</source>
         <translation>信息顏色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="859"/>
+        <location filename="../../view/setting_interface.py" line="1137"/>
         <source>Set the color for info level logs</source>
         <translation>設置信息級日誌的顏色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="866"/>
+        <location filename="../../view/setting_interface.py" line="1144"/>
         <source>Success color</source>
         <translation>成功顏色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="866"/>
+        <location filename="../../view/setting_interface.py" line="1144"/>
         <source>Set the color for success level logs</source>
         <translation>設置成功級日誌的顏色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="873"/>
+        <location filename="../../view/setting_interface.py" line="1151"/>
         <source>Warning color</source>
         <translation>警告顏色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="873"/>
+        <location filename="../../view/setting_interface.py" line="1151"/>
         <source>Set the color for warning level logs</source>
         <translation>設置警告級日誌的顏色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="880"/>
+        <location filename="../../view/setting_interface.py" line="1158"/>
         <source>Error color</source>
         <translation>錯誤顏色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="880"/>
+        <location filename="../../view/setting_interface.py" line="1158"/>
         <source>Set the color for error level logs</source>
         <translation>設置錯誤級日誌的顏色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="887"/>
+        <location filename="../../view/setting_interface.py" line="1165"/>
         <source>Critical color</source>
         <translation>嚴重顏色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="887"/>
+        <location filename="../../view/setting_interface.py" line="1165"/>
         <source>Set the color for critical level logs</source>
         <translation>設置嚴重級日誌的顏色</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="563"/>
+        <location filename="../../view/setting_interface.py" line="838"/>
         <source>Discover new features and learn useful tips about FastXTeam/FastX-Gui</source>
         <translation>發現新功能並學習有關 FastXTeam/FastX-Gui 的實用技巧</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="571"/>
+        <location filename="../../view/setting_interface.py" line="846"/>
         <source>Help us improve FastXTeam/FastX-Gui by providing feedback</source>
         <translation>通過提供反饋幫助我們改進 FastXTeam/FastX-Gui</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="578"/>
+        <location filename="../../view/setting_interface.py" line="853"/>
         <source>Copyright (C)</source>
         <translation>版權所有 (C)</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="677"/>
+        <location filename="../../view/setting_interface.py" line="955"/>
         <source>Beta</source>
         <translation>Beta</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="678"/>
+        <location filename="../../view/setting_interface.py" line="956"/>
         <source>Debug Mode</source>
         <translation>調試模式</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="678"/>
+        <location filename="../../view/setting_interface.py" line="956"/>
         <source>The global exception capture will be disabled, and there will be outputs in the commandline.(Code Running Only)</source>
         <translation>全局異常捕獲將被禁用，命令行中會有輸出。(僅代碼運行時)</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="726"/>
+        <location filename="../../view/setting_interface.py" line="1004"/>
         <source>Select background image</source>
         <translation>選擇背景圖片</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="726"/>
+        <location filename="../../view/setting_interface.py" line="1004"/>
         <source>Image files (*.jpg *.jpeg *.png *.bmp *.gif *.webp)</source>
         <translation>圖片文件 (*.jpg *.jpeg *.png *.bmp *.gif *.webp)</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="442"/>
+        <location filename="../../view/setting_interface.py" line="717"/>
         <source>Auto StartUp Settings(Beta)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="442"/>
+        <location filename="../../view/setting_interface.py" line="717"/>
         <source>Automatically start up the application</source>
         <translation>自动启动应用程序</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="1078"/>
+        <location filename="../../view/setting_interface.py" line="1356"/>
         <source>auto start up</source>
         <translation>自动启动</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="1066"/>
+        <location filename="../../view/setting_interface.py" line="1344"/>
         <source>enable</source>
         <translation>启用</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="1072"/>
+        <location filename="../../view/setting_interface.py" line="1350"/>
         <source>disable</source>
         <translation>禁用</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="1078"/>
+        <location filename="../../view/setting_interface.py" line="1356"/>
         <source>failure</source>
         <translation>失败</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="947"/>
+        <location filename="../../view/setting_interface.py" line="1225"/>
         <source>Currently a development version, no release available.</source>
         <translation>当前为开发版本，无发布版本。</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="956"/>
+        <location filename="../../view/setting_interface.py" line="1234"/>
         <source>Already the latest version: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="965"/>
+        <location filename="../../view/setting_interface.py" line="1243"/>
         <source>New version available</source>
         <translation>有新版本可用</translation>
     </message>
@@ -3127,14 +3151,22 @@ This action cannot be undone.</source>
     </message>
 </context>
 <context>
+    <name>parent</name>
+    <message>
+        <location filename="../../view/floating_window/levitation.py" line="1538"/>
+        <source>Show floating window</source>
+        <translation type="unfinished">顯示浮動窗口</translation>
+    </message>
+</context>
+<context>
     <name>widget</name>
     <message>
-        <location filename="../../view/setting_interface.py" line="276"/>
+        <location filename="../../view/setting_interface.py" line="308"/>
         <source>Hide floating window</source>
         <translation>隱藏浮動窗口</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="282"/>
+        <location filename="../../view/setting_interface.py" line="314"/>
         <source>Show floating window</source>
         <translation>顯示浮動窗口</translation>
     </message>

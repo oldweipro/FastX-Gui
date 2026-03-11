@@ -34,7 +34,7 @@ from qfluentwidgets import (
 )
 
 from app.common.config import cfg
-from app.common.icon import UnicodeIcon
+from app.common.icon import UIcon
 from app.common.style_sheet import StyleSheet
 
 
@@ -445,7 +445,7 @@ class BasicConfigCard(GroupHeaderCardWidget):
         self.exeButton = PrimaryPushButton(
             self.tr("Execute"),
             self,
-            UnicodeIcon.get_icon_by_name("ic_fluent_panel_bottom_20_regular"),
+            UIcon.get("ic_fluent_panel_bottom_20_regular"),
         )
 
         self.toolBarLayout = QHBoxLayout()
@@ -480,31 +480,31 @@ class BasicConfigCard(GroupHeaderCardWidget):
     def _initLayout(self):
         # add widget to group
         self.toolsEngineGroup = self.addGroup(
-            icon=UnicodeIcon.get_icon_by_name("ic_fluent_multiplier_2x_32_regular"),
+            icon=UIcon.get("ic_fluent_multiplier_2x_32_regular"),
             title=self.tr("Change Tools"),
             content=self.tr("Select the Tools Engine to Generator"),
             widget=self.toolsEngineComboBox,
         )
         self.chooseMappingTableGroup = self.addGroup(
-            icon=UnicodeIcon.get_icon_by_name("ic_fluent_document_table_24_regular"),
+            icon=UIcon.get("ic_fluent_document_table_24_regular"),
             title=self.tr("Mapping Table Path"),
             content=cfg.get(cfg.fastRteMappingTableFile),
             widget=self.chooseMappingTableButton,
         )
         self.chooseDataTypGroup = self.addGroup(
-            icon=UnicodeIcon.get_icon_by_name("ic_fluent_document_contract_16_regular"),
+            icon=UIcon.get("ic_fluent_document_contract_16_regular"),
             title=self.tr("DataType Arxml Path"),
             content=cfg.get(cfg.fastRteDataTypeFile),
             widget=self.chooseDataTypeButton,
         )
         self.chooseInterfaceGroup = self.addGroup(
-            icon=UnicodeIcon.get_icon_by_name("ic_fluent_document_contract_16_regular"),
+            icon=UIcon.get("ic_fluent_document_contract_16_regular"),
             title=self.tr("Interface Arxml Path"),
             content=cfg.get(cfg.fastRteInterfaceFile),
             widget=self.chooseInterfaceButton,
         )
         self.outputFolderGroup = self.addGroup(
-            icon=UnicodeIcon.get_icon_by_name("ic_fluent_folder_open_24_regular"),
+            icon=UIcon.get("ic_fluent_folder_open_24_regular"),
             title=self.tr("Output Folder"),
             content=cfg.get(cfg.fastRteOutputFolder),
             widget=self.outputFolderButton,
@@ -552,9 +552,9 @@ class BasicConfigCard(GroupHeaderCardWidget):
 
     def _onToolsEngineChanged(self):
         icons = [
-            UnicodeIcon.get_icon_by_name("ic_fluent_multiplier_2x_32_regular"),
-            UnicodeIcon.get_icon_by_name("ic_fluent_dual_screen_span_20_regular"),
-            UnicodeIcon.get_icon_by_name("ic_fluent_diamond_link_24_regular"),
+            UIcon.get("ic_fluent_multiplier_2x_32_regular"),
+            UIcon.get("ic_fluent_dual_screen_span_20_regular"),
+            UIcon.get("ic_fluent_diamond_link_24_regular"),
         ]
         self.toolsEngineGroup.setIcon(icons[self.toolsEngineComboBox.currentIndex()].icon())
         cfg.set(cfg.fastRteToolsEngine, self.toolsEngineComboBox.currentText())

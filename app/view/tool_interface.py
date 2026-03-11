@@ -19,7 +19,7 @@ from qfluentwidgets import (
 )
 
 from app.common.config import cfg
-from app.common.icon import UnicodeIcon
+from app.common.icon import UIcon
 from app.common.style_sheet import StyleSheet
 from app.components.main_layout_card import ToolBar
 

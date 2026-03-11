@@ -701,27 +701,27 @@ class LevitationWindow(QWidget):
 
     def _get_button_config(self, spec: str) -> dict[str, Any]:
         """获取按钮配置信息"""
-        from ...common.icon import UnicodeIcon
+        from ...common.icon import UIcon
 
         button_configs = {
             "roll_call": {
-                "icon": UnicodeIcon.get_icon_by_name(self.BUTTON_ICONS["roll_call"]),
+                "icon": UIcon.get(self.BUTTON_ICONS["roll_call"]),
                 "text": self.BUTTON_LABELS["roll_call"],
             },
             "quick_draw": {
-                "icon": UnicodeIcon.get_icon_by_name(self.BUTTON_ICONS["quick_draw"]),
+                "icon": UIcon.get(self.BUTTON_ICONS["quick_draw"]),
                 "text": self.BUTTON_LABELS["quick_draw"],
             },
             "lottery": {
-                "icon": UnicodeIcon.get_icon_by_name(self.BUTTON_ICONS["lottery"]),
+                "icon": UIcon.get(self.BUTTON_ICONS["lottery"]),
                 "text": self.BUTTON_LABELS["lottery"],
             },
             "face_draw": {
-                "icon": UnicodeIcon.get_icon_by_name(self.BUTTON_ICONS["face_draw"]),
+                "icon": UIcon.get(self.BUTTON_ICONS["face_draw"]),
                 "text": self.BUTTON_LABELS["face_draw"],
             },
             "timer": {
-                "icon": UnicodeIcon.get_icon_by_name(self.BUTTON_ICONS["timer"]),
+                "icon": UIcon.get(self.BUTTON_ICONS["timer"]),
                 "text": self.BUTTON_LABELS["timer"],
             },
             "settings": {
@@ -879,7 +879,7 @@ class LevitationWindow(QWidget):
 
     def _create_qd_arrow_btn(self) -> QPushButton:
         """创建闪抽下拉箭头按钮"""
-        from ...common.icon import UnicodeIcon
+        from ...common.icon import UIcon
 
         btn = QPushButton()
         btn.setAttribute(Qt.WA_TranslucentBackground)
@@ -892,7 +892,7 @@ class LevitationWindow(QWidget):
             max(14, int(self._icon_size.width() * 0.75)),
             max(14, int(self._icon_size.height() * 0.75)),
         )
-        btn.setIcon(UnicodeIcon.get_icon_by_name("ic_fluent_chevron_down_20_filled"))
+        btn.setIcon(UIcon.get("ic_fluent_chevron_down_20_filled"))
         btn.setIconSize(icon_sz)
         btn.clicked.connect(lambda: self._toggle_qd_panel(btn))
         return btn
