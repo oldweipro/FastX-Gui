@@ -79,31 +79,41 @@ class LicenseService:
     # 时间容差（秒）- 允许的时间回拨容差
     TIME_TOLERANCE = 300  # 5分钟
     
+    # 类级别缓存（避免重复计算）
+    _machine_code_cache: Optional[str] = None
+    _license_info_cache: Optional[LicenseInfo] = None
+    
     def __init__(self):
         self._ensure_data_dir()
         self._cached_license: Optional[LicenseInfo] = None
     
     def _ensure_data_dir(self):
         """确保数据目录存在"""
+        if self.LOCAL_DATA_DIR.exists():
+            return  # 已存在，跳过
         self.LOCAL_DATA_DIR.mkdir(parents=True, exist_ok=True)
-        # 设置隐藏属性（Windows）
+        # 设置隐藏属性（Windows）- 只在首次创建时执行
         if sys.platform == "win32":
             try:
                 subprocess.run(
                     ["attrib", "+H", str(self.LOCAL_DATA_DIR)],
-                    check=False, capture_output=True
+                    check=False, capture_output=True, timeout=5
                 )
             except Exception:
                 pass
     
-    @staticmethod
-    def get_machine_code() -> str:
+    @classmethod
+    def get_machine_code(cls) -> str:
         """
-        生成机器码 - 基于硬件信息
+        生成机器码 - 基于硬件信息（带缓存）
         
         Returns:
             32位十六进制字符串
         """
+        # 使用缓存
+        if cls._machine_code_cache is not None:
+            return cls._machine_code_cache
+        
         machine_info = []
         
         try:
@@ -134,7 +144,6 @@ class LicenseService:
                             machine_info.append(disk.SerialNumber.strip())
                             break
                 except ImportError:
-                    # wmi 模块未安装，使用备用方案
                     logger.debug("wmi 模块未安装，使用备用机器码生成方案")
                 except Exception as e:
                     logger.debug(f"获取 WMI 信息失败: {e}")
@@ -156,7 +165,8 @@ class LicenseService:
         
         # 生成哈希
         raw_string = "|".join(filter(None, machine_info))
-        return hashlib.sha256(raw_string.encode()).hexdigest()[:32].upper()
+        cls._machine_code_cache = hashlib.sha256(raw_string.encode()).hexdigest()[:32].upper()
+        return cls._machine_code_cache
     
     def _verify_signature(self, header_b64: str, payload_b64: str, signature: str) -> bool:
         """验证 HMAC 签名"""
@@ -233,14 +243,16 @@ class LicenseService:
         try:
             current_time = datetime.now()
             
-            # 读取时间锚点
-            last_run_time = self._get_last_run_time()
-            first_run_time = self._get_first_run_time()
+            # 一次性读取时间锚点数据
+            time_anchor = self._get_time_anchor()
             
             # 首次运行，初始化时间锚点
-            if first_run_time is None:
+            if time_anchor is None:
                 self._update_time_anchor(current_time)
                 return True, "首次运行"
+            
+            last_run_time = time_anchor.get("last_run")
+            first_run_time = time_anchor.get("first_run")
             
             # 检查时间回拨
             if last_run_time is not None:
@@ -248,23 +260,22 @@ class LicenseService:
                 if time_diff > self.TIME_TOLERANCE:
                     return False, "检测到系统时间被回拨，请检查系统时间设置"
             
-            # 检查是否在授权起始日期之前
-            license_info = self.get_license_info()
-            if license_info and license_info.start_date:
-                start = datetime.strptime(license_info.start_date, "%Y-%m-%d")
+            # 检查是否在授权起始日期之前（使用缓存）
+            if self._cached_license and self._cached_license.start_date:
+                start = datetime.strptime(self._cached_license.start_date, "%Y-%m-%d")
                 if current_time.date() < start.date():
                     return False, "当前日期早于授权起始日期"
             
             # 更新时间锚点
-            self._update_time_anchor(current_time)
+            self._update_time_anchor(current_time, first_run_time)
             return True, "时间检测通过"
             
         except Exception as e:
             logger.error(f"时间检测失败: {e}")
             return False, f"时间检测失败: {str(e)}"
     
-    def _get_last_run_time(self) -> Optional[datetime]:
-        """获取上次运行时间"""
+    def _get_time_anchor(self) -> Optional[dict]:
+        """获取时间锚点数据（一次性读取）"""
         try:
             # 尝试从注册表读取
             import winreg
@@ -272,7 +283,10 @@ class LicenseService:
                                winreg.KEY_READ) as key:
                 time_data, _ = winreg.QueryValueEx(key, self.TIME_ANCHOR_VALUE)
                 data = json.loads(self._decrypt_data(time_data))
-                return datetime.fromisoformat(data["last_run"])
+                return {
+                    "first_run": datetime.fromisoformat(data["first_run"]) if data.get("first_run") else None,
+                    "last_run": datetime.fromisoformat(data["last_run"]) if data.get("last_run") else None,
+                }
         except Exception:
             pass
         
@@ -280,31 +294,31 @@ class LicenseService:
             # 尝试从文件读取
             if self.TIME_FILE.exists():
                 data = json.loads(self._decrypt_data(self.TIME_FILE.read_text()))
-                return datetime.fromisoformat(data["last_run"])
+                return {
+                    "first_run": datetime.fromisoformat(data["first_run"]) if data.get("first_run") else None,
+                    "last_run": datetime.fromisoformat(data["last_run"]) if data.get("last_run") else None,
+                }
         except Exception:
             pass
         
         return None
     
+    def _get_last_run_time(self) -> Optional[datetime]:
+        """获取上次运行时间"""
+        time_anchor = self._get_time_anchor()
+        return time_anchor.get("last_run") if time_anchor else None
+    
     def _get_first_run_time(self) -> Optional[datetime]:
         """获取首次运行时间"""
-        try:
-            import winreg
-            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, self.REGISTRY_KEY, 0,
-                               winreg.KEY_READ) as key:
-                time_data, _ = winreg.QueryValueEx(key, self.TIME_ANCHOR_VALUE)
-                data = json.loads(self._decrypt_data(time_data))
-                return datetime.fromisoformat(data["first_run"])
-        except Exception:
-            pass
-        return None
+        time_anchor = self._get_time_anchor()
+        return time_anchor.get("first_run") if time_anchor else None
     
-    def _update_time_anchor(self, current_time: datetime):
+    def _update_time_anchor(self, current_time: datetime, first_run: Optional[datetime] = None):
         """更新时间锚点"""
         try:
-            first_run = self._get_first_run_time() or current_time
+            first_run_time = first_run or current_time
             data = {
-                "first_run": first_run.isoformat(),
+                "first_run": first_run_time.isoformat(),
                 "last_run": current_time.isoformat(),
                 "check_count": 0
             }

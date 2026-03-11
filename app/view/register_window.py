@@ -43,6 +43,9 @@ class RegisterWindow(Window):
         setThemeColor("#28afe9")
         self.setTitleBar(MSFluentTitleBar(self))
         self.license_service = get_license_service()
+        
+        # 预热机器码缓存（避免点击时卡顿）
+        self.license_service.get_machine_code()
 
         self.imageLabel = ImageLabel(":/app/images/jpg/background.jpg", self)
         self.iconLabel = ImageLabel(":/app/images/png/logo.png", self)
