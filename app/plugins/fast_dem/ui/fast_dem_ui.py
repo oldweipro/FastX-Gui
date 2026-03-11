@@ -1,6 +1,6 @@
 from PySide6.QtCore import QModelIndex, QPoint
 from PySide6.QtGui import QIcon, Qt
-from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QInputDialog, QMessageBox, QVBoxLayout, QWidget, \
+from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QVBoxLayout, QWidget, \
     QTableWidget, QTableWidgetItem, QHeaderView, QItemDelegate, QComboBox, QStyledItemDelegate, QMenu, QLineEdit, \
     QAbstractItemView
 from qfluentwidgets import (
@@ -8,7 +8,8 @@ from qfluentwidgets import (
     PrimaryPushSettingCard,
     PushSettingCard,
     SwitchSettingCard, ScrollArea, FluentIconBase, ComboBox, TableWidget, IconWidget, FluentIcon, SearchLineEdit,
-    StrongBodyLabel, Dialog, LineEdit, PrimaryPushButton, PushButton, MessageBoxBase, BodyLabel, SpinBox, SubtitleLabel
+    StrongBodyLabel, Dialog, LineEdit, PrimaryPushButton, PushButton, MessageBoxBase, BodyLabel, SpinBox, SubtitleLabel,
+    InfoBar, InfoBarPosition, MessageBox
 )
 from qfluentwidgets import (
     FluentIcon as FIF,
@@ -150,10 +151,29 @@ class FastDemToolUI(ExpandSettingCard):
             title: 对话框标题
         """
         current_value = cfg.get(config_item)
-        value, ok = QInputDialog.getText(self, title, title, text=current_value)
-        if ok and value != current_value:
-            cfg.set(config_item, value)
-            card.setContent(value)
+        # 使用 MessageBoxBase 创建输入对话框
+        class InputDialog(MessageBoxBase):
+            def __init__(self, parent=None):
+                super().__init__(parent)
+                self.titleLabel = SubtitleLabel(title, self)
+                self.viewLayout.addWidget(self.titleLabel)
+                self.lineEdit = LineEdit(self)
+                self.lineEdit.setText(current_value)
+                self.lineEdit.setClearButtonEnabled(True)
+                self.viewLayout.addWidget(self.lineEdit)
+                self.yesButton.setText(self.tr("OK"))
+                self.cancelButton.setText(self.tr("Cancel"))
+                self.widget.setMinimumWidth(300)
+            
+            def get_value(self):
+                return self.lineEdit.text()
+        
+        dialog = InputDialog(self.window())
+        if dialog.exec():
+            value = dialog.get_value()
+            if value != current_value:
+                cfg.set(config_item, value)
+                card.setContent(value)
 
     def __onExecuteFastDemClicked(self):
         """
@@ -162,9 +182,21 @@ class FastDemToolUI(ExpandSettingCard):
         try:
             # 显示结果
             message = self.tr("Processing completed!\n")
-            QMessageBox.information(self, self.tr("Success"), message)
+            InfoBar.success(
+                self.tr("Success"),
+                message,
+                position=InfoBarPosition.TOP,
+                duration=3000,
+                parent=self
+            )
         except Exception as e:
-            QMessageBox.critical(self, self.tr("Error"), self.tr(f"Processing failed: {str(e)}"))
+            InfoBar.error(
+                self.tr("Error"),
+                self.tr(f"Processing failed: {str(e)}"),
+                position=InfoBarPosition.TOP,
+                duration=3000,
+                parent=self
+            )
 
     def __onComboBoxChanged(self, index):
         """

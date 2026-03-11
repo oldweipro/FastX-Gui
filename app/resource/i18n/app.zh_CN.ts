@@ -661,28 +661,28 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_ccp/ui/ccp_card.py" line="93"/>
+        <location filename="../../plugins/fast_ccp/ui/ccp_card.py" line="99"/>
         <source>Success</source>
         <translation type="unfinished">成功</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_ccp/ui/ccp_card.py" line="93"/>
+        <location filename="../../plugins/fast_ccp/ui/ccp_card.py" line="99"/>
         <source>Processing completed!
 {result.message}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_ccp/ui/ccp_card.py" line="103"/>
+        <location filename="../../plugins/fast_ccp/ui/ccp_card.py" line="115"/>
         <source>Error</source>
         <translation type="unfinished">错误</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_ccp/ui/ccp_card.py" line="98"/>
+        <location filename="../../plugins/fast_ccp/ui/ccp_card.py" line="107"/>
         <source>Processing failed: {result.message}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_ccp/ui/ccp_card.py" line="103"/>
+        <location filename="../../plugins/fast_ccp/ui/ccp_card.py" line="115"/>
         <source>Processing error: {str(e)}</source>
         <translation type="unfinished"></translation>
     </message>
@@ -828,68 +828,68 @@
 <context>
     <name>FastComMappingCard</name>
     <message>
-        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="25"/>
+        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="26"/>
         <source>COM Mapping Tool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="27"/>
+        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="28"/>
         <source>COM Mapping Tool for processing Com files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="73"/>
+        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="74"/>
         <source>Choose folder</source>
         <translation type="unfinished">选择文件夹</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="40"/>
+        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="41"/>
         <source>COM Mapping Output Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="80"/>
+        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="81"/>
         <source>Choose file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="44"/>
+        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="45"/>
         <source>Input File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="49"/>
+        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="50"/>
         <source>Execute</source>
         <translation type="unfinished">执行</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="49"/>
+        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="50"/>
         <source>Execute COM Mapping Processing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="49"/>
+        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="50"/>
         <source>Click to start processing</source>
         <translation type="unfinished">点击开始处理</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="91"/>
+        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="92"/>
         <source>Processing completed!
 </source>
-        <translation type="unfinished">处理完成！</translation>
+        <translation>处理完成！</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="92"/>
+        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="93"/>
         <source>Success</source>
         <translation type="unfinished">成功</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="94"/>
+        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="101"/>
         <source>Error</source>
         <translation type="unfinished">错误</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="94"/>
+        <location filename="../../plugins/fast_com_mapping/ui/com_mapping_card.py" line="101"/>
         <source>Processing failed: {str(e)}</source>
         <translation type="unfinished">处理失败: {str(e)}</translation>
     </message>
@@ -897,70 +897,49 @@
 <context>
     <name>FastDemToolUI</name>
     <message>
-        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="36"/>
+        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="37"/>
         <source>FastDem Tool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="39"/>
+        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="40"/>
         <source>FastDem Tool for processing DEM files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="123"/>
+        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="124"/>
         <source>Choose folder</source>
         <translation type="unfinished">选择文件夹</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="59"/>
+        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="60"/>
         <source>FastDem Output Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="137"/>
+        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="138"/>
         <source>Choose file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="67"/>
+        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="68"/>
         <source>Input File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="75"/>
+        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="76"/>
         <source>Execute</source>
         <translation type="unfinished">执行</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="75"/>
+        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="76"/>
         <source>Execute FastDem Processing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="75"/>
+        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="76"/>
         <source>Click to start processing</source>
         <translation type="unfinished">点击开始处理</translation>
-    </message>
-    <message>
-        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="164"/>
-        <source>Processing completed!
-</source>
-        <translation type="unfinished">处理完成！</translation>
-    </message>
-    <message>
-        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="165"/>
-        <source>Success</source>
-        <translation type="unfinished">成功</translation>
-    </message>
-    <message>
-        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="167"/>
-        <source>Error</source>
-        <translation type="unfinished">错误</translation>
-    </message>
-    <message>
-        <location filename="../../plugins/fast_dem/ui/fast_dem_ui.py" line="167"/>
-        <source>Processing failed: {str(e)}</source>
-        <translation type="unfinished">处理失败: {str(e)}</translation>
     </message>
 </context>
 <context>
@@ -1045,114 +1024,73 @@
         <source>Click to start processing</source>
         <translation type="unfinished">点击开始处理</translation>
     </message>
-    <message>
-        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="188"/>
-        <source>Processing completed!
-</source>
-        <translation type="unfinished">处理完成！</translation>
-    </message>
-    <message>
-        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="207"/>
-        <source>Success</source>
-        <translation type="unfinished">成功</translation>
-    </message>
-    <message>
-        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="213"/>
-        <source>Error</source>
-        <translation type="unfinished">错误</translation>
-    </message>
-    <message>
-        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="191"/>
-        <source>Processing failed: {str(e)}</source>
-        <translation type="unfinished">处理失败: {str(e)}</translation>
-    </message>
-    <message>
-        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="206"/>
-        <source>Template downloaded successfully!
-Saved to: {save_path}</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="210"/>
-        <source>Template download cancelled or failed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="211"/>
-        <source>Warning</source>
-        <translation type="unfinished">警告</translation>
-    </message>
-    <message>
-        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="213"/>
-        <source>Failed to download template: {str(e)}</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>FastFaultManagerToolUI</name>
     <message>
-        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="34"/>
+        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="35"/>
         <source>FastFaultManager Tool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="36"/>
+        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="37"/>
         <source>FastFaultManager Tool for fault degradation processing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="86"/>
+        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="87"/>
         <source>Choose folder</source>
         <translation type="unfinished">选择文件夹</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="49"/>
+        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="50"/>
         <source>FastFaultManager Output Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="93"/>
+        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="94"/>
         <source>Choose file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="55"/>
+        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="56"/>
         <source>Input File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="61"/>
+        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="62"/>
         <source>Execute</source>
         <translation type="unfinished">执行</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="61"/>
+        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="62"/>
         <source>Execute FastFaultManager Processing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="61"/>
+        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="62"/>
         <source>Click to start fault degradation processing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="101"/>
+        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="102"/>
         <source>Fault degradation processing completed!
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">故障降级处理完成！
+</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="102"/>
+        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="103"/>
         <source>Success</source>
         <translation type="unfinished">成功</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="104"/>
+        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="111"/>
         <source>Error</source>
         <translation type="unfinished">错误</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="104"/>
+        <location filename="../../plugins/fast_fault_manager/ui/fast_fault_manager_ui.py" line="111"/>
         <source>Processing failed: {str(e)}</source>
         <translation type="unfinished">处理失败: {str(e)}</translation>
     </message>
@@ -1160,68 +1098,68 @@ Saved to: {save_path}</source>
 <context>
     <name>FastQcCompositionCard</name>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="143"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="144"/>
         <source>QCraft Composition Arxml Adapter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="145"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="146"/>
         <source>To Modify QCraft Composition Arxml File To FT Rules For J6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="193"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="194"/>
         <source>Choose folder</source>
         <translation type="unfinished">选择文件夹</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="158"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="159"/>
         <source>Project Output Directory</source>
         <translation type="unfinished">项目输出目录</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="200"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="201"/>
         <source>Choose file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="162"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="163"/>
         <source>Input File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="168"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="169"/>
         <source>Execute</source>
         <translation type="unfinished">执行</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="168"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="169"/>
         <source>Execute QCraft Composition Adaptation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="168"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="169"/>
         <source>Click to start processing</source>
         <translation type="unfinished">点击开始处理</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="211"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="212"/>
         <source>Processing completed!
 </source>
         <translation type="unfinished">处理完成！</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="212"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="213"/>
         <source>Success</source>
         <translation type="unfinished">成功</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="214"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="221"/>
         <source>Error</source>
         <translation type="unfinished">错误</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="214"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="221"/>
         <source>Processing failed: {str(e)}</source>
         <translation type="unfinished">处理失败: {str(e)}</translation>
     </message>
@@ -1318,12 +1256,12 @@ Saved to: {save_path}</source>
         <translation type="unfinished">成功</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_some_ip/ui/fast_some_ip_ui.py" line="105"/>
+        <location filename="../../plugins/fast_some_ip/ui/fast_some_ip_ui.py" line="111"/>
         <source>Error</source>
         <translation type="unfinished">错误</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_some_ip/ui/fast_some_ip_ui.py" line="105"/>
+        <location filename="../../plugins/fast_some_ip/ui/fast_some_ip_ui.py" line="111"/>
         <source>Processing failed: {str(e)}</source>
         <translation type="unfinished">处理失败: {str(e)}</translation>
     </message>
@@ -1362,7 +1300,7 @@ Saved to: {save_path}</source>
 <context>
     <name>InputDialog</name>
     <message>
-        <location filename="../../plugins/fast_code_cleaner/ui/code_cleaner_card.py" line="210"/>
+        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="207"/>
         <source>Processing completed!
 </source>
         <translation type="unfinished">处理完成！</translation>
@@ -1391,17 +1329,17 @@ Saved to: {save_path}</source>
         <translation type="unfinished">错误: {stats['errors']}</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_code_cleaner/ui/code_cleaner_card.py" line="215"/>
+        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="236"/>
         <source>Success</source>
         <translation type="unfinished">成功</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_code_cleaner/ui/code_cleaner_card.py" line="220"/>
+        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="254"/>
         <source>Error</source>
         <translation type="unfinished">错误</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_code_cleaner/ui/code_cleaner_card.py" line="220"/>
+        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="216"/>
         <source>Processing failed: {str(e)}</source>
         <translation type="unfinished">处理失败: {str(e)}</translation>
     </message>
@@ -1411,14 +1349,35 @@ Saved to: {save_path}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_code_cleaner/ui/code_cleaner_card.py" line="186"/>
+        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="187"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_code_cleaner/ui/code_cleaner_card.py" line="187"/>
+        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="188"/>
         <source>Cancel</source>
         <translation type="unfinished">取消</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="235"/>
+        <source>Template downloaded successfully!
+Saved to: {save_path}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="245"/>
+        <source>Template download cancelled or failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="246"/>
+        <source>Warning</source>
+        <translation type="unfinished">警告</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/fast_e2e/ui/fast_e2e_ui.py" line="254"/>
+        <source>Failed to download template: {str(e)}</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1852,16 +1811,26 @@ Saved to: {save_path}</source>
         <translation>未知</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="359"/>
+        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="361"/>
         <source>Confirm Uninstall</source>
         <translation>确认卸载</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="359"/>
+        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="360"/>
         <source>Are you sure you want to uninstall plugin &apos;{0}&apos;?
 This action cannot be undone.</source>
         <translation>确定要卸载插件'{0}'吗?
 此操作无法撤销。</translation>
+    </message>
+    <message>
+        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="362"/>
+        <source>Yes</source>
+        <translation type="unfinished">是</translation>
+    </message>
+    <message>
+        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="363"/>
+        <source>No</source>
+        <translation type="unfinished">否</translation>
     </message>
 </context>
 <context>
@@ -1892,7 +1861,7 @@ This action cannot be undone.</source>
         <translation>安装插件</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_interface.py" line="548"/>
+        <location filename="../../view/plugin_interface/plugin_interface.py" line="555"/>
         <source>Hide all</source>
         <translation>全部隐藏</translation>
     </message>
@@ -1912,63 +1881,73 @@ This action cannot be undone.</source>
         <translation>收起插件列表</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_interface.py" line="523"/>
+        <location filename="../../view/plugin_interface/plugin_interface.py" line="524"/>
         <source>Select Plugin Package</source>
         <translation>选择插件包</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_interface.py" line="523"/>
+        <location filename="../../view/plugin_interface/plugin_interface.py" line="524"/>
         <source>Plugin Package (*.zip);;All Files (*.*)</source>
         <translation>插件包 (*.zip);;所有文件 (*.*)</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_interface.py" line="527"/>
+        <location filename="../../view/plugin_interface/plugin_interface.py" line="528"/>
         <source>Info</source>
         <translation>信息</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_interface.py" line="527"/>
+        <location filename="../../view/plugin_interface/plugin_interface.py" line="528"/>
         <source>Selected plugin package: {0}
 Installation feature under development...</source>
         <translation>已选择插件包: {0}
 安装功能开发中...</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_interface.py" line="539"/>
+        <location filename="../../view/plugin_interface/plugin_interface.py" line="546"/>
         <source>Show all</source>
         <translation>全部显示</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_interface.py" line="570"/>
+        <location filename="../../view/plugin_interface/plugin_interface.py" line="577"/>
         <source>No Documentation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_interface.py" line="570"/>
+        <location filename="../../view/plugin_interface/plugin_interface.py" line="577"/>
         <source>Plugin {0} has not provided documentation link</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_interface.py" line="592"/>
+        <location filename="../../view/plugin_interface/plugin_interface.py" line="599"/>
         <source>No Release Notes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_interface.py" line="592"/>
+        <location filename="../../view/plugin_interface/plugin_interface.py" line="599"/>
         <source>Plugin {0} has not provided release notes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_interface.py" line="697"/>
+        <location filename="../../view/plugin_interface/plugin_interface.py" line="705"/>
         <source>Confirm Uninstall</source>
         <translation type="unfinished">确认卸载</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_interface.py" line="697"/>
+        <location filename="../../view/plugin_interface/plugin_interface.py" line="704"/>
         <source>Are you sure you want to uninstall plugin &apos;{0}&apos;?
 This action cannot be undone.</source>
         <translation type="unfinished">确定要卸载插件'{0}'吗?
 此操作无法撤销。</translation>
+    </message>
+    <message>
+        <location filename="../../view/plugin_interface/plugin_interface.py" line="706"/>
+        <source>Yes</source>
+        <translation type="unfinished">是</translation>
+    </message>
+    <message>
+        <location filename="../../view/plugin_interface/plugin_interface.py" line="707"/>
+        <source>No</source>
+        <translation type="unfinished">否</translation>
     </message>
 </context>
 <context>
@@ -2985,17 +2964,17 @@ This action cannot be undone.</source>
 <context>
     <name>TableEditDialog</name>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="101"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="102"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="102"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="103"/>
         <source>Cancel</source>
         <translation type="unfinished">取消</translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="73"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="74"/>
         <source>Edit Item</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3003,32 +2982,32 @@ This action cannot be undone.</source>
 <context>
     <name>TableFrame</name>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="28"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="29"/>
         <source>Swc Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="28"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="29"/>
         <source>Core Assign</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="28"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="29"/>
         <source>P-Ports</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="29"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="30"/>
         <source>R-Ports</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="29"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="30"/>
         <source>Runnables</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="29"/>
+        <location filename="../../plugins/fast_qc_composition/ui/qc_composition_card.py" line="30"/>
         <source>Events</source>
         <translation type="unfinished"></translation>
     </message>

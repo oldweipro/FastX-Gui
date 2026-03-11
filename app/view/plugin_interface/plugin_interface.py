@@ -519,12 +519,19 @@ class PluginInterface(ScrollArea):
         self._load_plugins()
 
     def _on_install_plugin(self):
-        from PySide6.QtWidgets import QFileDialog, QMessageBox
+        from PySide6.QtWidgets import QFileDialog
+        from qfluentwidgets import InfoBar, InfoBarPosition
         file_path, _ = QFileDialog.getOpenFileName(
             self, self.tr("Select Plugin Package"), "", self.tr("Plugin Package (*.zip);;All Files (*.*)")
         )
         if file_path:
-            QMessageBox.information(self, self.tr("Info"), self.tr("Selected plugin package: {0}\nInstallation feature under development...").format(file_path))
+            InfoBar.info(
+                self.tr("Info"),
+                self.tr("Selected plugin package: {0}\nInstallation feature under development...").format(file_path),
+                position=InfoBarPosition.TOP,
+                duration=3000,
+                parent=self
+            )
 
     def _on_toggle_all_plugins(self):
         """切换全部插件的显示/隐藏状态"""
@@ -693,15 +700,13 @@ class PluginInterface(ScrollArea):
         self._update_stats()
 
     def _uninstall_plugin(self, plugin_name: str):
-        from PySide6.QtWidgets import QMessageBox
-        reply = QMessageBox.question(
-            self,
-            self.tr("Confirm Uninstall"),
-            self.tr("Are you sure you want to uninstall plugin '{0}'?\nThis action cannot be undone.").format(plugin_name),
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No
-        )
-        if reply == QMessageBox.Yes:
+        from qfluentwidgets import MessageBox
+        message = self.tr("Are you sure you want to uninstall plugin '{0}'?\nThis action cannot be undone.").format(plugin_name)
+        box = MessageBox(self.tr("Confirm Uninstall"), message, self)
+        box.yesButton.setText(self.tr("Yes"))
+        box.cancelButton.setText(self.tr("No"))
+        
+        if box.exec():
             self.plugin_manager.registry.unregister_plugin(plugin_name)
             if plugin_name in self.plugin_cards:
                 self.plugin_cards[plugin_name].deleteLater()

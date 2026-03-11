@@ -688,7 +688,7 @@ def downloadTemplate(template_name, save_path=None):
     :return: 保存成功的路径
     """
     try:
-        from PySide6.QtWidgets import QFileDialog, QMessageBox
+        from PySide6.QtWidgets import QFileDialog
         import os
         
         # 构建模板文件路径 - 使用多种方式尝试

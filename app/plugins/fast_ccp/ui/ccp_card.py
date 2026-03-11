@@ -1,9 +1,9 @@
 """Fast CCP UI Card"""
 from typing import Dict, Any, Optional
-from PySide6.QtWidgets import QWidget, QFileDialog, QMessageBox
+from PySide6.QtWidgets import QWidget, QFileDialog
 from qfluentwidgets import (
     ExpandSettingCard, PrimaryPushSettingCard, PushSettingCard,
-    ComboBox, FluentIcon as FIF
+    ComboBox, FluentIcon as FIF, MessageBox, InfoBar, InfoBarPosition
 )
 
 from app.common.config import cfg
@@ -86,21 +86,39 @@ class FastCcpCard(ExpandSettingCard):
         try:
             config = self.get_config()
             if not config["input_file"]:
-                QMessageBox.warning(self, self.tr("Warning"), self.tr("Please select input file"))
+                InfoBar.warning(
+                    self.tr("Warning"),
+                    self.tr("Please select input file"),
+                    position=InfoBarPosition.TOP,
+                    duration=2000,
+                    parent=self
+                )
                 return
             result = self.processor.process(config)
             if result.success:
-                QMessageBox.information(
-                    self, self.tr("Success"),
-                    self.tr(f"Processing completed!\n{result.message}")
+                InfoBar.success(
+                    self.tr("Success"),
+                    self.tr(f"Processing completed!\n{result.message}"),
+                    position=InfoBarPosition.TOP,
+                    duration=3000,
+                    parent=self
                 )
             else:
-                QMessageBox.critical(
-                    self, self.tr("Error"),
-                    self.tr(f"Processing failed: {result.message}")
+                InfoBar.error(
+                    self.tr("Error"),
+                    self.tr(f"Processing failed: {result.message}"),
+                    position=InfoBarPosition.TOP,
+                    duration=3000,
+                    parent=self
                 )
         except Exception as e:
-            QMessageBox.critical(self, self.tr("Error"), self.tr(f"Processing error: {str(e)}"))
+            InfoBar.error(
+                self.tr("Error"),
+                self.tr(f"Processing error: {str(e)}"),
+                position=InfoBarPosition.TOP,
+                duration=3000,
+                parent=self
+            )
 
     def __apply_option_state(self, index: int):
         if index == 0:

@@ -352,19 +352,17 @@ class PluginDetailDialog(MessageBoxBase):
 
     def _on_uninstall(self):
         """卸载插件"""
-        from PySide6.QtWidgets import QMessageBox
+        from qfluentwidgets import MessageBox
 
         print(f"[PluginDetailDialog] 请求卸载插件: {self.plugin_name}")
 
-        reply = QMessageBox.question(
-            self,
-            self.tr("Confirm Uninstall"),
-            self.tr("Are you sure you want to uninstall plugin '{0}'?\nThis action cannot be undone.").format(self.plugin_name),
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No
-        )
-
-        if reply == QMessageBox.Yes:
+        # 使用 MessageBox 替代 QMessageBox
+        message = self.tr("Are you sure you want to uninstall plugin '{0}'?\nThis action cannot be undone.").format(self.plugin_name)
+        box = MessageBox(self.tr("Confirm Uninstall"), message, self)
+        box.yesButton.setText(self.tr("Yes"))
+        box.cancelButton.setText(self.tr("No"))
+        
+        if box.exec():
             print(f"[PluginDetailDialog] 确认卸载: {self.plugin_name}")
             self.plugin_manager.registry.unregister_plugin(self.plugin_name)
             self.pluginUninstalled.emit(self.plugin_name)

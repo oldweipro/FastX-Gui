@@ -1,7 +1,8 @@
 from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QFileDialog, QMessageBox
+from PySide6.QtWidgets import QFileDialog
 from qfluentwidgets import (
-    ExpandSettingCard, PrimaryPushSettingCard, PushSettingCard, ComboBox, FluentIconBase
+    ExpandSettingCard, PrimaryPushSettingCard, PushSettingCard, ComboBox, FluentIconBase,
+    InfoBar, InfoBarPosition
 )
 from qfluentwidgets import FluentIcon as FIF
 
@@ -89,9 +90,21 @@ class FastComMappingCard(ExpandSettingCard):
     def __on_execute(self):
         try:
             message = self.tr("Processing completed!\n")
-            QMessageBox.information(self, self.tr("Success"), message)
+            InfoBar.success(
+                self.tr("Success"),
+                message,
+                position=InfoBarPosition.TOP,
+                duration=3000,
+                parent=self
+            )
         except Exception as e:
-            QMessageBox.critical(self, self.tr("Error"), self.tr(f"Processing failed: {str(e)}"))
+            InfoBar.error(
+                self.tr("Error"),
+                self.tr(f"Processing failed: {str(e)}"),
+                position=InfoBarPosition.TOP,
+                duration=3000,
+                parent=self
+            )
 
     def __on_combo_box_changed(self, index):
         cfg.set(cfg.comGroupMappingSelectedOption, index)

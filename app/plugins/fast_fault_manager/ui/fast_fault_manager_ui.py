@@ -1,6 +1,6 @@
 from PySide6.QtCore import QModelIndex, QPoint
 from PySide6.QtGui import QIcon, Qt
-from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QInputDialog, QMessageBox, QVBoxLayout, QWidget, \
+from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QVBoxLayout, QWidget, \
     QTableWidget, QTableWidgetItem, QHeaderView, QItemDelegate, QComboBox, QStyledItemDelegate, QMenu, QLineEdit, \
     QAbstractItemView
 from qfluentwidgets import (
@@ -8,7 +8,8 @@ from qfluentwidgets import (
     PrimaryPushSettingCard,
     PushSettingCard,
     SwitchSettingCard, ScrollArea, FluentIconBase, ComboBox, TableWidget, IconWidget, FluentIcon, SearchLineEdit,
-    StrongBodyLabel, Dialog, LineEdit, PrimaryPushButton, PushButton, MessageBoxBase, BodyLabel, SpinBox, SubtitleLabel
+    StrongBodyLabel, Dialog, LineEdit, PrimaryPushButton, PushButton, MessageBoxBase, BodyLabel, SpinBox, SubtitleLabel,
+    InfoBar, InfoBarPosition
 )
 from qfluentwidgets import (
     FluentIcon as FIF,
@@ -99,9 +100,21 @@ class FastFaultManagerToolUI(ExpandSettingCard):
     def __onExecuteFastFaultManagerClicked(self):
         try:
             message = self.tr("Fault degradation processing completed!\n")
-            QMessageBox.information(self, self.tr("Success"), message)
+            InfoBar.success(
+                self.tr("Success"),
+                message,
+                position=InfoBarPosition.TOP,
+                duration=3000,
+                parent=self
+            )
         except Exception as e:
-            QMessageBox.critical(self, self.tr("Error"), self.tr(f"Processing failed: {str(e)}"))
+            InfoBar.error(
+                self.tr("Error"),
+                self.tr(f"Processing failed: {str(e)}"),
+                position=InfoBarPosition.TOP,
+                duration=3000,
+                parent=self
+            )
 
     def __onComboBoxChanged(self, index):
         cfg.set(cfg.fastFaultManagerSelectedOption, index)
