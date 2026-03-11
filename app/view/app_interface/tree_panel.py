@@ -23,6 +23,14 @@ class TreePanel(QWidget):
         self._init_ui()
         self._connect_signals()
         self.refresh_tree()
+        
+        # 监听主题变化
+        from app.common.config import cfg
+        cfg.themeChanged.connect(self._on_theme_changed)
+    
+    def _on_theme_changed(self, theme):
+        """主题切换时刷新树形图标"""
+        self.refresh_tree()
 
     # ── UI setup ─────────────────────────────────────────────────
 
