@@ -209,6 +209,19 @@
     </message>
 </context>
 <context>
+    <name>AppInterface</name>
+    <message>
+        <location filename="../../view/app_interface/app_interface.py" line="104"/>
+        <source>Expand navigation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../view/app_interface/app_interface.py" line="110"/>
+        <source>Collapse navigation</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>BackgroundImageCard</name>
     <message>
         <location filename="../../view/setting_interface.py" line="57"/>
@@ -1594,37 +1607,37 @@ Saved to: {save_path}</source>
         <translation>最近 7 天</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="833"/>
+        <location filename="../../view/log_interface.py" line="836"/>
         <source>Save logs</source>
         <translation>保存日志</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="833"/>
+        <location filename="../../view/log_interface.py" line="836"/>
         <source>Text files (*.txt);;All files (*)</source>
         <translation>文本文件 (*.txt);;所有文件 (*)</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="865"/>
+        <location filename="../../view/log_interface.py" line="868"/>
         <source>Save successful</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="865"/>
+        <location filename="../../view/log_interface.py" line="868"/>
         <source>Logs saved to: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="875"/>
+        <location filename="../../view/log_interface.py" line="878"/>
         <source>No logs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="875"/>
+        <location filename="../../view/log_interface.py" line="878"/>
         <source>No logs to save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="886"/>
+        <location filename="../../view/log_interface.py" line="889"/>
         <source>Save failed</source>
         <translation type="unfinished"></translation>
     </message>

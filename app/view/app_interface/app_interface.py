@@ -80,17 +80,16 @@ class AppInterface(ScrollArea):
         layout.addWidget(self.splitter)
 
         QTimer.singleShot(0, self._apply_collapsed_state)
-    
+    # ------------------------------------------------------------------
+    # 面板展开/收缩
+    # ------------------------------------------------------------------
     def _apply_collapsed_state(self):
-        self.left_panel.setFixedWidth(0)
-        self._left_panel_expanded = False
+        self.left_panel.setFixedWidth(400)
+        self._left_panel_expanded = True
         if hasattr(self.content_panel, 'toggle_button'):
             self.content_panel.toggle_button.setToolTip(self.tr("Expand navigation"))
             self.content_panel.toggle_button.clicked.connect(self._toggle_left_panel)
 
-    # ------------------------------------------------------------------
-    # 面板展开/收缩
-    # ------------------------------------------------------------------
     def _toggle_left_panel(self):
         if self._left_panel_expanded:
             self._collapse_left_panel()

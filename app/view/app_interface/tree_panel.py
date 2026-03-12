@@ -4,10 +4,11 @@ from collections import defaultdict
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QAction
-from PySide6.QtWidgets import QTreeWidgetItem, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QTreeWidgetItem, QVBoxLayout, QWidget, QHBoxLayout
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import RoundMenu, SearchLineEdit, TransparentToolButton, TreeWidget
 
+from app.common.config import cfg
 from app.common.icon import Icon
 from app.common.signal_bus import signalBus
 from app.view.app_interface.service import item_service, project_service, snapshot_service, template_service, workspace_service
@@ -24,9 +25,7 @@ class TreePanel(QWidget):
         self._init_ui()
         self._connect_signals()
         self.refresh_tree()
-        
-        # 监听主题变化
-        from app.common.config import cfg
+
         cfg.themeChanged.connect(self._on_theme_changed)
     
     def _on_theme_changed(self, theme):
@@ -59,15 +58,13 @@ class TreePanel(QWidget):
         layout.addWidget(self.tree, 1)
 
     def _build_toolbar(self):
-        from PySide6.QtWidgets import QHBoxLayout
-
         toolbar = QHBoxLayout()
         toolbar.setSpacing(2)
-        self.btn_add_workspace = TransparentToolButton(FIF.ADD, self)
+        self.btn_add_workspace = TransparentToolButton(Icon.WORKSPACE_ADD, self)
         self.btn_add_workspace.setToolTip("New Workspace")
         self.btn_refresh = TransparentToolButton(FIF.SYNC, self)
         self.btn_refresh.setToolTip("Refresh")
-        self.btn_collapse = TransparentToolButton(FIF.MINIMIZE, self)
+        self.btn_collapse = TransparentToolButton(Icon.COLLAPSE, self)
         self.btn_collapse.setToolTip("Collapse All")
         toolbar.addWidget(self.btn_add_workspace)
         toolbar.addWidget(self.btn_refresh)

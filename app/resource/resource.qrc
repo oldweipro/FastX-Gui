@@ -351,6 +351,16 @@
         <file>images/icons/Zhiji_white.svg</file>
         <file>images/icons/ZipFile_black.svg</file>
         <file>images/icons/ZipFile_white.svg</file>
+        <file>images/icons/collapse-all_black.svg</file>
+        <file>images/icons/collapse-all_white.svg</file>
+        <file>images/icons/collapse-l_black.svg</file>
+        <file>images/icons/collapse-l_white.svg</file>
+        <file>images/icons/collapse-r_black.svg</file>
+        <file>images/icons/collapse-r_white.svg</file>
+        <file>images/icons/collapse-up_black.svg</file>
+        <file>images/icons/collapse-up_white.svg</file>
+        <file>images/icons/collapse_black.svg</file>
+        <file>images/icons/collapse_white.svg</file>
         <file>images/icons/item_black.svg</file>
         <file>images/icons/item_white.svg</file>
         <file>images/icons/items-1_black.svg</file>
@@ -367,6 +377,8 @@
         <file>images/icons/snapshot_white.svg</file>
         <file>images/icons/template_black.svg</file>
         <file>images/icons/template_white.svg</file>
+        <file>images/icons/workspace-add_black.svg</file>
+        <file>images/icons/workspace-add_white.svg</file>
         <file>images/icons/workspace_black.svg</file>
         <file>images/icons/workspace_white.svg</file>
         <file>images/jpg/background.jpg</file>

@@ -144,6 +144,7 @@ class FIcon(FluentIconBase, Enum):
 class Icon(FluentIconBase, Enum):
     # FM
     WORKSPACE = "workspace"
+    WORKSPACE_ADD = "workspace-add"
     PROJECT = "project"
     TEMPLATE = "template"
     ITEM = "item"
@@ -152,6 +153,11 @@ class Icon(FluentIconBase, Enum):
     ITEM3 = "items-3"
     ITEM4 = "items-4"
     SNAPSHOT = "snapshot"
+    COLLAPSE = "collapse"
+    COLLAPSE_ALL = "collapse-all"
+    COLLAPSE_L = "collapse-l"
+    COLLAPSE_R = "collapse-r"
+    COLLAPSE_UP = "collapse-up"
 
     # 基础图标
     SELECT = "Select"
