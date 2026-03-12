@@ -1,0 +1,10 @@
+{
+    "name": "fast_dem_fault_analyzer",
+    "version": "0.1.11",
+    "description": "基于 AUTOSAR CP DEM 的 DTC 故障状态分析工具",
+    "author": "FastX Team",
+    "category": "diagnostic",
+    "dependencies": [],
+    "enabled": true,
+    "builtin": false
+}
