@@ -610,6 +610,8 @@ class LoguruInterface(ScrollArea):
     def _copy_selected_text(self):
         """复制选中的文本到剪贴板（保留正确的换行格式）"""
         cursor = self.log_viewer.textCursor()
+        
+        # 检查是否有选中的文本
         if cursor.hasSelection():
             # 获取选中的文本
             text = cursor.selectedText()
@@ -620,13 +622,14 @@ class LoguruInterface(ScrollArea):
                 QApplication.clipboard().setText(normalized_text)
                 self._show_copy_notification("已复制到剪贴板")
         else:
-            # 如果没有选中，复制当前行
+            # 如果没有选中任何文本，尝试选择当前行
             cursor.select(QTextCursor.LineUnderCursor)
             text = cursor.selectedText()
             if text:
+                # 转换为普通换行符
                 normalized_text = text.replace('\u2029', '\n').replace('\r\n', '\n').replace('\r', '\n')
                 QApplication.clipboard().setText(normalized_text)
-                self._show_copy_notification("已复制到剪贴板")
+                self._show_copy_notification("已复制当前行到剪贴板")
 
     def _show_context_menu(self, pos):
         """显示右键菜单"""

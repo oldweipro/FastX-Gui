@@ -833,7 +833,7 @@ class MainWindow(SplitFluentWindow):
                 FIF.LIBRARY,
                 self.tr("App"),
                 pos,
-                isTransparent=False,
+                isTransparent=True,
             )
         self.navigationInterface.addSeparator()
 

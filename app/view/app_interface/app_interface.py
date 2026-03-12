@@ -1,8 +1,8 @@
 """Main AppInterface — ScrollArea with Tree + Content split layout."""
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QHBoxLayout, QWidget
-from qfluentwidgets import ScrollArea
+from PySide6.QtWidgets import QHBoxLayout, QWidget, QSplitter, QVBoxLayout
+from qfluentwidgets import ScrollArea, SmoothScrollArea
 
 from app.common.style_sheet import StyleSheet
 from app.view.app_interface.content_panel import ContentPanel
@@ -31,17 +31,51 @@ class AppInterface(ScrollArea):
         self.setWidgetResizable(True)
         StyleSheet.APP_INTERFACE.apply(self)
 
+
     def __initLayout(self):
         layout = QHBoxLayout(self.view)
-        layout.setContentsMargins(0, 48, 0, 0)
+        layout.setContentsMargins(0, 48, 10, 0)
         layout.setSpacing(0)
 
+        self.splitter = QSplitter(Qt.Orientation.Horizontal, self.view)
+        self.splitter.setHandleWidth(0)
+        self.splitter.setChildrenCollapsible(False)
+        # ========== 左侧面板 ==========
+        self.left_panel = SmoothScrollArea()
+        self.left_panel.setObjectName("left_panel")
+        self.left_panel.setMinimumWidth(280)
+        self.left_panel.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.left_panel.setWidgetResizable(True)
+        self.left_container = QWidget()
+        self.left_container.setObjectName("left_panel_container")
+        self.left_layout = QVBoxLayout(self.left_container)
+        self.left_layout.setContentsMargins(12, 12, 12, 12)
+        self.left_layout.setSpacing(8)
+        self.left_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         # Left: tree panel (fixed width)
         self.tree_panel.setFixedWidth(280)
-        layout.addWidget(self.tree_panel)
+        self.left_layout.addWidget(self.tree_panel)
 
+        # ========== 右侧面板 ==========
+        self.right_panel = SmoothScrollArea()
+        self.right_panel.setObjectName("right_panel")
+        self.right_panel.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.right_panel.setWidgetResizable(True)
+        self.right_container = QWidget()
+        self.right_container.setObjectName("right_panel_container")
+        self.right_layout = QVBoxLayout(self.right_container)
+        self.right_layout.setContentsMargins(12, 12, 12, 12)
+        self.right_layout.setSpacing(8)
+        self.right_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         # Right: content panel (stretch)
-        layout.addWidget(self.content_panel, 1)
+        self.right_layout.addWidget(self.content_panel, 1)
+
+        # 合并
+        self.left_panel.setWidget(self.left_container)
+        self.right_panel.setWidget(self.right_container)
+        self.splitter.addWidget(self.left_panel)
+        self.splitter.addWidget(self.right_panel)
+        layout.addWidget(self.splitter)
 
     def __connectSignals(self):
         self.tree_panel.nodeSelected.connect(self.content_panel.on_node_selected)

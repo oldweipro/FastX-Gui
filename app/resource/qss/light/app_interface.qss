@@ -8,6 +8,11 @@ ScrollArea {
     border: none;
 }
 
+SmoothScrollArea {
+    background-color: transparent;
+    border: none;
+}
+
 /* Tree panel */
 TreePanel {
     background-color: transparent;
@@ -27,4 +32,28 @@ ContentPanel {
 ContentPanel CommandBar {
     background-color: transparent;
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* 左侧面板 - 透明背景 */
+#left_panel_container {
+    background-color: #FAFBFD;
+    border: 1px solid rgba(200, 200, 205, 0.4);
+    border-right: 1px solid rgba(200, 200, 205, 0.4);
+    border-radius: 10px;
+    /* 内边距 */
+    padding: 10px;
+    /* 外边距 */
+    margin: 4px;
+}
+
+/* 左侧面板 - 透明背景 */
+#right_panel_container {
+    background-color: #FAFBFD;
+    border: 1px solid rgba(200, 200, 205, 0.4);
+    border-right: 1px solid rgba(200, 200, 205, 0.4);
+    border-radius: 10px;
+    /* 内边距 */
+    padding: 10px;
+    /* 外边距 */
+    margin: 4px;
 }
