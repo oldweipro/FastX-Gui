@@ -324,28 +324,30 @@ class DEMFaultCard(QWidget):
             print("  [EXPORT] 等待事件循环处理...")
             QApplication.processEvents()
             
-            # 创建高质量截图
+            # 创建高质量截图 - 使用 grab() 方法（推荐）
             print(f"  [EXPORT] 组件尺寸：{self.size()}")
             print(f"  [EXPORT] DPI 比例：{self.devicePixelRatio()}")
             
-            pixmap = QPixmap(self.size())
-            pixmap.setDevicePixelRatio(self.devicePixelRatio())  # 支持高 DPI
+            # 方法 1: 使用 QPixmap.grab() (PySide6 推荐方式)
+            pixmap = self.grab()  # 直接截取整个 widget
             
-            # 使用白色背景（避免透明背景问题）
-            print("  [EXPORT] 填充白色背景...")
-            pixmap.fill(Qt.white)
-            
-            painter = QPainter(pixmap)
-            painter.setRenderHint(QPainter.Antialiasing)
-            painter.setRenderHint(QPainter.TextAntialiasing)
-            painter.setRenderHint(QPainter.SmoothPixmapTransform)
-            
-            # 渲染组件
-            print("  [EXPORT] 开始渲染...")
-            painter.begin(pixmap)  # 使用 begin() 而不是在 render 中传 painter
-            self.render(pixmap)  # render 只需要 pixmap
-            painter.end()
-            print("  [EXPORT] ✓ 渲染完成")
+            if pixmap.isNull():
+                print("  [EXPORT] ⚠ grab() 返回空，使用备用方案")
+                # 备用方案：手动创建和渲染
+                pixmap = QPixmap(self.size() * self.devicePixelRatio())
+                pixmap.setDevicePixelRatio(self.devicePixelRatio())
+                pixmap.fill(Qt.white)
+                
+                painter = QPainter(pixmap)
+                painter.setRenderHint(QPainter.Antialiasing)
+                painter.setRenderHint(QPainter.TextAntialiasing)
+                painter.setRenderHint(QPainter.SmoothPixmapTransform)
+                
+                # 递归渲染所有子组件
+                self.render(pixmap, painter)
+                painter.end()
+            else:
+                print(f"  [EXPORT] ✓ grab() 成功，尺寸：{pixmap.size()}")
             
             # 复制到剪贴板
             print("  [EXPORT] 复制到剪贴板...")
