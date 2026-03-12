@@ -1,6 +1,5 @@
 """DEM Fault Analyzer Card Widget - 使用 QFluentWidgets 实现的现代化 UI"""
 
-import logging
 from typing import Dict
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
@@ -17,9 +16,10 @@ from PySide6.QtWidgets import (
     QFileDialog,
 )
 from PySide6.QtGui import QPixmap, QPainter, QClipboard
+from loguru import logger
 
-# 配置日志
-logger = logging.getLogger(__name__)
+# 配置模块级 logger
+logger = logger.bind(module="DEMFaultAnalyzer")
 from qfluentwidgets import (
     CardWidget,
     TitleLabel,
@@ -232,15 +232,10 @@ class DEMFaultCard(QWidget):
     
     def _on_analyze_clicked(self):
         """点击分析按钮"""
-        print("\n" + "="*60)
-        print("[DEBUG] _on_analyze_clicked - 开始")
-        print("="*60)
-        
         status_input = self.input_edit.text().strip()
-        print(f"[DEBUG] 输入内容：'{status_input}'")
         
         if not status_input:
-            print("[DEBUG] 输入为空，显示警告")
+            logger.warning("分析输入为空")
             InfoBar.warning(
                 title="输入为空",
                 content="请输入 DTC 状态码",
@@ -251,12 +246,10 @@ class DEMFaultCard(QWidget):
             return
         
         # 执行分析
-        print(f"[DEBUG] 准备分析：{status_input}")
         result = self.analyzer.analyze_dtc_status(status_input)
-        print(f"[DEBUG] 分析结果：success={result.get('success', False)}")
         
         if not result['success']:
-            print(f"[DEBUG] 分析失败：{result.get('error', '未知错误')}")
+            logger.error(f"分析失败：{result.get('error', '未知错误')}")
             InfoBar.error(
                 title="分析失败",
                 content=result.get('error', '未知错误'),
@@ -267,14 +260,11 @@ class DEMFaultCard(QWidget):
             return
         
         # 显示分析结果
-        print("[DEBUG] 调用 _display_analysis_result")
         try:
             self._display_analysis_result(result)
-            print("[DEBUG] _display_analysis_result 完成")
+            logger.info(f"DTC 状态码 {status_input} 分析完成")
         except Exception as e:
-            print(f"[ERROR] _display_analysis_result 异常：{e}")
-            import traceback
-            traceback.print_exc()
+            logger.exception(f"显示分析结果时发生异常：{e}")
             return
         
         InfoBar.success(
@@ -284,17 +274,12 @@ class DEMFaultCard(QWidget):
             position=InfoBarPosition.TOP,
             duration=2000
         )
-        print("[DEBUG] _on_analyze_clicked - 结束\n")
     
     def _on_export_clicked(self):
         """点击导出按钮"""
-        print("\n" + "="*60)
-        print("[DEBUG] _on_export_clicked - 开始")
-        print("="*60)
-        
         # 检查是否有分析结果
         if not self.bits_card.isVisible():
-            print("[DEBUG] 状态位卡片不可见，提示无内容")
+            logger.warning("尝试导出但未找到分析结果")
             InfoBar.warning(
                 title="没有可导出的内容",
                 content="请先进行分析操作",
@@ -304,35 +289,23 @@ class DEMFaultCard(QWidget):
             )
             return
         
-        print("[DEBUG] 调用 _export_to_clipboard")
         try:
             self._export_to_clipboard()
-            print("[DEBUG] ✓ _export_to_clipboard 完成")
+            logger.info("分析结果已导出到剪贴板")
         except Exception as e:
-            print(f"[ERROR] _export_to_clipboard 异常：{e}")
-            import traceback
-            traceback.print_exc()
-        
-        print("[DEBUG] _on_export_clicked - 结束\n")
+            logger.exception(f"导出图片时发生异常：{e}")
     
     def _export_to_clipboard(self):
         """导出当前内容到剪贴板"""
-        print("  [EXPORT] _export_to_clipboard 开始")
-        
         try:
             # 确保布局完成
-            print("  [EXPORT] 等待事件循环处理...")
             QApplication.processEvents()
             
-            # 创建高质量截图 - 使用 grab() 方法（推荐）
-            print(f"  [EXPORT] 组件尺寸：{self.size()}")
-            print(f"  [EXPORT] DPI 比例：{self.devicePixelRatio()}")
-            
-            # 方法 1: 使用 QPixmap.grab() (PySide6 推荐方式)
-            pixmap = self.grab()  # 直接截取整个 widget
+            # 使用 QPixmap.grab() 方法（PySide6 推荐方式）
+            pixmap = self.grab()
             
             if pixmap.isNull():
-                print("  [EXPORT] ⚠ grab() 返回空，使用备用方案")
+                logger.warning("grab() 返回空，使用备用渲染方案")
                 # 备用方案：手动创建和渲染
                 pixmap = QPixmap(self.size() * self.devicePixelRatio())
                 pixmap.setDevicePixelRatio(self.devicePixelRatio())
@@ -343,17 +316,14 @@ class DEMFaultCard(QWidget):
                 painter.setRenderHint(QPainter.TextAntialiasing)
                 painter.setRenderHint(QPainter.SmoothPixmapTransform)
                 
-                # 递归渲染所有子组件
                 self.render(pixmap, painter)
                 painter.end()
-            else:
-                print(f"  [EXPORT] ✓ grab() 成功，尺寸：{pixmap.size()}")
             
             # 复制到剪贴板
-            print("  [EXPORT] 复制到剪贴板...")
             clipboard = QApplication.clipboard()
             clipboard.setImage(pixmap.toImage())
-            print("  [EXPORT] ✓ 已复制到剪贴板")
+            
+            logger.success(f"导出成功 - 图片尺寸：{pixmap.size().width()}x{pixmap.size().height()}")
             
             InfoBar.success(
                 title="导出成功",
@@ -363,7 +333,6 @@ class DEMFaultCard(QWidget):
                 duration=3000
             )
             
-            # 显示提示气泡
             InfoBar.info(
                 title="提示",
                 content="使用 Ctrl+V 即可粘贴到微信、QQ、文档等应用",
@@ -372,12 +341,8 @@ class DEMFaultCard(QWidget):
                 duration=5000
             )
             
-            print("  [EXPORT] ✓ _export_to_clipboard 完成\n")
-            
         except Exception as e:
-            print(f"  [EXPORT] ✗ 异常：{e}")
-            import traceback
-            traceback.print_exc()
+            logger.exception(f"导出失败：{e}")
             InfoBar.error(
                 title="导出失败",
                 content=f"导出过程中发生错误：{str(e)}",
@@ -388,67 +353,40 @@ class DEMFaultCard(QWidget):
     
     def _display_analysis_result(self, result: Dict):
         """显示分析结果"""
-        print("\n" + "-"*60)
-        print("[DEBUG] _display_analysis_result - 开始")
-        print("-"*60)
-        
         # 清空所有卡片内容 - 防止重复分析时崩溃
-        print("[DEBUG] 准备清空旧内容...")
-        try:
-            self._clear_bits()
-            print("[DEBUG] ✓ _clear_bits 完成")
-        except Exception as e:
-            print(f"[ERROR] _clear_bits 异常：{e}")
-            import traceback
-            traceback.print_exc()
-        
-        try:
-            self._clear_details()
-            print("[DEBUG] ✓ _clear_details 完成")
-        except Exception as e:
-            print(f"[ERROR] _clear_details 异常：{e}")
-            import traceback
-            traceback.print_exc()
+        self._clear_bits()
+        self._clear_details()
         
         basic_info = result['basic_info']
-        print(f"[DEBUG] basic_info: hex={basic_info.get('hex')}, bits count={len(basic_info.get('bits', []))}")
+        logger.debug(f"分析结果：HEX={basic_info.get('hex')}, bits={len(basic_info.get('bits', []))}")
         
         # ========== 第二张卡片：状态位分布 ==========
-        print("[DEBUG] 显示状态位分布卡片...")
         self.bits_card.setVisible(True)
         
         # 从高位到低位显示 (Bit7 到 Bit0)
-        print("[DEBUG] 开始添加状态位方块...")
         for i in range(8):
             bit = 7 - i
             is_set = basic_info['bits'][bit]
             bit_info = DTCStatusConfig.get_bit_info(bit)
             
             if bit_info:
-                print(f"[DEBUG]   Bit {bit}: is_set={is_set}, name={bit_info.name}")
                 try:
                     bit_widget = self._create_bit_block(bit_info, is_set)
                     row = 0
                     col = i
                     self.bits_grid_layout.addWidget(bit_widget, row, col)
-                    print(f"[DEBUG]   ✓ Bit {bit} 添加成功")
                 except Exception as e:
-                    print(f"[ERROR]   ✗ Bit {bit} 添加失败：{e}")
-        
-        print("[DEBUG] ✓ 状态位分布卡片完成")
+                    logger.exception(f"添加 Bit {bit} 失败：{e}")
         
         # ========== 第三张卡片：详细解析（可无限扩展） ==========
-        print("[DEBUG] 开始处理详细解析...")
-        
         # 置位状态位详细解析
         if result['set_bits']:
-            print(f"[DEBUG] 置位状态位数量：{len(result['set_bits'])}")
+            logger.debug(f"置位状态位数量：{len(result['set_bits'])}")
             set_title = StrongBodyLabel("置位状态位详细解析", self.detail_container)
             set_title.setStyleSheet("font-weight: bold; font-size: 14px; margin-top: 8px;")
             self.detail_layout.insertWidget(self.detail_layout.count() - 1, set_title)
             
             for idx, bit_analysis in enumerate(result['set_bits']):
-                print(f"[DEBUG]   处理置位状态位 #{idx+1}: Bit {bit_analysis['bit']}")
                 try:
                     bit_card = CardWidget(self.detail_container)
                     bit_layout = QVBoxLayout(bit_card)
@@ -507,17 +445,12 @@ class DEMFaultCard(QWidget):
                             bit_layout.addWidget(cond_label)
                     
                     self.detail_layout.insertWidget(self.detail_layout.count() - 1, bit_card)
-                    print(f"[DEBUG]   ✓ 置位状态位 #{idx+1} 添加成功")
                 except Exception as e:
-                    print(f"[ERROR]   ✗ 置位状态位 #{idx+1} 添加失败：{e}")
-                    import traceback
-                    traceback.print_exc()
-        else:
-            print("[DEBUG] 无置位状态位")
+                    logger.exception(f"添加置位状态位 #{idx+1} 失败：{e}")
         
         # 清零状态位信息
         if result['cleared_bits']:
-            print(f"[DEBUG] 清零状态位数量：{len(result['cleared_bits'])}")
+            logger.debug(f"清零状态位数量：{len(result['cleared_bits'])}")
             cleared_title = StrongBodyLabel("清零状态位", self.detail_container)
             cleared_title.setStyleSheet("font-weight: bold; font-size: 14px; margin-top: 16px;")
             self.detail_layout.insertWidget(self.detail_layout.count() - 1, cleared_title)
@@ -539,22 +472,11 @@ class DEMFaultCard(QWidget):
                 cleared_layout.addWidget(item_label)
             
             self.detail_layout.insertWidget(self.detail_layout.count() - 1, cleared_card)
-            print("[DEBUG] ✓ 清零状态位添加成功")
-        else:
-            print("[DEBUG] 无清零状态位")
-        
-        print("[DEBUG] _display_analysis_result - 结束")
-        print("-"*60 + "\n")
     
     def _clear_bits(self):
         """清空状态位分布卡片 - 安全删除所有子组件"""
-        print(f"  [CLEAR] _clear_bits 开始")
-        
         if not hasattr(self, 'bits_grid_layout'):
-            print(f"  [CLEAR] ✗ bits_grid_layout 不存在")
             return
-        
-        print(f"  [CLEAR]   当前组件数量：{self.bits_grid_layout.count()}")
         
         # 关键修复：必须先从布局中移除 item，再删除 widget
         while self.bits_grid_layout.count():
@@ -562,28 +484,16 @@ class DEMFaultCard(QWidget):
             if item:
                 widget = item.widget()
                 if widget:
-                    print(f"  [CLEAR]   移除并删除：{widget}")
                     self.bits_grid_layout.removeItem(item)  # 先从布局移除
                     widget.deleteLater()  # 再标记删除
-                else:
-                    print(f"  [CLEAR]   发现空 widget，跳过")
-            else:
-                break
         
         # 等待事件循环处理完删除操作
-        print(f"  [CLEAR]   等待事件循环处理...")
         QApplication.processEvents()
-        print(f"  [CLEAR] ✓ _clear_bits 完成\n")
     
     def _clear_details(self):
         """清空详细解析卡片内容 - 安全删除所有子组件"""
-        print(f"  [CLEAR] _clear_details 开始")
-        
         if not hasattr(self, 'detail_layout'):
-            print(f"  [CLEAR] ✗ detail_layout 不存在")
             return
-        
-        print(f"  [CLEAR]   当前组件数量：{self.detail_layout.count()}")
         
         # 关键修复：必须先从布局中移除 item，再删除 widget
         while self.detail_layout.count():
@@ -591,22 +501,16 @@ class DEMFaultCard(QWidget):
             if item:
                 widget = item.widget()
                 if widget:
-                    print(f"  [CLEAR]   删除：{widget}")
                     widget.deleteLater()
                 else:
                     # 可能是 QSpacerItem 或其他非 widget 项
-                    print(f"  [CLEAR]   非 widget 项，直接丢弃")
-            else:
-                break
+                    pass
         
         # 等待事件循环处理完删除操作
-        print(f"  [CLEAR]   等待事件循环处理...")
         QApplication.processEvents()
         
         # 重新添加底部弹簧
-        print(f"  [CLEAR]   添加底部弹簧...")
         self.detail_layout.addStretch()
-        print(f"  [CLEAR] ✓ _clear_details 完成\n")
     
     def _create_bit_block(self, bit_info, is_set) -> QWidget:
         """创建状态位方块"""
