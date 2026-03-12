@@ -18,12 +18,18 @@
   - get_doc_url()          : 文档链接（None 表示无文档）
   - get_doc_widget()       : 内嵌文档面板（None 表示不提供）
   - validate_dependencies(): 依赖检查
+  - get_release_notes()    : Release Notes 文本
+  - get_release_notes_url(): Release Notes URL
+  - on_activate()          : 插件激活时的回调
+  - on_deactivate()        : 插件停用时的回调
+  - on_tab_opened()        : Tab 打开时的回调
+  - on_tab_closed()        : Tab 关闭时的回调
 """
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Callable
 from PySide6.QtWidgets import QWidget
 
 
@@ -362,7 +368,7 @@ class PluginBase(ABC):
     def validate_dependencies(self) -> List[str]:
         """
         [可选覆盖] 验证依赖项是否满足
-
+            
         Returns:
             List[str]: 缺失的依赖包名列表；空列表表示全部满足
         """
@@ -373,3 +379,117 @@ class PluginBase(ABC):
             except ImportError:
                 missing.append(dep)
         return missing
+        
+    # ------------------------------------------------------------------
+    # 生命周期回调接口
+    # ------------------------------------------------------------------
+        
+    def on_activate(self):
+        """
+        [可选实现] 插件激活时的回调
+            
+        当用户打开插件（Tab）时调用此方法
+        """
+        pass
+        
+    def on_deactivate(self):
+        """
+        [可选实现] 插件停用时的回调
+            
+        当用户关闭插件（Tab）时调用此方法
+        """
+        pass
+        
+    def on_tab_opened(self, tab_widget: QWidget):
+        """
+        [可选实现] Tab 打开时的回调
+            
+        Args:
+            tab_widget: 打开的 Tab 组件实例
+        """
+        pass
+        
+    def on_tab_closed(self, tab_id: str):
+        """
+        [可选实现] Tab 关闭时的回调
+            
+        Args:
+            tab_id: 关闭的 Tab ID
+        """
+        pass
+        
+    # ------------------------------------------------------------------
+    # 数据导出/导入接口
+    # ------------------------------------------------------------------
+        
+    def export_data(self, path: str) -> bool:
+        """
+        [可选实现] 导出插件数据
+            
+        Args:
+            path: 导出文件路径
+            
+        Returns:
+            bool: 导出是否成功
+        """
+        return False
+        
+    def import_data(self, path: str) -> bool:
+        """
+        [可选实现] 导入插件数据
+            
+        Args:
+            path: 导入文件路径
+            
+        Returns:
+            bool: 导入是否成功
+        """
+        return False
+        
+    # ------------------------------------------------------------------
+    # 快捷操作接口
+    # ------------------------------------------------------------------
+        
+    def get_quick_actions(self) -> List[Dict[str, Any]]:
+        """
+        [可选实现] 返回插件的快捷操作列表
+            
+        Returns:
+            List[Dict]: 快捷操作配置列表，每项包含：
+                - name: 操作名称
+                - icon: 图标（FluentIcon 或字符串）
+                - callback: 回调函数
+                - tooltip: 工具提示
+        """
+        return []
+        
+    # ------------------------------------------------------------------
+    # 状态栏接口
+    # ------------------------------------------------------------------
+        
+    def get_status_bar_widget(self, parent: Optional[QWidget] = None) -> Optional[QWidget]:
+        """
+        [可选实现] 返回插件专属状态栏组件
+            
+        框架会将此 widget 嵌入到主窗口状态栏右侧
+            
+        Returns:
+            QWidget: 状态栏组件；None 表示不使用
+        """
+        return None
+        
+    # ------------------------------------------------------------------
+    # 键盘快捷键接口
+    # ------------------------------------------------------------------
+        
+    def get_shortcuts(self) -> List[Dict[str, Any]]:
+        """
+        [可选实现] 返回插件注册的键盘快捷键列表
+            
+        Returns:
+            List[Dict]: 快捷键配置列表，每项包含：
+                - key: 键序列（如 "Ctrl+S"）
+                - description: 快捷键描述
+                - callback: 回调函数
+        """
+        return []

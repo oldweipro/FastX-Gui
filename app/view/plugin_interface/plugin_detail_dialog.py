@@ -308,7 +308,8 @@ class PluginDetailDialog(MessageBoxBase):
                     return self.plugin_info.icon_path
             except Exception:
                 pass
-        return FIF.PLUGIN
+        # 使用可用的图标替代不存在的 FIF.PLUGIN
+        return FIF.APPLICATION
 
     def _get_category_text(self) -> str:
         """获取分类显示文本"""

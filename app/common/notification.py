@@ -15,15 +15,27 @@
     
     # 信息通知
     Notification.info("提示", "正在处理中...", parent=self)
+    
+    # 可交互通知
+    Notification.action(
+        title="下载完成",
+        content="文件已下载到本地",
+        actions=[
+            {"text": "打开文件", "callback": lambda: open_file()},
+            {"text": "打开目录", "callback": lambda: open_folder()},
+        ],
+        parent=self
+    )
 """
 import sys
-from typing import Optional, Union
+from typing import Optional, Union, List, Dict, Any, Callable
 from enum import Enum
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QHBoxLayout, QPushButton
+from PySide6.QtGui import QIcon
 from loguru import logger
-from qfluentwidgets import InfoBar, FluentIcon, InfoBarIcon, InfoBarPosition
+from qfluentwidgets import InfoBar, FluentIcon, InfoBarIcon, InfoBarPosition, HyperlinkButton
 
 from app.common.setting import APPLY_NAME
 
@@ -301,6 +313,136 @@ class Notification:
             info_bar.setCustomBackgroundColor(background_color, text_color)
         
         return info_bar
+
+
+# ============================================================================
+# 可交互通知
+# ============================================================================
+
+class ActionButton(HyperlinkButton):
+    """通知动作按钮"""
+    
+    def __init__(self, text: str, callback: Callable, parent=None):
+        super().__init__("", text, parent=parent)
+        self._callback = callback
+        self.clicked.connect(self._on_clicked)
+    
+    def _on_clicked(self):
+        """按钮点击处理"""
+        try:
+            self._callback()
+        except Exception as e:
+            logger.exception(f"执行通知回调失败：{e}")
+
+
+@staticmethod
+def action(
+    title: str,
+    content: str = "",
+    actions: List[Dict[str, Any]] = None,
+    parent: Optional[QWidget] = None,
+    duration: int = 0,  # 0 表示不自动消失
+    position: Optional[Union[NotifyPosition, InfoBarPosition]] = None,
+    is_closable: bool = True,
+    orient: Qt.Orientation = Qt.Orientation.Horizontal,
+) -> InfoBar:
+    """
+    显示可交互通知（带操作按钮）
+    
+    Args:
+        title: 通知标题
+        content: 通知内容
+        actions: 动作列表，每项为 {"text": str, "callback": callable}
+        parent: 父窗口
+        duration: 持续时间 (毫秒)，0 表示不自动消失
+        position: 显示位置
+        is_closable: 是否可关闭
+        orient: 布局方向
+    
+    Returns:
+        InfoBar实例
+    """
+    position = position or NotifyPosition.TOP
+    
+    if isinstance(position, NotifyPosition):
+        position = position.value
+    
+    logger.debug(f"[Notification] Action: {title} - {content}")
+    
+    info_bar = InfoBar.new(
+        icon=InfoBarIcon.INFORMATION,
+        title=title,
+        content=content,
+        orient=orient,
+        isClosable=is_closable,
+        position=position,
+        duration=duration,
+        parent=parent,
+    )
+    
+    # 添加动作按钮
+    if actions:
+        button_layout = QHBoxLayout()
+        button_layout.setSpacing(8)
+        
+        for action in actions:
+            text = action.get("text", "操作")
+            callback = action.get("callback", lambda: None)
+            
+            btn = ActionButton(text, callback, info_bar)
+            button_layout.addWidget(btn)
+        
+        # 将按钮布局添加到 InfoBar
+        info_bar.viewLayout.addLayout(button_layout)
+    
+    return info_bar
+
+
+@staticmethod
+def confirm(
+    title: str,
+    content: str = "",
+    yes_text: str = "确定",
+    no_text: str = "取消",
+    yes_callback: Callable = None,
+    no_callback: Callable = None,
+    parent: Optional[QWidget] = None,
+    duration: int = 0,
+    position: Optional[Union[NotifyPosition, InfoBarPosition]] = None,
+) -> InfoBar:
+    """
+    显示确认通知（是/否选择）
+    
+    Args:
+        title: 通知标题
+        content: 通知内容
+        yes_text: 确认按钮文本
+        no_text: 取消按钮文本
+        yes_callback: 确认按钮回调
+        no_callback: 取消按钮回调
+        parent: 父窗口
+        duration: 持续时间
+        position: 显示位置
+    
+    Returns:
+        InfoBar实例
+    """
+    actions = []
+    
+    if no_callback is not None or no_text != "取消":
+        actions.append({"text": no_text, "callback": no_callback or (lambda: None)})
+    
+    if yes_callback is not None or yes_text != "确定":
+        actions.append({"text": yes_text, "callback": yes_callback or (lambda: None)})
+    
+    return Notification.action(
+        title=title,
+        content=content,
+        actions=actions,
+        parent=parent,
+        duration=duration,
+        position=position,
+    )
 
 
 # ============================================================================
