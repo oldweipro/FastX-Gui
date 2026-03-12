@@ -4,6 +4,7 @@ from typing import Any
 from PySide6.QtWidgets import QWidget
 
 from app.plugins.plugin_base import PluginBase, PluginCategory, PluginInfo
+from app.common.icon import Icon
 
 
 class FastDemPlugin(PluginBase):
@@ -15,6 +16,7 @@ class FastDemPlugin(PluginBase):
             description="DEM diagnostic file processing tool, supports DEM file parsing and generation",
             author="FastXTeam",
             category=PluginCategory.DIAGNOSTIC,
+            icon_path=Icon.E2E,  # ✅ 直接使用 Icon 枚举（与 UI 一致）
             builtin=True,
         )
 

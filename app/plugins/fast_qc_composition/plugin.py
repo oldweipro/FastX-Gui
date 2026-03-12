@@ -4,6 +4,7 @@ from typing import Any
 from PySide6.QtWidgets import QWidget
 
 from app.plugins.plugin_base import PluginBase, PluginCategory, PluginInfo
+from app.common.icon import UIcon
 
 
 class FastQcCompositionPlugin(PluginBase):
@@ -17,6 +18,7 @@ class FastQcCompositionPlugin(PluginBase):
             description="QC composition signal processing tool, supports signal composition and verification",
             author="FastXTeam",
             category=PluginCategory.COMMUNICATION,
+            icon_path=UIcon.get("ic_fluent_data_usage_20_regular"),  # ✅ 使用 UIcon.get() 方法，可追溯
             builtin=True,
         )
 

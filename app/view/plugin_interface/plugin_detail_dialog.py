@@ -301,15 +301,22 @@ class PluginDetailDialog(MessageBoxBase):
         """获取插件图标"""
         if self.plugin_info.icon_path:
             try:
+                # 1. 如果是 Icon 或 FIF 枚举，直接返回
+                if isinstance(self.plugin_info.icon_path, (FluentIconBase, FIF)):
+                    return self.plugin_info.icon_path
+                
+                # 2. 如果是字符串，尝试从 Icon 类获取
+                from app.common.icon import Icon
                 if isinstance(self.plugin_info.icon_path, str):
                     if hasattr(Icon, self.plugin_info.icon_path):
                         return getattr(Icon, self.plugin_info.icon_path)
-                elif isinstance(self.plugin_info.icon_path, (FluentIconBase, FIF)):
-                    return self.plugin_info.icon_path
+                        
             except Exception:
                 pass
-        # 使用可用的图标替代不存在的 FIF.PLUGIN
-        return FIF.APPLICATION
+        
+        # 默认图标
+        from app.common.icon import Icon
+        return Icon.PLUGIN
 
     def _get_category_text(self) -> str:
         """获取分类显示文本"""

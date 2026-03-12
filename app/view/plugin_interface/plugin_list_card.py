@@ -106,15 +106,22 @@ class PluginListCard(CardWidget):
     def _get_icon(self):
         if self.plugin_info.icon_path:
             try:
+                # 1. 如果是 Icon 或 FIF 枚举，直接返回
+                if isinstance(self.plugin_info.icon_path, (FluentIconBase, FIF)):
+                    return self.plugin_info.icon_path
+                
+                # 2. 如果是字符串，尝试从 Icon 类获取
+                from app.common.icon import Icon
                 if isinstance(self.plugin_info.icon_path, str):
-                    from app.common.icon import Icon
                     if hasattr(Icon, self.plugin_info.icon_path):
                         return getattr(Icon, self.plugin_info.icon_path)
-                elif isinstance(self.plugin_info.icon_path, (FluentIconBase, FIF)):
-                    return self.plugin_info.icon_path
+                        
             except Exception:
                 pass
-        return FIF.APPLICATION
+        
+        # 默认图标
+        from app.common.icon import Icon
+        return Icon.PLUGIN
 
     def _get_category_text(self) -> str:
         return {

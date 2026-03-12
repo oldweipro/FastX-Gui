@@ -4,6 +4,7 @@ from typing import Any
 from PySide6.QtWidgets import QWidget
 
 from app.plugins.plugin_base import PluginBase, PluginCategory, PluginInfo
+from app.common.icon import Icon
 
 
 class FastFaultManagerPlugin(PluginBase):
@@ -15,6 +16,7 @@ class FastFaultManagerPlugin(PluginBase):
             description="Fault code management tool, supports DTC creation, editing, template management and export",
             author="FastXTeam",
             category=PluginCategory.DIAGNOSTIC,
+            icon_path=Icon.FIM,  # ✅ 直接使用 Icon 枚举
             builtin=True,
         )
 

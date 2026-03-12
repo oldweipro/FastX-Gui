@@ -29,8 +29,9 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Callable
+from typing import Any, Dict, List, Optional, Callable, Union
 from PySide6.QtWidgets import QWidget
+from qfluentwidgets import FluentIconBase
 
 
 # ---------------------------------------------------------------------------
@@ -56,7 +57,7 @@ class PluginInfo:
     description : 功能简述（显示在卡片上）
     author      : 作者 / 团队
     category    : PluginCategory 枚举值
-    icon_path   : Icon 枚举名（字符串）或 FluentIconBase 实例
+    icon_path   : Icon 枚举名、FluentIconBase 实例或 UIcon.get() 返回值
     dependencies: 依赖的 Python 包名列表
     enabled     : 运行时启用状态（可由用户切换）
     builtin     : True = 内置插件，不允许卸载、不显示卸载按钮
@@ -66,7 +67,7 @@ class PluginInfo:
     description:  str
     author:       str
     category:     PluginCategory
-    icon_path:    Optional[str]  = None
+    icon_path:    Optional[Union[str, FluentIconBase]] = None
     dependencies: List[str]      = field(default_factory=list)
     enabled:      bool           = True
     builtin:      bool           = False   # ← 内置标志
@@ -130,14 +131,25 @@ class PluginBase(ABC):
 
             @classmethod
             def get_plugin_info(cls) -> PluginInfo:
+                from app.common.icon import Icon, UIcon
+                
                 return PluginInfo(
                     name="My Plugin",
                     version="1.0.0",
                     description="插件功能描述",
                     author="Author",
                     category=PluginCategory.UTILITIES,
+                    icon_path=Icon.MY_ICON,  # ✅ 推荐：使用 Icon 枚举
+                    # icon_path=UIcon.get("ic_fluent_xxx"),  # ✅ 或使用 UIcon.get()
                     builtin=False,
                 )
+        
+        Note:
+            icon_path 支持的类型：
+            - Icon 枚举：icon_path=Icon.CCP (推荐，可追溯、有提示)
+            - FluentIconBase 实例：icon_path=FIF.SETTINGS
+            - 字符串：icon_path="CCP" (向后兼容，不推荐)
+            - UIcon.get() 返回值：icon_path=UIcon.get("ic_fluent_xxx")
         """
         ...
 

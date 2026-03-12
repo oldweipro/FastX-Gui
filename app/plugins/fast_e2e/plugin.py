@@ -4,6 +4,7 @@ from typing import Any
 from PySide6.QtWidgets import QWidget
 
 from app.plugins.plugin_base import PluginBase, PluginCategory, PluginInfo
+from app.common.icon import Icon
 
 
 class FastE2EPlugin(PluginBase):
@@ -15,6 +16,7 @@ class FastE2EPlugin(PluginBase):
             description="E2E communication end-to-end verification tool, supports Profile configuration and verification calculation",
             author="FastXTeam",
             category=PluginCategory.COMMUNICATION,
+            icon_path=Icon.E2E,  # ✅ 直接使用 Icon 枚举
             builtin=True,
         )
 

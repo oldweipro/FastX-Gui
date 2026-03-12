@@ -4,6 +4,7 @@ from typing import Any
 from PySide6.QtWidgets import QWidget
 
 from app.plugins.plugin_base import PluginBase, PluginCategory, PluginInfo
+from app.common.icon import Icon
 
 
 class FastComMappingPlugin(PluginBase):
@@ -17,6 +18,7 @@ class FastComMappingPlugin(PluginBase):
             description="Com group mapping tool, used to handle group mapping relationships in Com files",
             author="FastXTeam",
             category=PluginCategory.COMMUNICATION,
+            icon_path=Icon.COM,  # ✅ 直接使用 Icon 枚举
             builtin=True,
         )
 

@@ -4,6 +4,7 @@ from typing import Any
 from PySide6.QtWidgets import QWidget
 
 from app.plugins.plugin_base import PluginBase, PluginCategory, PluginInfo
+from app.common.icon import Icon
 
 
 class FastCcpPlugin(PluginBase):
@@ -17,6 +18,7 @@ class FastCcpPlugin(PluginBase):
             description="CCP calibration protocol tool, supports A2L file parsing and calibration data management",
             author="FastXTeam",
             category=PluginCategory.DIAGNOSTIC,
+            icon_path=Icon.CCP,  # ✅ 直接使用 Icon 枚举，可追溯、有提示
             builtin=True,
         )
 

@@ -4,6 +4,7 @@ from typing import Any
 from PySide6.QtWidgets import QWidget
 
 from app.plugins.plugin_base import PluginBase, PluginCategory, PluginInfo
+from app.common.icon import Icon
 
 
 class FastCodeCleanerPlugin(PluginBase):
@@ -17,7 +18,7 @@ class FastCodeCleanerPlugin(PluginBase):
             description="Python code comment batch removal tool, supports recursive directory processing",
             author="FastXTeam",
             category=PluginCategory.UTILITIES,
-            icon_path=None,
+            icon_path=Icon.CODE,  # ✅ 使用已存在的图标
             builtin=True,
         )
 
