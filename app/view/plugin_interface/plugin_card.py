@@ -42,7 +42,7 @@ class PluginCard(QWidget):
     #  UI 初始化
     # ------------------------------------------------------------------ #
     def _init_ui(self):
-        self.setFixedSize(300, 168)
+        self.setFixedSize(300, 200)  # 增加卡片高度，从 168 改为 200
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.setMouseTracking(True)
@@ -100,8 +100,8 @@ class PluginCard(QWidget):
         self.desc_label = BodyLabel(self.plugin_info.description, self)
         self.desc_label.setObjectName("desc_label")
         self.desc_label.setWordWrap(True)
-        self.desc_label.setMaximumHeight(36)
-        self.desc_label.setStyleSheet("font-size: 11px;")
+        self.desc_label.setMaximumHeight(54)  # 增加最大高度，允许显示更多描述内容
+        self.desc_label.setStyleSheet("font-size: 11px; line-height: 18px;")
         right_col.addWidget(self.desc_label)
 
         body.addLayout(right_col, 1)

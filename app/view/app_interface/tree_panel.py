@@ -3,9 +3,10 @@
 from collections import defaultdict
 
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtWidgets import QMenu, QTreeWidgetItem, QVBoxLayout, QWidget
+from PySide6.QtGui import QAction
+from PySide6.QtWidgets import QTreeWidgetItem, QVBoxLayout, QWidget
 from qfluentwidgets import FluentIcon as FIF
-from qfluentwidgets import SearchLineEdit, TransparentToolButton, TreeWidget
+from qfluentwidgets import RoundMenu, SearchLineEdit, TransparentToolButton, TreeWidget
 
 from app.common.icon import Icon
 from app.common.signal_bus import signalBus
@@ -246,33 +247,35 @@ class TreePanel(QWidget):
         node_type = item.data(0, Qt.UserRole)
         node_id = item.data(0, Qt.UserRole + 1)
         extra_id = item.data(0, Qt.UserRole + 2) or ""
-        menu = QMenu(self)
+        
+        # 使用 QFluentWidgets 的 RoundMenu 替代原生菜单
+        menu = RoundMenu(parent=self)
 
         if node_type == "workspace":
-            menu.addAction("New Project", lambda: self._ctx_new_project(node_id))
-            menu.addAction("Edit Workspace", lambda: self._ctx_edit_workspace(node_id))
-            menu.addAction("Delete Workspace", lambda: self._ctx_delete_workspace(node_id))
+            menu.addAction(QAction("New Project", self, triggered=lambda: self._ctx_new_project(node_id)))
+            menu.addAction(QAction("Edit Workspace", self, triggered=lambda: self._ctx_edit_workspace(node_id)))
+            menu.addAction(QAction("Delete Workspace", self, triggered=lambda: self._ctx_delete_workspace(node_id)))
         elif node_type == "project":
-            menu.addAction("Edit Project", lambda: self._ctx_edit_project(node_id))
-            menu.addAction("Delete Project", lambda: self._ctx_delete_project(node_id))
-            menu.addAction("Create Snapshot", lambda: self._ctx_create_snapshot(node_id))
+            menu.addAction(QAction("Edit Project", self, triggered=lambda: self._ctx_edit_project(node_id)))
+            menu.addAction(QAction("Delete Project", self, triggered=lambda: self._ctx_delete_project(node_id)))
+            menu.addAction(QAction("Create Snapshot", self, triggered=lambda: self._ctx_create_snapshot(node_id)))
         elif node_type == "template_list":
-            menu.addAction("New Template", lambda: self._ctx_new_template(node_id))
+            menu.addAction(QAction("New Template", self, triggered=lambda: self._ctx_new_template(node_id)))
         elif node_type == "template":
-            menu.addAction("Edit Template", lambda: self.nodeSelected.emit("template", node_id, {"project_id": extra_id}))
-            menu.addAction("Delete Template", lambda: self._ctx_delete_template(node_id))
+            menu.addAction(QAction("Edit Template", self, triggered=lambda: self.nodeSelected.emit("template", node_id, {"project_id": extra_id})))
+            menu.addAction(QAction("Delete Template", self, triggered=lambda: self._ctx_delete_template(node_id)))
         elif node_type == "item_list":
-            menu.addAction("New Item", lambda: self._ctx_new_item(node_id))
+            menu.addAction(QAction("New Item", self, triggered=lambda: self._ctx_new_item(node_id)))
         elif node_type == "item_group":
-            menu.addAction("New Item", lambda: self._ctx_new_item_for_group(extra_id, node_id))
+            menu.addAction(QAction("New Item", self, triggered=lambda: self._ctx_new_item_for_group(extra_id, node_id)))
         elif node_type == "item":
-            menu.addAction("Edit Item", lambda: self.nodeSelected.emit("item", node_id, {"project_id": extra_id}))
-            menu.addAction("Delete Item", lambda: self._ctx_delete_item(node_id))
+            menu.addAction(QAction("Edit Item", self, triggered=lambda: self.nodeSelected.emit("item", node_id, {"project_id": extra_id})))
+            menu.addAction(QAction("Delete Item", self, triggered=lambda: self._ctx_delete_item(node_id)))
         elif node_type == "snapshot_list":
-            menu.addAction("Create Snapshot", lambda: self._ctx_create_snapshot(node_id))
+            menu.addAction(QAction("Create Snapshot", self, triggered=lambda: self._ctx_create_snapshot(node_id)))
         elif node_type == "snapshot":
-            menu.addAction("View Snapshot", lambda: self.nodeSelected.emit("snapshot", node_id, {"project_id": extra_id}))
-            menu.addAction("Delete Snapshot", lambda: self._ctx_delete_snapshot(node_id))
+            menu.addAction(QAction("View Snapshot", self, triggered=lambda: self.nodeSelected.emit("snapshot", node_id, {"project_id": extra_id})))
+            menu.addAction(QAction("Delete Snapshot", self, triggered=lambda: self._ctx_delete_snapshot(node_id)))
         else:
             return
 
