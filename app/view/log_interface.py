@@ -608,18 +608,25 @@ class LoguruInterface(ScrollArea):
         self.log_viewer.customContextMenuRequested.connect(self._show_context_menu)
 
     def _copy_selected_text(self):
-        """复制选中的文本到剪贴板"""
+        """复制选中的文本到剪贴板（保留正确的换行格式）"""
         cursor = self.log_viewer.textCursor()
         if cursor.hasSelection():
+            # 获取选中的文本
             text = cursor.selectedText()
+            # QPlainTextEdit 使用 Unicode 段落分隔符，需要转换为普通换行符
+            normalized_text = text.replace('\u2029', '\n').replace('\r\n', '\n').replace('\r', '\n')
+            
+            if normalized_text:
+                QApplication.clipboard().setText(normalized_text)
+                self._show_copy_notification("已复制到剪贴板")
         else:
             # 如果没有选中，复制当前行
             cursor.select(QTextCursor.LineUnderCursor)
             text = cursor.selectedText()
-
-        if text:
-            QApplication.clipboard().setText(text)
-            self._show_copy_notification("已复制到剪贴板")
+            if text:
+                normalized_text = text.replace('\u2029', '\n').replace('\r\n', '\n').replace('\r', '\n')
+                QApplication.clipboard().setText(normalized_text)
+                self._show_copy_notification("已复制到剪贴板")
 
     def _show_context_menu(self, pos):
         """显示右键菜单"""
@@ -782,18 +789,37 @@ class LoguruInterface(ScrollArea):
         pass
 
     def copy_all_logs(self):
-        """复制全部日志"""
+        """复制全部日志（保留正确的换行格式）"""
         try:
             from PySide6.QtWidgets import QApplication
-
-            text = self.log_viewer.toPlainText()
-            if text:
-                QApplication.clipboard().setText(text)
+        
+            # 从原始日志直接构建文本，确保换行正确
+            if self.original_logs:
+                lines = []
+                for level, text in self.original_logs:
+                    # 只添加符合条件的日志
+                    if self.filter_level:
+                        target_level = LogConfig.get_name_by_level(self.filter_level)
+                        if target_level != level:
+                            continue
+                    lines.append(text)
+                
+                # 使用 Unix 换行符连接所有行
+                normalized_text = '\n'.join(lines)
+                if normalized_text:
+                    QApplication.clipboard().setText(normalized_text)
+            else:
+                # 如果没有日志，使用 toPlainText 并转换换行符
+                text = self.log_viewer.toPlainText()
+                if text:
+                    # QPlainTextEdit 使用 Unicode 段落分隔符，需要转换为普通换行符
+                    normalized_text = text.replace('\u2029', '\n').replace('\r\n', '\n').replace('\r', '\n')
+                    QApplication.clipboard().setText(normalized_text)
         except Exception as e:
-            logger.error(f"复制全部日志错误: {e}")
+            logger.error(f"复制全部日志错误：{e}")
 
     def save_all_logs(self):
-        """保存全部日志"""
+        """保存全部日志（保留正确的换行格式）"""
         try:
             import datetime
 
@@ -812,11 +838,60 @@ class LoguruInterface(ScrollArea):
             )
 
             if file_path:
-                # 写入日志内容
-                with open(file_path, "w", encoding="utf-8") as f:
-                    f.write(self.log_viewer.toPlainText())
+                # 从原始日志直接构建文本，确保换行正确
+                if self.original_logs:
+                    lines = []
+                    for level, text in self.original_logs:
+                        # 只添加符合条件的日志
+                        if self.filter_level:
+                            target_level = LogConfig.get_name_by_level(self.filter_level)
+                            if target_level != level:
+                                continue
+                        lines.append(text)
+                    
+                    # 使用 Unix 换行符连接所有行
+                    normalized_text = '\n'.join(lines)
+                else:
+                    # 如果没有日志，使用 toPlainText 并转换换行符
+                    text = self.log_viewer.toPlainText()
+                    # QPlainTextEdit 使用 Unicode 段落分隔符，需要转换为普通换行符
+                    normalized_text = text.replace('\u2029', '\n').replace('\r\n', '\n').replace('\r', '\n')
+                
+                if normalized_text:
+                    # 写入日志内容（使用统一的换行符）
+                    with open(file_path, "w", encoding="utf-8", newline='\n') as f:
+                        f.write(normalized_text)
+                        
+                    InfoBar.success(
+                        title=self.tr("Save successful"),
+                        content=self.tr("Logs saved to: ") + file_path,
+                        orient=Qt.Horizontal,
+                        isClosable=True,
+                        position=InfoBarPosition.BOTTOM,
+                        duration=3000,
+                        parent=self,
+                    )
+                else:
+                    InfoBar.warning(
+                        title=self.tr("No logs"),
+                        content=self.tr("No logs to save"),
+                        orient=Qt.Horizontal,
+                        isClosable=True,
+                        position=InfoBarPosition.BOTTOM,
+                        duration=2000,
+                        parent=self,
+                    )
         except Exception as e:
             logger.error(f"Save all logs error: {e}")
+            InfoBar.error(
+                title=self.tr("Save failed"),
+                content=str(e),
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.BOTTOM,
+                duration=3000,
+                parent=self,
+            )
 
     def toggle_theme(self):
         """切换应用主题"""

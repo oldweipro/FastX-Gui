@@ -492,13 +492,13 @@ class BasicConfigCard(GroupHeaderCardWidget):
             widget=self.chooseMappingTableButton,
         )
         self.chooseDataTypGroup = self.addGroup(
-            icon=UIcon.get("ic_fluent_document_contract_20_regular"),
+            icon=UIcon.get("ic_fluent_document_landscape_20_regular"),
             title=self.tr("DataType Arxml Path"),
             content=cfg.get(cfg.fastRteDataTypeFile),
             widget=self.chooseDataTypeButton,
         )
         self.chooseInterfaceGroup = self.addGroup(
-            icon=UIcon.get("ic_fluent_document_contract_20_regular"),
+            icon=UIcon.get("ic_fluent_document_landscape_20_regular"),
             title=self.tr("Interface Arxml Path"),
             content=cfg.get(cfg.fastRteInterfaceFile),
             widget=self.chooseInterfaceButton,

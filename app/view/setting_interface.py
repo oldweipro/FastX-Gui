@@ -393,7 +393,7 @@ class FloatingWindowAppearanceSettings(GroupHeaderCardWidget):
         self.extend_switch.setChecked(cfg.extendQuickDrawComponent.value)
         self.extend_switch.checkedChanged.connect(lambda v: setattr(cfg.extendQuickDrawComponent, "value", v))
         self.addGroup(
-            UIcon.get("ic_fluent_panel_separate_right_20_regular"),
+            UIcon.get("ic_fluent_molecule_20_regular"),
             "扩展闪抽组件",
             "在闪抽按钮旁显示下拉箭头，可快速切换班级/筛选条件",
             self.extend_switch,
@@ -538,7 +538,7 @@ class FloatingWindowForegroundSettings(GroupHeaderCardWidget):
             lambda: setattr(cfg.hideFloatingWindowOnForegroundProcessNames, "value", self.processes_edit.text().strip())
         )
         self.addGroup(
-            UIcon.get("ic_fluent_process_20_regular"),
+            UIcon.get("ic_fluent_more_circle_20_regular"),
             "进程名称关键词",
             "指定进程处于前台时隐藏悬浮窗（分号分隔）",
             self.processes_edit,
@@ -692,7 +692,7 @@ class SettingInterface(ScrollArea):
 
         # 懸浮窗
         self.floatingWindowGroupCard = ExpandSettingCard(
-            UIcon.get("ic_fluent_panel_separate_right_20_regular"),
+            UIcon.get("ic_fluent_panel_right_gallery_20_regular"),
             self.tr("FloatWindow"),
             self.tr("Float Windows Settings"),
             self.view,
@@ -722,7 +722,7 @@ class SettingInterface(ScrollArea):
             parent=self.appGroup,
         )
         self.betaCard = SwitchSettingCard(
-            UIcon.get("ic_fluent_flask_20_regular"),
+            UIcon.get("ic_fluent_beaker_20_regular"),
             self.tr("Beta experimental features"),
             self.tr("When turned on, experimental features will be enabled"),
             configItem=cfg.beta,

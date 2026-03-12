@@ -334,7 +334,7 @@ class AboutInfoHomeIf(GroupHeaderCardWidget):
         )
 
         self.addGroup(
-            UIcon.get("ic_fluent_number_123_20_regular"),
+            UIcon.get("ic_fluent_tag_multiple_20_regular"),
             self.tr("version"),
             self.tr("show current software version"),
             self.about_version_label,
