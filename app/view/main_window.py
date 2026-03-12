@@ -845,7 +845,7 @@ class MainWindow(SplitFluentWindow):
         ):
             self.addSubInterface(
                 self.libraryInterface,
-                FIF.DOCUMENT,
+                FIcon.DEMO,
                 self.tr("Library"),
                 pos,
                 isTransparent=False,
@@ -857,7 +857,7 @@ class MainWindow(SplitFluentWindow):
         ):
             self.addSubInterface(
                 self.funcInterface,
-                FIcon.EXCHANGE_4,
+                FIcon.INTERFACE,
                 self.tr("FastRte"),
                 pos,
                 isTransparent=True,

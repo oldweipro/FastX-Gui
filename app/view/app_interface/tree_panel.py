@@ -106,7 +106,7 @@ class TreePanel(QWidget):
                 proj_item.addChild(tmpl_list_node)
 
                 # ── Items (grouped by template) ──
-                item_list_node = self._make_node("Items", Icon.ITEM, "item_list", proj_id, ws["id"])
+                item_list_node = self._make_node("Items", Icon.ITEM4, "item_list", proj_id, ws["id"])
                 all_items = item_service.list_items(proj_id)
                 groups: dict[str, list[dict]] = defaultdict(list)
                 for it in all_items:
@@ -116,11 +116,11 @@ class TreePanel(QWidget):
                 for tmpl_id, items in groups.items():
                     group_name = tmpl_name_map.get(tmpl_id, tmpl_id[:8])
                     group_node = self._make_node(
-                        f"{group_name}s ({len(items)})", Icon.ITEM, "item_group", tmpl_id, proj_id
+                        f"{group_name}s ({len(items)})", Icon.ITEM3, "item_group", tmpl_id, proj_id
                     )
                     for it in items:
                         group_node.addChild(
-                            self._make_node(it["title"], Icon.ITEM, "item", it["id"], proj_id)
+                            self._make_node(it["title"], Icon.ITEM3, "item", it["id"], proj_id)
                         )
                     item_list_node.addChild(group_node)
                 proj_item.addChild(item_list_node)

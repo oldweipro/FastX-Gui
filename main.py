@@ -52,9 +52,11 @@ def main():
             hide_window = True
 
     # Show registration page to verify email and activation code on every startup
-    w = RegisterWindow()
-    w.loginSignal.connect(lambda: showMainWindow(hide=hide_window))
-    w.show()
+    # w = RegisterWindow()
+    # w.loginSignal.connect(lambda: showMainWindow(hide=hide_window))
+    # w.show()
+    showMainWindow()
+
 
     result = app.exec()
 

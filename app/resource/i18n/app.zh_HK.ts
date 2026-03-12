@@ -1593,14 +1593,39 @@ Saved to: {save_path}</source>
         <translation>最近 7 天</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="807"/>
+        <location filename="../../view/log_interface.py" line="833"/>
         <source>Save logs</source>
         <translation>保存日誌</translation>
     </message>
     <message>
-        <location filename="../../view/log_interface.py" line="807"/>
+        <location filename="../../view/log_interface.py" line="833"/>
         <source>Text files (*.txt);;All files (*)</source>
         <translation>文本文件 (*.txt);;所有文件 (*)</translation>
+    </message>
+    <message>
+        <location filename="../../view/log_interface.py" line="865"/>
+        <source>Save successful</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../view/log_interface.py" line="865"/>
+        <source>Logs saved to: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../view/log_interface.py" line="875"/>
+        <source>No logs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../view/log_interface.py" line="875"/>
+        <source>No logs to save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../view/log_interface.py" line="886"/>
+        <source>Save failed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1667,32 +1692,32 @@ Saved to: {save_path}</source>
         <translation>卸載插件</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_card.py" line="274"/>
+        <location filename="../../view/plugin_interface/plugin_card.py" line="280"/>
         <source>Diagnostic Tools</source>
         <translation>診斷工具</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_card.py" line="275"/>
+        <location filename="../../view/plugin_interface/plugin_card.py" line="281"/>
         <source>Communication Tools</source>
         <translation>通信工具</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_card.py" line="276"/>
+        <location filename="../../view/plugin_interface/plugin_card.py" line="282"/>
         <source>Serial Tools</source>
         <translation>串口工具</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_card.py" line="277"/>
+        <location filename="../../view/plugin_interface/plugin_card.py" line="283"/>
         <source>Utilities</source>
         <translation>實用工具</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_card.py" line="278"/>
+        <location filename="../../view/plugin_interface/plugin_card.py" line="284"/>
         <source>Custom</source>
         <translation>自定義</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_card.py" line="280"/>
+        <location filename="../../view/plugin_interface/plugin_card.py" line="286"/>
         <source>Unknown</source>
         <translation>未知</translation>
     </message>
@@ -1715,12 +1740,12 @@ Saved to: {save_path}</source>
         <translation>啟用狀態:</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="329"/>
+        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="337"/>
         <source>Enabled</source>
         <translation>已啟用</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="329"/>
+        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="337"/>
         <source>Disabled</source>
         <translation>已禁用</translation>
     </message>
@@ -1805,54 +1830,54 @@ Saved to: {save_path}</source>
         <translation>卸載插件</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="318"/>
+        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="326"/>
         <source>Diagnostic Tools</source>
         <translation>診斷工具</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="319"/>
+        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="327"/>
         <source>Communication Tools</source>
         <translation>通信工具</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="320"/>
+        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="328"/>
         <source>Serial Tools</source>
         <translation>串口工具</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="321"/>
+        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="329"/>
         <source>Utilities</source>
         <translation>實用工具</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="322"/>
+        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="330"/>
         <source>Custom</source>
         <translation>自定義</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="324"/>
+        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="332"/>
         <source>Unknown</source>
         <translation>未知</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="361"/>
+        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="369"/>
         <source>Confirm Uninstall</source>
         <translation>確認卸載</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="360"/>
+        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="368"/>
         <source>Are you sure you want to uninstall plugin &apos;{0}&apos;?
 This action cannot be undone.</source>
         <translation>確定要卸載插件'{0}'嗎?
 此操作無法撤銷。</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="362"/>
+        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="370"/>
         <source>Yes</source>
         <translation>是</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="363"/>
+        <location filename="../../view/plugin_interface/plugin_detail_dialog.py" line="371"/>
         <source>No</source>
         <translation>否</translation>
     </message>
@@ -2002,32 +2027,32 @@ This action cannot be undone.</source>
         <translation>點擊顯示插件</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_list_card.py" line="121"/>
+        <location filename="../../view/plugin_interface/plugin_list_card.py" line="128"/>
         <source>Diagnostic</source>
         <translation>診斷工具</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_list_card.py" line="122"/>
+        <location filename="../../view/plugin_interface/plugin_list_card.py" line="129"/>
         <source>Communication</source>
         <translation>通信工具</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_list_card.py" line="123"/>
+        <location filename="../../view/plugin_interface/plugin_list_card.py" line="130"/>
         <source>Serial</source>
         <translation>串口工具</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_list_card.py" line="124"/>
+        <location filename="../../view/plugin_interface/plugin_list_card.py" line="131"/>
         <source>Utilities</source>
         <translation>實用工具</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_list_card.py" line="125"/>
+        <location filename="../../view/plugin_interface/plugin_list_card.py" line="132"/>
         <source>Custom</source>
         <translation>自定義</translation>
     </message>
     <message>
-        <location filename="../../view/plugin_interface/plugin_list_card.py" line="126"/>
+        <location filename="../../view/plugin_interface/plugin_list_card.py" line="133"/>
         <source>Unknown</source>
         <translation>未知</translation>
     </message>

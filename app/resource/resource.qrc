@@ -106,6 +106,8 @@
         <file>images/fluentIcon/app_store_regular_white.svg</file>
         <file>images/fluentIcon/coffee_black.svg</file>
         <file>images/fluentIcon/coffee_white.svg</file>
+        <file>images/fluentIcon/demo_black.svg</file>
+        <file>images/fluentIcon/demo_white.svg</file>
         <file>images/fluentIcon/exchange-1_black.svg</file>
         <file>images/fluentIcon/exchange-1_white.svg</file>
         <file>images/fluentIcon/exchange-2_black.svg</file>
@@ -351,6 +353,16 @@
         <file>images/icons/ZipFile_white.svg</file>
         <file>images/icons/item_black.svg</file>
         <file>images/icons/item_white.svg</file>
+        <file>images/icons/items-1_black.svg</file>
+        <file>images/icons/items-1_white.svg</file>
+        <file>images/icons/items-2_black.svg</file>
+        <file>images/icons/items-2_white.svg</file>
+        <file>images/icons/items-3_black.svg</file>
+        <file>images/icons/items-3_white.svg</file>
+        <file>images/icons/items-4_black.svg</file>
+        <file>images/icons/items-4_white.svg</file>
+        <file>images/icons/items-5_black.svg</file>
+        <file>images/icons/items-5_white.svg</file>
         <file>images/icons/project_black.svg</file>
         <file>images/icons/project_white.svg</file>
         <file>images/icons/snapshot_black.svg</file>

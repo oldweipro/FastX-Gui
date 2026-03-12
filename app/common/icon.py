@@ -131,6 +131,7 @@ class FIcon(FluentIconBase, Enum):
     LIST = "list"
     PLUGIN = "tab-plugin"
     TASK = "task"
+    DEMO = "demo"
     EXCHANGE_1 = "exchange-1"
     EXCHANGE_2 = "exchange-2"
     EXCHANGE_3 = "exchange-3"
@@ -146,6 +147,10 @@ class Icon(FluentIconBase, Enum):
     PROJECT = "project"
     TEMPLATE = "template"
     ITEM = "item"
+    ITEM1 = "items-1"
+    ITEM2 = "items-2"
+    ITEM3 = "items-3"
+    ITEM4 = "items-4"
     SNAPSHOT = "snapshot"
 
     # 基础图标
