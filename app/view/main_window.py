@@ -897,7 +897,7 @@ class MainWindow(SplitFluentWindow):
             text=self.tr("sponsor"),
             onClick=lambda: MessageBoxSupport(
                 "支持作者🥰",
-                "此程序为免费开源项目，如果你付了钱请立刻退款\n如果喜欢本项目，可以微信赞赏送作者一杯咖啡☕\n您的支持就是作者开发和维护项目的动力🚀",
+                "如果喜欢本项目，可以微信赞赏送作者一杯咖啡☕ 您的支持就是作者开发和维护项目的动力🚀",
                 ":/app/images/jpg/sponsor.jpg",
                 self,
             ).exec(),

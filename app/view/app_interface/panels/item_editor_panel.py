@@ -3,9 +3,9 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QFormLayout,
-    QScrollArea,
     QVBoxLayout,
     QWidget,
+    QHBoxLayout,
 )
 from qfluentwidgets import (
     BodyLabel,
@@ -15,6 +15,12 @@ from qfluentwidgets import (
     SpinBox,
     StrongBodyLabel,
     TextEdit,
+    CardWidget,
+    TitleLabel,
+    PrimaryPushButton,
+    ToolTipFilter,
+    FluentIcon as FIF,
+    SmoothScrollArea,
 )
 
 from app.common.notification import Notification
@@ -33,13 +39,18 @@ class _MultiSelectWidget(QWidget):
         """*options* is a list of ``(label, value)`` tuples."""
         super().__init__(parent)
         self._checkboxes: list[tuple[CheckBox, str]] = []
+        
+        # 设置透明背景
+        self.setAttribute(Qt.WA_StyledBackground)
+        self.setStyleSheet("background: transparent;")
 
-        scroll = QScrollArea(self)
+        scroll = SmoothScrollArea(self)
         scroll.setWidgetResizable(True)
         scroll.setMaximumHeight(200)
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
         inner = QWidget()
+        inner.setStyleSheet("background: transparent;")
         inner_layout = QVBoxLayout(inner)
         inner_layout.setContentsMargins(4, 4, 4, 4)
         inner_layout.setSpacing(4)
@@ -77,25 +88,32 @@ class ItemEditorPanel(QWidget):
         self._init_ui()
 
     def _init_ui(self):
+        # 设置透明背景
+        self.setAttribute(Qt.WA_StyledBackground)
+        self.setStyleSheet("background: transparent;")
+        
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(16, 8, 16, 8)
-        layout.setSpacing(8)
+        layout.setContentsMargins(24, 16, 24, 16)
+        layout.setSpacing(16)
 
         self.title_label = StrongBodyLabel("Edit Item", self)
         layout.addWidget(self.title_label)
 
         self.item_title_edit = LineEdit(self)
-        self.item_title_edit.setPlaceholderText("Item title")
+        self.item_title_edit.setPlaceholderText("Enter item title")
         title_row = QVBoxLayout()
         title_row.addWidget(BodyLabel("Title:", self))
         title_row.addWidget(self.item_title_edit)
         layout.addLayout(title_row)
 
-        # Scrollable form area
-        self.scroll = QScrollArea(self)
+        # 使用 SmoothScrollArea 替代 QScrollArea
+        self.scroll = SmoothScrollArea(self)
         self.scroll.setWidgetResizable(True)
         self.scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.scroll.enableTransparentBackground()
+        
         self.form_widget = QWidget()
+        self.form_widget.setStyleSheet("background: transparent;")
         self.form_layout = QFormLayout(self.form_widget)
         self.form_layout.setSpacing(8)
         self.scroll.setWidget(self.form_widget)
