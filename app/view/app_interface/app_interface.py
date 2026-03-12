@@ -1,8 +1,10 @@
 """Main AppInterface — ScrollArea with Tree + Content split layout."""
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QHBoxLayout, QWidget, QSplitter, QVBoxLayout
-from qfluentwidgets import ScrollArea, SmoothScrollArea
+from qfluentwidgets import ScrollArea, SmoothScrollArea, ToolButton, LineEditButton
+from qfluentwidgets import FluentIcon as FIF
+from qfluentwidgets import ToolTipFilter
 
 from app.common.style_sheet import StyleSheet
 from app.view.app_interface.content_panel import ContentPanel
@@ -36,14 +38,13 @@ class AppInterface(ScrollArea):
         layout = QHBoxLayout(self.view)
         layout.setContentsMargins(0, 48, 10, 0)
         layout.setSpacing(0)
-
+    
         self.splitter = QSplitter(Qt.Orientation.Horizontal, self.view)
         self.splitter.setHandleWidth(0)
         self.splitter.setChildrenCollapsible(False)
         # ========== 左侧面板 ==========
         self.left_panel = SmoothScrollArea()
         self.left_panel.setObjectName("left_panel")
-        self.left_panel.setMinimumWidth(280)
         self.left_panel.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.left_panel.setWidgetResizable(True)
         self.left_container = QWidget()
@@ -53,9 +54,9 @@ class AppInterface(ScrollArea):
         self.left_layout.setSpacing(8)
         self.left_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         # Left: tree panel (fixed width)
-        self.tree_panel.setFixedWidth(280)
+        self.tree_panel.setFixedWidth(380)
         self.left_layout.addWidget(self.tree_panel)
-
+    
         # ========== 右侧面板 ==========
         self.right_panel = SmoothScrollArea()
         self.right_panel.setObjectName("right_panel")
@@ -67,6 +68,7 @@ class AppInterface(ScrollArea):
         self.right_layout.setContentsMargins(12, 12, 12, 12)
         self.right_layout.setSpacing(8)
         self.right_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        
         # Right: content panel (stretch)
         self.right_layout.addWidget(self.content_panel, 1)
 
@@ -76,6 +78,36 @@ class AppInterface(ScrollArea):
         self.splitter.addWidget(self.left_panel)
         self.splitter.addWidget(self.right_panel)
         layout.addWidget(self.splitter)
+
+        QTimer.singleShot(0, self._apply_collapsed_state)
+    
+    def _apply_collapsed_state(self):
+        self.left_panel.setFixedWidth(0)
+        self._left_panel_expanded = False
+        if hasattr(self.content_panel, 'toggle_button'):
+            self.content_panel.toggle_button.setToolTip(self.tr("Expand navigation"))
+            self.content_panel.toggle_button.clicked.connect(self._toggle_left_panel)
+
+    # ------------------------------------------------------------------
+    # 面板展开/收缩
+    # ------------------------------------------------------------------
+    def _toggle_left_panel(self):
+        if self._left_panel_expanded:
+            self._collapse_left_panel()
+        else:
+            self._expand_left_panel()
+
+    def _collapse_left_panel(self):
+        self.left_panel.setFixedWidth(0)
+        self._left_panel_expanded = False
+        if hasattr(self.content_panel, 'toggle_button'):
+            self.content_panel.toggle_button.setToolTip(self.tr("Expand navigation"))
+
+    def _expand_left_panel(self):
+        self.left_panel.setFixedWidth(400)
+        self._left_panel_expanded = True
+        if hasattr(self.content_panel, 'toggle_button'):
+            self.content_panel.toggle_button.setToolTip(self.tr("Collapse navigation"))
 
     def __connectSignals(self):
         self.tree_panel.nodeSelected.connect(self.content_panel.on_node_selected)

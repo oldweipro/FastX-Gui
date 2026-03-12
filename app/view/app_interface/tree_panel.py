@@ -46,6 +46,7 @@ class TreePanel(QWidget):
 
         # Search
         self.search_edit = SearchLineEdit(self)
+        # self.search_edit.setMinimumWidth(400)
         self.search_edit.setPlaceholderText("Search...")
         layout.addWidget(self.search_edit)
 

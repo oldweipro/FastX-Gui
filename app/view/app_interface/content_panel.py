@@ -6,11 +6,14 @@ from qfluentwidgets import (
     Action,
     CommandBar,
     SubtitleLabel,
+    ToolButton, TransparentToolButton,
 )
 from qfluentwidgets import (
     FluentIcon as FIF,
 )
+from qfluentwidgets import ToolTipFilter
 
+from app.components.main_layout_card import SeparatorWidget
 from app.view.app_interface.panels.item_editor_panel import ItemEditorPanel
 from app.view.app_interface.panels.item_group_panel import ItemGroupPanel
 from app.view.app_interface.panels.item_list_panel import ItemListPanel
@@ -30,7 +33,7 @@ class ContentPanel(QWidget):
         self._current_node_type = ""
         self._current_node_id = ""
         self._init_ui()
-
+    
     def _init_ui(self):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(8, 8, 8, 8)
@@ -39,6 +42,17 @@ class ContentPanel(QWidget):
         # Command bar
         self.command_bar = CommandBar(self)
         self.command_bar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        
+        # 添加收缩/展开按钮到 CommandBar 左侧
+        self.toggle_button = TransparentToolButton(FIF.MENU, self)
+        self.toggle_button.setFixedSize(32, 32)
+        self.toggle_button.setToolTip("Collapse/Expand navigation")
+        self.toggle_button.installEventFilter(ToolTipFilter(self.toggle_button))
+        
+        # 将按钮添加到 command bar
+        self.command_bar.addWidget(self.toggle_button)
+        self.separator = SeparatorWidget(self)
+        self.command_bar.addWidget(self.separator)
         layout.addWidget(self.command_bar)
 
         # Stacked widget for panels
